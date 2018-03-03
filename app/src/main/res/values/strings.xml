@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Nvidia Gpu Monitor</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Button labels -->
+    <string name="btn_connect">Connect</string>
+    <!-- Button labels -->
+
 </resources>
