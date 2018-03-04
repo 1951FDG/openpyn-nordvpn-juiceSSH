@@ -119,6 +119,7 @@ class MainActivity : AppCompatActivity(),
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
         buttonConnect.applyDisconnectStyle()
         cardViewLayout.visibility = View.VISIBLE
+        spinnerConnectionList.isEnabled = false
     }
 
     override fun onSessionCancelled() {}
@@ -126,6 +127,7 @@ class MainActivity : AppCompatActivity(),
     override fun onSessionFinished() {
         buttonConnect.applyConnectStyle()
         cardViewLayout.visibility = View.GONE
+        spinnerConnectionList.isEnabled = true
     }
 
     override fun onClientStarted() {
