@@ -19,7 +19,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <Spinner
-                android:id="@+id/spinnerServers"
+                android:id="@+id/spinnerConnectionList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

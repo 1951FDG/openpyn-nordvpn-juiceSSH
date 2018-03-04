@@ -1,6 +1,7 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -15,7 +16,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 
-class MainActivity : AppCompatActivity(), OnSessionStartedListener, OnSessionFinishedListener {
+class MainActivity : AppCompatActivity(),
+        OnSessionStartedListener,
+        OnSessionFinishedListener,
+        ConnectionListLoaderFinishedCallback {
 
     companion object {
         const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
@@ -27,6 +31,7 @@ class MainActivity : AppCompatActivity(), OnSessionStartedListener, OnSessionFin
     private var mOpenSessionsPerm = false
 
     private val mClient = PluginClient()
+    private val mConnectionListAdapter by lazy { ConnectionListAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +39,8 @@ class MainActivity : AppCompatActivity(), OnSessionStartedListener, OnSessionFin
         setSupportActionBar(toolbar)
 
         requestPermissions()
+
+        spinnerConnectionList.adapter = mConnectionListAdapter
     }
 
     override fun onStart() {
@@ -48,6 +55,15 @@ class MainActivity : AppCompatActivity(), OnSessionStartedListener, OnSessionFin
                 buttonConnect.isEnabled = false
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        supportLoaderManager.initLoader(0, null, ConnectionListLoader(
+                mCtx = this,
+                mLoaderFinishCallback = this
+        ))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -89,6 +105,10 @@ class MainActivity : AppCompatActivity(), OnSessionStartedListener, OnSessionFin
 
     override fun onSessionFinished() {
 
+    }
+
+    override fun onLoaderFinished(newCursor: Cursor?) {
+        mConnectionListAdapter.swapCursor(newCursor)
     }
 
     private fun requestPermissions() {
