@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.github.sdsstudios.nvidiagpumonitor">
 
+    <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS" />
+    <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
