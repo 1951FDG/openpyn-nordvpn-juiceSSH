@@ -29,7 +29,13 @@ class ConnectionManager(private val mCtx: Context,
 
     private val mClient = PluginClient()
 
+    private var mSessionKey = ""
+    private var mSessionId = 0
+
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
+        mSessionId = sessionId
+        mSessionKey = sessionKey!!
+
         mActivitySessionStartedListener.onSessionStarted(sessionId, sessionKey)
 
         mClient.addSessionFinishedListener(sessionId, sessionKey, this)
@@ -48,6 +54,8 @@ class ConnectionManager(private val mCtx: Context,
     fun toggleConnection(uuid: UUID, activity: AppCompatActivity) {
         if (!connected) {
             connect(uuid, activity)
+        } else {
+            disconnect()
         }
     }
 
@@ -57,6 +65,27 @@ class ConnectionManager(private val mCtx: Context,
 
     fun gotActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         mClient.gotActivityResult(requestCode, resultCode, data)
+    }
+
+    fun onDestroy() {
+        if (connected) disconnect()
+
+        mClient.stop(mCtx)
+    }
+
+    private fun disconnect() {
+        Thread(Runnable {
+            try {
+                mClient.disconnect(mSessionId, mSessionKey)
+
+            } catch (e: ServiceNotConnectedException) {
+                Toast.makeText(
+                        mCtx,
+                        R.string.error_couldnt_connect_to_service,
+                        Toast.LENGTH_SHORT
+                ).show()
+            }
+        }).start()
     }
 
     private fun connect(uuid: UUID, activity: AppCompatActivity) {
