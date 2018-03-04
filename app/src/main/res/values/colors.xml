@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorError">#fff44336</color>
+    <color name="colorConnect">#4CAF50</color>
+    <color name="colorConnecting">#FFC107</color>
+    <color name="colorDisconnect">#fff44336</color>
+    <color name="colorWhiteButtonText">#ffffffff</color>
+    <color name="colorBlackButtonText">#ff000000</color>
 </resources>

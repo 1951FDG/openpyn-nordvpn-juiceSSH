@@ -1,5 +1,6 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Bundle
@@ -12,13 +13,14 @@ import android.view.View
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
+import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(),
-        OnClientStartedListener,
         OnSessionStartedListener,
         OnSessionFinishedListener,
+        OnClientStartedListener,
         ConnectionListLoaderFinishedCallback {
 
     companion object {
@@ -30,7 +32,13 @@ class MainActivity : AppCompatActivity(),
     private var mReadConnectionsPerm = false
     private var mOpenSessionsPerm = false
 
-    private val mConnectionManager by lazy { ConnectionManager(this) }
+    private val mConnectionManager by lazy {
+        ConnectionManager(
+                mCtx = this,
+                mActivitySessionStartedListener = this,
+                mActivitySessionFinishedListener = this
+        )
+    }
 
     private val mConnectionListAdapter by lazy { ConnectionListAdapter(this) }
 
@@ -50,7 +58,13 @@ class MainActivity : AppCompatActivity(),
 
         buttonConnect.setOnClickListener {
             if (mPermissionsGranted) {
-                toggleConnection()
+                buttonConnect.applyConnectingStyle()
+
+                val uuid = mConnectionListAdapter
+                        .getConnectionId(spinnerConnectionList.selectedItemPosition)
+
+                mConnectionManager.toggleConnection(uuid = uuid!!, activity = this)
+
             } else {
                 requestPermissions()
             }
@@ -88,16 +102,22 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == JUICESSH_REQUEST_CODE) {
+            mConnectionManager.gotActivityResult(requestCode, resultCode, data!!)
+        }
+    }
+
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
-
+        buttonConnect.applyDisconnectStyle()
     }
 
-    override fun onSessionCancelled() {
-
-    }
+    override fun onSessionCancelled() {}
 
     override fun onSessionFinished() {
-
+        buttonConnect.applyConnectStyle()
     }
 
     override fun onClientStarted() {
@@ -112,15 +132,11 @@ class MainActivity : AppCompatActivity(),
         mConnectionListAdapter.swapCursor(newCursor)
     }
 
-    private fun toggleConnection() {
-
-    }
-
     private fun onPermissionsGranted() {
         mConnectionManager.startClient(onClientStartedListener = this)
 
         textViewMustEnablePermissions.visibility = View.GONE
-        buttonConnect.setText(R.string.btn_connect)
+        buttonConnect.applyConnectStyle()
 
         spinnerConnectionList.adapter = mConnectionListAdapter
 

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.sonelli.juicessh.pluginlibrary.PluginContract
+import java.util.*
 
 /**
  * Created by Seth on 04/03/18.
@@ -28,5 +29,20 @@ class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
             val name = cursor.getString(nameColumn)
             view!!.findViewById<TextView>(R.id.textView).text = name
         }
+    }
+
+    fun getConnectionId(position: Int): UUID? {
+        var id: UUID? = null
+
+        if (cursor != null) {
+            if (cursor.moveToPosition(position)) {
+                val idIndex = cursor.getColumnIndex(PluginContract.Connections.COLUMN_ID)
+                if (idIndex > -1) {
+                    id = UUID.fromString(cursor.getString(idIndex))
+                }
+            }
+        }
+
+        return id
     }
 }

@@ -5,7 +5,10 @@
 
     <!-- Button labels -->
     <string name="btn_connect">Connect</string>
+    <string name="btn_disconnect">Disconnect</string>
+    <string name="btn_connecting">Connecting…</string>
     <string name="btn_request_permissions">Request Permissions</string>
+    <string name="error_couldnt_connect_to_service">Could not connect to JuiceSSH Plugin Service</string>
     <!-- Button labels -->
 
 </resources>

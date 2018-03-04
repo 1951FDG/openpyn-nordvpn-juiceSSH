@@ -8,7 +8,7 @@
     tools:context="io.github.sdsstudios.nvidiagpumonitor.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <Button
+    <io.github.sdsstudios.nvidiagpumonitor.ConnectButton
         android:id="@+id/buttonConnect"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -18,7 +18,8 @@
         android:text="@string/btn_request_permissions"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Connect" />
 
     <TextView
         android:id="@+id/textViewMustEnablePermissions"
