@@ -9,11 +9,13 @@ import android.view.Menu
 import android.view.MenuItem
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
+import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
+import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnSessionStartedListener, OnSessionFinishedListener {
 
     companion object {
         const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
@@ -75,6 +77,18 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
+
+    }
+
+    override fun onSessionCancelled() {
+
+    }
+
+    override fun onSessionFinished() {
+
     }
 
     private fun requestPermissions() {
