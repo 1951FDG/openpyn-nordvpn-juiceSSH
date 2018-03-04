@@ -9,15 +9,14 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-
 class MainActivity : AppCompatActivity(),
+        OnClientStartedListener,
         OnSessionStartedListener,
         OnSessionFinishedListener,
         ConnectionListLoaderFinishedCallback {
@@ -31,9 +30,8 @@ class MainActivity : AppCompatActivity(),
     private var mReadConnectionsPerm = false
     private var mOpenSessionsPerm = false
 
-    private lateinit var mConnectionViewModel: ConnectionViewModel
+    private val mConnectionManager by lazy { ConnectionManager(this) }
 
-    private val mClient = PluginClient()
     private val mConnectionListAdapter by lazy { ConnectionListAdapter(this) }
 
     private val mPermissionsGranted
@@ -102,6 +100,14 @@ class MainActivity : AppCompatActivity(),
 
     }
 
+    override fun onClientStarted() {
+        buttonConnect.isEnabled = true
+    }
+
+    override fun onClientStopped() {
+        buttonConnect.isEnabled = false
+    }
+
     override fun onLoaderFinished(newCursor: Cursor?) {
         mConnectionListAdapter.swapCursor(newCursor)
     }
@@ -111,18 +117,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun onPermissionsGranted() {
+        mConnectionManager.startClient(onClientStartedListener = this)
+
         textViewMustEnablePermissions.visibility = View.GONE
         buttonConnect.setText(R.string.btn_connect)
-
-        mClient.start(this, object : OnClientStartedListener {
-            override fun onClientStarted() {
-                buttonConnect.isEnabled = true
-            }
-
-            override fun onClientStopped() {
-                buttonConnect.isEnabled = false
-            }
-        })
 
         spinnerConnectionList.adapter = mConnectionListAdapter
 
