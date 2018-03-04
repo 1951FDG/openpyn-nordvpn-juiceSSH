@@ -7,7 +7,11 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.sonelli.juicessh.pluginlibrary.PluginClient
+import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,12 +24,28 @@ class MainActivity : AppCompatActivity() {
     private var mReadConnectionsPerm = false
     private var mOpenSessionsPerm = false
 
+    private val mClient = PluginClient()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         requestPermissions()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        mClient.start(this, object : OnClientStartedListener {
+            override fun onClientStarted() {
+                buttonConnect.isEnabled = true
+            }
+
+            override fun onClientStopped() {
+                buttonConnect.isEnabled = false
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
