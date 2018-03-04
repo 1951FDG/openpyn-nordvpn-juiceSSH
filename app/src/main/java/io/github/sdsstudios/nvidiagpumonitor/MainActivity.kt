@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
@@ -30,8 +31,13 @@ class MainActivity : AppCompatActivity(),
     private var mReadConnectionsPerm = false
     private var mOpenSessionsPerm = false
 
+    private lateinit var mConnectionViewModel: ConnectionViewModel
+
     private val mClient = PluginClient()
     private val mConnectionListAdapter by lazy { ConnectionListAdapter(this) }
+
+    private val mPermissionsGranted
+        get() = mReadConnectionsPerm && mOpenSessionsPerm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,30 +46,17 @@ class MainActivity : AppCompatActivity(),
 
         requestPermissions()
 
-        spinnerConnectionList.adapter = mConnectionListAdapter
-    }
+        if (mPermissionsGranted) {
+            onPermissionsGranted()
+        }
 
-    override fun onStart() {
-        super.onStart()
-
-        mClient.start(this, object : OnClientStartedListener {
-            override fun onClientStarted() {
-                buttonConnect.isEnabled = true
+        buttonConnect.setOnClickListener {
+            if (mPermissionsGranted) {
+                toggleConnection()
+            } else {
+                requestPermissions()
             }
-
-            override fun onClientStopped() {
-                buttonConnect.isEnabled = false
-            }
-        })
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        supportLoaderManager.initLoader(0, null, ConnectionListLoader(
-                mCtx = this,
-                mLoaderFinishCallback = this
-        ))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -86,6 +79,8 @@ class MainActivity : AppCompatActivity(),
                 mOpenSessionsPerm = isGranted(1)
             }
         }
+
+        if (mPermissionsGranted) onPermissionsGranted()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -109,6 +104,32 @@ class MainActivity : AppCompatActivity(),
 
     override fun onLoaderFinished(newCursor: Cursor?) {
         mConnectionListAdapter.swapCursor(newCursor)
+    }
+
+    private fun toggleConnection() {
+
+    }
+
+    private fun onPermissionsGranted() {
+        textViewMustEnablePermissions.visibility = View.GONE
+        buttonConnect.setText(R.string.btn_connect)
+
+        mClient.start(this, object : OnClientStartedListener {
+            override fun onClientStarted() {
+                buttonConnect.isEnabled = true
+            }
+
+            override fun onClientStopped() {
+                buttonConnect.isEnabled = false
+            }
+        })
+
+        spinnerConnectionList.adapter = mConnectionListAdapter
+
+        supportLoaderManager.initLoader(0, null, ConnectionListLoader(
+                mCtx = this,
+                mLoaderFinishCallback = this
+        ))
     }
 
     private fun requestPermissions() {
