@@ -10,10 +10,7 @@ import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedExceptio
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
-import io.github.sdsstudios.nvidiagpumonitor.Controllers.FanSpeedController
-import io.github.sdsstudios.nvidiagpumonitor.Controllers.FreeMemController
-import io.github.sdsstudios.nvidiagpumonitor.Controllers.PowerController
-import io.github.sdsstudios.nvidiagpumonitor.Controllers.TempController
+import io.github.sdsstudios.nvidiagpumonitor.Controllers.*
 import java.util.*
 
 /**
@@ -34,6 +31,7 @@ class ConnectionManager(ctx: Context,
     val temperature = MutableLiveData<Int>()
     val fanSpeed = MutableLiveData<Int>()
     val freeMemory = MutableLiveData<Int>()
+    val usedMemory = MutableLiveData<Int>()
 
     var connected = false
 
@@ -47,12 +45,14 @@ class ConnectionManager(ctx: Context,
     private val mTempController = TempController(mCtx, ::temperature)
     private val mFanSpeedController = FanSpeedController(mCtx, ::fanSpeed)
     private val mFreeMemController = FreeMemController(mCtx, ::freeMemory)
+    private val mUsedMemController = UsedMemController(mCtx, ::usedMemory)
 
     private val mControllers = listOf(
             mPowerController,
             mTempController,
             mFanSpeedController,
-            mFreeMemController
+            mFreeMemController,
+            mUsedMemController
     )
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {

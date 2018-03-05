@@ -70,6 +70,10 @@ class MainActivity : AppCompatActivity(),
             textViewFreeMemory.setData(it, "MB")
         })
 
+        mConnectionManager.usedMemory.observe(this, Observer {
+            textViewUsedMemory.setData(it, "MB")
+        })
+
         if (mPermissionsGranted) {
             onPermissionsGranted()
         }
