@@ -62,6 +62,10 @@ class MainActivity : AppCompatActivity(),
             textViewTemp.setData(it, "C")
         })
 
+        mConnectionManager.fanSpeed.observe(this, Observer {
+            textViewFanSpeed.setData(it, "%")
+        })
+
         if (mPermissionsGranted) {
             onPermissionsGranted()
         }
