@@ -11,6 +11,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.sdsstudios.nvidiagpumonitor.Controllers.PowerController
+import io.github.sdsstudios.nvidiagpumonitor.Controllers.TempController
 import java.util.*
 
 /**
@@ -28,6 +29,7 @@ class ConnectionManager(ctx: Context,
     }
 
     val powerUsage = MutableLiveData<Int>()
+    val temperature = MutableLiveData<Int>()
 
     var connected = false
 
@@ -38,6 +40,9 @@ class ConnectionManager(ctx: Context,
     private val mCtx: Context = ctx.applicationContext
 
     private val mPowerController = PowerController(mCtx, ::powerUsage)
+    private val mTempController = TempController(mCtx, ::temperature)
+
+    private val mControllers = listOf(mPowerController, mTempController)
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
         mSessionId = sessionId
@@ -49,14 +54,15 @@ class ConnectionManager(ctx: Context,
 
         connected = true
 
-        mPowerController.start(mClient, mSessionId, mSessionKey)
+        mControllers.forEach { it.start(mClient, mSessionId, mSessionKey) }
     }
 
     override fun onSessionFinished() {
         mActivitySessionFinishedListener.onSessionFinished()
 
         connected = false
-        mPowerController.stop()
+
+        mControllers.forEach { it.stop() }
     }
 
     override fun onSessionCancelled() {}

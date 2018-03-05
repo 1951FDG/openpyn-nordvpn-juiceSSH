@@ -58,6 +58,10 @@ class MainActivity : AppCompatActivity(),
             textViewPower.setData(it, "W")
         })
 
+        mConnectionManager.temperature.observe(this, Observer {
+            textViewTemp.setData(it, "C")
+        })
+
         if (mPermissionsGranted) {
             onPermissionsGranted()
         }
