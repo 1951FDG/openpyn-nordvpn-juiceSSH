@@ -11,6 +11,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.sdsstudios.nvidiagpumonitor.Controllers.FanSpeedController
+import io.github.sdsstudios.nvidiagpumonitor.Controllers.FreeMemController
 import io.github.sdsstudios.nvidiagpumonitor.Controllers.PowerController
 import io.github.sdsstudios.nvidiagpumonitor.Controllers.TempController
 import java.util.*
@@ -32,6 +33,7 @@ class ConnectionManager(ctx: Context,
     val powerUsage = MutableLiveData<Int>()
     val temperature = MutableLiveData<Int>()
     val fanSpeed = MutableLiveData<Int>()
+    val freeMemory = MutableLiveData<Int>()
 
     var connected = false
 
@@ -44,8 +46,14 @@ class ConnectionManager(ctx: Context,
     private val mPowerController = PowerController(mCtx, ::powerUsage)
     private val mTempController = TempController(mCtx, ::temperature)
     private val mFanSpeedController = FanSpeedController(mCtx, ::fanSpeed)
+    private val mFreeMemController = FreeMemController(mCtx, ::freeMemory)
 
-    private val mControllers = listOf(mPowerController, mTempController, mFanSpeedController)
+    private val mControllers = listOf(
+            mPowerController,
+            mTempController,
+            mFanSpeedController,
+            mFreeMemController
+    )
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
         mSessionId = sessionId

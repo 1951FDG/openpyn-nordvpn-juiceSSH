@@ -66,6 +66,10 @@ class MainActivity : AppCompatActivity(),
             textViewFanSpeed.setData(it, "%")
         })
 
+        mConnectionManager.freeMemory.observe(this, Observer {
+            textViewFreeMemory.setData(it, "MB")
+        })
+
         if (mPermissionsGranted) {
             onPermissionsGranted()
         }
