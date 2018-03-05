@@ -1,5 +1,6 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
+import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -9,13 +10,14 @@ import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedExceptio
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
+import io.github.sdsstudios.nvidiagpumonitor.Controllers.PowerController
 import java.util.*
 
 /**
  * Created by Seth on 04/03/18.
  */
 
-class ConnectionManager(private val mCtx: Context,
+class ConnectionManager(ctx: Context,
                         private val mActivitySessionStartedListener: OnSessionStartedListener,
                         private val mActivitySessionFinishedListener: OnSessionFinishedListener
 
@@ -25,12 +27,17 @@ class ConnectionManager(private val mCtx: Context,
         const val JUICESSH_REQUEST_CODE = 345
     }
 
-    var connected = false
+    val powerUsage = MutableLiveData<Int>()
 
-    private val mClient = PluginClient()
+    var connected = false
 
     private var mSessionKey = ""
     private var mSessionId = 0
+
+    private val mClient = PluginClient()
+    private val mCtx: Context = ctx.applicationContext
+
+    private val mPowerController = PowerController(mCtx, ::powerUsage)
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
         mSessionId = sessionId
@@ -41,12 +48,15 @@ class ConnectionManager(private val mCtx: Context,
         mClient.addSessionFinishedListener(sessionId, sessionKey, this)
 
         connected = true
+
+        mPowerController.start(mClient, mSessionId, mSessionKey)
     }
 
     override fun onSessionFinished() {
         mActivitySessionFinishedListener.onSessionFinished()
 
         connected = false
+        mPowerController.stop()
     }
 
     override fun onSessionCancelled() {}

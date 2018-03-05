@@ -1,5 +1,6 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.AppCompatTextView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity(),
 
     private val mConnectionManager by lazy {
         ConnectionManager(
-                mCtx = this,
+                ctx = this,
                 mActivitySessionStartedListener = this,
                 mActivitySessionFinishedListener = this
         )
@@ -51,6 +53,10 @@ class MainActivity : AppCompatActivity(),
         setSupportActionBar(toolbar)
 
         requestPermissions()
+
+        mConnectionManager.powerUsage.observe(this, Observer {
+            textViewPower.setData(it, "W")
+        })
 
         if (mPermissionsGranted) {
             onPermissionsGranted()
@@ -154,6 +160,15 @@ class MainActivity : AppCompatActivity(),
                 mCtx = this,
                 mLoaderFinishCallback = this
         ))
+    }
+
+    private fun AppCompatTextView.setData(value: Int?, suffix: String) {
+        if (value == null) {
+            setText(R.string.no_data)
+        } else {
+            val data = "$value $suffix"
+            text = data
+        }
     }
 
     private fun requestPermissions() {
