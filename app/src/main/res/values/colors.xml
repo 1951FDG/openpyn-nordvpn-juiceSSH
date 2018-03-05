@@ -6,4 +6,12 @@
     <color name="colorDisconnect">#fff44336</color>
     <color name="colorWhiteButtonText">#ffffffff</color>
     <color name="colorBlackButtonText">#ff000000</color>
+
+    <color name="colorTitleText">#ffffffff</color>
+
+    <color name="colorGreen">#00C853</color>
+    <color name="colorBlue">#0091EA</color>
+    <color name="colorRed">#F44336</color>
+    <color name="colorAmber">#FFAB00</color>
+    <color name="colorPurple">#512DA8</color>
 </resources>

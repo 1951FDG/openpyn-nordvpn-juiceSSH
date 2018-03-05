@@ -1,14 +1,31 @@
 <resources>
     <string name="app_name">Nvidia Gpu Monitor</string>
     <string name="action_settings">Settings</string>
-    <string name="must_enable_permissions">Must enable permissions!</string>
+    <string name="no_data">-</string>
 
     <!-- Button labels -->
     <string name="btn_connect">Connect</string>
     <string name="btn_disconnect">Disconnect</string>
     <string name="btn_connecting">Connecting…</string>
     <string name="btn_request_permissions">Request Permissions</string>
-    <string name="error_couldnt_connect_to_service">Could not connect to JuiceSSH Plugin Service</string>
     <!-- Button labels -->
+
+    <!-- Error -->
+    <string name="error_must_enable_permissions">Must enable permissions!</string>
+    <string name="error_couldnt_connect_to_service">Could not connect to JuiceSSH Plugin Service</string>
+    <!-- Error -->
+
+    <!-- Card Titles -->
+    <string name="title_temp">Temperature</string>
+    <string name="title_fan_speed">Fan Speed</string>
+    <string name="title_clocks">Clocks</string>
+    <string name="title_graphics_clock">Graphics</string>
+    <string name="title_video_clock">Video</string>
+    <string name="title_memory_clock">Memory</string>
+    <string name="title_power">Power</string>
+    <string name="title_memory">Memory</string>
+    <string name="title_mem_free">Free</string>
+    <string name="title_mem_used">Used</string>
+    <!-- Card Titles -->
 
 </resources>
