@@ -12,6 +12,7 @@ import android.support.v7.widget.AppCompatTextView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
@@ -96,6 +97,16 @@ class MainActivity : AppCompatActivity(),
             }
 
             buttonConnect.setOnClickListener {
+                if (mConnectionListAdapter.count == 0) {
+                    Toast.makeText(
+                            this,
+                            R.string.error_must_have_atleast_one_server,
+                            Toast.LENGTH_SHORT
+                    ).show()
+
+                    return@setOnClickListener
+                }
+
                 if (mPermissionsGranted) {
                     buttonConnect.applyConnectingStyle()
 

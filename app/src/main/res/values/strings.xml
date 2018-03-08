@@ -27,5 +27,6 @@
     <string name="title_mem_free">Free</string>
     <string name="title_mem_used">Used</string>
     <string name="error_must_install_juicessh">Must install the JuiceSSH app!</string>
+    <string name="error_must_have_atleast_one_server">Must have atleast one server!</string>
 
 </resources>
