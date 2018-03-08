@@ -7,3 +7,7 @@
 /build
 /captures
 .externalNativeBuild
+
+app/src/androidTest/java/io/github/sdsstudios/nvidiagpumonitor/ExampleInstrumentedTest\.kt
+
+app/src/test/java/io/github/sdsstudios/nvidiagpumonitor/ExampleUnitTest\.kt

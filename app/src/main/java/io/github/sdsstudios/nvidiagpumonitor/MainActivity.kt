@@ -74,6 +74,10 @@ class MainActivity : AppCompatActivity(),
             textViewUsedMemory.setData(it, "MB")
         })
 
+        mConnectionManager.graphicsClock.observe(this, Observer {
+            textViewClockGraphics.setData(it, "MHz")
+        })
+
         if (mPermissionsGranted) {
             onPermissionsGranted()
         }
