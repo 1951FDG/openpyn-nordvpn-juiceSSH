@@ -34,6 +34,7 @@ class ConnectionManager(ctx: Context,
     val usedMemory = MutableLiveData<Int>()
     val graphicsClock = MutableLiveData<Int>()
     val videoClock = MutableLiveData<Int>()
+    val memoryClock = MutableLiveData<Int>()
 
     var connected = false
 
@@ -50,6 +51,7 @@ class ConnectionManager(ctx: Context,
     private val mUsedMemController = UsedMemController(mCtx, ::usedMemory)
     private val mGraphicsClockController = GraphicsClockController(mCtx, ::graphicsClock)
     private val mVideoClockController = VideoClockController(mCtx, ::videoClock)
+    private val mMemoryClockController = MemoryClockController(mCtx, ::memoryClock)
 
     private val mControllers = listOf(
             mPowerController,
@@ -58,7 +60,8 @@ class ConnectionManager(ctx: Context,
             mFreeMemController,
             mUsedMemController,
             mGraphicsClockController,
-            mVideoClockController
+            mVideoClockController,
+            mMemoryClockController
     )
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
