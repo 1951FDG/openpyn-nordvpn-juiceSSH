@@ -78,6 +78,10 @@ class MainActivity : AppCompatActivity(),
             textViewClockGraphics.setData(it, "MHz")
         })
 
+        mConnectionManager.videoClock.observe(this, Observer {
+            textViewClockVideo.setData(it, "MHz")
+        })
+
         if (mPermissionsGranted) {
             onPermissionsGranted()
         }
