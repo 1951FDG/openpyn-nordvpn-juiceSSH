@@ -26,9 +26,10 @@ class MainActivity : AppCompatActivity(),
         ConnectionListLoaderFinishedCallback {
 
     companion object {
-        const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
-        const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
-        const val PERMISSION_REQUEST_CODE = 23
+        private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
+        private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
+        private const val PERMISSION_REQUEST_CODE = 23
+        private const val JUICE_SSH_PACKAGE_NAME = "com.sonelli.juicessh"
     }
 
     private var mReadConnectionsPerm = false
@@ -52,56 +53,69 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        requestPermissions()
+        if (isJuiceSSHInstalled()) {
 
-        mConnectionManager.powerUsage.observe(this, Observer {
-            textViewPower.setData(it, "W")
-        })
+            textViewErrorMessage.setText(R.string.error_must_enable_permissions)
 
-        mConnectionManager.temperature.observe(this, Observer {
-            textViewTemp.setData(it, "C")
-        })
+            requestPermissions()
 
-        mConnectionManager.fanSpeed.observe(this, Observer {
-            textViewFanSpeed.setData(it, "%")
-        })
+            mConnectionManager.powerUsage.observe(this, Observer {
+                textViewPower.setData(it, "W")
+            })
 
-        mConnectionManager.freeMemory.observe(this, Observer {
-            textViewFreeMemory.setData(it, "MB")
-        })
+            mConnectionManager.temperature.observe(this, Observer {
+                textViewTemp.setData(it, "C")
+            })
 
-        mConnectionManager.usedMemory.observe(this, Observer {
-            textViewUsedMemory.setData(it, "MB")
-        })
+            mConnectionManager.fanSpeed.observe(this, Observer {
+                textViewFanSpeed.setData(it, "%")
+            })
 
-        mConnectionManager.graphicsClock.observe(this, Observer {
-            textViewClockGraphics.setData(it, "MHz")
-        })
+            mConnectionManager.freeMemory.observe(this, Observer {
+                textViewFreeMemory.setData(it, "MB")
+            })
 
-        mConnectionManager.videoClock.observe(this, Observer {
-            textViewClockVideo.setData(it, "MHz")
-        })
+            mConnectionManager.usedMemory.observe(this, Observer {
+                textViewUsedMemory.setData(it, "MB")
+            })
 
-        mConnectionManager.memoryClock.observe(this, Observer {
-            textViewClockMemory.setData(it, "MHz")
-        })
+            mConnectionManager.graphicsClock.observe(this, Observer {
+                textViewClockGraphics.setData(it, "MHz")
+            })
 
-        if (mPermissionsGranted) {
-            onPermissionsGranted()
-        }
+            mConnectionManager.videoClock.observe(this, Observer {
+                textViewClockVideo.setData(it, "MHz")
+            })
 
-        buttonConnect.setOnClickListener {
+            mConnectionManager.memoryClock.observe(this, Observer {
+                textViewClockMemory.setData(it, "MHz")
+            })
+
             if (mPermissionsGranted) {
-                buttonConnect.applyConnectingStyle()
-
-                val uuid = mConnectionListAdapter
-                        .getConnectionId(spinnerConnectionList.selectedItemPosition)
-
-                mConnectionManager.toggleConnection(uuid = uuid!!, activity = this)
-
-            } else {
-                requestPermissions()
+                onPermissionsGranted()
             }
+
+            buttonConnect.setOnClickListener {
+                if (mPermissionsGranted) {
+                    buttonConnect.applyConnectingStyle()
+
+                    val uuid = mConnectionListAdapter
+                            .getConnectionId(spinnerConnectionList.selectedItemPosition)
+
+                    mConnectionManager.toggleConnection(uuid = uuid!!, activity = this)
+
+                } else {
+                    requestPermissions()
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!isJuiceSSHInstalled()) {
+            textViewErrorMessage.setText(R.string.error_must_install_juicessh)
         }
     }
 
@@ -181,7 +195,7 @@ class MainActivity : AppCompatActivity(),
     private fun onPermissionsGranted() {
         mConnectionManager.startClient(onClientStartedListener = this)
 
-        textViewMustEnablePermissions.visibility = View.GONE
+        textViewErrorMessage.visibility = View.GONE
         buttonConnect.applyConnectStyle()
 
         spinnerConnectionList.adapter = mConnectionListAdapter
@@ -215,5 +229,14 @@ class MainActivity : AppCompatActivity(),
     private fun hasPermission(permission: String): Boolean {
         return ContextCompat.checkSelfPermission(this, permission) ==
                 PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun isJuiceSSHInstalled(): Boolean {
+        try {
+            packageManager.getPackageInfo(JUICE_SSH_PACKAGE_NAME, 0)
+            return true
+        } catch (e: PackageManager.NameNotFoundException) {
+            return false
+        }
     }
 }

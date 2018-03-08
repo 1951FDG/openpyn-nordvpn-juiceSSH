@@ -23,14 +23,13 @@
         tools:text="Connect" />
 
     <TextView
-        android:id="@+id/textViewMustEnablePermissions"
+        android:id="@+id/textViewErrorMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/error_must_enable_permissions"
         android:textAllCaps="true"
         android:textColor="@color/colorError"
         android:textStyle="bold"
