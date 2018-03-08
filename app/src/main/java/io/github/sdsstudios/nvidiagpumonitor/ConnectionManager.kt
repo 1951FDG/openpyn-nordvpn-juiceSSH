@@ -44,14 +44,14 @@ class ConnectionManager(ctx: Context,
     private val mClient = PluginClient()
     private val mCtx: Context = ctx.applicationContext
 
-    private val mPowerController = PowerController(mCtx, ::powerUsage)
-    private val mTempController = TempController(mCtx, ::temperature)
-    private val mFanSpeedController = FanSpeedController(mCtx, ::fanSpeed)
-    private val mFreeMemController = FreeMemController(mCtx, ::freeMemory)
-    private val mUsedMemController = UsedMemController(mCtx, ::usedMemory)
-    private val mGraphicsClockController = GraphicsClockController(mCtx, ::graphicsClock)
-    private val mVideoClockController = VideoClockController(mCtx, ::videoClock)
-    private val mMemoryClockController = MemoryClockController(mCtx, ::memoryClock)
+    private val mPowerController = PowerController(mCtx, powerUsage)
+    private val mTempController = TempController(mCtx, temperature)
+    private val mFanSpeedController = FanSpeedController(mCtx, fanSpeed)
+    private val mFreeMemController = FreeMemController(mCtx, freeMemory)
+    private val mUsedMemController = UsedMemController(mCtx, usedMemory)
+    private val mGraphicsClockController = GraphicsClockController(mCtx, graphicsClock)
+    private val mVideoClockController = VideoClockController(mCtx, videoClock)
+    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
 
     private val mControllers = listOf(
             mPowerController,

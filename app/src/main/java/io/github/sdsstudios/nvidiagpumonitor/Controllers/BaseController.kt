@@ -10,7 +10,6 @@ import android.widget.Toast.LENGTH_SHORT
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
-import kotlin.reflect.KProperty0
 
 /**
  * Created by Seth on 05/03/18.
@@ -18,7 +17,7 @@ import kotlin.reflect.KProperty0
 
 abstract class BaseController(
         ctx: Context,
-        val liveData: KProperty0<MutableLiveData<Int>>) : OnSessionExecuteListener {
+        private val mLiveData: MutableLiveData<Int>) : OnSessionExecuteListener {
 
     companion object {
         private const val INTERVAL_SECS = 2
@@ -34,7 +33,7 @@ abstract class BaseController(
     override fun onCompleted(exitCode: Int) {
         when (exitCode) {
             127 -> {
-                liveData.get().value = null
+                mLiveData.value = null
                 Log.d(TAG, "Tried to run a command but the command was not found on the server")
             }
         }
@@ -44,7 +43,7 @@ abstract class BaseController(
         val matchResult = regex.find(line)
 
         if (matchResult != null) {
-            liveData.get().value = convertDataToInt(matchResult.value)
+            mLiveData.value = convertDataToInt(matchResult.value)
         }
     }
 

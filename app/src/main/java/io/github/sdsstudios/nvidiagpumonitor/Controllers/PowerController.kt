@@ -3,7 +3,6 @@ package io.github.sdsstudios.nvidiagpumonitor.Controllers
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import kotlin.math.roundToInt
-import kotlin.reflect.KProperty0
 
 /**
  * Created by Seth on 05/03/18.
@@ -11,7 +10,7 @@ import kotlin.reflect.KProperty0
 
 class PowerController(
         ctx: Context,
-        liveData: KProperty0<MutableLiveData<Int>>
+        liveData: MutableLiveData<Int>
 ) : BaseController(ctx, liveData) {
 
     override val regex = Regex("""\d+((.)\d+)?""")
