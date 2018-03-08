@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == JUICESSH_REQUEST_CODE) {
-            mConnectionManager.gotActivityResult(requestCode, resultCode, data!!)
+            mConnectionManager.gotActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -156,7 +156,9 @@ class MainActivity : AppCompatActivity(),
         spinnerConnectionList.isEnabled = false
     }
 
-    override fun onSessionCancelled() {}
+    override fun onSessionCancelled() {
+        buttonConnect.applyConnectStyle()
+    }
 
     override fun onSessionFinished() {
         buttonConnect.applyConnectStyle()

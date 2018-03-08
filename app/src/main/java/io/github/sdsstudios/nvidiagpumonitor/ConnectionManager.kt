@@ -85,7 +85,16 @@ class ConnectionManager(ctx: Context,
         mControllers.forEach { it.stop() }
     }
 
-    override fun onSessionCancelled() {}
+    override fun onSessionCancelled() {
+        /*
+        onSessionCancelled is still called even during a successful connection.
+        Only execute onSessionCancelled when its a failed connection
+        */
+
+        if (!connected) {
+            mActivitySessionStartedListener.onSessionCancelled()
+        }
+    }
 
     fun toggleConnection(uuid: UUID, activity: AppCompatActivity) {
         if (!connected) {
@@ -99,7 +108,7 @@ class ConnectionManager(ctx: Context,
         mClient.start(mCtx, onClientStartedListener)
     }
 
-    fun gotActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    fun gotActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         mClient.gotActivityResult(requestCode, resultCode, data)
     }
 
