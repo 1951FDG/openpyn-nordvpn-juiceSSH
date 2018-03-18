@@ -12,13 +12,13 @@ import android.support.v7.widget.AppCompatTextView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import org.jetbrains.anko.toast
 
 class MainActivity : AppCompatActivity(),
         OnSessionStartedListener,
@@ -98,11 +98,7 @@ class MainActivity : AppCompatActivity(),
 
             buttonConnect.setOnClickListener {
                 if (mConnectionListAdapter.count == 0) {
-                    Toast.makeText(
-                            this,
-                            R.string.error_must_have_atleast_one_server,
-                            Toast.LENGTH_SHORT
-                    ).show()
+                    toast(R.string.error_must_have_atleast_one_server)
 
                     return@setOnClickListener
                 }
