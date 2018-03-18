@@ -161,9 +161,12 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        val id = item.itemId
+        if (id == R.id.action_settings) {
+            startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+            return true
+        } else {
+            return super.onOptionsItemSelected(item)
         }
     }
 
