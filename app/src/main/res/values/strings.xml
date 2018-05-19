@@ -112,23 +112,133 @@
     <string name="pref_country">Country</string>
 
     <string-array name="pref_country_entries">
+        <item>Albania</item>
         <item>Argentina</item>
+        <item>Australia</item>
+        <item>Austria</item>
+        <item>Azerbaijan</item>
+        <item>Belgium</item>
+        <item>Bosnia and Herzegovina</item>
         <item>Brazil</item>
+        <item>Bulgaria</item>
         <item>Canada</item>
         <item>Chile</item>
         <item>Costa Rica</item>
+        <item>Croatia</item>
+        <item>Cyprus</item>
+        <item>Czech Republic</item>
+        <item>Denmark</item>
+        <item>Egypt</item>
+        <item>Estonia</item>
+        <item>Finland</item>
+        <item>France</item>
+        <item>Georgia</item>
+        <item>Germany</item>
+        <item>Greece</item>
+        <item>Hong Kong</item>
+        <item>Hungary</item>
+        <item>Iceland</item>
+        <item>India</item>
+        <item>Indonesia</item>
+        <item>Ireland</item>
+        <item>Israel</item>
+        <item>Italy</item>
+        <item>Japan</item>
+        <item>Latvia</item>
+        <item>Luxembourg</item>
+        <item>Macedonia</item>
+        <item>Malaysia</item>
         <item>Mexico</item>
+        <item>Moldova</item>
+        <item>Netherlands</item>
+        <item>New Zealand</item>
+        <item>Norway</item>
+        <item>Poland</item>
+        <item>Portugal</item>
+        <item>Romania</item>
+        <item>Russia</item>
+        <item>Serbia</item>
+        <item>Singapore</item>
+        <item>Slovakia</item>
+        <item>Slovenia</item>
+        <item>South Africa</item>
+        <item>South Korea</item>
+        <item>Spain</item>
+        <item>Sweden</item>
+        <item>Switzerland</item>
+        <item>Taiwan</item>
+        <item>Thailand</item>
+        <item>Turkey</item>
+        <item>Ukraine</item>
+        <item>United Arab Emirates</item>
+        <item>United Kingdom</item>
         <item>United States</item>
+        <item>Vietnam</item>
     </string-array>
 
     <string-array name="pref_country_values">
+        <item>al</item>
         <item>ar</item>
+        <item>au</item>
+        <item>at</item>
+        <item>az</item>
+        <item>be</item>
+        <item>ba</item>
         <item>br</item>
+        <item>bg</item>
         <item>ca</item>
         <item>cl</item>
         <item>cr</item>
+        <item>hr</item>
+        <item>cy</item>
+        <item>cz</item>
+        <item>dk</item>
+        <item>eg</item>
+        <item>ee</item>
+        <item>fi</item>
+        <item>fr</item>
+        <item>ge</item>
+        <item>de</item>
+        <item>gr</item>
+        <item>hk</item>
+        <item>hu</item>
+        <item>is</item>
+        <item>in</item>
+        <item>id</item>
+        <item>ie</item>
+        <item>il</item>
+        <item>it</item>
+        <item>jp</item>
+        <item>lv</item>
+        <item>lu</item>
+        <item>mk</item>
+        <item>my</item>
         <item>mx</item>
+        <item>md</item>
+        <item>nl</item>
+        <item>nz</item>
+        <item>no</item>
+        <item>pl</item>
+        <item>pt</item>
+        <item>ro</item>
+        <item>ru</item>
+        <item>rs</item>
+        <item>sg</item>
+        <item>sk</item>
+        <item>si</item>
+        <item>za</item>
+        <item>kr</item>
+        <item>es</item>
+        <item>se</item>
+        <item>ch</item>
+        <item>tw</item>
+        <item>th</item>
+        <item>tr</item>
+        <item>ua</item>
+        <item>ae</item>
+        <item>uk</item>
         <item>us</item>
+        <item>vn</item>
     </string-array>
 
     <string name="pref_tcp">TCP</string>

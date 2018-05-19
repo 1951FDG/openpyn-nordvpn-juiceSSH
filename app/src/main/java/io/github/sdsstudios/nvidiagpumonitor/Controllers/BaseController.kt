@@ -57,10 +57,10 @@ abstract class BaseController(
 
         isRunning = true
 
-        val handler = Handler()
-
-        handler.post(object : Runnable {
-            override fun run() {
+//        val handler = Handler()
+//
+//        handler.post(object : Runnable {
+//            override fun run() {
                 try {
                     pluginClient.executeCommandOnSession(
                             sessionId,
@@ -72,12 +72,12 @@ abstract class BaseController(
                 } catch (e: ServiceNotConnectedException) {
                     Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
                 }
-
-                if (isRunning) {
-                    handler.postDelayed(this, INTERVAL_SECS * 1000L)
-                }
-            }
-        })
+//
+//                if (isRunning) {
+//                    handler.postDelayed(this, INTERVAL_SECS * 1000L)
+//                }
+//            }
+//        })
     }
 
     fun stop() {

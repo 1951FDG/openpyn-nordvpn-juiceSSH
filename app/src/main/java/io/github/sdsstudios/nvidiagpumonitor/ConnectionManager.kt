@@ -35,6 +35,7 @@ class ConnectionManager(ctx: Context,
     val graphicsClock = MutableLiveData<Int>()
     val videoClock = MutableLiveData<Int>()
     val memoryClock = MutableLiveData<Int>()
+    val openpyn = MutableLiveData<Int>()
 
     var connected = false
 
@@ -44,24 +45,26 @@ class ConnectionManager(ctx: Context,
     private val mClient = PluginClient()
     private val mCtx: Context = ctx.applicationContext
 
-    private val mPowerController = PowerController(mCtx, powerUsage)
-    private val mTempController = TempController(mCtx, temperature)
-    private val mFanSpeedController = FanSpeedController(mCtx, fanSpeed)
-    private val mFreeMemController = FreeMemController(mCtx, freeMemory)
-    private val mUsedMemController = UsedMemController(mCtx, usedMemory)
-    private val mGraphicsClockController = GraphicsClockController(mCtx, graphicsClock)
-    private val mVideoClockController = VideoClockController(mCtx, videoClock)
-    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
+//    private val mPowerController = PowerController(mCtx, powerUsage)
+//    private val mTempController = TempController(mCtx, temperature)
+//    private val mFanSpeedController = FanSpeedController(mCtx, fanSpeed)
+//    private val mFreeMemController = FreeMemController(mCtx, freeMemory)
+//    private val mUsedMemController = UsedMemController(mCtx, usedMemory)
+//    private val mGraphicsClockController = GraphicsClockController(mCtx, graphicsClock)
+//    private val mVideoClockController = VideoClockController(mCtx, videoClock)
+//    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
+    private val mOpenpynController = OpenpynController(mCtx, openpyn)
 
     private val mControllers = listOf(
-            mPowerController,
-            mTempController,
-            mFanSpeedController,
-            mFreeMemController,
-            mUsedMemController,
-            mGraphicsClockController,
-            mVideoClockController,
-            mMemoryClockController
+//            mPowerController,
+//            mTempController,
+//            mFanSpeedController,
+//            mFreeMemController,
+//            mUsedMemController,
+//            mGraphicsClockController,
+//            mVideoClockController,
+//            mMemoryClockController,
+            mOpenpynController
     )
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
@@ -75,6 +78,20 @@ class ConnectionManager(ctx: Context,
         connected = true
 
         mControllers.forEach { it.start(mClient, mSessionId, mSessionKey) }
+
+//        val command = "uptime"
+//
+//        try {
+//            mClient.executeCommandOnSession(
+//                    mSessionId,
+//                    mSessionKey,
+//                    command,
+//                    null
+//            )
+//
+//        } catch (e: ServiceNotConnectedException) {
+//            Log.d(ContentValues.TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
+//        }
     }
 
     override fun onSessionFinished() {
@@ -82,7 +99,7 @@ class ConnectionManager(ctx: Context,
 
         connected = false
 
-        mControllers.forEach { it.stop() }
+        //mControllers.forEach { it.stop() }
     }
 
     override fun onSessionCancelled() {
