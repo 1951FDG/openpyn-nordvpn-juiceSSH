@@ -10,7 +10,7 @@
         android:singleLine="true"
         android:title="@string/pref_server" />
     <ListPreference
-        android:defaultValue="us"
+        android:defaultValue="uk"
         android:entries="@array/pref_country_entries"
         android:entryValues="@array/pref_country_values"
         android:key="pref_country"

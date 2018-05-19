@@ -2,6 +2,7 @@ package io.github.sdsstudios.nvidiagpumonitor.Controllers
 
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
+import com.sonelli.juicessh.pluginlibrary.PluginClient
 
 /**
  * Created by Seth on 05/03/18.
@@ -14,7 +15,12 @@ class VideoClockController(
 
     override val regex = Regex("""\d+""")
 
-    override val command = "nvidia-smi --query-gpu=clocks.video --format=csv"
+    //override val command = "nvidia-smi --query-gpu=clocks.video --format=csv"
+
+    override fun start(pluginClient: PluginClient,
+                       sessionId: Int,
+                       sessionKey: String) {
+    }
 
     override fun convertDataToInt(data: String): Int {
         return data.toInt()

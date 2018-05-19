@@ -23,12 +23,13 @@ abstract class BaseController(
         private const val INTERVAL_SECS = 2
     }
 
-    private val mCtx = ctx.applicationContext
+    val mCtx = ctx.applicationContext
 
     var isRunning = false
 
     abstract val regex: Regex
-    abstract val command: String
+    //abstract val command: String
+    var command = ""
 
     override fun onCompleted(exitCode: Int) {
         when (exitCode) {
@@ -51,34 +52,38 @@ abstract class BaseController(
         Toast.makeText(mCtx, reason, LENGTH_SHORT).show()
     }
 
-    fun start(pluginClient: PluginClient,
-              sessionId: Int,
-              sessionKey: String) {
-
-        isRunning = true
-
+//    fun start(pluginClient: PluginClient,
+//              sessionId: Int,
+//              sessionKey: String) {
+//
+//        isRunning = true
+//
 //        val handler = Handler()
 //
 //        handler.post(object : Runnable {
 //            override fun run() {
-                try {
-                    pluginClient.executeCommandOnSession(
-                            sessionId,
-                            sessionKey,
-                            command,
-                            this@BaseController
-                    )
-
-                } catch (e: ServiceNotConnectedException) {
-                    Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
-                }
+//                try {
+//                    pluginClient.executeCommandOnSession(
+//                            sessionId,
+//                            sessionKey,
+//                            command,
+//                            this@BaseController
+//                    )
+//
+//                } catch (e: ServiceNotConnectedException) {
+//                    Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
+//                }
 //
 //                if (isRunning) {
 //                    handler.postDelayed(this, INTERVAL_SECS * 1000L)
 //                }
 //            }
 //        })
-    }
+//    }
+
+    abstract fun start(pluginClient: PluginClient,
+                       sessionId: Int,
+                       sessionKey: String)
 
     fun stop() {
         isRunning = false

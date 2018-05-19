@@ -2,6 +2,7 @@ package io.github.sdsstudios.nvidiagpumonitor.Controllers
 
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
+import com.sonelli.juicessh.pluginlibrary.PluginClient
 import kotlin.math.roundToInt
 
 /**
@@ -15,7 +16,12 @@ class PowerController(
 
     override val regex = Regex("""\d+((.)\d+)?""")
 
-    override val command = "nvidia-smi --query-gpu=power.draw --format=csv"
+    //override val command = "nvidia-smi --query-gpu=power.draw --format=csv"
+
+    override fun start(pluginClient: PluginClient,
+                       sessionId: Int,
+                       sessionKey: String) {
+    }
 
     override fun convertDataToInt(data: String): Int {
         return data.toFloat().roundToInt()

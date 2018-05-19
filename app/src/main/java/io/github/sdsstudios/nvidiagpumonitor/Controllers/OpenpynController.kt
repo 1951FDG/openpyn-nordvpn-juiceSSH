@@ -13,6 +13,8 @@ import android.util.Xml
 import java.io.StringWriter
 
 import android.content.SharedPreferences
+import com.sonelli.juicessh.pluginlibrary.PluginClient
+import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import org.jetbrains.anko.toast
 
 class OpenpynController(
@@ -20,22 +22,7 @@ class OpenpynController(
         liveData: MutableLiveData<Int>
 ) : BaseController(ctx, liveData) {
 
-    override val regex = Regex("""\d+""")
-
-    // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
-    override val command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; echo \$PATH ; echo \$-"
-
-    val openpyn: String
-
     init {
-        val server = "pref_server"
-        val preferences = PreferenceManager.getDefaultSharedPreferences(ctx)
-        var name = preferences.getString(server, "")
-
-        openpyn = name;
-
-        Log.v(TAG, name)
-
         //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
         "https://api.nordvpn.com/server".httpGet().responseJson { request, response, result ->
             when (result) {
@@ -50,7 +37,7 @@ class OpenpynController(
                     val json_response = result.get().array() //JSONArray
                     for (res in json_response) {
                         if (res.getString("country") !in countries_mapping) {
-                            countries_mapping.put(res.getString("country"), res.getString("domain").take(2))
+                            countries_mapping[res.getString("country")] = res.getString("domain").take(2)
                         }
                     }
                     val sorted_countries_mapping = countries_mapping.toSortedMap(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
@@ -59,7 +46,7 @@ class OpenpynController(
                     try {
                         serializer.setOutput(writer)
                         serializer.startDocument("UTF-8", true)
-                        serializer.startTag("", "head");
+                        serializer.startTag("", "head")
                         serializer.startTag("", "string-array")
                         serializer.attribute("", "name", "pref_country_entries")
                         for ((key, value) in sorted_countries_mapping) {
@@ -76,7 +63,7 @@ class OpenpynController(
                             serializer.endTag("", "item")
                         }
                         serializer.endTag("", "string-array")
-                        serializer.endTag("", "head");
+                        serializer.endTag("", "head")
                         serializer.endDocument()
                         println(writer.toString())
                     } catch (e: Exception) {
@@ -84,6 +71,104 @@ class OpenpynController(
                     }
                 }
             }
+        }
+    }
+
+    override val regex = Regex("""\d+""")
+
+    override fun start(pluginClient: PluginClient,
+                       sessionId: Int,
+                       sessionKey: String) {
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
+        val openpyn_options = StringBuilder()
+
+        val server = preferences.getString("pref_server", "")
+        val country_code = preferences.getString("pref_country", "")
+        //val country = args.country
+        //val area = args.area
+        val tcp = preferences.getBoolean("pref_tcp", false)
+        val max_load = preferences.getString("pref_max_load", "")
+        val top_servers = preferences.getString("pref_top_servers", "")
+        val pings = preferences.getString("pref_pings", "")
+        val force_fw_rules = preferences.getBoolean("pref_force_fw", false)
+        val p2p = preferences.getBoolean("pref_p2p", false)
+        val dedicated = preferences.getBoolean("pref_dedicated", false)
+        val double_vpn = preferences.getBoolean("pref_double", false)
+        val tor_over_vpn = preferences.getBoolean("pref_tor", false)
+        val anti_ddos = preferences.getBoolean("pref_anti_ddos", false)
+        val netflix = preferences.getBoolean("pref_netflix", false)
+        val test = preferences.getBoolean("pref_test", false)
+        //val internally_allowed = args.internally_allowed
+        val skip_dns_patch = preferences.getBoolean("pref_skip_dns_patch", false)
+        val silent = preferences.getBoolean("pref_silent", false)
+        val nvram = preferences.getBoolean("pref_nvram", false)
+        //val openvpn_options = args.openvpn_options
+
+        if (!server.isEmpty())
+            openpyn_options.append(" --server $server")
+        else
+            openpyn_options.append(country_code)
+
+        //if area:
+        //openpyn_options += " --area " + area
+        if (tcp)
+            openpyn_options.append(" --tcp")
+        if (!max_load.isEmpty())
+            openpyn_options.append(" --max-load $max_load")
+        if (!top_servers.isEmpty())
+            openpyn_options.append(" --top-servers $top_servers")
+        if (!pings.isEmpty())
+            openpyn_options.append(" --pings $pings")
+        if (force_fw_rules)
+            openpyn_options.append(" --force-fw-rules")
+        if (p2p)
+            openpyn_options.append(" --p2p")
+        if (dedicated)
+            openpyn_options.append(" --dedicated")
+        if (double_vpn)
+            openpyn_options.append(" --double")
+        if (tor_over_vpn)
+            openpyn_options.append(" --tor")
+        if (anti_ddos)
+            openpyn_options.append(" --anti-ddos")
+        if (netflix)
+            openpyn_options.append(" --netflix")
+        if (test)
+            openpyn_options.append(" --test")
+        //if internally_allowed
+        //open_ports = ""
+        //for port_number in internally_allowed:
+        //open_ports += " " + port_number
+        //openpyn_options += " --allow" + open_ports
+        if (skip_dns_patch)
+            openpyn_options.append(" --skip-dns-patch")
+        if (silent)
+            openpyn_options.append(" --silent")
+        if (nvram)
+            openpyn_options.append(" --nvram " + preferences.getString("pref_nvram_client", "5"))
+        //if openvpn_options
+        //openpyn_options += " --openvpn-options '" + openvpn_options + "'"
+
+        val openpyn = openpyn_options.toString()
+
+        Log.e(TAG, openpyn)
+
+        // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
+        command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; echo \$PATH ; echo \$- ; openpyn $openpyn"
+
+        isRunning = true
+
+        try {
+            pluginClient.executeCommandOnSession(
+                    sessionId,
+                    sessionKey,
+                    command,
+                    this@OpenpynController
+            )
+
+        } catch (e: ServiceNotConnectedException) {
+            Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
         }
     }
 
