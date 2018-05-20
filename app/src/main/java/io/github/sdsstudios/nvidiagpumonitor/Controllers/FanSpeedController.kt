@@ -17,11 +17,6 @@ class FanSpeedController(
 
     //override val command = "nvidia-smi --query-gpu=fan.speed --format=csv"
 
-    override fun start(pluginClient: PluginClient,
-                       sessionId: Int,
-                       sessionKey: String) {
-    }
-
     override fun convertDataToInt(data: String): Int {
         return data.toInt()
     }

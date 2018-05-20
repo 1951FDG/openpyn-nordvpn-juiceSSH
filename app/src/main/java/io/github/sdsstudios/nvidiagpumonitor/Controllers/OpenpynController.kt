@@ -14,8 +14,8 @@ import java.io.StringWriter
 
 import android.content.SharedPreferences
 import com.sonelli.juicessh.pluginlibrary.PluginClient
-import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import org.jetbrains.anko.toast
+import org.jetbrains.anko.longToast
 
 class OpenpynController(
         ctx: Context,
@@ -77,8 +77,8 @@ class OpenpynController(
     override val regex = Regex("""\d+""")
 
     override fun start(pluginClient: PluginClient,
-                       sessionId: Int,
-                       sessionKey: String) {
+            sessionId: Int,
+            sessionKey: String) {
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
         val openpyn_options = StringBuilder()
@@ -104,6 +104,7 @@ class OpenpynController(
         val silent = preferences.getBoolean("pref_silent", false)
         val nvram = preferences.getBoolean("pref_nvram", false)
         //val openvpn_options = args.openvpn_options
+        val openvpn_options = "--syslog openpyn --verb 1"
 
         if (!server.isEmpty())
             openpyn_options.append(" --server $server")
@@ -147,29 +148,18 @@ class OpenpynController(
             openpyn_options.append(" --silent")
         if (nvram)
             openpyn_options.append(" --nvram " + preferences.getString("pref_nvram_client", "5"))
-        //if openvpn_options
-        //openpyn_options += " --openvpn-options '" + openvpn_options + "'"
+        if (!openvpn_options.isEmpty())
+            openpyn_options.append(" --openvpn-options '$openvpn_options'")
 
         val openpyn = openpyn_options.toString()
 
         Log.e(TAG, openpyn)
 
         // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
-        command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; echo \$PATH ; echo \$- ; openpyn $openpyn"
+        // command = "echo \$PATH ; echo \$-"
+       command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; openpyn $openpyn"
 
-        isRunning = true
-
-        try {
-            pluginClient.executeCommandOnSession(
-                    sessionId,
-                    sessionKey,
-                    command,
-                    this@OpenpynController
-            )
-
-        } catch (e: ServiceNotConnectedException) {
-            Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
-        }
+        super.start(pluginClient, sessionId, sessionKey)
     }
 
     override fun convertDataToInt(data: String): Int {
@@ -178,6 +168,6 @@ class OpenpynController(
 
     override fun onOutputLine(line: String) {
         Log.e(TAG, line)
-
+        mCtx.longToast(line)
     }
 }

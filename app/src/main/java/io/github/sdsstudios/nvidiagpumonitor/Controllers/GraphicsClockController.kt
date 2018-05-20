@@ -17,11 +17,6 @@ class GraphicsClockController(
 
     //override val command = "nvidia-smi --query-gpu=clocks.gr --format=csv"
 
-    override fun start(pluginClient: PluginClient,
-                       sessionId: Int,
-                       sessionKey: String) {
-    }
-
     override fun convertDataToInt(data: String): Int {
         return data.toInt()
     }
