@@ -99,7 +99,7 @@ class ConnectionManager(ctx: Context,
 
         connected = false
 
-        //mControllers.forEach { it.stop() }
+        mControllers.forEach { it.stop() }
     }
 
     override fun onSessionCancelled() {
