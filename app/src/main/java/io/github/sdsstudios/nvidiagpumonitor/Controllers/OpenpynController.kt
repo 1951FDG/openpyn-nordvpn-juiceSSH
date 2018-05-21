@@ -104,7 +104,7 @@ class OpenpynController(
         val silent = preferences.getBoolean("pref_silent", false)
         val nvram = preferences.getBoolean("pref_nvram", false)
         //val openvpn_options = args.openvpn_options
-        val openvpn_options = "--syslog openpyn --verb 1"
+        val openvpn_options = "--syslog openpyn"
 
         if (!server.isEmpty())
             openpyn_options.append(" --server $server")
