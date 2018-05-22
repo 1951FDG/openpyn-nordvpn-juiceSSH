@@ -138,6 +138,8 @@ class ConnectionManager(ctx: Context,
     private fun disconnect() {
         Thread(Runnable {
             try {
+                mControllers.forEach { it.kill(mClient, mSessionId, mSessionKey) }
+                Thread.sleep(5000);
                 mClient.disconnect(mSessionId, mSessionKey)
 
             } catch (e: ServiceNotConnectedException) {

@@ -157,9 +157,17 @@ class OpenpynController(
 
         // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
         // command = "echo \$PATH ; echo \$-"
-       command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; openpyn $openpyn"
+        command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; openpyn $openpyn"
 
         super.start(pluginClient, sessionId, sessionKey)
+    }
+
+    override fun kill(pluginClient: PluginClient,
+                       sessionId: Int,
+                       sessionKey: String) {
+        stopcommand = "sudo openpyn --kill"
+
+        super.kill(pluginClient, sessionId, sessionKey)
     }
 
     override fun convertDataToInt(data: String): Int {

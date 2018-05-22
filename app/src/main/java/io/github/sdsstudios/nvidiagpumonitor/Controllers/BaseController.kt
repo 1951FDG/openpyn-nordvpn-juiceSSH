@@ -29,6 +29,7 @@ abstract class BaseController(
 
     abstract val regex: Regex
     var command = ""
+    var stopcommand = ""
 
     override fun onCompleted(exitCode: Int) {
         when (exitCode) {
@@ -82,6 +83,23 @@ abstract class BaseController(
 
     fun stop() {
         isRunning = false
+    }
+
+    open fun kill(pluginClient: PluginClient,
+             sessionId: Int,
+             sessionKey: String) {
+
+        try {
+            pluginClient.executeCommandOnSession(
+                    sessionId,
+                    sessionKey,
+                    stopcommand,
+                    this@BaseController
+            )
+
+        } catch (e: ServiceNotConnectedException) {
+            Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
+        }
     }
 
     abstract fun convertDataToInt(data: String): Int
