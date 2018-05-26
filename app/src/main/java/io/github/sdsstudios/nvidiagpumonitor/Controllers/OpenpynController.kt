@@ -1,4 +1,4 @@
-package io.github.sdsstudios.nvidiagpumonitor.Controllers
+package io.github.sdsstudios.nvidiagpumonitor.controllers
 import android.content.ContentValues.TAG
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
@@ -12,9 +12,8 @@ import org.json.JSONObject
 import android.util.Xml
 import java.io.StringWriter
 
-import android.content.SharedPreferences
 import com.sonelli.juicessh.pluginlibrary.PluginClient
-import org.jetbrains.anko.toast
+//import org.jetbrains.anko.toast
 import org.jetbrains.anko.longToast
 
 class OpenpynController(

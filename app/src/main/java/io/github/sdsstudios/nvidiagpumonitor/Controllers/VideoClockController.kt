@@ -1,4 +1,4 @@
-package io.github.sdsstudios.nvidiagpumonitor.Controllers
+package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context

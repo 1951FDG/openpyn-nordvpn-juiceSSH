@@ -10,7 +10,7 @@ import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedExceptio
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
-import io.github.sdsstudios.nvidiagpumonitor.Controllers.*
+import io.github.sdsstudios.nvidiagpumonitor.controllers.*
 import java.util.*
 
 /**
