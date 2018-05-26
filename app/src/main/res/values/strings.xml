@@ -350,4 +350,5 @@
 
     <string name="pref_silent">Silent</string>
     <string name="pref_description_silent">Do not try to send notifications. Use if \"libnotify\" or \"gi\" are not available</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

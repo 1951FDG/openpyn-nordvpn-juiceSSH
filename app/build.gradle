@@ -54,5 +54,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation "com.github.kittinunf.fuel:fuel-android:$fuel_version" //for Android
     implementation "com.github.kittinunf.result:result:<latest-version>"
+    implementation 'com.google.code.gson:gson:2.8.4'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
     kapt "android.arch.persistence.room:compiler:1.0.0"
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
 }
