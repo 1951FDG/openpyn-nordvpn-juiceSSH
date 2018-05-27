@@ -27,7 +27,9 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.CancelableCallback
 import com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -52,7 +54,8 @@ class MainActivity : AppCompatActivity(),
         ConnectionListLoaderFinishedCallback,
         OnMapReadyCallback,
         GoogleMap.OnMapLoadedCallback,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnCameraIdleListener {
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
@@ -84,9 +87,11 @@ class MainActivity : AppCompatActivity(),
 
     private val REQUEST_GOOGLE_PLAY_SERVICES = 1972
 
+    private val items =  ArrayList<Marker>()
+
     private fun <T : View> Activity.bind(@IdRes idRes: Int): Lazy<T> {
         @Suppress("UNCHECKED_CAST")
-        return lazy(LazyThreadSafetyMode.NONE){ findViewById(idRes) as T }
+        return lazy(LazyThreadSafetyMode.NONE){ findViewById<T>(idRes) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -253,8 +258,6 @@ class MainActivity : AppCompatActivity(),
                 //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                 //mapFragment.getMapAsync(this)
                 mView.getMapAsync(this)
-
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             }
         }
     }
@@ -346,8 +349,9 @@ class MainActivity : AppCompatActivity(),
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        googleMap.setOnMapLoadedCallback(this)
+        googleMap.setOnCameraIdleListener(this)
         googleMap.setOnMarkerClickListener(this)
+        googleMap.setOnMapLoadedCallback(this)
         googleMap.setPadding(0,0,0,buttonConnect.height + buttonConnect.paddingBottom)
         googleMap.mapType = MAP_TYPE_NORMAL
         googleMap.uiSettings.isScrollGesturesEnabled = true
@@ -356,9 +360,7 @@ class MainActivity : AppCompatActivity(),
         //googleMap.isMyLocationEnabled = true
 
         try {
-            val success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.style_json))
+            val success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
 
             if (!success) {
                 Log.e(TAG, "Style parsing failed.")
@@ -366,21 +368,9 @@ class MainActivity : AppCompatActivity(),
         } catch (e: Resources.NotFoundException) {
             Log.e(TAG, "Can't find style. Error: ", e)
         }
+    }
 
-
-        if (ActivityCompat.checkSelfPermission(this,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-        }
-
-        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
-            if (location != null) {
-                googleMap.addMarker(MarkerOptions().position(LatLng(location.latitude, location.longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
-                //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12.0f))
-            }
-        }
-
+    override fun onMapLoaded() {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         //val server = preferences.getString("pref_server", "")
@@ -486,9 +476,11 @@ class MainActivity : AppCompatActivity(),
                             val key = keys.next()
                             val value = jsonObj.getJSONArray(key)
                             val location = value.getJSONObject(0).getJSONObject("location")
-                            val marker = googleMap.addMarker(MarkerOptions().position(LatLng(location.getDouble("lat"), location.getDouble("long"))))
+                            val marker = mMap.addMarker(MarkerOptions().position(LatLng(location.getDouble("lat"), location.getDouble("long"))).visible(false))
                             //Log.e(TAG, location.toString())
                             marker.tag = value
+
+                            items.add(marker)
                         }
                     } catch (e: JSONException) {
                         throw RuntimeException(e)
@@ -501,15 +493,52 @@ class MainActivity : AppCompatActivity(),
                 }
             }
         }
-    }
 
-    override fun onMapLoaded() {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mMap.addMarker(MarkerOptions().position(LatLng(location.latitude, location.longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).zIndex(1.0f))
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 5.0f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 3.0f + 2.0f), 3000,
+                        object : CancelableCallback {
+                            override fun onFinish() {
+                                baseContext.longToast("Animation to Sydney complete")
+                            }
+
+                            override fun onCancel() {
+                                baseContext.longToast("Animation to Sydney canceled")
+                            }
+                        })
+            }
+        }
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         //Log.e(TAG, p0?.tag.toString())
        return true
+    }
+
+    override fun onCameraIdle() {
+        //Log.e(TAG, "i am called")
+        if(mMap != null && items.count() != 0) {
+            val bounds = mMap.projection.visibleRegion.latLngBounds
+            for (item in items) {
+                if (bounds.contains(item.position)) {
+                    if (!item.isVisible) {
+                        item.isVisible = true
+                    }
+                }
+                else {
+                    if (item.isVisible) {
+                        item.isVisible = false
+                    }
+                }
+            }
+        }
     }
 }
