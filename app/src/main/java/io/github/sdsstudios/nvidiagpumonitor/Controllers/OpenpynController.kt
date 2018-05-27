@@ -80,7 +80,6 @@ class OpenpynController(
             sessionKey: String) {
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
-        val openpyn_options = StringBuilder()
 
         val server = preferences.getString("pref_server", "")
         val country_code = preferences.getString("pref_country", "")
@@ -104,6 +103,8 @@ class OpenpynController(
         val nvram = preferences.getBoolean("pref_nvram", false)
         //val openvpn_options = args.openvpn_options
         val openvpn_options = "--syslog openpyn"
+
+        val openpyn_options = StringBuilder()
 
         if (!server.isEmpty())
             openpyn_options.append(" --server $server")

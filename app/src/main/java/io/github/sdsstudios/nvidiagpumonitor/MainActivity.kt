@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -17,6 +18,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import com.github.kittinunf.fuel.android.extension.responseJson
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.result.Result
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
@@ -30,6 +34,9 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESS
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.jetbrains.anko.toast
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity(),
@@ -300,10 +307,6 @@ class MainActivity : AppCompatActivity(),
             Log.e(TAG, "Can't find style. Error: ", e)
         }
 
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12.0f))
-
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         val watermark = mapFragment.view?.findViewWithTag<ImageView>("GoogleWatermark")
         val params = watermark?.layoutParams as RelativeLayout.LayoutParams
@@ -327,10 +330,132 @@ class MainActivity : AppCompatActivity(),
                 //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12.0f))
             }
         }
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        //val server = preferences.getString("pref_server", "")
+        val country_code = preferences.getString("pref_country", "")
+        //val country = args.country
+        //val area = args.area
+        //val tcp = preferences.getBoolean("pref_tcp", false)
+        ////val max_load = preferences.getString("pref_max_load", "") *
+        ////val top_servers = preferences.getString("pref_top_servers", "") *
+        //val pings = preferences.getString("pref_pings", "")
+        //val force_fw_rules = preferences.getBoolean("pref_force_fw", false)
+        val p2p = preferences.getBoolean("pref_p2p", false)
+        val dedicated = preferences.getBoolean("pref_dedicated", false)
+        val double_vpn = preferences.getBoolean("pref_double", false)
+        val tor_over_vpn = preferences.getBoolean("pref_tor", false)
+        val anti_ddos = preferences.getBoolean("pref_anti_ddos", false)
+        ////val netflix = preferences.getBoolean("pref_netflix", false)
+        //val test = preferences.getBoolean("pref_test", false)
+        //val internally_allowed = args.internally_allowed
+        //val skip_dns_patch = preferences.getBoolean("pref_skip_dns_patch", false)
+        //val silent = preferences.getBoolean("pref_silent", false)
+        //val nvram = preferences.getBoolean("pref_nvram", false)
+
+        //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
+        "https://api.nordvpn.com/server".httpGet().responseJson { request, response, result ->
+            when (result) {
+                is Result.Failure -> {
+                    Log.e(TAG, "Failure")
+                    val ex = result.getException()
+                }
+                is Result.Success -> {
+                    Log.e(TAG, "Success")
+                    operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
+                    val jsonObj = JSONObject()
+                    val json_response = result.get().array() //JSONArray
+                    for (res in json_response) {
+                        val country = res.getString("domain").take(2)
+
+                        var pass = country.equals(country_code,true)
+
+                        if (!pass) {
+                            //continue
+                        }
+
+                        pass = when {
+                            p2p -> false
+                            dedicated -> false
+                            double_vpn -> false
+                            tor_over_vpn -> false
+                            anti_ddos -> false
+                            else -> true
+                        }
+
+                        if (!pass) {
+                            val categories = res.getJSONArray("categories")
+
+                            for (category in categories) {
+                                val name = category.getString("name")
+
+                                if (p2p and name.equals("P2P", true)) {
+                                    pass = true
+                                    break
+                                }
+                                else if (dedicated and name.equals("Dedicated IP servers", true)) {
+                                    pass = true
+                                    break
+                                }
+                                else if (double_vpn and name.equals("Double VPN", true)) {
+                                    pass = true
+                                    break
+                                }
+                                else if (tor_over_vpn and name.equals("Obfuscated Servers", true)) {
+                                    pass = true
+                                    break
+                                }
+                                else if (anti_ddos and name.equals("Anti DDoS", true)) {
+                                    pass = true
+                                    break
+                                }
+                            }
+                        }
+
+                        if (!pass) {
+                            continue
+                        }
+
+                        val location = res.getJSONObject("location")
+
+                        var jsonArr = jsonObj.optJSONArray(location.toString())
+                        if (jsonArr == null) {
+                            jsonArr = JSONArray()
+                            jsonArr.put(res)
+                            jsonObj.put(location.toString(), jsonArr)
+                        }
+                        else {
+                            jsonArr.put(res)
+                        }
+                    }
+
+                    try {
+                        val keys = jsonObj.keys()
+                        while (keys.hasNext()) {
+                            val key = keys.next()
+                            val value = jsonObj.getJSONArray(key)
+                            val location = value.getJSONObject(0).getJSONObject("location")
+                            val marker = googleMap.addMarker(MarkerOptions().position(LatLng(location.getDouble("lat"), location.getDouble("long"))))
+                            //Log.e(TAG, location.toString())
+                            marker.tag = value
+                        }
+                    } catch (e: JSONException) {
+                        throw RuntimeException(e)
+                    }
+
+//                    val gson = GsonBuilder().setPrettyPrinting().create()
+//                    val file = File(this.getExternalFilesDir(null),"output.json")
+//                    file.writeText(gson.toJson(jsonObj))
+//                    Log.d(TAG, file.toString())
+                }
+            }
+        }
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        return false
+        //Log.e(TAG, p0?.tag.toString())
+       return true
     }
 }
