@@ -39,26 +39,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/map_layout"
+    <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:map="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            map:mapType="normal"
-            map:uiCompass="false"
-            map:uiRotateGestures="false"
-            map:uiScrollGestures="true"
-            map:uiTiltGestures="false"
-            map:uiZoomControls="true"
-            map:uiZoomGestures="true"
-            tools:context=".MainActivity" />
-    </FrameLayout>
+        android:visibility="gone"
+        map:mapType="none"
+        map:uiCompass="false"
+        map:uiRotateGestures="false"
+        map:uiScrollGestures="false"
+        map:uiTiltGestures="false"
+        map:uiZoomControls="false"
+        map:uiZoomGestures="false" />
 </android.support.constraint.ConstraintLayout>

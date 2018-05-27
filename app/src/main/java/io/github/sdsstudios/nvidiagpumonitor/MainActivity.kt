@@ -1,6 +1,7 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
 //import kotlinx.android.synthetic.main.content_main.*
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -8,6 +9,7 @@ import android.content.res.Resources
 import android.database.Cursor
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.annotation.IdRes
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -21,11 +23,14 @@ import android.widget.RelativeLayout
 import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL
+import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
@@ -33,6 +38,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
+import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
 import org.json.JSONArray
 import org.json.JSONException
@@ -45,6 +51,7 @@ class MainActivity : AppCompatActivity(),
         OnClientStartedListener,
         ConnectionListLoaderFinishedCallback,
         OnMapReadyCallback,
+        GoogleMap.OnMapLoadedCallback,
         GoogleMap.OnMarkerClickListener {
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
@@ -70,18 +77,33 @@ class MainActivity : AppCompatActivity(),
     private val mPermissionsGranted
         get() = mReadConnectionsPerm && mOpenSessionsPerm
 
+    private val mView: MapView by bind(R.id.map)
+
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private val REQUEST_GOOGLE_PLAY_SERVICES = 1972
+
+    private fun <T : View> Activity.bind(@IdRes idRes: Int): Lazy<T> {
+        @Suppress("UNCHECKED_CAST")
+        return lazy(LazyThreadSafetyMode.NONE){ findViewById(idRes) as T }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mView.onCreate(savedInstanceState)
+
         setSupportActionBar(toolbar)
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        val api = GoogleApiAvailability.getInstance()
+        val errorCode = api.isGooglePlayServicesAvailable(this)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        when {
+            errorCode == ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, Activity.RESULT_OK, null)
+            api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
+            else -> this.longToast(api.getErrorString(errorCode))
+        }
 
         if (isJuiceSSHInstalled()) {
 
@@ -149,16 +171,28 @@ class MainActivity : AppCompatActivity(),
 
     override fun onResume() {
         super.onResume()
+        mView.onResume()
 
         if (!isJuiceSSHInstalled()) {
             textViewErrorMessage.setText(R.string.error_must_install_juicessh)
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        mView.onResume()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        mView.onDestroy()
 
         mConnectionManager.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mView.onLowMemory()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -200,6 +234,28 @@ class MainActivity : AppCompatActivity(),
 
         if (requestCode == JUICESSH_REQUEST_CODE) {
             mConnectionManager.gotActivityResult(requestCode, resultCode, data)
+        }
+
+        if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
+            if (resultCode === Activity.RESULT_OK) {
+                mView.visibility = View.VISIBLE
+
+                //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+                //val watermark = mapFragment.view?.findViewWithTag<ImageView>("GoogleWatermark")
+                val watermark = mView.findViewWithTag<ImageView>("GoogleWatermark")
+                val params = watermark?.layoutParams as RelativeLayout.LayoutParams
+                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
+                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0)
+                //params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE)
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
+                //params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+
+                //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+                //mapFragment.getMapAsync(this)
+                mView.getMapAsync(this)
+
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            }
         }
     }
 
@@ -290,10 +346,14 @@ class MainActivity : AppCompatActivity(),
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        googleMap.setOnMapLoadedCallback(this)
         googleMap.setOnMarkerClickListener(this)
+        googleMap.setPadding(0,0,0,buttonConnect.height + buttonConnect.paddingBottom)
+        googleMap.mapType = MAP_TYPE_NORMAL
+        googleMap.uiSettings.isScrollGesturesEnabled = true
+        googleMap.uiSettings.isZoomControlsEnabled = true
+        googleMap.uiSettings.isZoomGesturesEnabled = true
         //googleMap.isMyLocationEnabled = true
-
-        map_layout.visibility = View.VISIBLE
 
         try {
             val success = googleMap.setMapStyle(
@@ -307,16 +367,6 @@ class MainActivity : AppCompatActivity(),
             Log.e(TAG, "Can't find style. Error: ", e)
         }
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        val watermark = mapFragment.view?.findViewWithTag<ImageView>("GoogleWatermark")
-        val params = watermark?.layoutParams as RelativeLayout.LayoutParams
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
-        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0)
-        //params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE)
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
-        //params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
-
-        googleMap.setPadding(0,0,0,buttonConnect.height + buttonConnect.paddingBottom)
 
         if (ActivityCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -451,6 +501,10 @@ class MainActivity : AppCompatActivity(),
                 }
             }
         }
+    }
+
+    override fun onMapLoaded() {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {

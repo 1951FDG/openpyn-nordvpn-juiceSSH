@@ -64,7 +64,7 @@ class OpenpynController(
                         serializer.endTag("", "string-array")
                         serializer.endTag("", "head")
                         serializer.endDocument()
-                        println(writer.toString())
+                        //println(writer.toString())
                     } catch (e: Exception) {
                         throw RuntimeException(e)
                     }

@@ -5,7 +5,6 @@
 
     <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS" />
     <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -54,5 +53,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 </manifest>
