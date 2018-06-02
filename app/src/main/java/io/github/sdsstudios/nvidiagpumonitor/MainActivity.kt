@@ -29,8 +29,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.GoogleMap.CancelableCallback
-import com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL
+import com.google.android.gms.maps.GoogleMap.*
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
@@ -45,6 +44,8 @@ import org.jetbrains.anko.toast
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
+import java.io.IOException
 
 
 class MainActivity : AppCompatActivity(),
@@ -84,6 +85,8 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    //private lateinit var offlineTileProvider: ExpandedMBTilesTileProvider
+    private lateinit var offlineTileProvider: MapBoxOfflineTileProvider
 
     private val REQUEST_GOOGLE_PLAY_SERVICES = 1972
 
@@ -97,6 +100,26 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val mDBHelper = DatabaseHelper(this)
+
+        try {
+            mDBHelper.updateDataBase()
+        } catch (mIOException: IOException) {
+            throw Error("UnableToUpdateDatabase")
+        }
+
+        // Get a File reference to the MBTiles file.
+        val myMBTiles = File(mDBHelper.DB_PATH + mDBHelper.DB_NAME)
+        //Log.e(TAG, myMBTiles.path)
+        //Log.e(TAG, mDBHelper.checkDataBase().toString())
+
+        //offlineTileProvider = ExpandedMBTilesTileProvider(myMBTiles, 256, 256)
+
+        offlineTileProvider = MapBoxOfflineTileProvider(myMBTiles)
+        Log.e(TAG, offlineTileProvider.minimumZoom.toString())
+        Log.e(TAG, offlineTileProvider.maximumZoom.toString())
+
         mView.onCreate(savedInstanceState)
 
         setSupportActionBar(toolbar)
@@ -191,6 +214,7 @@ class MainActivity : AppCompatActivity(),
     override fun onDestroy() {
         super.onDestroy()
         mView.onDestroy()
+        offlineTileProvider.close()
 
         mConnectionManager.onDestroy()
     }
@@ -349,15 +373,14 @@ class MainActivity : AppCompatActivity(),
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        googleMap.setOnCameraIdleListener(this)
-        googleMap.setOnMarkerClickListener(this)
-        googleMap.setOnMapLoadedCallback(this)
-        googleMap.setPadding(0,0,0,buttonConnect.height + buttonConnect.paddingBottom)
-        googleMap.mapType = MAP_TYPE_NORMAL
-        googleMap.uiSettings.isScrollGesturesEnabled = true
-        googleMap.uiSettings.isZoomControlsEnabled = true
-        googleMap.uiSettings.isZoomGesturesEnabled = true
-        //googleMap.isMyLocationEnabled = true
+
+        //googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
+        //googleMap.setMinZoomPreference(3.0f)
+        //googleMap.setMaxZoomPreference(6.0f)
+
+        googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
+        googleMap.setMinZoomPreference(offlineTileProvider.minimumZoom.toFloat())
+        googleMap.setMaxZoomPreference(offlineTileProvider.maximumZoom.toFloat())
 
         try {
             val success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
@@ -368,6 +391,16 @@ class MainActivity : AppCompatActivity(),
         } catch (e: Resources.NotFoundException) {
             Log.e(TAG, "Can't find style. Error: ", e)
         }
+
+        googleMap.setOnCameraIdleListener(this)
+        googleMap.setOnMarkerClickListener(this)
+        googleMap.setOnMapLoadedCallback(this)
+        googleMap.setPadding(0,0,0,buttonConnect.height + buttonConnect.paddingBottom)
+        googleMap.mapType = MAP_TYPE_NORMAL
+        googleMap.uiSettings.isScrollGesturesEnabled = true
+        googleMap.uiSettings.isZoomControlsEnabled = true
+        googleMap.uiSettings.isZoomGesturesEnabled = true
+        //googleMap.isMyLocationEnabled = true
     }
 
     override fun onMapLoaded() {
@@ -503,7 +536,7 @@ class MainActivity : AppCompatActivity(),
             if (location != null) {
                 mMap.addMarker(MarkerOptions().position(LatLng(location.latitude, location.longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).zIndex(1.0f))
 //                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 5.0f))
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 3.0f + 2.0f), 3000,
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), mMap.cameraPosition.zoom), 3000,
                         object : CancelableCallback {
                             override fun onFinish() {
                                 baseContext.longToast("Animation to Sydney complete")

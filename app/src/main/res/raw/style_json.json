@@ -1,5 +1,13 @@
 [
   {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
     "featureType": "administrative",
     "elementType": "geometry",
     "stylers": [
@@ -34,34 +42,10 @@
     ]
   },
   {
-    "featureType": "landscape.natural",
-    "elementType": "geometry.fill",
-    "stylers": [
-      {
-        "color": "#cfeeca"
-      },
-      {
-        "visibility": "on"
-      }
-    ]
-  },
-  {
     "featureType": "poi",
     "stylers": [
       {
         "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "geometry.fill",
-    "stylers": [
-      {
-        "color": "#bae5a6"
-      },
-      {
-        "visibility": "on"
       }
     ]
   },
@@ -80,13 +64,5 @@
         "visibility": "off"
       }
     ]
-  },
-  {
-    "featureType": "water",
-    "stylers": [
-      {
-        "color": "#a0daf2"
-      }
-    ]
   }
-]
+]                                                                                                                                                                                                                                                                                                                                                                                                                                                                             x                                                                                                                                                                                                                                                                             x
