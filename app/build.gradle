@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "io.github.sdsstudios.nvidiagpumonitor"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -56,6 +56,6 @@ dependencies {
     implementation 'com.github.kittinunf.result:result:1.4.0'
     implementation 'com.google.code.gson:gson:2.8.4'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    kapt 'android.arch.persistence.room:compiler:1.1.0'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
+    kapt 'android.arch.persistence.room:compiler:1.1.0'
 }
