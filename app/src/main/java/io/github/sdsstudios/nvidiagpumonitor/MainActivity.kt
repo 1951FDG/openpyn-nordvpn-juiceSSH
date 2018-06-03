@@ -272,12 +272,15 @@ class MainActivity : AppCompatActivity(),
                 //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                 //val watermark = mapFragment.view?.findViewWithTag<ImageView>("GoogleWatermark")
                 val watermark = mView.findViewWithTag<ImageView>("GoogleWatermark")
-                val params = watermark?.layoutParams as RelativeLayout.LayoutParams
-                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
-                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0)
-                //params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE)
-                params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
-                //params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+
+                if (watermark != null) {
+                    val params = watermark?.layoutParams as RelativeLayout.LayoutParams
+                    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
+                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0)
+                    //params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE)
+                    params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
+                    //params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+                }
 
                 //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                 //mapFragment.getMapAsync(this)
@@ -375,11 +378,9 @@ class MainActivity : AppCompatActivity(),
         mMap = googleMap
 
         //googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
-        //googleMap.setMinZoomPreference(3.0f)
         //googleMap.setMaxZoomPreference(6.0f)
 
         googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
-        googleMap.setMinZoomPreference(offlineTileProvider.minimumZoom.toFloat())
         googleMap.setMaxZoomPreference(offlineTileProvider.maximumZoom.toFloat())
 
         try {
