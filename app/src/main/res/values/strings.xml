@@ -307,7 +307,7 @@
     <string name="pref_double">Double VPN</string>
     <string name="pref_description_double">Only look for servers with \"Double VPN\" support</string>
 
-    <string name="pref_tor">Onion Over VPN</string>
+    <string name="pref_tor">Obfuscated Servers</string>
     <string name="pref_description_tor">Only look for servers with \"Onion Over VPN\" support</string>
 
     <string name="pref_anti_ddos">Anti DDoS</string>
