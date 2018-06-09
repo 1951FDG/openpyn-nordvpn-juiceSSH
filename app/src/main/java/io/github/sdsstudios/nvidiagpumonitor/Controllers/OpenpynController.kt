@@ -1,20 +1,23 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
-import android.content.ContentValues.TAG
+
+//import org.jetbrains.anko.toast
 import android.arch.lifecycle.MutableLiveData
+import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import android.preference.PreferenceManager
-import com.github.kittinunf.fuel.httpGet
+import android.util.Log
+import android.util.Xml
 import com.github.kittinunf.fuel.android.extension.responseJson
+import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
+import com.sonelli.juicessh.pluginlibrary.PluginClient
+import org.jetbrains.anko.longToast
 import org.json.JSONArray
 import org.json.JSONObject
-import android.util.Xml
 import java.io.StringWriter
+import java.util.*
+import kotlin.concurrent.schedule
 
-import com.sonelli.juicessh.pluginlibrary.PluginClient
-//import org.jetbrains.anko.toast
-import org.jetbrains.anko.longToast
 
 class OpenpynController(
         ctx: Context,
@@ -177,5 +180,10 @@ class OpenpynController(
     override fun onOutputLine(line: String) {
         Log.e(TAG, line)
         mCtx.longToast(line)
+        if (line.startsWith("CONNECTING TO SERVER", true)) {
+            Timer().schedule(10000){
+                mainActivity.updateMasterMarker()
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Toast.LENGTH_SHORT
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
+import io.github.sdsstudios.nvidiagpumonitor.MainActivity
 
 /**
  * Created by Seth on 05/03/18.
@@ -24,6 +25,7 @@ abstract class BaseController(
     }
 
     val mCtx = ctx.applicationContext
+    val mainActivity = ctx as MainActivity
 
     var isRunning = false
 

@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 //import android.support.v7.widget.AppCompatTextView
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -29,7 +30,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.GoogleMap.*
+import com.google.android.gms.maps.GoogleMap.CancelableCallback
+import com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
@@ -39,13 +41,16 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
-import org.jetbrains.anko.longToast
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 class MainActivity : AppCompatActivity(),
@@ -56,7 +61,8 @@ class MainActivity : AppCompatActivity(),
         OnMapReadyCallback,
         GoogleMap.OnMapLoadedCallback,
         GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnCameraIdleListener {
+        GoogleMap.OnCameraIdleListener,
+        GoogleMap.OnInfoWindowClickListener {
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
@@ -84,6 +90,7 @@ class MainActivity : AppCompatActivity(),
     private val mView: MapView by bind(R.id.map)
 
     private lateinit var mMap: GoogleMap
+    private lateinit var mMarker: Marker
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     //private lateinit var offlineTileProvider: ExpandedMBTilesTileProvider
     private lateinit var offlineTileProvider: MapBoxOfflineTileProvider
@@ -311,6 +318,10 @@ class MainActivity : AppCompatActivity(),
         buttonConnect.applyConnectStyle()
         //cardViewLayout.visibility = View.GONE
         spinnerConnectionList.isEnabled = true
+
+        Timer().schedule(5000){
+            updateMasterMarker()
+        }
     }
 
     override fun onClientStarted() {
@@ -383,8 +394,6 @@ class MainActivity : AppCompatActivity(),
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
         //googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
         //googleMap.setMaxZoomPreference(6.0f)
 
@@ -402,6 +411,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         googleMap.setOnCameraIdleListener(this)
+        googleMap.setOnInfoWindowClickListener(this)
         googleMap.setOnMarkerClickListener(this)
         googleMap.setOnMapLoadedCallback(this)
         googleMap.setPadding(0,0,0,buttonConnect.height + buttonConnect.paddingBottom)
@@ -410,6 +420,8 @@ class MainActivity : AppCompatActivity(),
         googleMap.uiSettings.isZoomControlsEnabled = true
         googleMap.uiSettings.isZoomGesturesEnabled = true
         //googleMap.isMyLocationEnabled = true
+
+        mMap = googleMap
     }
 
     override fun onMapLoaded() {
@@ -451,19 +463,18 @@ class MainActivity : AppCompatActivity(),
             RuntimeException(e)
         }
 
-        lateinit var json_response: JSONArray
+        lateinit var jsonArr: JSONArray
 
         try {
-            json_response = JSONArray(json)
+            jsonArr = JSONArray(json)
         } catch (e: JSONException) {
             RuntimeException(e)
         }
 
 
         operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
-        val jsonObj = JSONObject()
 
-        for (res in json_response) {
+        for (res in jsonArr) {
             /*
             val country = res.getString("flag").toLowerCase()
 
@@ -519,7 +530,12 @@ class MainActivity : AppCompatActivity(),
             val location = res.getJSONObject("location")
             //Log.d(TAG, location.toString())
 
-            val marker = mMap.addMarker(MarkerOptions().position(LatLng(location.getDouble("lat"), location.getDouble("long"))).visible(false))
+            val var1 = MarkerOptions()
+            var1.position(LatLng(location.getDouble("lat"), location.getDouble("long")))
+            var1.visible(false)
+            var1.flat(true)
+
+            val marker = mMap.addMarker(var1)
             //marker.tag = value
 
             items.add(marker)
@@ -532,20 +548,177 @@ class MainActivity : AppCompatActivity(),
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
             if (location != null) {
-                mMap.addMarker(MarkerOptions().position(LatLng(location.latitude, location.longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).zIndex(1.0f))
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 5.0f))
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), mMap.cameraPosition.zoom), 3000,
+                mMap.addMarker(MarkerOptions().position(LatLng(location.latitude, location.longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).zIndex(0.5f))
+                //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 5.0f))
+            }
+        }
+
+        val list: ArrayList<String> = ArrayList()
+        list.add("https://api.ipdata.co")
+        list.add("http://ip-api.com/json")
+
+        Thread({
+            val json1 = JSONObject()
+
+            for (name in list) {
+                val (request, response, result) = name.httpGet().responseJson() // result is Result<Json, FuelError>
+                val (data, error) = result
+                if (data != null) {
+                    Log.e(TAG, "Success")
+                    val content = data.obj()
+                    Log.e(TAG, content.toString())
+
+                    var country = content.optString("country_name")
+                    var city = content.optString("city")
+                    var lat = content.optDouble("latitude", 0.0)
+                    var lon = content.optDouble("longitude", 0.0)
+                    var emoji = content.optString("emoji_flag")
+                    var ip = content.optString("ip")
+                    var threat = content.optJSONObject("threat")
+
+                    if (country.isEmpty()) country = content.optString("country")
+                    //if (city.isEmpty()) city = content.optString("city")
+                    if (lat == 0.0) lat = content.optDouble("lat", 0.0)
+                    if (lon == 0.0) lon = content.optDouble("lon", 0.0)
+                    //if (emoji.isEmpty()) emoji = content.optString("emoji_flag")
+                    if (ip.isEmpty()) ip = content.optString("query")
+                    //if (threat == null) threat = content.optJSONObject("threat")
+
+                    if (json1.optString("country").isEmpty()) json1.put("country", country)
+                    if (json1.optString("city").isEmpty()) json1.put("city", city)
+                    if (json1.optDouble("latitude", 0.0) == 0.0) json1.put("latitude", lat)
+                    if (json1.optDouble("longitude", 0.0) == 0.0) json1.put("longitude", lon)
+                    if (json1.optString("emoji_flag").isEmpty()) json1.put("emoji_flag", emoji)
+                    if (json1.optString("ip").isEmpty()) json1.put("ip", ip)
+                    if (json1.optJSONObject("threat") == null) json1.putOpt("threat", threat)
+
+                    //break
+                }
+                else {
+                    Log.e(TAG, "Failure")
+                    Log.e(TAG, error.toString())
+                }
+            }
+
+            runOnUiThread({
+                val country = json1.getString("country")
+                val city = json1.getString("city")
+                val lat = json1.getDouble("latitude")
+                val lon = json1.getDouble("longitude")
+                val emoji = json1.getString("emoji_flag")
+                val ip = json1.getString("ip")
+                //val threat = json1.optJSONObject("threat")
+
+                val var1 = MarkerOptions()
+                var1.position(LatLng(lat, lon))
+                var1.title("$emoji $city".trimStart())
+                var1.snippet("$ip${Typography.ellipsis}")
+                var1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                var1.zIndex(1.0f)
+                var1.flat(true)
+
+                val marker = mMap.addMarker(var1)
+                marker.tag = json1
+
+                mMarker = marker
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(var1.position, mMap.cameraPosition.zoom), 3000,
                         object : CancelableCallback {
                             override fun onFinish() {
-                                baseContext.longToast("Animation to Sydney complete")
+                                baseContext.longToast("Animation to $country complete")
+                                mMarker.showInfoWindow()
                             }
 
                             override fun onCancel() {
-                                baseContext.longToast("Animation to Sydney canceled")
+                                baseContext.longToast("Animation to $country canceled")
+                                mMarker.showInfoWindow()
                             }
                         })
+            })
+        }).start()
+    }
+
+
+    fun updateMasterMarker() {
+        val list: ArrayList<String> = ArrayList()
+        list.add("https://api.ipdata.co")
+        list.add("http://ip-api.com/json")
+
+        Thread({
+            val json1 = JSONObject()
+
+            for (name in list) {
+                val (request, response, result) = name.httpGet().responseJson() // result is Result<Json, FuelError>
+                val (data, error) = result
+                if (data != null) {
+                    Log.e(TAG, "Success")
+                    val content = data.obj()
+                    Log.e(TAG, content.toString())
+
+                    var country = content.optString("country_name")
+                    var city = content.optString("city")
+                    var lat = content.optDouble("latitude", 0.0)
+                    var lon = content.optDouble("longitude", 0.0)
+                    var emoji = content.optString("emoji_flag")
+                    var ip = content.optString("ip")
+                    var threat = content.optJSONObject("threat")
+
+                    if (country.isEmpty()) country = content.optString("country")
+                    //if (city.isEmpty()) city = content.optString("city")
+                    if (lat == 0.0) lat = content.optDouble("lat", 0.0)
+                    if (lon == 0.0) lon = content.optDouble("lon", 0.0)
+                    //if (emoji.isEmpty()) emoji = content.optString("emoji_flag")
+                    if (ip.isEmpty()) ip = content.optString("query")
+                    //if (threat == null) threat = content.optJSONObject("threat")
+
+                    if (json1.optString("country").isEmpty()) json1.put("country", country)
+                    if (json1.optString("city").isEmpty()) json1.put("city", city)
+                    if (json1.optDouble("latitude", 0.0) == 0.0) json1.put("latitude", lat)
+                    if (json1.optDouble("longitude", 0.0) == 0.0) json1.put("longitude", lon)
+                    if (json1.optString("emoji_flag").isEmpty()) json1.put("emoji_flag", emoji)
+                    if (json1.optString("ip").isEmpty()) json1.put("ip", ip)
+                    if (json1.optJSONObject("threat") == null) json1.putOpt("threat", threat)
+
+                    //break
+                }
+                else {
+                    Log.e(TAG, "Failure")
+                    Log.e(TAG, error.toString())
+                }
             }
-        }
+
+            runOnUiThread({
+                val country = json1.getString("country")
+                val city = json1.getString("city")
+                val lat = json1.getDouble("latitude")
+                val lon = json1.getDouble("longitude")
+                val emoji = json1.getString("emoji_flag")
+                val ip = json1.getString("ip")
+                //val threat = json1.optJSONObject("threat")
+
+                if (mMarker.isInfoWindowShown) {
+                    mMarker.hideInfoWindow()
+                }
+
+                mMarker.tag = json1
+                mMarker.position = LatLng(lat, lon)
+                mMarker.title = "$emoji $city".trimStart()
+                mMarker.snippet = "$ip${Typography.ellipsis}"
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMarker.position, mMap.cameraPosition.zoom), 3000,
+                        object : CancelableCallback {
+                            override fun onFinish() {
+                                baseContext.longToast("Animation to $country complete")
+                                mMarker.showInfoWindow()
+                            }
+
+                            override fun onCancel() {
+                                baseContext.longToast("Animation to $country canceled")
+                                mMarker.showInfoWindow()
+                            }
+                        })
+            })
+        }).start()
     }
 /*
     private fun createJson0() {
@@ -560,8 +733,8 @@ class MainActivity : AppCompatActivity(),
                     Log.e(TAG, "Success")
                     operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
                     val jsonObj = JSONObject()
-                    val json_response = result.get().array() //JSONArray
-                    for (res in json_response) {
+                    val content = result.get().array() //JSONArray
+                    for (res in content) {
                         val country = res.getString("domain").take(2)
 
                         var pass = country.equals(country_code,true)
@@ -661,8 +834,8 @@ class MainActivity : AppCompatActivity(),
                     Log.e(TAG, "Success")
                     operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
                     val jsonObj = JSONObject()
-                    val json_response = result.get().array() //JSONArray
-                    for (res in json_response) {
+                    val content = result.get().array() //JSONArray
+                    for (res in content) {
                         val location = res.getJSONObject("location")
 
                         var json1 = jsonObj.optJSONObject(location.toString())
@@ -672,13 +845,13 @@ class MainActivity : AppCompatActivity(),
                             json1.put("country", res.getString("country"))
                             json1.put("location", res.getJSONObject("location"))
 
-                            val jsonfeatures = JSONObject()
-                            jsonfeatures.put("p2p", false)
-                            jsonfeatures.put("dedicated", false)
-                            jsonfeatures.put("double_vpn", false)
-                            jsonfeatures.put("tor_over_vpn", false)
-                            jsonfeatures.put("anti_ddos", false)
-                            jsonfeatures.put("standard", false)
+                            val features = JSONObject()
+                            features.put("p2p", false)
+                            features.put("dedicated", false)
+                            features.put("double_vpn", false)
+                            features.put("tor_over_vpn", false)
+                            features.put("anti_ddos", false)
+                            features.put("standard", false)
 
                             val categories = res.getJSONArray("categories")
 
@@ -686,32 +859,32 @@ class MainActivity : AppCompatActivity(),
                                 val name = category.getString("name")
 
                                 if (name.equals("P2P", true)) {
-                                    jsonfeatures.put("p2p", true)
+                                    features.put("p2p", true)
                                 }
                                 else if (name.equals("Dedicated IP servers", true)) {
-                                    jsonfeatures.put("dedicated", true)
+                                    features.put("dedicated", true)
                                 }
                                 else if (name.equals("Double VPN", true)) {
-                                    jsonfeatures.put("double_vpn", true)
+                                    features.put("double_vpn", true)
                                 }
                                 else if (name.equals("Obfuscated Servers", true)) {
-                                    jsonfeatures.put("tor_over_vpn", true)
+                                    features.put("tor_over_vpn", true)
                                 }
                                 else if (name.equals("Anti DDoS", true)) {
-                                    jsonfeatures.put("anti_ddos", true)
+                                    features.put("anti_ddos", true)
                                 }
                                 else if (name.equals("Standard VPN servers", true)) {
-                                    jsonfeatures.put("standard", true)
+                                    features.put("standard", true)
                                 }
                             }
 
-                            json1.put("features", jsonfeatures)
+                            json1.put("features", features)
 
                             jsonObj.put(location.toString(), json1)
                         }
                         else {
 
-                            val jsonfeatures = json1.getJSONObject("features")
+                            val features = json1.getJSONObject("features")
 
                             val categories = res.getJSONArray("categories")
 
@@ -719,22 +892,22 @@ class MainActivity : AppCompatActivity(),
                                 val name = category.getString("name")
 
                                 if (name.equals("P2P", true)) {
-                                    jsonfeatures.put("p2p", true)
+                                    features.put("p2p", true)
                                 }
                                 else if (name.equals("Dedicated IP servers", true)) {
-                                    jsonfeatures.put("dedicated", true)
+                                    features.put("dedicated", true)
                                 }
                                 else if (name.equals("Double VPN", true)) {
-                                    jsonfeatures.put("double_vpn", true)
+                                    features.put("double_vpn", true)
                                 }
                                 else if (name.equals("Obfuscated Servers", true)) {
-                                    jsonfeatures.put("tor_over_vpn", true)
+                                    features.put("tor_over_vpn", true)
                                 }
                                 else if (name.equals("Anti DDoS", true)) {
-                                    jsonfeatures.put("anti_ddos", true)
+                                    features.put("anti_ddos", true)
                                 }
                                 else if (name.equals("Standard VPN servers", true)) {
-                                    jsonfeatures.put("standard", true)
+                                    features.put("standard", true)
                                 }
                             }
                         }
@@ -756,30 +929,30 @@ class MainActivity : AppCompatActivity(),
 
                             val jsonArr = JSONArray()
 
-                            val jsonfeatures = value.getJSONObject("features")
+                            val features = value.getJSONObject("features")
 
 
-                            if (jsonfeatures.getBoolean("anti_ddos")) {
+                            if (features.getBoolean("anti_ddos")) {
                                 jsonArr.put(JSONObject().put("name", "Anti DDoS"))
                             }
 
-                            if (jsonfeatures.getBoolean("dedicated")) {
+                            if (features.getBoolean("dedicated")) {
                                 jsonArr.put(JSONObject().put("name", "Dedicated IP servers"))
                             }
 
-                            if (jsonfeatures.getBoolean("double_vpn")) {
+                            if (features.getBoolean("double_vpn")) {
                                 jsonArr.put(JSONObject().put("name", "Double VPN"))
                             }
 
-                            if (jsonfeatures.getBoolean("tor_over_vpn")) {
+                            if (features.getBoolean("tor_over_vpn")) {
                                 jsonArr.put(JSONObject().put("name", "Obfuscated Servers"))
                             }
 
-                            if (jsonfeatures.getBoolean("p2p")) {
+                            if (features.getBoolean("p2p")) {
                                 jsonArr.put(JSONObject().put("name", "P2P"))
                             }
 
-                            if (jsonfeatures.getBoolean("standard")) {
+                            if (features.getBoolean("standard")) {
                                 jsonArr.put(JSONObject().put("name", "Standard VPN servers"))
                             }
 
@@ -800,9 +973,21 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        //Log.e(TAG, p0?.tag.toString())
-       return true
+        if (p0?.tag == null && p0?.zIndex == 0f) {
+            Log.d(TAG, p0.tag.toString())
+            if (mMap != null && items.count() != 0) {
+                for (item in items) {
+                    if (item.zIndex == 1.0f) {
+                        item.zIndex = 0f
+                        item.setIcon(null)
+                    }
+                }
+            }
+            p0.zIndex = 1.0f
+            p0.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+        }
+
+        return false
     }
 
     override fun onCameraIdle() {
@@ -823,4 +1008,191 @@ class MainActivity : AppCompatActivity(),
             }
         }
     }
+
+    override fun onInfoWindowClick(p0: Marker?) {
+        val jsonObj = p0?.tag as JSONObject
+        Log.d(TAG, jsonObj.toString())
+
+        val threat = jsonObj.optJSONObject("threat")
+
+        if (threat != null) {
+            val is_tor = threat.getBoolean("is_tor")
+            val is_proxy = threat.getBoolean("is_proxy")
+            val is_anonymous = threat.getBoolean("is_anonymous")
+            val is_known_attacker = threat.getBoolean("is_known_attacker")
+            val is_known_abuser = threat.getBoolean("is_known_abuser")
+            val is_threat = threat.getBoolean("is_threat")
+            val is_bogon = threat.getBoolean("is_bogon")
+
+            val color1 = ContextCompat.getColor(this, R.color.colorConnect)
+            val color2 = ContextCompat.getColor(this, R.color.colorDisconnect)
+
+            alert {
+                customView {
+                    verticalLayout {
+                        linearLayout {
+                            textView {
+                                text = "is_tor"
+                                textSize = 22f
+                                gravity = Gravity.START
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                            textView {
+                                text = if (is_tor) "YES" else "NO"
+                                textColor = if (is_tor) color2 else color1
+                                textSize = 22f
+                                gravity = Gravity.END
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                        }
+                        linearLayout {
+                            textView {
+                                text = "is_proxy"
+                                textSize = 22f
+                                gravity = Gravity.START
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                            textView {
+                                text = if (is_proxy) "YES" else "NO"
+                                textColor = if (is_proxy) color2 else color1
+                                textSize = 22f
+                                gravity = Gravity.END
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                        }
+                        linearLayout {
+                            textView {
+                                text = "is_anonymous"
+                                textSize = 22f
+                                gravity = Gravity.START
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                            textView {
+                                text = if (is_anonymous) "YES" else "NO"
+                                textColor = if (is_anonymous) color2 else color1
+                                textSize = 22f
+                                gravity = Gravity.END
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                        }
+                        linearLayout {
+                            textView {
+                                text = "is_known_attacker"
+                                textSize = 22f
+                                gravity = Gravity.START
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                            textView {
+                                text = if (is_known_attacker) "YES" else "NO"
+                                textColor = if (is_known_attacker) color2 else color1
+                                textSize = 22f
+                                gravity = Gravity.END
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                        }
+                        linearLayout {
+                            textView {
+                                text = "is_known_abuser"
+                                textSize = 22f
+                                gravity = Gravity.START
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                            textView {
+                                text = if (is_known_abuser) "YES" else "NO"
+                                textColor = if (is_known_abuser) color2 else color1
+                                textSize = 22f
+                                gravity = Gravity.END
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                        }
+                        linearLayout {
+                            textView {
+                                text = "is_threat"
+                                textSize = 22f
+                                gravity = Gravity.START
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                            textView {
+                                text = if (is_threat) "YES" else "NO"
+                                textColor = if (is_threat) color2 else color1
+                                textSize = 22f
+                                gravity = Gravity.END
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                        }
+                        linearLayout {
+                            textView {
+                                text = "is_bogon"
+                                textSize = 22f
+                                gravity = Gravity.START
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                            textView {
+                                text = if (is_bogon) "YES" else "NO"
+                                textColor = if (is_bogon) color2 else color1
+                                textSize = 22f
+                                gravity = Gravity.END
+                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }
+                        }
+                        gravity = Gravity.CENTER
+                        padding = dip(40)
+                    }
+                }
+            }.show()
+        }
+    }
+
+//    class MainActivityUI : AnkoComponent<MainActivity> {
+//        override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
+//            verticalLayout {
+//                relativeLayout {
+//                    textView {
+//                        text = "23"
+//                        textSize = 24f
+//                        //gravity = Gravity.START
+//                    }.lparams(width = wrapContent, height = wrapContent) {
+//                        alignParentLeft()
+//
+//                    }
+//
+//                    textView {
+//                        text = "Enter your request"
+//                        textSize = 24f
+//                        //gravity = Gravity.END
+//                    }.lparams(width = wrapContent, height = wrapContent) {
+//                        //margin = dip(20)
+//                        //gravity = Gravity.END
+//                        alignParentRight()
+//                    }
+//                }
+//                gravity = Gravity.CENTER
+//                padding = dip(40)
+//
+//
+//
+//                textView {
+//                    gravity = Gravity.CENTER
+//                    text = "Enter your request"
+//                    textColor = Color.BLACK
+//                    textSize = 24f
+//                }.lparams(width = matchParent) {
+//                    margin = dip(40)
+//                }
+//
+//                val name = editText {
+//                hint = "What is your name?"
+//            }
+//
+//                editText {
+//                    hint = "What is your message?"
+//                    lines = 3
+//                }
+//
+//                button("Enter") {
+//                    }
+//                }
+//
+//            }
+//        }
 }

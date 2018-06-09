@@ -53,7 +53,7 @@ class ConnectionManager(ctx: Context,
 //    private val mGraphicsClockController = GraphicsClockController(mCtx, graphicsClock)
 //    private val mVideoClockController = VideoClockController(mCtx, videoClock)
 //    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
-    private val mOpenpynController = OpenpynController(mCtx, openpyn)
+    private val mOpenpynController = OpenpynController(ctx, openpyn)
 
     private val mControllers = listOf(
 //            mPowerController,
