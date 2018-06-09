@@ -106,11 +106,14 @@ class OpenpynController(
         val nvram = preferences.getBoolean("pref_nvram", false)
         //val openvpn_options = args.openvpn_options
         val openvpn_options = "--syslog openpyn"
+        val (location, flag) = mainActivity.positionAndFlagForSelectedMarker()
 
         val openpyn_options = StringBuilder()
 
         if (!server.isEmpty())
             openpyn_options.append(" --server $server")
+        else if (flag != null)
+            openpyn_options.append(flag)
         else
             openpyn_options.append(country_code)
 
@@ -153,6 +156,8 @@ class OpenpynController(
             openpyn_options.append(" --nvram " + preferences.getString("pref_nvram_client", "5"))
         if (!openvpn_options.isEmpty())
             openpyn_options.append(" --openvpn-options '$openvpn_options'")
+        if (location != null)
+            openpyn_options.append(" --location " + location.latitude.toString() + " " + location.longitude.toString())
 
         val openpyn = openpyn_options.toString()
 

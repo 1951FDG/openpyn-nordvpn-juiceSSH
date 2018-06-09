@@ -527,6 +527,9 @@ class MainActivity : AppCompatActivity(),
                 continue
             }
 
+            val country = res.getString("flag").toLowerCase()
+            //Log.d(TAG, country)
+
             val location = res.getJSONObject("location")
             //Log.d(TAG, location.toString())
 
@@ -536,7 +539,7 @@ class MainActivity : AppCompatActivity(),
             var1.flat(true)
 
             val marker = mMap.addMarker(var1)
-            //marker.tag = value
+            marker.tag = country
 
             items.add(marker)
         }
@@ -972,8 +975,20 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
+        if (mMap != null && items.count() != 0) {
+            for (item in items) {
+                if (item.zIndex == 1.0f) {
+                    return Pair(item.position, item.tag.toString())
+                }
+            }
+        }
+
+        return Pair(null, null)
+    }
+
     override fun onMarkerClick(p0: Marker?): Boolean {
-        if (p0?.tag == null && p0?.zIndex == 0f) {
+        if (p0?.zIndex == 0f) {
             Log.d(TAG, p0.tag.toString())
             if (mMap != null && items.count() != 0) {
                 for (item in items) {
