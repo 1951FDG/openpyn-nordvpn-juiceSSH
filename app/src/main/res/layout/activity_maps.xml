@@ -22,23 +22,6 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Connect" />
 
-    <TextView
-        android:id="@+id/textViewErrorMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textAllCaps="true"
-        android:textColor="@color/colorError"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/buttonConnect"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
-
     <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map"
         android:layout_width="match_parent"

@@ -1,19 +1,19 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
-//import kotlinx.android.synthetic.main.content_main.*
 import android.app.Activity
+import android.content.ComponentName
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.annotation.IdRes
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-//import android.support.v7.widget.AppCompatTextView
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
@@ -42,6 +42,7 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESS
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.jetbrains.anko.*
+import org.jetbrains.anko.design.indefiniteSnackbar
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -147,11 +148,6 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (isJuiceSSHInstalled()) {
-
-            textViewErrorMessage.setText(R.string.error_must_enable_permissions)
-
-            requestPermissions()
-
 //            mConnectionManager.powerUsage.observe(this, Observer {
 //                textViewPower.setData(it, "W")
 //            })
@@ -184,6 +180,8 @@ class MainActivity : AppCompatActivity(),
 //                textViewClockMemory.setData(it, "MHz")
 //            })
 
+            requestPermissions()
+
             if (mPermissionsGranted) {
                 onPermissionsGranted()
             }
@@ -198,9 +196,8 @@ class MainActivity : AppCompatActivity(),
                 if (mPermissionsGranted) {
                     buttonConnect.applyConnectingStyle()
 
-                    val uuid = mConnectionListAdapter
-                            .getConnectionId(spinnerConnectionList.selectedItemPosition)
 
+                    val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
                     mConnectionManager.toggleConnection(uuid = uuid!!, activity = this)
 
                 } else {
@@ -217,7 +214,7 @@ class MainActivity : AppCompatActivity(),
         mView.onResume()
 
         if (!isJuiceSSHInstalled()) {
-            textViewErrorMessage.setText(R.string.error_must_install_juicessh)
+            indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_install_juicessh), "OK") { juiceSSHInstall() }
         }
     }
 
@@ -260,7 +257,13 @@ class MainActivity : AppCompatActivity(),
             }
         }
 
-        if (mPermissionsGranted) onPermissionsGranted()
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (mPermissionsGranted) {
+                onPermissionsGranted()
+            } else {
+                indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_enable_permissions), "OK") { requestPermissions() }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -339,7 +342,6 @@ class MainActivity : AppCompatActivity(),
     private fun onPermissionsGranted() {
         mConnectionManager.startClient(onClientStartedListener = this)
 
-        textViewErrorMessage.visibility = View.GONE
         buttonConnect.applyConnectStyle()
 
         spinnerConnectionList.adapter = mConnectionListAdapter
@@ -381,6 +383,15 @@ class MainActivity : AppCompatActivity(),
             return true
         } catch (e: PackageManager.NameNotFoundException) {
             return false
+        }
+    }
+
+    private fun juiceSSHInstall() {
+        val launchIntent = packageManager.getLaunchIntentForPackage("com.android.vending")
+        if (launchIntent != null) {
+            launchIntent.component = ComponentName("com.android.vending", "com.google.android.finsky.activities.LaunchUrlHandlerActivity")
+            launchIntent.data = Uri.parse("market://details?id=$JUICE_SSH_PACKAGE_NAME")
+            startActivity(launchIntent)
         }
     }
 
