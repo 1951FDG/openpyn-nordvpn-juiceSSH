@@ -14,10 +14,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.github.kittinunf.fuel.android.extension.responseJson
@@ -404,6 +401,8 @@ class MainActivity : AppCompatActivity(),
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
+        val params = buttonConnect.layoutParams as ViewGroup.MarginLayoutParams
+
         //googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
         //googleMap.setMaxZoomPreference(6.0f)
 
@@ -424,7 +423,7 @@ class MainActivity : AppCompatActivity(),
         googleMap.setOnInfoWindowClickListener(this)
         googleMap.setOnMarkerClickListener(this)
         googleMap.setOnMapLoadedCallback(this)
-        googleMap.setPadding(0,0,0,buttonConnect.height + buttonConnect.paddingBottom)
+        googleMap.setPadding(0,0,0,params.height + params.bottomMargin)
         googleMap.mapType = MAP_TYPE_NORMAL
         googleMap.uiSettings.isScrollGesturesEnabled = true
         googleMap.uiSettings.isZoomControlsEnabled = true
