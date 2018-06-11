@@ -1,6 +1,5 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
-import android.app.Activity
 import android.content.ComponentName
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -100,7 +99,7 @@ class MainActivity : AppCompatActivity(),
 
     private val items =  ArrayList<Marker>()
 
-    private fun <T : View> Activity.bind(@IdRes idRes: Int): Lazy<T> {
+    private fun <T : View> AppCompatActivity.bind(@IdRes idRes: Int): Lazy<T> {
         @Suppress("UNCHECKED_CAST")
         return lazy(LazyThreadSafetyMode.NONE){ findViewById<T>(idRes) }
     }
@@ -142,7 +141,7 @@ class MainActivity : AppCompatActivity(),
         val errorCode = api.isGooglePlayServicesAvailable(this)
 
         when {
-            errorCode == ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, Activity.RESULT_OK, null)
+            errorCode == ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, AppCompatActivity.RESULT_OK, null)
             api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
             else -> this.longToast(api.getErrorString(errorCode))
         }
@@ -284,7 +283,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
-            if (resultCode === Activity.RESULT_OK) {
+            if (resultCode === AppCompatActivity.RESULT_OK) {
                 mView.visibility = View.VISIBLE
 
                 //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
