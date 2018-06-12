@@ -7,6 +7,7 @@
     <string name="btn_connect">Connect</string>
     <string name="btn_disconnect">Disconnect</string>
     <string name="btn_connecting">Connecting…</string>
+    <string name="btn_disconnecting">Disconnecting…</string>
     <string name="btn_request_permissions">Request Permissions</string>
     <!-- Button labels -->
 

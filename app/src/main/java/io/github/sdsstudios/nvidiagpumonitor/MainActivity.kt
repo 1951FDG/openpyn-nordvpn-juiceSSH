@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.annotation.IdRes
+import android.support.constraint.ConstraintLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity(),
         )
     }
 
-    private val mConnectionListAdapter by lazy { ConnectionListAdapter(this) }
+    private val mConnectionListAdapter by lazy { ConnectionListAdapter(supportActionBar!!.themedContext) }
 
     private val mPermissionsGranted
         get() = mReadConnectionsPerm && mOpenSessionsPerm
@@ -104,6 +105,9 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val mDBHelper = DatabaseHelper(this)
 
@@ -131,8 +135,6 @@ class MainActivity : AppCompatActivity(),
         Log.e(TAG, offlineTileProvider.maximumZoom.toString())
 
         mView.onCreate(savedInstanceState)
-
-        setSupportActionBar(toolbar)
 
         val api = GoogleApiAvailability.getInstance()
         val errorCode = api.isGooglePlayServicesAvailable(this)
@@ -190,8 +192,11 @@ class MainActivity : AppCompatActivity(),
                 }
 
                 if (mPermissionsGranted) {
-                    buttonConnect.applyConnectingStyle()
-
+                    if (buttonConnect.text.toString().equals(getString(R.string.btn_connect), true)) {
+                        buttonConnect.applyConnectingStyle()
+                    } else {
+                        buttonConnect.applyDisconnectingStyle()
+                    }
 
                     val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
                     mConnectionManager.toggleConnection(uuid = uuid!!, activity = this)
@@ -401,7 +406,7 @@ class MainActivity : AppCompatActivity(),
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        val params = buttonConnect.layoutParams as ViewGroup.MarginLayoutParams
+        val params = buttonConnect.layoutParams as ConstraintLayout.LayoutParams
 
         //googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
         //googleMap.setMaxZoomPreference(6.0f)

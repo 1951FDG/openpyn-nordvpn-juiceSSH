@@ -2,8 +2,9 @@ package io.github.sdsstudios.nvidiagpumonitor
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
+import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
-import android.widget.Button
 
 /**
  * Created by Seth on 04/03/18.
@@ -12,26 +13,37 @@ import android.widget.Button
 class ConnectButton(
         context: Context?,
         attrs: AttributeSet?
-) : Button(context, attrs) {
+) : AppCompatButton(context, attrs) {
 
     fun applyConnectingStyle() {
         setText(R.string.btn_connecting)
-        setBackgroundColor(getColor(R.color.colorConnecting))
+        ViewCompat.setBackgroundTintList(this, ContextCompat.getColorStateList(context, R.color.colorConnecting))
         setTextColor(getColor(R.color.colorWhiteButtonText))
-        isEnabled = false
+        isClickable = false
+        isEnabled = true
     }
 
     fun applyConnectStyle() {
         setText(R.string.btn_connect)
-        setBackgroundColor(getColor(R.color.colorConnect))
+        ViewCompat.setBackgroundTintList(this, ContextCompat.getColorStateList(context, R.color.colorConnect))
         setTextColor(getColor(R.color.colorWhiteButtonText))
+        isClickable = true
+        isEnabled = true
+    }
+
+    fun applyDisconnectingStyle() {
+        setText(R.string.btn_disconnecting)
+        ViewCompat.setBackgroundTintList(this, ContextCompat.getColorStateList(context, R.color.colorConnecting))
+        setTextColor(getColor(R.color.colorWhiteButtonText))
+        isClickable = false
         isEnabled = true
     }
 
     fun applyDisconnectStyle() {
         setText(R.string.btn_disconnect)
-        setBackgroundColor(getColor(R.color.colorDisconnect))
+        ViewCompat.setBackgroundTintList(this, ContextCompat.getColorStateList(context, R.color.colorDisconnect))
         setTextColor(getColor(R.color.colorWhiteButtonText))
+        isClickable = true
         isEnabled = true
     }
 

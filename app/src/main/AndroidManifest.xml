@@ -37,7 +37,7 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.SettingsTheme">
+            android:theme="@style/SettingsTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.github.sdsstudios.nvidiagpumonitor.MainActivity" />
