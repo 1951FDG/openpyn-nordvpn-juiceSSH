@@ -27,17 +27,18 @@ class ConnectionManager(ctx: Context,
         const val JUICESSH_REQUEST_CODE = 345
     }
 
-    val powerUsage = MutableLiveData<Int>()
-    val temperature = MutableLiveData<Int>()
-    val fanSpeed = MutableLiveData<Int>()
-    val freeMemory = MutableLiveData<Int>()
-    val usedMemory = MutableLiveData<Int>()
-    val graphicsClock = MutableLiveData<Int>()
-    val videoClock = MutableLiveData<Int>()
-    val memoryClock = MutableLiveData<Int>()
-    val openpyn = MutableLiveData<Int>()
+//    val powerUsage = MutableLiveData<Int>()
+//    val temperature = MutableLiveData<Int>()
+//    val fanSpeed = MutableLiveData<Int>()
+//    val freeMemory = MutableLiveData<Int>()
+//    val usedMemory = MutableLiveData<Int>()
+//    val graphicsClock = MutableLiveData<Int>()
+//    val videoClock = MutableLiveData<Int>()
+//    val memoryClock = MutableLiveData<Int>()
 
-    var connected = false
+    private val openpyn = MutableLiveData<Int>()
+
+    private var connected = false
 
     private var mSessionKey = ""
     private var mSessionId = 0

@@ -337,4 +337,12 @@
 
     <string name="pref_silent">Silent</string>
     <string name="pref_description_silent">Do not try to send notifications. Use if \"libnotify\" or \"gi\" are not available</string>
+
+    <string name="is_tor">is_tor</string>
+    <string name="is_proxy">is_proxy</string>
+    <string name="is_anonymous">is_anonymous</string>
+    <string name="is_known_attacker">is_known_attacker</string>
+    <string name="is_known_abuser">is_known_abuser</string>
+    <string name="is_threat">is_threat</string>
+    <string name="is_bogon">is_bogon</string>
 </resources>

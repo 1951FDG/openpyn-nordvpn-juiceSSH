@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "io.github.sdsstudios.nvidiagpumonitor"
-        minSdkVersion 14
+        minSdkVersion 17
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
