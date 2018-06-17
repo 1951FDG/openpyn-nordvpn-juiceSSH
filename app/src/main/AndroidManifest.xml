@@ -40,7 +40,7 @@
             android:theme="@style/SettingsTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.sdsstudios.nvidiagpumonitor.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

@@ -3,7 +3,6 @@ package io.github.sdsstudios.nvidiagpumonitor.controllers
 import android.arch.lifecycle.MutableLiveData
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -20,11 +19,7 @@ abstract class BaseController(
         ctx: Context,
         private val mLiveData: MutableLiveData<Int>) : OnSessionExecuteListener {
 
-    companion object {
-        private const val INTERVAL_SECS = 2
-    }
-
-    val mCtx = ctx.applicationContext
+    val mCtx: Context = ctx.applicationContext
     val mainActivity = ctx as MainActivity
 
     var isRunning = false
@@ -60,27 +55,17 @@ abstract class BaseController(
 
         isRunning = true
 
-//        val handler = Handler()
-//
-//        handler.post(object : Runnable {
-//            override fun run() {
-                try {
-                    pluginClient.executeCommandOnSession(
-                            sessionId,
-                            sessionKey,
-                            command,
-                            this@BaseController
-                    )
+        try {
+            pluginClient.executeCommandOnSession(
+                    sessionId,
+                    sessionKey,
+                    command,
+                    this@BaseController
+            )
 
-                } catch (e: ServiceNotConnectedException) {
-                    Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
-                }
-
-//                if (isRunning) {
-//                    handler.postDelayed(this, INTERVAL_SECS * 1000L)
-//                }
-//            }
-//        })
+        } catch (e: ServiceNotConnectedException) {
+            Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
+        }
     }
 
     fun stop() {

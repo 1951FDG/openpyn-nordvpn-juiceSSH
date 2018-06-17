@@ -9,7 +9,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.annotation.IdRes
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -23,13 +22,11 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.CancelableCallback
 import com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL
-import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
@@ -85,22 +82,16 @@ class MainActivity : AppCompatActivity(),
     private val mPermissionsGranted
         get() = mReadConnectionsPerm && mOpenSessionsPerm
 
-    private val mView: MapView by bind(R.id.map)
+    var mMap: GoogleMap? = null
 
-    private lateinit var mMap: GoogleMap
-    private lateinit var mMarker: Marker
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    var mMarker: Marker? = null
+
     //private lateinit var offlineTileProvider: ExpandedMBTilesTileProvider
     private lateinit var offlineTileProvider: MapBoxOfflineTileProvider
 
     private val REQUEST_GOOGLE_PLAY_SERVICES = 1972
 
-    private val items =  ArrayList<Marker>()
-
-    private fun <T : View> AppCompatActivity.bind(@IdRes idRes: Int): Lazy<T> {
-        @Suppress("UNCHECKED_CAST")
-        return lazy(LazyThreadSafetyMode.NONE){ findViewById<T>(idRes) }
-    }
+    private val items by lazy { ArrayList<Marker>() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,7 +125,7 @@ class MainActivity : AppCompatActivity(),
         Log.e(TAG, offlineTileProvider.minimumZoom.toString())
         Log.e(TAG, offlineTileProvider.maximumZoom.toString())
 
-        mView.onCreate(savedInstanceState)
+        map.onCreate(savedInstanceState)
 
         val api = GoogleApiAvailability.getInstance()
         val errorCode = api.isGooglePlayServicesAvailable(this)
@@ -212,7 +203,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onResume() {
         super.onResume()
-        mView.onResume()
+        map.onResume()
 
         if (!isJuiceSSHInstalled()) {
             indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_install_juicessh), "OK") { juiceSSHInstall() }
@@ -221,12 +212,12 @@ class MainActivity : AppCompatActivity(),
 
     override fun onPause() {
         super.onPause()
-        mView.onResume()
+        map.onResume()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mView.onDestroy()
+        map.onDestroy()
         offlineTileProvider.close()
 
         mConnectionManager.onDestroy()
@@ -234,7 +225,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mView.onLowMemory()
+        map.onLowMemory()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -285,25 +276,26 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
-            if (resultCode === AppCompatActivity.RESULT_OK) {
-                mView.visibility = View.VISIBLE
+            if (resultCode == AppCompatActivity.RESULT_OK) {
+                map.visibility = View.VISIBLE
 
                 //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                 //val watermark = mapFragment.view?.findViewWithTag<ImageView>("GoogleWatermark")
-                val watermark = mView.findViewWithTag<ImageView>("GoogleWatermark")
+                val watermark = map.findViewWithTag<ImageView>("GoogleWatermark")
 
                 if (watermark != null) {
                     val params = watermark.layoutParams as RelativeLayout.LayoutParams
+                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+                    params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+                    params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
-                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0)
-                    //params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE)
-                    params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
-                    //params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+                    params.addRule(RelativeLayout.ALIGN_PARENT_START, 0)
+                    params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
                 }
 
                 //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
                 //mapFragment.getMapAsync(this)
-                mView.getMapAsync(this)
+                map.getMapAsync(this)
             }
         }
     }
@@ -324,7 +316,10 @@ class MainActivity : AppCompatActivity(),
         spinnerConnectionList.isEnabled = true
 
         Timer().schedule(5000){
-            updateMasterMarker()
+            val map = mMap
+            if (map != null) {
+                updateMasterMarker(map)
+            }
         }
     }
 
@@ -442,7 +437,7 @@ class MainActivity : AppCompatActivity(),
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         //val server = preferences.getString("pref_server", "")
-        val country_code = preferences.getString("pref_country", "")
+        //val country_code = preferences.getString("pref_country", "")
         //val country = args.country
         //val area = args.area
         //val tcp = preferences.getBoolean("pref_tcp", false)
@@ -552,7 +547,7 @@ class MainActivity : AppCompatActivity(),
             var1.visible(false)
             var1.flat(true)
 
-            val marker = mMap.addMarker(var1)
+            val marker = mMap!!.addMarker(var1)
             marker.tag = country
 
             items.add(marker)
@@ -562,11 +557,11 @@ class MainActivity : AppCompatActivity(),
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
         }
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
             if (location != null) {
-                mMap.addMarker(MarkerOptions().position(LatLng(location.latitude, location.longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).zIndex(0.5f))
-                //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 5.0f))
+                mMap!!.addMarker(MarkerOptions().position(LatLng(location.latitude, location.longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).zIndex(0.5f))
+                //mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 5.0f))
             }
         }
 
@@ -578,7 +573,7 @@ class MainActivity : AppCompatActivity(),
             val json1 = JSONObject()
 
             for (name in list) {
-                val (request, response, result) = name.httpGet().responseJson() // result is Result<Json, FuelError>
+                val (_, _, result) = name.httpGet().responseJson() // result is Result<Json, FuelError>
                 val (data, error) = result
                 if (data != null) {
                     Log.e(TAG, "Success")
@@ -634,21 +629,21 @@ class MainActivity : AppCompatActivity(),
                 var1.zIndex(1.0f)
                 var1.flat(true)
 
-                val marker = mMap.addMarker(var1)
+                val marker = mMap!!.addMarker(var1)
                 marker.tag = json1
 
                 mMarker = marker
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(var1.position, mMap.cameraPosition.zoom), 3000,
+                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(var1.position, mMap!!.cameraPosition.zoom), 3000,
                         object : CancelableCallback {
                             override fun onFinish() {
                                 baseContext.longToast("Animation to $country complete")
-                                mMarker.showInfoWindow()
+                                mMarker!!.showInfoWindow()
                             }
 
                             override fun onCancel() {
                                 baseContext.longToast("Animation to $country canceled")
-                                mMarker.showInfoWindow()
+                                mMarker!!.showInfoWindow()
                             }
                         })
             })
@@ -656,7 +651,7 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-    fun updateMasterMarker() {
+    fun updateMasterMarker(googleMap: GoogleMap) {
         val list: ArrayList<String> = ArrayList()
         list.add("https://api.ipdata.co")
         list.add("http://ip-api.com/json")
@@ -665,7 +660,7 @@ class MainActivity : AppCompatActivity(),
             val json1 = JSONObject()
 
             for (name in list) {
-                val (request, response, result) = name.httpGet().responseJson() // result is Result<Json, FuelError>
+                val (_, _, result) = name.httpGet().responseJson() // result is Result<Json, FuelError>
                 val (data, error) = result
                 if (data != null) {
                     Log.e(TAG, "Success")
@@ -713,25 +708,25 @@ class MainActivity : AppCompatActivity(),
                 val ip = json1.getString("ip")
                 //val threat = json1.optJSONObject("threat")
 
-                if (mMarker.isInfoWindowShown) {
-                    mMarker.hideInfoWindow()
+                if (mMarker!!.isInfoWindowShown) {
+                    mMarker!!.hideInfoWindow()
                 }
 
-                mMarker.tag = json1
-                mMarker.position = LatLng(lat, lon)
-                mMarker.title = "$emoji $city".trimStart()
-                mMarker.snippet = "$ip${Typography.ellipsis}"
+                mMarker!!.tag = json1
+                mMarker!!.position = LatLng(lat, lon)
+                mMarker!!.title = "$emoji $city".trimStart()
+                mMarker!!.snippet = "$ip${Typography.ellipsis}"
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMarker.position, mMap.cameraPosition.zoom), 3000,
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMarker!!.position, googleMap.cameraPosition.zoom), 3000,
                         object : CancelableCallback {
                             override fun onFinish() {
                                 baseContext.longToast("Animation to $country complete")
-                                mMarker.showInfoWindow()
+                                mMarker!!.showInfoWindow()
                             }
 
                             override fun onCancel() {
                                 baseContext.longToast("Animation to $country canceled")
-                                mMarker.showInfoWindow()
+                                mMarker!!.showInfoWindow()
                             }
                         })
             })
@@ -841,11 +836,11 @@ class MainActivity : AppCompatActivity(),
 */
     private fun createJson() {
         //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-        "https://api.nordvpn.com/server".httpGet().responseJson { request, response, result ->
+        "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
             when (result) {
                 is Result.Failure -> {
                     Log.e(TAG, "Failure")
-                    val ex = result.getException()
+                    result.getException().printStackTrace()
                 }
                 is Result.Success -> {
                     Log.e(TAG, "Success")
@@ -1004,7 +999,7 @@ class MainActivity : AppCompatActivity(),
     override fun onMarkerClick(p0: Marker?): Boolean {
         if (p0?.zIndex == 0f) {
             Log.d(TAG, p0.tag.toString())
-            if (mMap != null && items.count() != 0) {
+            if (items.count() != 0) {
                 for (item in items) {
                     if (item.zIndex == 1.0f) {
                         item.zIndex = 0f
@@ -1020,9 +1015,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onCameraIdle() {
-        //Log.e(TAG, "i am called")
-        if(mMap != null && items.count() != 0) {
-            val bounds = mMap.projection.visibleRegion.latLngBounds
+        if(items.count() != 0) {
+            val bounds = mMap!!.projection.visibleRegion.latLngBounds
             for (item in items) {
                 if (bounds.contains(item.position)) {
                     if (!item.isVisible) {

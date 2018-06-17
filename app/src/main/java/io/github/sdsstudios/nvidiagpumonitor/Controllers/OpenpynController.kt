@@ -26,14 +26,14 @@ class OpenpynController(
 
     init {
         //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-        "https://api.nordvpn.com/server".httpGet().responseJson { request, response, result ->
+        "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
             when (result) {
                 is Result.Failure -> {
-                    Log.e(TAG, "Failure")
-                    val ex = result.getException()
+                    Log.d(TAG, "Failure")
+                    result.getException().printStackTrace()
                 }
                 is Result.Success -> {
-                    Log.e(TAG, "Success")
+                    Log.d(TAG, "Success")
                     operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
                     val countries_mapping = mutableMapOf<String, String>()
                     val json_response = result.get().array() //JSONArray
@@ -51,7 +51,7 @@ class OpenpynController(
                         serializer.startTag("", "head")
                         serializer.startTag("", "string-array")
                         serializer.attribute("", "name", "pref_country_entries")
-                        for ((key, value) in sorted_countries_mapping) {
+                        for ((key, _) in sorted_countries_mapping) {
                             serializer.startTag("", "item")
                             serializer.text(key)
                             serializer.endTag("", "item")
@@ -59,7 +59,7 @@ class OpenpynController(
                         serializer.endTag("", "string-array")
                         serializer.startTag("", "string-array")
                         serializer.attribute("", "name", "pref_country_values")
-                        for ((key, value) in sorted_countries_mapping) {
+                        for ((_, value) in sorted_countries_mapping) {
                             serializer.startTag("", "item")
                             serializer.text(value)
                             serializer.endTag("", "item")
@@ -187,7 +187,10 @@ class OpenpynController(
         mCtx.longToast(line)
         if (line.startsWith("CONNECTING TO SERVER", true)) {
             Timer().schedule(10000){
-                mainActivity.updateMasterMarker()
+                val map = mainActivity.mMap
+                if (map != null) {
+                    mainActivity.updateMasterMarker(map)
+                }
             }
         }
     }

@@ -139,7 +139,7 @@ class ConnectionManager(ctx: Context,
         Thread(Runnable {
             try {
                 mControllers.forEach { it.kill(mClient, mSessionId, mSessionKey) }
-                Thread.sleep(5000);
+                Thread.sleep(5000)
                 mClient.disconnect(mSessionId, mSessionKey)
 
             } catch (e: ServiceNotConnectedException) {

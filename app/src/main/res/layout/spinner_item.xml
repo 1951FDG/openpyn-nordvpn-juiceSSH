@@ -7,4 +7,4 @@
     android:gravity="center_vertical"
     android:singleLine="true"
     tools:text="PC"
-    style="@style/TextAppearance.AppCompat.Title"/>
+    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"/>
