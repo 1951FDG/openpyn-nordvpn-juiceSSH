@@ -22,7 +22,7 @@ abstract class BaseController(
     val mCtx: Context = ctx.applicationContext
     val mainActivity = ctx as MainActivity
 
-    var isRunning = false
+    private var isRunning = false
 
     abstract val regex: Regex
     var command = ""

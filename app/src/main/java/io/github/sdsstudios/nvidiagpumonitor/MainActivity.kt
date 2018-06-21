@@ -87,8 +87,8 @@ class MainActivity : AppCompatActivity(),
 
     var mMarker: Marker? = null
 
-    //private lateinit var offlineTileProvider: ExpandedMBTilesTileProvider
-    private lateinit var offlineTileProvider: MapBoxOfflineTileProvider
+    //private var offlineTileProvider: ExpandedMBTilesTileProvider? = null
+    private var offlineTileProvider: MapBoxOfflineTileProvider? = null
 
     private val items by lazy { ArrayList<Marker>() }
 
@@ -207,7 +207,8 @@ class MainActivity : AppCompatActivity(),
     override fun onDestroy() {
         super.onDestroy()
         map.onDestroy()
-        offlineTileProvider.close()
+
+        offlineTileProvider?.close()
 
         mConnectionManager.onDestroy()
     }
@@ -388,9 +389,9 @@ class MainActivity : AppCompatActivity(),
 
         //offlineTileProvider = ExpandedMBTilesTileProvider(file, 256, 256)
 
-        offlineTileProvider = MapBoxOfflineTileProvider(file)
-        Log.e(TAG, offlineTileProvider.minimumZoom.toString())
-        Log.e(TAG, offlineTileProvider.maximumZoom.toString())
+        offlineTileProvider = MapBoxOfflineTileProvider(file.absolutePath)
+        Log.e(TAG, offlineTileProvider!!.minimumZoom.toString())
+        Log.e(TAG, offlineTileProvider!!.maximumZoom.toString())
 
         val params = buttonConnect.layoutParams as ConstraintLayout.LayoutParams
 
@@ -398,7 +399,7 @@ class MainActivity : AppCompatActivity(),
         //googleMap.setMaxZoomPreference(6.0f)
 
         googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
-        googleMap.setMaxZoomPreference(offlineTileProvider.maximumZoom.toFloat())
+        googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom.toFloat())
 
         try {
             val success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
@@ -463,29 +464,24 @@ class MainActivity : AppCompatActivity(),
             }
         }
 
-        lateinit var json: String
+        var jsonArr: JSONArray? = null
 
         try {
             val fis = FileInputStream(file)
             val bytes = fis.readBytes()
             fis.close()
-            json = String(bytes, Charsets.UTF_8)
+            val json = String(bytes, Charsets.UTF_8)
             Log.d(TAG, json)
+            jsonArr = JSONArray(json)
         } catch (e: IOException) {
             RuntimeException(e)
-        }
-
-        lateinit var jsonArr: JSONArray
-
-        try {
-            jsonArr = JSONArray(json)
         } catch (e: JSONException) {
             RuntimeException(e)
         }
 
-
         operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
+        if (jsonArr != null) {
         for (res in jsonArr) {
             /*
             val country = res.getString("flag").toLowerCase()
@@ -515,20 +511,16 @@ class MainActivity : AppCompatActivity(),
                     if (p2p and name.equals("P2P", true)) {
                         pass = true
                         break
-                    }
-                    else if (dedicated and name.equals("Dedicated IP servers", true)) {
+                    } else if (dedicated and name.equals("Dedicated IP servers", true)) {
                         pass = true
                         break
-                    }
-                    else if (double_vpn and name.equals("Double VPN", true)) {
+                    } else if (double_vpn and name.equals("Double VPN", true)) {
                         pass = true
                         break
-                    }
-                    else if (tor_over_vpn and name.equals("Obfuscated Servers", true)) {
+                    } else if (tor_over_vpn and name.equals("Obfuscated Servers", true)) {
                         pass = true
                         break
-                    }
-                    else if (anti_ddos and name.equals("Anti DDoS", true)) {
+                    } else if (anti_ddos and name.equals("Anti DDoS", true)) {
                         pass = true
                         break
                     }
@@ -554,6 +546,7 @@ class MainActivity : AppCompatActivity(),
             marker.tag = country
 
             items.add(marker)
+        }
         }
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -918,16 +911,8 @@ class MainActivity : AppCompatActivity(),
                             val key = keys.next()
                             val value = jsonObj.getJSONObject(key)
 
-                            val newjsonObjLast = JSONObject()
-
-                            newjsonObjLast.put("flag", value.getString("flag"))
-                            newjsonObjLast.put("country", value.getString("country"))
-                            newjsonObjLast.put("location", value.getJSONObject("location"))
-
                             val jsonArr = JSONArray()
-
                             val features = value.getJSONObject("features")
-
 
                             if (features.getBoolean("anti_ddos")) {
                                 jsonArr.put(JSONObject().put("name", "Anti DDoS"))
@@ -953,9 +938,14 @@ class MainActivity : AppCompatActivity(),
                                 jsonArr.put(JSONObject().put("name", "Standard VPN servers"))
                             }
 
-                            newjsonObjLast.put("categories", jsonArr)
+                            val objLast = JSONObject().apply {
+                                put("flag", value.getString("flag"))
+                                put("country", value.getString("country"))
+                                put("location", value.getJSONObject("location"))
+                                put("categories", jsonArr)
+                            }
 
-                            jsonObjLast.put(newjsonObjLast)
+                            jsonObjLast.put(objLast)
                         }
                     } catch (e: JSONException) {
                         throw RuntimeException(e)

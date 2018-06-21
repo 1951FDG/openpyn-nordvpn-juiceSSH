@@ -33,6 +33,7 @@ import java.io.File;
  * the available zoom levels to the lowest one 
  * (lower zoom levels will be interpolated from higher levels).
  */
+@SuppressWarnings("ALL")
 public class ExpandedMBTilesTileProvider implements TileProvider {
     private final File source;
     private final int width;

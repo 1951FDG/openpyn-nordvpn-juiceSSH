@@ -44,6 +44,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     // TileProvider Interface
     // ------------------------------------------------------------------------
 
+    @SuppressWarnings("unused")
     @Override
     public Tile getTile(int x, int y, int z) {
         Tile tile = NO_TILE;
@@ -99,6 +100,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the minimum zoom level supported or {@link #mMinimumZoom} if
      *         it could not be determined.
      */
+    @SuppressWarnings("unused")
     public int getMinimumZoom() {
         return this.mMinimumZoom;
     }
@@ -109,6 +111,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the maximum zoom level supported or {@link #mMaximumZoom} if
      *         it could not be determined.
      */
+    @SuppressWarnings("unused")
     public int getMaximumZoom() {
         return this.mMaximumZoom;
     }
@@ -119,6 +122,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the geographic bounds available or {@link null} if it could not
      *         be determined.
      */
+    @SuppressWarnings("unused")
     public LatLngBounds getBounds() {
         return this.mBounds;
     }
@@ -130,6 +134,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return {@code true} if the requested zoom level is supported by this
      *         provider.
      */
+    @SuppressWarnings("WeakerAccess")
     public boolean isZoomLevelAvailable(int zoom) {
         return (zoom >= this.mMinimumZoom) && (zoom <= this.mMaximumZoom);
     }
