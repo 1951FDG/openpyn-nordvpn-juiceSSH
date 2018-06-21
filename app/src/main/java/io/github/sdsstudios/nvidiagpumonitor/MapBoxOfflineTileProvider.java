@@ -76,7 +76,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * Closes the provider, cleaning up any background resources.
      * 
      * <p>
-     * You must call {@link #close()} when you are finished using an instance of
+     * You must call {@code close()} when you are finished using an instance of
      * this provider. Failing to do so may leak resources, such as the backing
      * SQLiteDatabase.
      * </p>
@@ -96,7 +96,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     /**
      * The minimum zoom level supported by this provider.
      * 
-     * @return the minimum zoom level supported or {@link Integer.MIN_VALUE} if
+     * @return the minimum zoom level supported or {@link #mMinimumZoom} if
      *         it could not be determined.
      */
     public int getMinimumZoom() {
@@ -106,7 +106,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     /**
      * The maximum zoom level supported by this provider.
      * 
-     * @return the maximum zoom level supported or {@link Integer.MAX_VALUE} if
+     * @return the maximum zoom level supported or {@link #mMaximumZoom} if
      *         it could not be determined.
      */
     public int getMaximumZoom() {
