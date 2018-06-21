@@ -79,20 +79,6 @@ class ConnectionManager(ctx: Context,
         connected = true
 
         mControllers.forEach { it.start(mClient, mSessionId, mSessionKey) }
-
-//        val command = "uptime"
-//
-//        try {
-//            mClient.executeCommandOnSession(
-//                    mSessionId,
-//                    mSessionKey,
-//                    command,
-//                    null
-//            )
-//
-//        } catch (e: ServiceNotConnectedException) {
-//            Log.d(ContentValues.TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
-//        }
     }
 
     override fun onSessionFinished() {

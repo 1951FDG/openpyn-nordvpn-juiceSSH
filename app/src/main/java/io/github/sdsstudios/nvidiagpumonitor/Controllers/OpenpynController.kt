@@ -1,6 +1,5 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
-//import org.jetbrains.anko.toast
 import android.arch.lifecycle.MutableLiveData
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -36,7 +35,7 @@ class OpenpynController(
                     Log.d(TAG, "Success")
                     operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
                     val countries_mapping = mutableMapOf<String, String>()
-                    val json_response = result.get().array() //JSONArray
+                    val json_response = result.get().array()
                     for (res in json_response) {
                         if (res.getString("country") !in countries_mapping) {
                             countries_mapping[res.getString("country")] = res.getString("domain").take(2)

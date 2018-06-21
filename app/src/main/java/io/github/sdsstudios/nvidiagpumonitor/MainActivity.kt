@@ -288,8 +288,6 @@ class MainActivity : AppCompatActivity(),
             if (resultCode == AppCompatActivity.RESULT_OK) {
                 map.visibility = View.VISIBLE
 
-                //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-                //val watermark = mapFragment.view?.findViewWithTag<ImageView>("GoogleWatermark")
                 val watermark = map.findViewWithTag<ImageView>("GoogleWatermark")
 
                 if (watermark != null) {
@@ -304,8 +302,6 @@ class MainActivity : AppCompatActivity(),
                     params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
                 }
 
-                //val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-                //mapFragment.getMapAsync(this)
                 map.getMapAsync(this)
             }
         }
@@ -358,15 +354,6 @@ class MainActivity : AppCompatActivity(),
                 mLoaderFinishCallback = this
         ))
     }
-
-//    private fun AppCompatTextView.setData(value: Int?, suffix: String) {
-//        if (value == null) {
-//            setText(R.string.no_data)
-//        } else {
-//            val data = "$value $suffix"
-//            text = data
-//        }
-//    }
 
     private fun requestPermissions() {
         mReadConnectionsPerm = hasPermission(READ_CONNECTIONS)
@@ -438,7 +425,6 @@ class MainActivity : AppCompatActivity(),
         googleMap.uiSettings.isScrollGesturesEnabled = true
         googleMap.uiSettings.isZoomControlsEnabled = true
         googleMap.uiSettings.isZoomGesturesEnabled = true
-        //googleMap.isMyLocationEnabled = true
 
         mMap = googleMap
     }
@@ -451,8 +437,8 @@ class MainActivity : AppCompatActivity(),
         //val country = args.country
         //val area = args.area
         //val tcp = preferences.getBoolean("pref_tcp", false)
-        ////val max_load = preferences.getString("pref_max_load", "") *
-        ////val top_servers = preferences.getString("pref_top_servers", "") *
+        //val max_load = preferences.getString("pref_max_load", "")
+        //val top_servers = preferences.getString("pref_top_servers", "")
         //val pings = preferences.getString("pref_pings", "")
         //val force_fw_rules = preferences.getBoolean("pref_force_fw", false)
         val p2p = preferences.getBoolean("pref_p2p", false)
@@ -587,7 +573,7 @@ class MainActivity : AppCompatActivity(),
             val json1 = JSONObject()
 
             for (name in list) {
-                val (_, _, result) = name.httpGet().responseJson() // result is Result<Json, FuelError>
+                val (_, _, result) = name.httpGet().responseJson()
                 val (data, error) = result
                 if (data != null) {
                     Log.e(TAG, "Success")
@@ -674,7 +660,7 @@ class MainActivity : AppCompatActivity(),
             val json1 = JSONObject()
 
             for (name in list) {
-                val (_, _, result) = name.httpGet().responseJson() // result is Result<Json, FuelError>
+                val (_, _, result) = name.httpGet().responseJson()
                 val (data, error) = result
                 if (data != null) {
                     Log.e(TAG, "Success")
