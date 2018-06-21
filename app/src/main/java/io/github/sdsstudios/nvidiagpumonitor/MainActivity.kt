@@ -190,6 +190,11 @@ class MainActivity : AppCompatActivity(),
         //this.createJson()
     }
 
+    override fun onStart() {
+        super.onStart()
+        map.onStart()
+    }
+
     override fun onResume() {
         super.onResume()
         map.onResume()
@@ -201,7 +206,12 @@ class MainActivity : AppCompatActivity(),
 
     override fun onPause() {
         super.onPause()
-        map.onResume()
+        map.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        map.onStop()
     }
 
     override fun onDestroy() {
