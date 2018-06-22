@@ -4,13 +4,13 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.sdsstudios.nvidiagpumonitor.controllers.*
+import org.jetbrains.anko.longToast
 import java.util.*
 
 /**
@@ -130,11 +130,7 @@ class ConnectionManager(ctx: Context,
                 mClient.disconnect(mSessionId, mSessionKey)
 
             } catch (e: ServiceNotConnectedException) {
-                Toast.makeText(
-                        mCtx,
-                        R.string.error_couldnt_connect_to_service,
-                        Toast.LENGTH_SHORT
-                ).show()
+                mCtx.longToast(R.string.error_couldnt_connect_to_service)
             }
         }).start()
     }
@@ -145,12 +141,7 @@ class ConnectionManager(ctx: Context,
                 mClient.connect(activity, uuid, this, JUICESSH_REQUEST_CODE)
 
             } catch (e: ServiceNotConnectedException) {
-
-                Toast.makeText(
-                        mCtx,
-                        R.string.error_couldnt_connect_to_service,
-                        Toast.LENGTH_SHORT
-                ).show()
+                mCtx.longToast(R.string.error_couldnt_connect_to_service)
             }
         }).start()
     }

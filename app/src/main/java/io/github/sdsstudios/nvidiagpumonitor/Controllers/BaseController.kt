@@ -2,14 +2,13 @@ package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.MainActivity
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
+import org.jetbrains.anko.longToast
 
 /**
  * Created by Seth on 05/03/18.
@@ -47,7 +46,7 @@ abstract class BaseController(
     }
 
     override fun onError(error: Int, reason: String) {
-        Toast.makeText(mCtx, reason, LENGTH_SHORT).show()
+        mCtx.longToast(reason)
     }
 
     open fun start(pluginClient: PluginClient,
