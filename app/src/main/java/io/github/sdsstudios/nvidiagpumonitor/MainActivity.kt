@@ -1,7 +1,6 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
 import android.content.ComponentName
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -13,7 +12,6 @@ import android.support.constraint.ConstraintLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -65,7 +63,8 @@ class MainActivity : AppCompatActivity(),
         GoogleMap.OnMapLoadedCallback,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnCameraIdleListener,
-        GoogleMap.OnInfoWindowClickListener {
+        GoogleMap.OnInfoWindowClickListener,
+        AnkoLogger {
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
@@ -118,7 +117,7 @@ class MainActivity : AppCompatActivity(),
                 mOutput.close()
                 mInput.close()
             } catch (e: IOException) {
-                RuntimeException(e)
+                error(e)
             }
         }
 
@@ -395,8 +394,8 @@ class MainActivity : AppCompatActivity(),
         //offlineTileProvider = ExpandedMBTilesTileProvider(file, 256, 256)
 
         offlineTileProvider = MapBoxOfflineTileProvider(file.absolutePath)
-        Log.e(TAG, offlineTileProvider!!.minimumZoom.toString())
-        Log.e(TAG, offlineTileProvider!!.maximumZoom.toString())
+        info(offlineTileProvider!!.minimumZoom)
+        info(offlineTileProvider!!.maximumZoom)
 
         val params = buttonConnect.layoutParams as ConstraintLayout.LayoutParams
 
@@ -407,13 +406,10 @@ class MainActivity : AppCompatActivity(),
         googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom.toFloat())
 
         try {
-            val success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
 
-            if (!success) {
-                Log.e(TAG, "Style parsing failed.")
-            }
         } catch (e: Resources.NotFoundException) {
-            Log.e(TAG, "Can't find style. Error: ", e)
+            error(e)
         }
 
         googleMap.setOnCameraIdleListener(this)
@@ -430,6 +426,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMapLoaded() {
+        info(mMap!!.minZoomLevel)
+        info(mMap!!.maxZoomLevel)
+
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         //val server = preferences.getString("pref_server", "")
@@ -464,7 +463,7 @@ class MainActivity : AppCompatActivity(),
                 mOutput.close()
                 mInput.close()
             } catch (e: IOException) {
-                RuntimeException(e)
+                error(e)
             }
         }
 
@@ -475,12 +474,11 @@ class MainActivity : AppCompatActivity(),
             val bytes = fis.readBytes()
             fis.close()
             val json = String(bytes, Charsets.UTF_8)
-            Log.d(TAG, json)
             jsonArr = JSONArray(json)
         } catch (e: IOException) {
-            RuntimeException(e)
+            error(e)
         } catch (e: JSONException) {
-            RuntimeException(e)
+            error(e)
         }
 
         operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
@@ -536,10 +534,7 @@ class MainActivity : AppCompatActivity(),
             }
 
             val country = res.getString("flag").toLowerCase()
-            //Log.d(TAG, country)
-
             val location = res.getJSONObject("location")
-            //Log.d(TAG, location.toString())
 
             val var1 = MarkerOptions()
             var1.position(LatLng(location.getDouble("lat"), location.getDouble("long")))
@@ -576,9 +571,8 @@ class MainActivity : AppCompatActivity(),
                 val (_, _, result) = name.httpGet().responseJson()
                 val (data, error) = result
                 if (data != null) {
-                    Log.e(TAG, "Success")
                     val content = data.obj()
-                    Log.e(TAG, content.toString())
+                    debug(content)
 
                     var country = content.optString("country_name")
                     val city = content.optString("city")
@@ -607,8 +601,7 @@ class MainActivity : AppCompatActivity(),
                     //break
                 }
                 else {
-                    Log.e(TAG, "Failure")
-                    Log.e(TAG, error.toString())
+                    error(error)
                 }
             }
 
@@ -663,9 +656,8 @@ class MainActivity : AppCompatActivity(),
                 val (_, _, result) = name.httpGet().responseJson()
                 val (data, error) = result
                 if (data != null) {
-                    Log.e(TAG, "Success")
                     val content = data.obj()
-                    Log.e(TAG, content.toString())
+                    debug(content)
 
                     var country = content.optString("country_name")
                     val city = content.optString("city")
@@ -694,8 +686,7 @@ class MainActivity : AppCompatActivity(),
                     //break
                 }
                 else {
-                    Log.e(TAG, "Failure")
-                    Log.e(TAG, error.toString())
+                    error(error)
                 }
             }
 
@@ -738,11 +729,9 @@ class MainActivity : AppCompatActivity(),
         "https://api.nordvpn.com/server".httpGet().responseJson { request, response, result ->
             when (result) {
                 is Result.Failure -> {
-                    Log.e(TAG, "Failure")
                     val ex = result.getException()
                 }
                 is Result.Success -> {
-                    Log.e(TAG, "Success")
                     operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
                     val jsonObj = JSONObject()
                     val content = result.get().array() //JSONArray
@@ -817,18 +806,17 @@ class MainActivity : AppCompatActivity(),
                             val value = jsonObj.getJSONArray(key)
                             val location = value.getJSONObject(0).getJSONObject("location")
                             val marker = mMap.addMarker(MarkerOptions().position(LatLng(location.getDouble("lat"), location.getDouble("long"))).visible(false))
-                            //Log.e(TAG, location.toString())
                             marker.tag = value
 
                             items.add(marker)
                         }
                     } catch (e: JSONException) {
-                        throw RuntimeException(e)
+                        error(e)
                     }
 
 //                    val file = File(this.getExternalFilesDir(null),"output.json")
 //                    file.writeText(jsonObj.toString())
-//                    Log.d(TAG, file.toString())
+//                    debug(file)
                 }
             }
         }
@@ -839,11 +827,9 @@ class MainActivity : AppCompatActivity(),
         "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
             when (result) {
                 is Result.Failure -> {
-                    Log.e(TAG, "Failure")
-                    result.getException().printStackTrace()
+                    error(result.getException())
                 }
                 is Result.Success -> {
-                    Log.e(TAG, "Success")
                     operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
                     val jsonObj = JSONObject()
                     val content = result.get().array() //JSONArray
@@ -952,12 +938,16 @@ class MainActivity : AppCompatActivity(),
                             jsonObjLast.put(objLast)
                         }
                     } catch (e: JSONException) {
-                        throw RuntimeException(e)
+                        error(e)
                     }
 
+                    val text = jsonObjLast.toString()
+                    debug(text)
+
                     val file = File(this.getExternalFilesDir(null),resources.getResourceEntryName(R.raw.nordvpn) + ".json")
-                    file.writeText(jsonObjLast.toString())
-                    Log.d(TAG, file.toString())
+                    debug(file)
+
+                    file.writeText(text)
                 }
             }
         }
@@ -977,7 +967,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         if (p0?.zIndex == 0f) {
-            Log.d(TAG, p0.tag.toString())
+            debug(p0.tag)
             if (items.count() != 0) {
                 for (item in items) {
                     if (item.zIndex == 1.0f) {
@@ -1013,7 +1003,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onInfoWindowClick(p0: Marker?) {
         val jsonObj = p0?.tag as JSONObject
-        Log.d(TAG, jsonObj.toString())
+        debug(jsonObj)
 
         val threats = jsonObj.optJSONObject("threat")
 

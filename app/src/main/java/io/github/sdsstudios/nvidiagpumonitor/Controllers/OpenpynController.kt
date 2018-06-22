@@ -1,15 +1,17 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import android.arch.lifecycle.MutableLiveData
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.preference.PreferenceManager
-import android.util.Log
 import android.util.Xml
 import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.sonelli.juicessh.pluginlibrary.PluginClient
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.debug
+import org.jetbrains.anko.error
+import org.jetbrains.anko.info
 import org.jetbrains.anko.longToast
 import org.json.JSONArray
 import org.json.JSONObject
@@ -21,18 +23,16 @@ import kotlin.concurrent.schedule
 class OpenpynController(
         ctx: Context,
         liveData: MutableLiveData<Int>
-) : BaseController(ctx, liveData) {
+) : BaseController(ctx, liveData), AnkoLogger {
 
     init {
         //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
         "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
             when (result) {
                 is Result.Failure -> {
-                    Log.d(TAG, "Failure")
-                    result.getException().printStackTrace()
+                    error(result.getException())
                 }
                 is Result.Success -> {
-                    Log.d(TAG, "Success")
                     operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
                     val countries_mapping = mutableMapOf<String, String>()
                     val json_response = result.get().array()
@@ -160,7 +160,7 @@ class OpenpynController(
 
         val openpyn = openpyn_options.toString()
 
-        Log.e(TAG, openpyn)
+        info(openpyn)
 
         // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
         // command = "echo \$PATH ; echo \$-"
@@ -182,7 +182,8 @@ class OpenpynController(
     }
 
     override fun onOutputLine(line: String) {
-        Log.e(TAG, line)
+        debug(line)
+
         mCtx.longToast(line)
         if (line.startsWith("CONNECTING TO SERVER", true)) {
             Timer().schedule(10000){

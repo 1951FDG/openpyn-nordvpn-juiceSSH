@@ -1,15 +1,15 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import android.arch.lifecycle.MutableLiveData
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.MainActivity
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.debug
 
 /**
  * Created by Seth on 05/03/18.
@@ -17,7 +17,7 @@ import io.github.sdsstudios.nvidiagpumonitor.MainActivity
 
 abstract class BaseController(
         ctx: Context,
-        private val mLiveData: MutableLiveData<Int>) : OnSessionExecuteListener {
+        private val mLiveData: MutableLiveData<Int>) : OnSessionExecuteListener, AnkoLogger {
 
     val mCtx: Context = ctx.applicationContext
     val mainActivity = ctx as MainActivity
@@ -32,7 +32,8 @@ abstract class BaseController(
         when (exitCode) {
             127 -> {
                 mLiveData.value = null
-                Log.d(TAG, "Tried to run a command but the command was not found on the server")
+                debug("Tried to run a command but the command was not found on the server")
+
             }
         }
     }
@@ -64,7 +65,7 @@ abstract class BaseController(
             )
 
         } catch (e: ServiceNotConnectedException) {
-            Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
+            debug("Tried to execute a command but could not connect to JuiceSSH plugin service")
         }
     }
 
@@ -85,7 +86,7 @@ abstract class BaseController(
             )
 
         } catch (e: ServiceNotConnectedException) {
-            Log.d(TAG, "Tried to execute a command but could not connect to JuiceSSH plugin service")
+            debug("Tried to execute a command but could not connect to JuiceSSH plugin service")
         }
     }
 
