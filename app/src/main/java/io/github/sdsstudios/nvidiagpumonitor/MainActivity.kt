@@ -989,8 +989,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onCameraIdle() {
-        if(items.count() != 0) {
-            val bounds = mMap!!.projection.visibleRegion.latLngBounds
+        val bounds = mMap!!.projection.visibleRegion.latLngBounds
+
+        if (items.count() != 0) {
             for (item in items) {
                 if (bounds.contains(item.position)) {
                     if (!item.isVisible) {
@@ -1004,13 +1005,27 @@ class MainActivity : AppCompatActivity(),
                 }
             }
         }
+
+        val item = mMarker
+
+        if (item != null) {
+            if (bounds.contains(item.position)) {
+                if (!item.isVisible) {
+                    item.isVisible = true
+                }
+            } else {
+                if (item.isVisible) {
+                    item.isVisible = false
+                }
+            }
+        }
     }
 
     override fun onInfoWindowClick(p0: Marker?) {
         val jsonObj = p0?.tag as JSONObject
         debug(jsonObj)
 
-        val threats = jsonObj.optJSONObject("threat")
+        val threats: JSONObject? = jsonObj.optJSONObject("threat")
 
         if (threats != null) {
             val tor = threats.getBoolean("is_tor")
