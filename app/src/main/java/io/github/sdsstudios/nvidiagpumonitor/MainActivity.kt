@@ -8,6 +8,8 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.annotation.MainThread
+import android.support.annotation.WorkerThread
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -52,7 +54,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 import kotlin.concurrent.schedule
-
 
 class MainActivity : AppCompatActivity(),
         OnSessionStartedListener,
@@ -341,6 +342,7 @@ class MainActivity : AppCompatActivity(),
         mConnectionListAdapter.swapCursor(newCursor)
     }
 
+    @MainThread
     private fun onPermissionsGranted() {
         mConnectionManager.startClient(onClientStartedListener = this)
 
@@ -822,6 +824,8 @@ class MainActivity : AppCompatActivity(),
         }
     }
 */
+
+    @WorkerThread
     private fun createJson() {
         //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
         "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
@@ -953,6 +957,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    @MainThread
     fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
         if (mMap != null && items.count() != 0) {
             for (item in items) {

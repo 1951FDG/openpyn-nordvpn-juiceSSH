@@ -3,6 +3,7 @@ package io.github.sdsstudios.nvidiagpumonitor
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.Intent
+import android.support.annotation.MainThread
 import android.support.v7.app.AppCompatActivity
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
@@ -17,6 +18,7 @@ import java.util.*
  * Created by Seth on 04/03/18.
  */
 
+@MainThread
 class ConnectionManager(ctx: Context,
                         private val mActivitySessionStartedListener: OnSessionStartedListener,
                         private val mActivitySessionFinishedListener: OnSessionFinishedListener
@@ -56,7 +58,7 @@ class ConnectionManager(ctx: Context,
 //    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
     private val mOpenpynController = OpenpynController(ctx, openpyn)
 
-    private val mControllers = listOf(
+    private val mControllers = listOf<BaseController>(
 //            mPowerController,
 //            mTempController,
 //            mFanSpeedController,

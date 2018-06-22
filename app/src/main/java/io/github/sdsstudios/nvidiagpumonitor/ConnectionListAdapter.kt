@@ -2,6 +2,7 @@ package io.github.sdsstudios.nvidiagpumonitor
 
 import android.content.Context
 import android.database.Cursor
+import android.support.annotation.MainThread
 import android.support.v4.widget.CursorAdapter
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import java.util.*
  * Created by Seth on 04/03/18.
  */
 
+@MainThread
 class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
 
     private val mInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater

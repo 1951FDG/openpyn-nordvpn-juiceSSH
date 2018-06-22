@@ -2,6 +2,8 @@ package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
+import android.support.annotation.CallSuper
+import android.support.annotation.MainThread
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
@@ -14,6 +16,7 @@ import org.jetbrains.anko.longToast
  * Created by Seth on 05/03/18.
  */
 
+@MainThread
 abstract class BaseController(
         ctx: Context,
         private val mLiveData: MutableLiveData<Int>) : OnSessionExecuteListener, AnkoLogger {
@@ -49,6 +52,7 @@ abstract class BaseController(
         mCtx.longToast(reason)
     }
 
+    @CallSuper
     open fun start(pluginClient: PluginClient,
               sessionId: Int,
               sessionKey: String) {
@@ -72,6 +76,7 @@ abstract class BaseController(
         isRunning = false
     }
 
+    @CallSuper
     open fun kill(pluginClient: PluginClient,
              sessionId: Int,
              sessionKey: String) {

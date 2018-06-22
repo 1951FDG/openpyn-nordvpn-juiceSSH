@@ -3,6 +3,7 @@ package io.github.sdsstudios.nvidiagpumonitor
 import android.content.Context
 import android.database.Cursor
 import android.os.Bundle
+import android.support.annotation.MainThread
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
@@ -12,6 +13,7 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract
  * Created by Seth on 04/03/18.
  */
 
+@MainThread
 class ConnectionListLoader(private val mCtx: Context,
                            private val mLoaderFinishCallback: ConnectionListLoaderFinishedCallback
 ) : LoaderManager.LoaderCallbacks<Cursor> {

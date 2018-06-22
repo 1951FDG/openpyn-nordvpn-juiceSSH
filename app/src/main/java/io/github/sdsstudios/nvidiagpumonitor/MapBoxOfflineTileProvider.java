@@ -6,11 +6,13 @@ import java.io.File;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import android.support.annotation.MainThread;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 
+@MainThread
 public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     // ------------------------------------------------------------------------
