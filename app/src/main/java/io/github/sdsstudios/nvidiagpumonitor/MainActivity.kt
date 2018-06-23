@@ -7,6 +7,8 @@ import android.content.res.Resources
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceActivity.EXTRA_NO_HEADERS
+import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT
 import android.preference.PreferenceManager
 import android.support.annotation.MainThread
 import android.support.annotation.WorkerThread
@@ -270,7 +272,7 @@ class MainActivity : AppCompatActivity(),
         val id = item.itemId
         return when (id) {
             R.id.action_settings -> {
-                startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+                startActivity<SettingsActivity>(EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name, EXTRA_NO_HEADERS to true)
                 true
             }
             else -> super.onOptionsItemSelected(item)

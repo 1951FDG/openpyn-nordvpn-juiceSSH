@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="colorConnect">#4CAF50</color>
     <color name="colorConnecting">#FFC107</color>
     <color name="colorDisconnect">#fff44336</color>
