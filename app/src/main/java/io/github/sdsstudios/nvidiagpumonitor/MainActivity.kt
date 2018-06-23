@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(),
     private val mPermissionsGranted
         get() = mReadConnectionsPerm && mOpenSessionsPerm
 
-    var mMap: GoogleMap? = null
+    private var mMap: GoogleMap? = null
 
     var mMarker: Marker? = null
 
@@ -325,10 +325,7 @@ class MainActivity : AppCompatActivity(),
         spinnerConnectionList.isEnabled = true
 
         Timer().schedule(5000){
-            val map = mMap
-            if (map != null) {
-                updateMasterMarker(map)
-            }
+            updateMasterMarker()
         }
     }
 
@@ -648,7 +645,10 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-    fun updateMasterMarker(googleMap: GoogleMap) {
+    fun updateMasterMarker() {
+        val p0 = mMarker
+        val googleMap = mMap
+        if (p0 != null && googleMap != null) {
         val list: ArrayList<String> = ArrayList()
         list.add("https://api.ipdata.co")
         list.add("http://ip-api.com/json")
@@ -688,8 +688,7 @@ class MainActivity : AppCompatActivity(),
                     if (json1.optJSONObject("threat") == null) json1.putOpt("threat", threat)
 
                     //break
-                }
-                else {
+                } else {
                     error(error)
                 }
             }
@@ -703,29 +702,30 @@ class MainActivity : AppCompatActivity(),
                 val ip = json1.getString("ip")
                 //val threat = json1.optJSONObject("threat")
 
-                if (mMarker!!.isInfoWindowShown) {
-                    mMarker!!.hideInfoWindow()
+                if (p0.isInfoWindowShown) {
+                    p0.hideInfoWindow()
                 }
 
-                mMarker!!.tag = json1
-                mMarker!!.position = LatLng(lat, lon)
-                mMarker!!.title = "$emoji $city".trimStart()
-                mMarker!!.snippet = "$ip${Typography.ellipsis}"
+                p0.tag = json1
+                p0.position = LatLng(lat, lon)
+                p0.title = "$emoji $city".trimStart()
+                p0.snippet = "$ip${Typography.ellipsis}"
 
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMarker!!.position, googleMap.cameraPosition.zoom), 3000,
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(p0.position, googleMap.cameraPosition.zoom), 3000,
                         object : CancelableCallback {
                             override fun onFinish() {
                                 baseContext.longToast("Animation to $country complete")
-                                mMarker!!.showInfoWindow()
+                                p0.showInfoWindow()
                             }
 
                             override fun onCancel() {
                                 baseContext.longToast("Animation to $country canceled")
-                                mMarker!!.showInfoWindow()
+                                p0.showInfoWindow()
                             }
                         })
             }
         }.start()
+        }
     }
 /*
     private fun createJson0() {

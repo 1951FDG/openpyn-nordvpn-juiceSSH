@@ -187,10 +187,7 @@ class OpenpynController(
         mCtx.longToast(line)
         if (line.startsWith("CONNECTING TO SERVER", true)) {
             Timer().schedule(10000){
-                val map = mainActivity.mMap
-                if (map != null) {
-                    mainActivity.updateMasterMarker(map)
-                }
+                mainActivity.updateMasterMarker()
             }
         }
     }
