@@ -366,15 +366,12 @@ class MainActivity : AppCompatActivity(),
         mOpenSessionsPerm = hasPermission(OPEN_SESSIONS)
 
         if (!mReadConnectionsPerm || !mOpenSessionsPerm) {
-            ActivityCompat.requestPermissions(this,
-                    arrayOf(READ_CONNECTIONS, OPEN_SESSIONS),
-                    PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(this, arrayOf(READ_CONNECTIONS, OPEN_SESSIONS), PERMISSION_REQUEST_CODE)
         }
     }
 
     private fun hasPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(this, permission) ==
-                PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun isJuiceSSHInstalled(): Boolean {
@@ -619,13 +616,14 @@ class MainActivity : AppCompatActivity(),
                 val ip = json1.getString("ip")
                 //val threat = json1.optJSONObject("threat")
 
-                val var1 = MarkerOptions()
-                var1.position(LatLng(lat, lon))
-                var1.title("$emoji $city".trimStart())
-                var1.snippet("$ip${Typography.ellipsis}")
-                var1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                var1.zIndex(1.0f)
-                var1.flat(true)
+                val var1 = MarkerOptions().apply {
+                    position(LatLng(lat, lon))
+                    title("$emoji $city".trimStart())
+                    snippet("$ip${Typography.ellipsis}")
+                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    zIndex(1.0f)
+                    flat(true)
+                }
 
                 val marker = mMap!!.addMarker(var1)
                 marker.tag = json1
@@ -1000,14 +998,9 @@ class MainActivity : AppCompatActivity(),
         if (items.count() != 0) {
             for (item in items) {
                 if (bounds.contains(item.position)) {
-                    if (!item.isVisible) {
-                        item.isVisible = true
-                    }
-                }
-                else {
-                    if (item.isVisible) {
-                        item.isVisible = false
-                    }
+                    if (!item.isVisible) item.isVisible = true
+                } else {
+                    if (item.isVisible) item.isVisible = false
                 }
             }
         }
@@ -1016,13 +1009,9 @@ class MainActivity : AppCompatActivity(),
 
         if (item != null) {
             if (bounds.contains(item.position)) {
-                if (!item.isVisible) {
-                    item.isVisible = true
-                }
+                if (!item.isVisible) item.isVisible = true
             } else {
-                if (item.isVisible) {
-                    item.isVisible = false
-                }
+                if (item.isVisible) item.isVisible = false
             }
         }
     }
