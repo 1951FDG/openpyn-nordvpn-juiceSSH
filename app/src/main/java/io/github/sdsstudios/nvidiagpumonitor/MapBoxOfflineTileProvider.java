@@ -7,6 +7,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Tile;
@@ -23,19 +26,23 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     private int mMaximumZoom = Integer.MAX_VALUE;
 
+    @Nullable
     private LatLngBounds mBounds;
 
+    @Nullable
     private SQLiteDatabase mDatabase;
 
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
 
-    public MapBoxOfflineTileProvider(File file) {
+    @SuppressWarnings("unused")
+    public MapBoxOfflineTileProvider(@NonNull File file) {
         this(file.getAbsolutePath());
     }
 
-    public MapBoxOfflineTileProvider(String pathToFile) {
+    @SuppressWarnings("unused")
+    public MapBoxOfflineTileProvider(@NonNull String pathToFile) {
         int flags = SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS;
         this.mDatabase = SQLiteDatabase.openDatabase(pathToFile, null, flags);
         this.calculateZoomConstraints();
@@ -46,8 +53,9 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     // TileProvider Interface
     // ------------------------------------------------------------------------
 
-    @SuppressWarnings("unused")
+    @NonNull
     @Override
+    @SuppressWarnings("unused")
     public Tile getTile(int x, int y, int z) {
         Tile tile = NO_TILE;
         if (this.isZoomLevelAvailable(z) && this.isDatabaseAvailable()) {
@@ -124,6 +132,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the geographic bounds available or {@link null} if it could not
      *         be determined.
      */
+    @Nullable
     @SuppressWarnings("unused")
     public LatLngBounds getBounds() {
         return this.mBounds;
