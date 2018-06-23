@@ -47,6 +47,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.indefiniteSnackbar
+import org.jetbrains.anko.sdk25.listeners.onClick
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -174,11 +175,11 @@ class MainActivity : AppCompatActivity(),
                 onPermissionsGranted()
             }
 
-            buttonConnect.setOnClickListener {
+            buttonConnect.onClick {
                 if (mConnectionListAdapter.count == 0) {
                     toast(R.string.error_must_have_atleast_one_server)
 
-                    return@setOnClickListener
+                    return@onClick
                 }
 
                 if (mPermissionsGranted) {
@@ -565,7 +566,7 @@ class MainActivity : AppCompatActivity(),
         list.add("https://api.ipdata.co")
         list.add("http://ip-api.com/json")
 
-        Thread {
+        doAsync {
             val json1 = JSONObject()
 
             for (name in list) {
@@ -606,7 +607,7 @@ class MainActivity : AppCompatActivity(),
                 }
             }
 
-            runOnUiThread {
+            uiThread {
                 val country = json1.getString("country")
                 val city = json1.getString("city")
                 val lat = json1.getDouble("latitude")
@@ -641,7 +642,7 @@ class MainActivity : AppCompatActivity(),
                             }
                         })
             }
-        }.start()
+        }
     }
 
 
@@ -653,7 +654,7 @@ class MainActivity : AppCompatActivity(),
         list.add("https://api.ipdata.co")
         list.add("http://ip-api.com/json")
 
-        Thread {
+        doAsync {
             val json1 = JSONObject()
 
             for (name in list) {
@@ -693,7 +694,7 @@ class MainActivity : AppCompatActivity(),
                 }
             }
 
-            runOnUiThread {
+            uiThread {
                 val country = json1.getString("country")
                 val city = json1.getString("city")
                 val lat = json1.getDouble("latitude")
@@ -724,7 +725,7 @@ class MainActivity : AppCompatActivity(),
                             }
                         })
             }
-        }.start()
+        }
         }
     }
 /*
