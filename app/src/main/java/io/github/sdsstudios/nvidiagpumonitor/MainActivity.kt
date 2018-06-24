@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(),
     //private var offlineTileProvider: ExpandedMBTilesTileProvider? = null
     private var offlineTileProvider: MapBoxOfflineTileProvider? = null
 
-    private val items by lazy { ArrayList<Marker>() }
+    private val items by lazy { arrayListOf<Marker>() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -548,10 +548,11 @@ class MainActivity : AppCompatActivity(),
 
             val location = res.getJSONObject("location")
 
-            val var1 = MarkerOptions()
-            var1.position(LatLng(location.getDouble("lat"), location.getDouble("long")))
-            var1.visible(false)
-            var1.flat(true)
+            val var1 = MarkerOptions().apply {
+                position(LatLng(location.getDouble("lat"), location.getDouble("long")))
+                visible(false)
+                flat(true)
+            }
 
             val marker = mMap!!.addMarker(var1)
             marker.tag = country
@@ -570,14 +571,10 @@ class MainActivity : AppCompatActivity(),
         }
         }
 
-        val list: ArrayList<String> = ArrayList()
-        list.add("https://api.ipdata.co")
-        list.add("http://ip-api.com/json")
-
         doAsync {
             val json1 = JSONObject()
 
-            for (name in list) {
+            for (name in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
                 val (_, _, result) = name.httpGet().responseJson()
                 val (data, error) = result
                 if (data != null) {
@@ -659,14 +656,10 @@ class MainActivity : AppCompatActivity(),
         val p0 = mMarker
         val googleMap = mMap
         if (p0 != null && googleMap != null) {
-        val list: ArrayList<String> = ArrayList()
-        list.add("https://api.ipdata.co")
-        list.add("http://ip-api.com/json")
-
         doAsync {
             val json1 = JSONObject()
 
-            for (name in list) {
+            for (name in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
                 val (_, _, result) = name.httpGet().responseJson()
                 val (data, error) = result
                 if (data != null) {
