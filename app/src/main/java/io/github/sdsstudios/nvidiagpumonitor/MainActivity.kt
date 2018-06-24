@@ -449,7 +449,7 @@ class MainActivity : AppCompatActivity(),
         val double_vpn = preferences.getBoolean("pref_double", false)
         val tor_over_vpn = preferences.getBoolean("pref_tor", false)
         val anti_ddos = preferences.getBoolean("pref_anti_ddos", false)
-        ////val netflix = preferences.getBoolean("pref_netflix", false)
+        val netflix = preferences.getBoolean("pref_netflix", false)
         //val test = preferences.getBoolean("pref_test", false)
         //val internally_allowed = args.internally_allowed
         //val skip_dns_patch = preferences.getBoolean("pref_skip_dns_patch", false)
@@ -489,9 +489,8 @@ class MainActivity : AppCompatActivity(),
 
         if (jsonArr != null) {
         for (res in jsonArr) {
-            /*
             val country = res.getString("flag").toLowerCase()
-
+            /*
             var pass = country.equals(country_code,true)
 
             if (!pass) {
@@ -505,7 +504,19 @@ class MainActivity : AppCompatActivity(),
                 double_vpn -> false
                 tor_over_vpn -> false
                 anti_ddos -> false
+                netflix -> false
                 else -> true
+            }
+
+            if (!pass && netflix) {
+                pass = when {
+                    country.equals("us", true) -> true
+                    country.equals("ca", true) -> true
+                    country.equals("fr", true) -> true
+                    country.equals("nl", true) -> true
+                    country.equals("jp", true) -> true
+                    else -> false
+                }
             }
 
             if (!pass) {
@@ -537,7 +548,6 @@ class MainActivity : AppCompatActivity(),
                 continue
             }
 
-            val country = res.getString("flag").toLowerCase()
             val location = res.getJSONObject("location")
 
             val var1 = MarkerOptions()
