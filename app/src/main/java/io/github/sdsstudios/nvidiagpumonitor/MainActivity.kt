@@ -111,21 +111,6 @@ class MainActivity : AppCompatActivity(),
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        val file = File(this.getExternalFilesDir(null), resources.getResourceEntryName(R.raw.world) + ".mbtiles")
-
-        if (!file.exists()) {
-            try {
-                val mInput = this.resources.openRawResource(R.raw.world)
-                val mOutput = FileOutputStream(file)
-                mInput.copyTo(mOutput, 1024)
-                mOutput.flush()
-                mOutput.close()
-                mInput.close()
-            } catch (e: IOException) {
-                error(e)
-            }
-        }
-
         map.onCreate(savedInstanceState)
 
         val api = GoogleApiAvailability.getInstance()
@@ -310,7 +295,33 @@ class MainActivity : AppCompatActivity(),
                     params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
                 }
 
-                map.getMapAsync(this)
+                doAsync {
+                    val list = listOf(
+                            Pair(R.raw.world, ".mbtiles"),
+                            Pair(R.raw.nordvpn, ".json")
+                    )
+
+                    for ((id, ext) in list) {
+                        val file = File(getExternalFilesDir(null), resources.getResourceEntryName(id) + ext)
+
+                        if (!file.exists()) {
+                            try {
+                                val mInput = resources.openRawResource(id)
+                                val mOutput = FileOutputStream(file)
+                                mInput.copyTo(mOutput, 1024)
+                                mOutput.flush()
+                                mOutput.close()
+                                mInput.close()
+                            } catch (e: IOException) {
+                                error(e)
+                            }
+                        }
+                    }
+
+                    uiThread {
+                        map.getMapAsync(it)
+                    }
+                }
             }
         }
     }
@@ -457,19 +468,6 @@ class MainActivity : AppCompatActivity(),
         //val nvram = preferences.getBoolean("pref_nvram", false)
 
         val file = File(this.getExternalFilesDir(null),resources.getResourceEntryName(R.raw.nordvpn) + ".json")
-
-        if (!file.exists()) {
-            try {
-                val mInput = this.resources.openRawResource(R.raw.nordvpn)
-                val mOutput = FileOutputStream(file)
-                mInput.copyTo(mOutput, 1024)
-                mOutput.flush()
-                mOutput.close()
-                mInput.close()
-            } catch (e: IOException) {
-                error(e)
-            }
-        }
 
         var jsonArr: JSONArray? = null
 
