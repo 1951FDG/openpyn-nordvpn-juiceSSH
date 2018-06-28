@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -22,15 +23,20 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     // Instance Variables
     // ------------------------------------------------------------------------
 
-    private int mMinimumZoom = Integer.MIN_VALUE;
+    private float mMinimumZoom = 0.0f;
 
-    private int mMaximumZoom = Integer.MAX_VALUE;
+    private float mMaximumZoom = 22.0f;
 
     @Nullable
     private LatLngBounds mBounds;
 
-    @Nullable
-    private SQLiteDatabase mDatabase;
+    private final SQLiteDatabase mDatabase;
+
+    // TABLE tiles (zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB);
+    private static final String TABLE_TILES = "tiles";
+    private static final String TABLE_METADATA = "metadata";
+    private static final String COL_TILES_TILE_DATA = "tile_data";
+    private static final String COL_VALUE = "value";
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -45,7 +51,43 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     public MapBoxOfflineTileProvider(@NonNull String pathToFile) {
         int flags = SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS;
         this.mDatabase = SQLiteDatabase.openDatabase(pathToFile, null, flags);
-        this.calculateZoomConstraints();
+        this.calculateMinZoomLevel();
+        this.calculateMaxZoomLevel();
+        this.calculateBounds();
+    }
+
+    public MapBoxOfflineTileProvider(@NonNull String pathToFile, boolean debug) {
+        this.mDatabase = SQLiteDatabase.create(null);
+        this.mDatabase.execSQL("ATTACH DATABASE '" + pathToFile + "' AS db");
+        this.mDatabase.execSQL("CREATE TABLE main." + "map" + " AS SELECT * FROM db." + "map");
+        this.mDatabase.execSQL("CREATE TABLE main." + "metadata" + " AS SELECT * FROM db." + "metadata");
+        this.mDatabase.execSQL("CREATE TABLE main." + "images" + " AS SELECT * FROM db." + "images");
+        this.mDatabase.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS map_index ON map (zoom_level, tile_column, tile_row);");
+        this.mDatabase.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS images_id ON images (tile_id);");
+        this.mDatabase.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS name ON metadata (name);");
+        this.mDatabase.execSQL("CREATE VIEW IF NOT EXISTS tiles AS " +
+                "SELECT map.zoom_level AS zoom_level," +
+                "map.tile_column AS tile_column," +
+                "map.tile_row AS tile_row," +
+                "images.tile_data AS tile_data " +
+                "FROM map JOIN images ON images.tile_id = map.tile_id");
+        this.mDatabase.execSQL("DETACH db");
+
+        if (debug) {
+            try (Cursor c = this.mDatabase.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name!='android_metadata' order by name", null)) {
+                if (c.moveToFirst()) {
+                    while (!c.isAfterLast()) {
+                        Log.d(TAG, c.getString(0));
+                        c.moveToNext();
+                    }
+                }
+            }
+
+            Log.d(TAG, "[mDatabase=" + mDatabase.getPath() + "]");
+        }
+
+        this.calculateMinZoomLevel();
+        this.calculateMaxZoomLevel();
         this.calculateBounds();
     }
 
@@ -57,26 +99,13 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     @Override
     @SuppressWarnings("unused")
     public Tile getTile(int x, int y, int z) {
-        Tile tile = NO_TILE;
-        if (this.isZoomLevelAvailable(z) && this.isDatabaseAvailable()) {
-            String[] projection = {
-                "tile_data"
-            };
-            int row = ((int) (Math.pow(2, z) - y) - 1);
-            String predicate = "tile_row = ? AND tile_column = ? AND zoom_level = ?";
-            String[] values = {
-                    String.valueOf(row), String.valueOf(x), String.valueOf(z)
-            };
-            Cursor c = this.mDatabase.query("tiles", projection, predicate, values, null, null, null);
-            if (c != null) {
-                c.moveToFirst();
-                if (!c.isAfterLast()) {
-                    tile = new Tile(256, 256, c.getBlob(0));
-                }
-                c.close();
-            }
+        String[] columns = { COL_TILES_TILE_DATA };
+        String[] selectionArgs = { String.valueOf(z), String.valueOf(x), String.valueOf((1 << z) - 1 - y) };
+
+        try (Cursor c = this.mDatabase.query(TABLE_TILES, columns, "zoom_level = ? AND tile_column = ? AND tile_row = ?", selectionArgs, null, null, null)) {
+            if (c.moveToFirst()) return new Tile(256, 256, c.getBlob(0));
+            else return NO_TILE;
         }
-        return tile;
     }
 
     // ------------------------------------------------------------------------
@@ -94,9 +123,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      */
     @Override
     public void close() {
-        if (this.mDatabase != null) {
+        if (this.isDatabaseAvailable()) {
             this.mDatabase.close();
-            this.mDatabase = null;
         }
     }
 
@@ -111,7 +139,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      *         it could not be determined.
      */
     @SuppressWarnings("unused")
-    public int getMinimumZoom() {
+    public float getMinimumZoom() {
         return this.mMinimumZoom;
     }
 
@@ -122,7 +150,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      *         it could not be determined.
      */
     @SuppressWarnings("unused")
-    public int getMaximumZoom() {
+    public float getMaximumZoom() {
         return this.mMaximumZoom;
     }
 
@@ -145,76 +173,69 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return {@code true} if the requested zoom level is supported by this
      *         provider.
      */
-    @SuppressWarnings("WeakerAccess")
-    public boolean isZoomLevelAvailable(int zoom) {
+    @SuppressWarnings({"WeakerAccess", "unused"})
+    public boolean isZoomLevelAvailable(float zoom) {
         return (zoom >= this.mMinimumZoom) && (zoom <= this.mMaximumZoom);
     }
+
+    @Nullable
+    @SuppressWarnings("unused")
+    public String getName() { return getStringValue("name"); }
+
+    @Nullable
+    @SuppressWarnings("unused")
+    public String getType() { return getStringValue("template"); }
+
+    @Nullable
+    @SuppressWarnings("unused")
+    public String getVersion() { return getStringValue("version"); }
+
+    @Nullable
+    @SuppressWarnings("unused")
+    public String getDescription() { return getStringValue("description"); }
 
     // ------------------------------------------------------------------------
     // Private Methods
     // ------------------------------------------------------------------------
 
-    private void calculateZoomConstraints() {
-        if (this.isDatabaseAvailable()) {
-            String[] projection = new String[] {
-                "value"
-            };
+    private String getStringValue(String key) {
+        String[] columns = { COL_VALUE };
+        String[] selectionArgs = { key };
 
-            String[] minArgs = new String[] {
-                "minzoom"
-            };
+        try (Cursor c = this.mDatabase.query(TABLE_METADATA, columns, "name = ?", selectionArgs, null, null, null)) {
+            if (c.moveToFirst()) return c.getString(0);
+            else return null;
+        }
+    }
 
-            String[] maxArgs = new String[] {
-                "maxzoom"
-            };
+    private void calculateMinZoomLevel() {
+        String result = getStringValue("minzoom");
+        if (result != null) {
+            this.mMinimumZoom = Float.parseFloat(result);
+        }
+    }
 
-            Cursor c;
-
-            c = this.mDatabase.query("metadata", projection, "name = ?", minArgs, null, null, null);
-
-            c.moveToFirst();
-            if (!c.isAfterLast()) {
-                this.mMinimumZoom = c.getInt(0);
-            }
-            c.close();
-
-            c = this.mDatabase.query("metadata", projection, "name = ?", maxArgs, null, null, null);
-
-            c.moveToFirst();
-            if (!c.isAfterLast()) {
-                this.mMaximumZoom = c.getInt(0);
-            }
-            c.close();
+    private void calculateMaxZoomLevel() {
+        String result = getStringValue("maxzoom");
+        if (result != null) {
+            this.mMaximumZoom = Float.parseFloat(result);
         }
     }
 
     private void calculateBounds() {
-        if (this.isDatabaseAvailable()) {
-            String[] projection = new String[] {
-                "value"
-            };
+        String result = getStringValue("bounds");
+        if (result != null) {
+            String[] parts = result.split(",\\s*");
 
-            String[] subArgs = new String[] {
-                "bounds"
-            };
+            double w = Double.parseDouble(parts[0]);
+            double s = Double.parseDouble(parts[1]);
+            double e = Double.parseDouble(parts[2]);
+            double n = Double.parseDouble(parts[3]);
 
-            Cursor c = this.mDatabase.query("metadata", projection, "name = ?", subArgs, null, null, null);
+            LatLng sw = new LatLng(s, w);
+            LatLng ne = new LatLng(n, e);
 
-            c.moveToFirst();
-            if (!c.isAfterLast()) {
-                String[] parts = c.getString(0).split(",\\s*");
-
-                double w = Double.parseDouble(parts[0]);
-                double s = Double.parseDouble(parts[1]);
-                double e = Double.parseDouble(parts[2]);
-                double n = Double.parseDouble(parts[3]);
-
-                LatLng ne = new LatLng(n, e);
-                LatLng sw = new LatLng(s, w);
-
-                this.mBounds = new LatLngBounds(sw, ne);
-            }
-            c.close();
+            this.mBounds = new LatLngBounds(sw, ne);
         }
     }
 
@@ -222,4 +243,5 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
         return (this.mDatabase != null) && (this.mDatabase.isOpen());
     }
 
+    private static final String TAG = "MBTileProvider";
 }

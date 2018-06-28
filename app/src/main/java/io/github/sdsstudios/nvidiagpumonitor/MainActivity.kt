@@ -418,7 +418,7 @@ class MainActivity : AppCompatActivity(),
         //googleMap.setMaxZoomPreference(6.0f)
 
         googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
-        googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom.toFloat())
+        googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom)
 
         try {
             googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
