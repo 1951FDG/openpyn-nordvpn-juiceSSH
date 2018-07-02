@@ -103,7 +103,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
         String[] selectionArgs = { String.valueOf(z), String.valueOf(x), String.valueOf((1 << z) - 1 - y) };
 
         try (Cursor c = this.mDatabase.query(TABLE_TILES, columns, "zoom_level = ? AND tile_column = ? AND tile_row = ?", selectionArgs, null, null, null)) {
-            if (c.moveToFirst()) return new Tile(256, 256, c.getBlob(0));
+            if (c.moveToFirst()) return new Tile(512, 512, c.getBlob(0));
             else return NO_TILE;
         }
     }
@@ -193,6 +193,10 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     @Nullable
     @SuppressWarnings("unused")
     public String getDescription() { return getStringValue("description"); }
+
+    @Nullable
+    @SuppressWarnings("unused")
+    public String getAttribution() { return getStringValue("attribution"); }
 
     // ------------------------------------------------------------------------
     // Private Methods

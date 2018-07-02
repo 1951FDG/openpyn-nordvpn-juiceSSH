@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map[]>
+<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over" background-color="#bbdefb" maximum-extent="-20037508.34,-20037508.34,20037508.34,20037508.34">
+
+<Parameters>
+  <Parameter name="bounds">-180,-85.0511,180,85.0511</Parameter>
+  <Parameter name="center">0,0,0</Parameter>
+  <Parameter name="format">png8</Parameter>
+  <Parameter name="minzoom">0</Parameter>
+  <Parameter name="maxzoom">6</Parameter>
+  <Parameter name="scale">1</Parameter>
+  <Parameter name="metatile">1</Parameter>
+  <Parameter name="id"><![CDATA[geography]]></Parameter>
+  <Parameter name="_updated">1530319714000</Parameter>
+  <Parameter name="name"><![CDATA[Android]]></Parameter>
+  <Parameter name="version">1.0.0</Parameter>
+  <Parameter name="tilejson"><![CDATA[2.0.0]]></Parameter>
+  <Parameter name="scheme"><![CDATA[xyz]]></Parameter>
+</Parameters>
+
+
+<Style name="ne10mland" filter-mode="first">
+  <Rule>
+    <PolygonSymbolizer fill-opacity="1" fill="#f5f5f5" />
+  </Rule>
+</Style>
+<Layer name="ne10mland"
+  srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
+    <StyleName>ne10mland</StyleName>
+    <Datasource>
+       <Parameter name="file"><![CDATA[/Users/derrick/Documents/MapBox/project/geography/layers/ne10mland/a49ba6bd-ne_10m_land.shp]]></Parameter>
+       <Parameter name="type"><![CDATA[shape]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Style name="ne10mlakes" filter-mode="first">
+  <Rule>
+    <PolygonSymbolizer fill-opacity="1" fill="#bbdefb" />
+  </Rule>
+</Style>
+<Layer name="ne10mlakes"
+  srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
+    <StyleName>ne10mlakes</StyleName>
+    <Datasource>
+       <Parameter name="file"><![CDATA[/Users/derrick/Documents/MapBox/project/geography/layers/ne10mlakes/aacae0d1-ne_10m_lakes.shp]]></Parameter>
+       <Parameter name="type"><![CDATA[shape]]></Parameter>
+    </Datasource>
+  </Layer>
+
+<Layer name="ne10mglaciatedareas"
+  srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
+    
+    <Datasource>
+       <Parameter name="file"><![CDATA[/Users/derrick/Documents/MapBox/project/geography/layers/ne10mglaciatedareas/4610f38f-ne_10m_glaciated_areas.shp]]></Parameter>
+       <Parameter name="type"><![CDATA[shape]]></Parameter>
+    </Datasource>
+  </Layer>
+
+</Map>
