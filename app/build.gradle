@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '28.0.0 rc1'
 
     defaultConfig {
         applicationId "io.github.sdsstudios.nvidiagpumonitor"
