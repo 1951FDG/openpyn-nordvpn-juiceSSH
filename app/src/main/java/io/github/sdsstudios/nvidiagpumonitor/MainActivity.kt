@@ -297,7 +297,6 @@ class MainActivity : AppCompatActivity(),
 
                 doAsync {
                     val list = listOf(
-                            Pair(R.raw.world, ".mbtiles"),
                             Pair(R.raw.nordvpn, ".json")
                     )
 
@@ -404,11 +403,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val file = File(this.getExternalFilesDir(null),resources.getResourceEntryName(R.raw.world) + ".mbtiles")
-
         //offlineTileProvider = ExpandedMBTilesTileProvider(file, 256, 256)
 
-        offlineTileProvider = MapBoxOfflineTileProvider(file.absolutePath)
+        offlineTileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
         info(offlineTileProvider!!.minimumZoom)
         info(offlineTileProvider!!.maximumZoom)
 

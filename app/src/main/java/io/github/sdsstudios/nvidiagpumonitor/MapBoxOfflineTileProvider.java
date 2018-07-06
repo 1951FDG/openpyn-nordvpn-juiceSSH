@@ -4,7 +4,7 @@ import java.io.Closeable;
 import java.io.File;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import org.sqlite.database.sqlite.SQLiteDatabase;
 
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -18,6 +18,11 @@ import com.google.android.gms.maps.model.TileProvider;
 
 @MainThread
 public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
+
+    static {
+        System.loadLibrary("sqliteX");
+        System.loadLibrary("sqlite3ndk");
+    }
 
     // ------------------------------------------------------------------------
     // Instance Variables
