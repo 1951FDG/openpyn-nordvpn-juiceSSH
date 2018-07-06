@@ -415,6 +415,7 @@ class MainActivity : AppCompatActivity(),
         //googleMap.setMaxZoomPreference(6.0f)
 
         googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
+        googleMap.setMinZoomPreference(offlineTileProvider!!.minimumZoom)
         googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom)
 
         try {
