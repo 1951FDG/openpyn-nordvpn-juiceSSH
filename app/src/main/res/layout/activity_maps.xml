@@ -29,6 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
+        map:cameraTargetLat="85.05112877980659"
+        map:cameraTargetLng="-135.0"
         map:mapType="none"
         map:uiCompass="false"
         map:uiRotateGestures="false"
