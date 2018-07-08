@@ -2,5 +2,4 @@
 <full-backup-content>
     <!-- Exclude specific shared preferences that contain GCM registration Id -->
     <exclude domain="external" path="nordvpn.json" />
-    <exclude domain="external" path="world.mbtiles" />
 </full-backup-content>
