@@ -582,7 +582,8 @@ class MainActivity : AppCompatActivity(),
             val json1 = JSONObject()
 
             for (name in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
-                val (_, _, result) = name.httpGet().responseJson()
+                val timeout = 1000 // 1000 milliseconds = 1 second
+                val (_, _, result) = name.httpGet().timeout(timeout).responseJson()
                 val (data, error) = result
                 if (data != null) {
                     val content = data.obj()
