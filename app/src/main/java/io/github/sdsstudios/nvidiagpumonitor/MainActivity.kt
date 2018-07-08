@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity(),
 
     var mMarker: Marker? = null
 
-    //private var offlineTileProvider: ExpandedMBTilesTileProvider? = null
     private var offlineTileProvider: MapBoxOfflineTileProvider? = null
 
     private val items by lazy { arrayListOf<Marker>() }
@@ -403,16 +402,11 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        //offlineTileProvider = ExpandedMBTilesTileProvider(file, 256, 256)
-
         offlineTileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
         info(offlineTileProvider!!.minimumZoom)
         info(offlineTileProvider!!.maximumZoom)
 
         val params = buttonConnect.layoutParams as ConstraintLayout.LayoutParams
-
-        //googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
-        //googleMap.setMaxZoomPreference(6.0f)
 
         googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
         googleMap.setMinZoomPreference(offlineTileProvider!!.minimumZoom)
