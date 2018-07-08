@@ -15,6 +15,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
+import com.google.maps.android.geometry.Point;
+import com.google.maps.android.projection.SphericalMercatorProjection;
 
 @MainThread
 public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
@@ -43,6 +45,12 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     private static final String COL_TILES_TILE_DATA = "tile_data";
     private static final String COL_VALUE = "value";
 
+    // Used to measure distances relative to the total world size.
+    private static final double WORLD_WIDTH = 1;
+
+    // Tile dimension, in pixels.
+    private static final int TILE_DIM = 512;
+
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
@@ -61,6 +69,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
         this.calculateBounds();
     }
 
+    @SuppressWarnings("unused")
     public MapBoxOfflineTileProvider(@NonNull String pathToFile, boolean debug) {
         this.mDatabase = SQLiteDatabase.create(null);
         this.mDatabase.execSQL("ATTACH DATABASE '" + pathToFile + "' AS db");
@@ -108,9 +117,38 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
         String[] selectionArgs = { String.valueOf(z), String.valueOf(x), String.valueOf((1 << z) - 1 - y) };
 
         try (Cursor c = this.mDatabase.query(TABLE_TILES, columns, "zoom_level = ? AND tile_column = ? AND tile_row = ?", selectionArgs, null, null, null)) {
-            if (c.moveToFirst()) return new Tile(512, 512, c.getBlob(0));
+            if (c.moveToFirst()) return new Tile(TILE_DIM, TILE_DIM, c.getBlob(0));
             else return NO_TILE;
         }
+    }
+
+    /**
+     * Convert tile coordinates and zoom into Bounds format.
+     * @param x The requested x coordinate.
+     * @param y The requested y coordinate.
+     * @param z The requested zoom level.
+     * @return the geographic bounds of the tile
+     */
+    @NonNull
+    public LatLngBounds calculateTileBounds(int x, int y, int z) {
+        // Width of the world = WORLD_WIDTH = 1
+
+        // Calculate width of one tile, given there are 2 ^ zoom tiles in that zoom level
+        // In terms of world width units
+        double tileWidth = WORLD_WIDTH / Math.pow(2, z);
+
+        // Make bounds: minX, maxX, minY, maxY
+        double minX = x * tileWidth;
+        double maxX = (x + 1) * tileWidth;
+        double minY = y * tileWidth;
+        double maxY = (y + 1) * tileWidth;
+
+        SphericalMercatorProjection sProjection = new SphericalMercatorProjection(WORLD_WIDTH);
+
+        LatLng sw = sProjection.toLatLng(new Point(minX, maxY));
+        LatLng ne = sProjection.toLatLng(new Point(maxX, minY));
+
+        return new LatLngBounds(sw, ne);
     }
 
     // ------------------------------------------------------------------------

@@ -74,4 +74,5 @@ dependencies {
     implementation 'com.github.kittinunf.result:result:1.4.0'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
 }
