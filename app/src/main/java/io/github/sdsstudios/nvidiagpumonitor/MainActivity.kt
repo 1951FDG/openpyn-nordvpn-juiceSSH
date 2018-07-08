@@ -278,8 +278,6 @@ class MainActivity : AppCompatActivity(),
 
         if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
             if (resultCode == AppCompatActivity.RESULT_OK) {
-                map.visibility = View.VISIBLE
-
                 val watermark = map.findViewWithTag<ImageView>("GoogleWatermark")
 
                 if (watermark != null) {
@@ -317,6 +315,10 @@ class MainActivity : AppCompatActivity(),
                     }
 
                     uiThread {
+                        offlineTileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
+                        info(offlineTileProvider!!.minimumZoom)
+                        info(offlineTileProvider!!.maximumZoom)
+
                         map.getMapAsync(it)
                     }
                 }
@@ -402,15 +404,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        offlineTileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-        info(offlineTileProvider!!.minimumZoom)
-        info(offlineTileProvider!!.maximumZoom)
-
         val params = buttonConnect.layoutParams as ConstraintLayout.LayoutParams
-
-        googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
-        googleMap.setMinZoomPreference(offlineTileProvider!!.minimumZoom)
-        googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom)
 
         try {
             googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
@@ -420,16 +414,21 @@ class MainActivity : AppCompatActivity(),
         }
 
         googleMap.setOnCameraIdleListener(this)
+        googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
+        googleMap.setMapType(MAP_TYPE_NORMAL)
+        googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom)
+        googleMap.setMinZoomPreference(offlineTileProvider!!.minimumZoom)
         googleMap.setOnInfoWindowClickListener(this)
-        googleMap.setOnMarkerClickListener(this)
         googleMap.setOnMapLoadedCallback(this)
+        googleMap.setOnMarkerClickListener(this)
         googleMap.setPadding(0,0,0,params.height + params.bottomMargin)
-        googleMap.mapType = MAP_TYPE_NORMAL
         googleMap.uiSettings.isScrollGesturesEnabled = true
         googleMap.uiSettings.isZoomControlsEnabled = true
         googleMap.uiSettings.isZoomGesturesEnabled = true
 
         mMap = googleMap
+
+        map.visibility = View.VISIBLE
     }
 
     override fun onMapLoaded() {
