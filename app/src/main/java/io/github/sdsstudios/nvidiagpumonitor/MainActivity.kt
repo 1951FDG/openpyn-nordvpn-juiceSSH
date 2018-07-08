@@ -621,6 +621,7 @@ class MainActivity : AppCompatActivity(),
             }
 
             uiThread {
+                if (json1.keys().hasNext()) {
                 val country = json1.getString("country")
                 val city = json1.getString("city")
                 val lat = json1.getDouble("latitude")
@@ -655,6 +656,7 @@ class MainActivity : AppCompatActivity(),
                                 mMarker!!.showInfoWindow()
                             }
                         })
+                }
             }
         }
     }
