@@ -17,7 +17,7 @@
 package io.github.sdsstudios.nvidiagpumonitor;
 
 import android.os.Handler;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,14 +28,14 @@ import java.util.List;
 public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
     private final GoogleMap mMap;
     private final GoogleMap.OnCameraIdleListener mOnCameraIdleListener;
-    private List<Animation> cameraUpdates = new ArrayList<>();
-    private boolean mIsRotateGestureEnabled;
-    private boolean mIsScrollGestureEnabled;
-    private boolean mIsTiltGestureEnabled;
-    private boolean mIsZoomGestureEnabled;
+    private final List<Animation> cameraUpdates = new ArrayList<>();
+    private final boolean mIsRotateGestureEnabled;
+    private final boolean mIsScrollGestureEnabled;
+    private final boolean mIsTiltGestureEnabled;
+    private final boolean mIsZoomGestureEnabled;
 
-    public CameraUpdateAnimator(GoogleMap map,
-                                GoogleMap.OnCameraIdleListener onCameraIdleListener) {
+    public CameraUpdateAnimator(@NonNull GoogleMap map,
+                                @NonNull GoogleMap.OnCameraIdleListener onCameraIdleListener) {
         mMap = map;
         mIsRotateGestureEnabled = mMap.getUiSettings().isRotateGesturesEnabled();
         mIsScrollGestureEnabled = mMap.getUiSettings().isScrollGesturesEnabled();
@@ -45,12 +45,15 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
         mOnCameraIdleListener = onCameraIdleListener;
     }
 
-    public void add(CameraUpdate cameraUpdate, boolean animate, long delay) {
-        if (cameraUpdate != null) {
-            cameraUpdates.add(new Animation(cameraUpdate, animate, delay));
-        }
+    public void add(@NonNull CameraUpdate cameraUpdate, boolean animate, long delay) {
+        cameraUpdates.add(new Animation(cameraUpdate, animate, delay, null));
     }
 
+    public void add(@NonNull CameraUpdate cameraUpdate, boolean animate, long delay, @NonNull GoogleMap.CancelableCallback cancelableCallback) {
+        cameraUpdates.add(new Animation(cameraUpdate, animate, delay, cancelableCallback));
+    }
+
+    @SuppressWarnings("unused")
     public void clear() {
         cameraUpdates.clear();
     }
@@ -73,7 +76,13 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
             handler.postDelayed(new Runnable() {
                 public void run() {
                     if (animation.mAnimate) {
-                        mMap.animateCamera(animation.mCameraUpdate);
+                        if (animation.mCancelableCallback != null) {
+                            mMap.animateCamera(animation.mCameraUpdate, animation.mCancelableCallback);
+                        }
+                        else
+                        {
+                            mMap.animateCamera(animation.mCameraUpdate);
+                        }
                     } else {
                         mMap.moveCamera(animation.mCameraUpdate);
                     }
@@ -97,11 +106,13 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
         private final CameraUpdate mCameraUpdate;
         private final boolean mAnimate;
         private final long mDelay;
+        private final GoogleMap.CancelableCallback mCancelableCallback;
 
-        public Animation(CameraUpdate cameraUpdate, boolean animate, long delay) {
+        Animation(CameraUpdate cameraUpdate, boolean animate, long delay, GoogleMap.CancelableCallback cancelableCallback) {
             mCameraUpdate = cameraUpdate;
             mAnimate = animate;
             mDelay = delay;
+            mCancelableCallback = cancelableCallback;
         }
     }
 }
