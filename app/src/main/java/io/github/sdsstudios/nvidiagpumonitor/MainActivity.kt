@@ -434,23 +434,6 @@ class MainActivity : AppCompatActivity(),
         info(mMap!!.minZoomLevel)
         info(mMap!!.maxZoomLevel)
 
-        // Create a new CameraUpdateAnimator for a given mMap
-        // with an OnCameraIdleListener to set when the animation ends
-        val animator = CameraUpdateAnimator(mMap, this)
-        val z = mMap!!.minZoomLevel.toInt()
-        val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
-        // Traverse through all rows
-        for (y in 0..rows) {
-            for (x in 0..rows) {
-                val bounds = offlineTileProvider!!.calculateTileBounds(x, y, z)
-                val cameraPosition = CameraPosition.Builder().target(bounds.northeast).build()
-                // Add animations
-                animator.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
-            }
-        }
-        // Execute the animation and set the final OnCameraIdleListener
-        animator.execute()
-
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         //val server = preferences.getString("pref_server", "")
@@ -621,6 +604,21 @@ class MainActivity : AppCompatActivity(),
             }
 
             uiThread {
+                // Create a new CameraUpdateAnimator for a given mMap
+                // with an OnCameraIdleListener to set when the animation ends
+                val animator = CameraUpdateAnimator(mMap!!, it)
+                val z = mMap!!.minZoomLevel.toInt()
+                val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
+                // Traverse through all rows
+                for (y in 0..rows) {
+                    for (x in 0..rows) {
+                        val bounds = offlineTileProvider!!.calculateTileBounds(x, y, z)
+                        val cameraPosition = CameraPosition.Builder().target(bounds.northeast).build()
+                        // Add animations
+                        animator.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
+                    }
+                }
+
                 if (json1.keys().hasNext()) {
                 val country = json1.getString("country")
                 val city = json1.getString("city")
@@ -644,7 +642,7 @@ class MainActivity : AppCompatActivity(),
 
                 mMarker = marker
 
-                mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(var1.position, mMap!!.cameraPosition.zoom), 3000,
+                animator.add(CameraUpdateFactory.newLatLng(var1.position), true, 0,
                         object : CancelableCallback {
                             override fun onFinish() {
                                 baseContext.longToast("Animation to $country complete")
@@ -657,6 +655,8 @@ class MainActivity : AppCompatActivity(),
                             }
                         })
                 }
+                // Execute the animation and set the final OnCameraIdleListener
+                animator.execute()
             }
         }
     }
