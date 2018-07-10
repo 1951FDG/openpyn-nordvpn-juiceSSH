@@ -187,7 +187,15 @@ class MainActivity : AppCompatActivity(),
             }
         }
 
-        //this.createJson()
+//        val jsonObjLast = createJson()
+//
+//        val text = jsonObjLast.toString()
+//        debug(text)
+//
+//        val file = File(this.getExternalFilesDir(null),resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+//        debug(file)
+//
+//        file.writeText(text)
     }
 
     override fun onStart() {
@@ -562,46 +570,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         doAsync {
-            val json1 = JSONObject()
-
-            for (name in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
-                val timeout = 1000 // 1000 milliseconds = 1 second
-                val (_, _, result) = name.httpGet().timeout(timeout).responseJson()
-                val (data, error) = result
-                if (data != null) {
-                    val content = data.obj()
-                    debug(content)
-
-                    var country = content.optString("country_name")
-                    val city = content.optString("city")
-                    var lat = content.optDouble("latitude", 0.0)
-                    var lon = content.optDouble("longitude", 0.0)
-                    val emoji = content.optString("emoji_flag")
-                    var ip = content.optString("ip")
-                    val threat = content.optJSONObject("threat")
-
-                    if (country.isEmpty()) country = content.optString("country")
-                    //if (city.isEmpty()) city = content.optString("city")
-                    if (lat == 0.0) lat = content.optDouble("lat", 0.0)
-                    if (lon == 0.0) lon = content.optDouble("lon", 0.0)
-                    //if (emoji.isEmpty()) emoji = content.optString("emoji_flag")
-                    if (ip.isEmpty()) ip = content.optString("query")
-                    //if (threat == null) threat = content.optJSONObject("threat")
-
-                    if (json1.optString("country").isEmpty()) json1.put("country", country)
-                    if (json1.optString("city").isEmpty()) json1.put("city", city)
-                    if (json1.optDouble("latitude", 0.0) == 0.0) json1.put("latitude", lat)
-                    if (json1.optDouble("longitude", 0.0) == 0.0) json1.put("longitude", lon)
-                    if (json1.optString("emoji_flag").isEmpty()) json1.put("emoji_flag", emoji)
-                    if (json1.optString("ip").isEmpty()) json1.put("ip", ip)
-                    if (json1.optJSONObject("threat") == null) json1.putOpt("threat", threat)
-
-                    //break
-                }
-                else {
-                    error(error)
-                }
-            }
+            val json1 = createJson1()
 
             uiThread {
                 // Create a new CameraUpdateAnimator for a given mMap
@@ -619,7 +588,7 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
 
-                if (json1.keys().hasNext()) {
+                if (json1 != null) {
                 val country = json1.getString("country")
                 val city = json1.getString("city")
                 val lat = json1.getDouble("latitude")
@@ -667,46 +636,10 @@ class MainActivity : AppCompatActivity(),
         val googleMap = mMap
         if (p0 != null && googleMap != null) {
         doAsync {
-            val json1 = JSONObject()
-
-            for (name in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
-                val (_, _, result) = name.httpGet().responseJson()
-                val (data, error) = result
-                if (data != null) {
-                    val content = data.obj()
-                    debug(content)
-
-                    var country = content.optString("country_name")
-                    val city = content.optString("city")
-                    var lat = content.optDouble("latitude", 0.0)
-                    var lon = content.optDouble("longitude", 0.0)
-                    val emoji = content.optString("emoji_flag")
-                    var ip = content.optString("ip")
-                    val threat = content.optJSONObject("threat")
-
-                    if (country.isEmpty()) country = content.optString("country")
-                    //if (city.isEmpty()) city = content.optString("city")
-                    if (lat == 0.0) lat = content.optDouble("lat", 0.0)
-                    if (lon == 0.0) lon = content.optDouble("lon", 0.0)
-                    //if (emoji.isEmpty()) emoji = content.optString("emoji_flag")
-                    if (ip.isEmpty()) ip = content.optString("query")
-                    //if (threat == null) threat = content.optJSONObject("threat")
-
-                    if (json1.optString("country").isEmpty()) json1.put("country", country)
-                    if (json1.optString("city").isEmpty()) json1.put("city", city)
-                    if (json1.optDouble("latitude", 0.0) == 0.0) json1.put("latitude", lat)
-                    if (json1.optDouble("longitude", 0.0) == 0.0) json1.put("longitude", lon)
-                    if (json1.optString("emoji_flag").isEmpty()) json1.put("emoji_flag", emoji)
-                    if (json1.optString("ip").isEmpty()) json1.put("ip", ip)
-                    if (json1.optJSONObject("threat") == null) json1.putOpt("threat", threat)
-
-                    //break
-                } else {
-                    error(error)
-                }
-            }
+            val json1 = createJson1()
 
             uiThread {
+                if (json1 != null) {
                 val country = json1.getString("country")
                 val city = json1.getString("city")
                 val lat = json1.getDouble("latitude")
@@ -736,6 +669,7 @@ class MainActivity : AppCompatActivity(),
                                 p0.showInfoWindow()
                             }
                         })
+                }
             }
         }
         }
@@ -841,7 +775,54 @@ class MainActivity : AppCompatActivity(),
 */
 
     @WorkerThread
-    private fun createJson() {
+    private fun createJson1(): JSONObject? {
+        val json1 = JSONObject()
+
+        for (name in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
+            val timeout = 500
+            val timeoutRead = 500
+            val (_, _, result) = name.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
+            val (data, error) = result
+            if (data != null) {
+                val content = data.obj()
+                debug(content)
+
+                var country = content.optString("country_name")
+                val city = content.optString("city")
+                var lat = content.optDouble("latitude", 0.0)
+                var lon = content.optDouble("longitude", 0.0)
+                val emoji = content.optString("emoji_flag")
+                var ip = content.optString("ip")
+                val threat = content.optJSONObject("threat")
+
+                if (country.isEmpty()) country = content.optString("country")
+                //if (city.isEmpty()) city = content.optString("city")
+                if (lat == 0.0) lat = content.optDouble("lat", 0.0)
+                if (lon == 0.0) lon = content.optDouble("lon", 0.0)
+                //if (emoji.isEmpty()) emoji = content.optString("emoji_flag")
+                if (ip.isEmpty()) ip = content.optString("query")
+                //if (threat == null) threat = content.optJSONObject("threat")
+
+                if (json1.optString("country").isEmpty()) json1.put("country", country)
+                if (json1.optString("city").isEmpty()) json1.put("city", city)
+                if (json1.optDouble("latitude", 0.0) == 0.0) json1.put("latitude", lat)
+                if (json1.optDouble("longitude", 0.0) == 0.0) json1.put("longitude", lon)
+                if (json1.optString("emoji_flag").isEmpty()) json1.put("emoji_flag", emoji)
+                if (json1.optString("ip").isEmpty()) json1.put("ip", ip)
+                if (json1.optJSONObject("threat") == null) json1.putOpt("threat", threat)
+
+                //break
+            } else {
+                error(error)
+            }
+        }
+
+        return if (json1.length() > 0) json1 else null
+    }
+
+    @WorkerThread
+    private fun createJson(): JSONArray? {
+        val jsonObjLast = JSONArray()
         //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
         "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
             when (result) {
@@ -912,8 +893,6 @@ class MainActivity : AppCompatActivity(),
                         }
                     }
 
-                    val jsonObjLast = JSONArray()
-
                     try {
                         val keys = jsonObj.keys()
                         while (keys.hasNext()) {
@@ -959,17 +938,11 @@ class MainActivity : AppCompatActivity(),
                     } catch (e: JSONException) {
                         error(e)
                     }
-
-                    val text = jsonObjLast.toString()
-                    debug(text)
-
-                    val file = File(this.getExternalFilesDir(null),resources.getResourceEntryName(R.raw.nordvpn) + ".json")
-                    debug(file)
-
-                    file.writeText(text)
                 }
             }
         }
+
+        return if (jsonObjLast.length() > 0) jsonObjLast else null
     }
 
     @MainThread
