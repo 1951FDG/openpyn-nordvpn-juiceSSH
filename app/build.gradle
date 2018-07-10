@@ -75,4 +75,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.maps.android:android-maps-utils:0.5'
+    implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
 }

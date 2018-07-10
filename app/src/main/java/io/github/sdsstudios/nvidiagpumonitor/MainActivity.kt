@@ -12,7 +12,6 @@ import android.preference.PreferenceActivity.EXTRA_NO_HEADERS
 import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT
 import android.preference.PreferenceManager
 import android.support.annotation.MainThread
-import android.support.annotation.WorkerThread
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -23,9 +22,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import com.github.kittinunf.fuel.android.extension.responseJson
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.LocationServices
@@ -189,13 +185,16 @@ class MainActivity : AppCompatActivity(),
 
 //        val jsonObjLast = createJson()
 //
-//        val text = jsonObjLast.toString()
-//        debug(text)
+//        if (jsonObjLast != null) {
+//            val text = jsonObjLast.toString()
+//            debug(text)
 //
-//        val file = File(this.getExternalFilesDir(null),resources.getResourceEntryName(R.raw.nordvpn) + ".json")
-//        debug(file)
+//            val file = File(this.getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+//            debug(file)
 //
-//        file.writeText(text)
+//            file.writeText(text)
+//        }
+//        generateXML()
     }
 
     override fun onStart() {
@@ -673,276 +672,6 @@ class MainActivity : AppCompatActivity(),
             }
         }
         }
-    }
-/*
-    private fun createJson0() {
-        //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-        "https://api.nordvpn.com/server".httpGet().responseJson { request, response, result ->
-            when (result) {
-                is Result.Failure -> {
-                    val ex = result.getException()
-                }
-                is Result.Success -> {
-                    operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
-                    val jsonObj = JSONObject()
-                    val content = result.get().array() //JSONArray
-                    for (res in content) {
-                        val country = res.getString("domain").take(2)
-
-                        var pass = country.equals(country_code,true)
-
-                        if (!pass) {
-                            //continue
-                        }
-
-                        pass = when {
-                            p2p -> false
-                            dedicated -> false
-                            double_vpn -> false
-                            tor_over_vpn -> false
-                            anti_ddos -> false
-                            else -> true
-                        }
-
-                        if (!pass) {
-                            val categories = res.getJSONArray("categories")
-
-                            for (category in categories) {
-                                val name = category.getString("name")
-
-                                if (p2p and name.equals("P2P", true)) {
-                                    pass = true
-                                    break
-                                }
-                                else if (dedicated and name.equals("Dedicated IP servers", true)) {
-                                    pass = true
-                                    break
-                                }
-                                else if (double_vpn and name.equals("Double VPN", true)) {
-                                    pass = true
-                                    break
-                                }
-                                else if (tor_over_vpn and name.equals("Obfuscated Servers", true)) {
-                                    pass = true
-                                    break
-                                }
-                                else if (anti_ddos and name.equals("Anti DDoS", true)) {
-                                    pass = true
-                                    break
-                                }
-                            }
-                        }
-
-                        if (!pass) {
-                            continue
-                        }
-
-                        val location = res.getJSONObject("location")
-
-                        var jsonArr = jsonObj.optJSONArray(location.toString())
-                        if (jsonArr == null) {
-                            jsonArr = JSONArray()
-                            jsonArr.put(res)
-                            jsonObj.put(location.toString(), jsonArr)
-                        }
-                        else {
-                            jsonArr.put(res)
-                        }
-                    }
-
-                    try {
-                        val keys = jsonObj.keys()
-                        while (keys.hasNext()) {
-                            val key = keys.next()
-                            val value = jsonObj.getJSONArray(key)
-                            val location = value.getJSONObject(0).getJSONObject("location")
-                            val marker = mMap.addMarker(MarkerOptions().position(LatLng(location.getDouble("lat"), location.getDouble("long"))).visible(false))
-                            marker.tag = value
-
-                            items.add(marker)
-                        }
-                    } catch (e: JSONException) {
-                        error(e)
-                    }
-
-//                    val file = File(this.getExternalFilesDir(null),"output.json")
-//                    file.writeText(jsonObj.toString())
-//                    debug(file)
-                }
-            }
-        }
-    }
-*/
-
-    @WorkerThread
-    private fun createJson1(): JSONObject? {
-        val json1 = JSONObject()
-
-        for (name in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
-            val timeout = 500
-            val timeoutRead = 500
-            val (_, _, result) = name.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
-            val (data, error) = result
-            if (data != null) {
-                val content = data.obj()
-                debug(content)
-
-                var country = content.optString("country_name")
-                val city = content.optString("city")
-                var lat = content.optDouble("latitude", 0.0)
-                var lon = content.optDouble("longitude", 0.0)
-                val emoji = content.optString("emoji_flag")
-                var ip = content.optString("ip")
-                val threat = content.optJSONObject("threat")
-
-                if (country.isEmpty()) country = content.optString("country")
-                //if (city.isEmpty()) city = content.optString("city")
-                if (lat == 0.0) lat = content.optDouble("lat", 0.0)
-                if (lon == 0.0) lon = content.optDouble("lon", 0.0)
-                //if (emoji.isEmpty()) emoji = content.optString("emoji_flag")
-                if (ip.isEmpty()) ip = content.optString("query")
-                //if (threat == null) threat = content.optJSONObject("threat")
-
-                if (json1.optString("country").isEmpty()) json1.put("country", country)
-                if (json1.optString("city").isEmpty()) json1.put("city", city)
-                if (json1.optDouble("latitude", 0.0) == 0.0) json1.put("latitude", lat)
-                if (json1.optDouble("longitude", 0.0) == 0.0) json1.put("longitude", lon)
-                if (json1.optString("emoji_flag").isEmpty()) json1.put("emoji_flag", emoji)
-                if (json1.optString("ip").isEmpty()) json1.put("ip", ip)
-                if (json1.optJSONObject("threat") == null) json1.putOpt("threat", threat)
-
-                //break
-            } else {
-                error(error)
-            }
-        }
-
-        return if (json1.length() > 0) json1 else null
-    }
-
-    @WorkerThread
-    private fun createJson(): JSONArray? {
-        val jsonObjLast = JSONArray()
-        //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-        "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
-            when (result) {
-                is Result.Failure -> {
-                    error(result.getException())
-                }
-                is Result.Success -> {
-                    operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
-                    val jsonObj = JSONObject()
-                    val content = result.get().array() //JSONArray
-                    for (res in content) {
-                        val location = res.getJSONObject("location")
-
-                        var json1: JSONObject? = jsonObj.optJSONObject(location.toString())
-                        if (json1 == null) {
-                            json1 = JSONObject().apply {
-                                put("flag", res.getString("flag"))
-                                put("country", res.getString("country"))
-                                put("location", res.getJSONObject("location"))
-                            }
-
-                            val features = JSONObject().apply {
-                                put("p2p", false)
-                                put("dedicated", false)
-                                put("double_vpn", false)
-                                put("tor_over_vpn", false)
-                                put("anti_ddos", false)
-                                put("standard", false)
-                            }
-
-                            val categories = res.getJSONArray("categories")
-
-                            for (category in categories) {
-                                val name = category.getString("name")
-
-                                when {
-                                    name.equals("P2P", true) -> features.put("p2p", true)
-                                    name.equals("Dedicated IP servers", true) -> features.put("dedicated", true)
-                                    name.equals("Double VPN", true) -> features.put("double_vpn", true)
-                                    name.equals("Obfuscated Servers", true) -> features.put("tor_over_vpn", true)
-                                    name.equals("Anti DDoS", true) -> features.put("anti_ddos", true)
-                                    name.equals("Standard VPN servers", true) -> features.put("standard", true)
-                                }
-                            }
-
-                            json1.put("features", features)
-
-                            jsonObj.put(location.toString(), json1)
-                        }
-                        else {
-
-                            val features = json1.getJSONObject("features")
-
-                            val categories = res.getJSONArray("categories")
-
-                            for (category in categories) {
-                                val name = category.getString("name")
-
-                                when {
-                                    name.equals("P2P", true) -> features.put("p2p", true)
-                                    name.equals("Dedicated IP servers", true) -> features.put("dedicated", true)
-                                    name.equals("Double VPN", true) -> features.put("double_vpn", true)
-                                    name.equals("Obfuscated Servers", true) -> features.put("tor_over_vpn", true)
-                                    name.equals("Anti DDoS", true) -> features.put("anti_ddos", true)
-                                    name.equals("Standard VPN servers", true) -> features.put("standard", true)
-                                }
-                            }
-                        }
-                    }
-
-                    try {
-                        val keys = jsonObj.keys()
-                        while (keys.hasNext()) {
-                            val key = keys.next()
-                            val value = jsonObj.getJSONObject(key)
-
-                            val jsonArr = JSONArray()
-                            val features = value.getJSONObject("features")
-
-                            if (features.getBoolean("anti_ddos")) {
-                                jsonArr.put(JSONObject().put("name", "Anti DDoS"))
-                            }
-
-                            if (features.getBoolean("dedicated")) {
-                                jsonArr.put(JSONObject().put("name", "Dedicated IP servers"))
-                            }
-
-                            if (features.getBoolean("double_vpn")) {
-                                jsonArr.put(JSONObject().put("name", "Double VPN"))
-                            }
-
-                            if (features.getBoolean("tor_over_vpn")) {
-                                jsonArr.put(JSONObject().put("name", "Obfuscated Servers"))
-                            }
-
-                            if (features.getBoolean("p2p")) {
-                                jsonArr.put(JSONObject().put("name", "P2P"))
-                            }
-
-                            if (features.getBoolean("standard")) {
-                                jsonArr.put(JSONObject().put("name", "Standard VPN servers"))
-                            }
-
-                            val objLast = JSONObject().apply {
-                                put("flag", value.getString("flag"))
-                                put("country", value.getString("country"))
-                                put("location", value.getJSONObject("location"))
-                                put("categories", jsonArr)
-                            }
-
-                            jsonObjLast.put(objLast)
-                        }
-                    } catch (e: JSONException) {
-                        error(e)
-                    }
-                }
-            }
-        }
-
-        return if (jsonObjLast.length() > 0) jsonObjLast else null
     }
 
     @MainThread
