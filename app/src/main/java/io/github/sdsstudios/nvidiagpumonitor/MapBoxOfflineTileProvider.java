@@ -88,7 +88,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
         this.mDatabase.execSQL("DETACH db");
 
         if (debug) {
-            try (Cursor c = this.mDatabase.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name!='android_metadata' order by name", null)) {
+            String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name!='android_metadata' order by name";
+            try (Cursor c = this.mDatabase.rawQuery(sql, null)) {
                 if (c.moveToFirst()) {
                     while (!c.isAfterLast()) {
                         Log.d(TAG, c.getString(0));
@@ -115,8 +116,9 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     public Tile getTile(int x, int y, int z) {
         String[] columns = { COL_TILES_TILE_DATA };
         String[] selectionArgs = { String.valueOf(z), String.valueOf(x), String.valueOf((1 << z) - 1 - y) };
+        String selection = "zoom_level = ? AND tile_column = ? AND tile_row = ?";
 
-        try (Cursor c = this.mDatabase.query(TABLE_TILES, columns, "zoom_level = ? AND tile_column = ? AND tile_row = ?", selectionArgs, null, null, null)) {
+        try (Cursor c = this.mDatabase.query(TABLE_TILES, columns, selection, selectionArgs, null, null, null)) {
             if (c.moveToFirst()) return new Tile(TILE_DIM, TILE_DIM, c.getBlob(0));
             else return NO_TILE;
         }
