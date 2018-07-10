@@ -32,6 +32,7 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
     private final boolean mIsRotateGestureEnabled;
     private final boolean mIsScrollGestureEnabled;
     private final boolean mIsTiltGestureEnabled;
+    private final boolean mIsZoomControlsEnabled;
     private final boolean mIsZoomGestureEnabled;
 
     public CameraUpdateAnimator(@NonNull GoogleMap map,
@@ -40,6 +41,7 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
         mIsRotateGestureEnabled = mMap.getUiSettings().isRotateGesturesEnabled();
         mIsScrollGestureEnabled = mMap.getUiSettings().isScrollGesturesEnabled();
         mIsTiltGestureEnabled = mMap.getUiSettings().isTiltGesturesEnabled();
+        mIsZoomControlsEnabled = mMap.getUiSettings().isZoomControlsEnabled();
         mIsZoomGestureEnabled = mMap.getUiSettings().isZoomGesturesEnabled();
 
         mOnCameraIdleListener = onCameraIdleListener;
@@ -62,6 +64,7 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setZoomGesturesEnabled(false);
 
         mMap.setOnCameraIdleListener(this);
@@ -89,10 +92,12 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
                 }
             }, animation.mDelay);
         } else {
+            mOnCameraIdleListener.onCameraIdle();
             mMap.setOnCameraIdleListener(mOnCameraIdleListener);
             mMap.getUiSettings().setRotateGesturesEnabled(mIsRotateGestureEnabled);
             mMap.getUiSettings().setScrollGesturesEnabled(mIsScrollGestureEnabled);
             mMap.getUiSettings().setTiltGesturesEnabled(mIsTiltGestureEnabled);
+            mMap.getUiSettings().setZoomControlsEnabled(mIsZoomControlsEnabled);
             mMap.getUiSettings().setZoomGesturesEnabled(mIsZoomGestureEnabled);
         }
     }
