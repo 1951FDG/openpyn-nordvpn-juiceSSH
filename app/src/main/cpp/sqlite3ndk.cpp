@@ -86,7 +86,7 @@ struct ndk_file
 	// Pointer to database content (AAsset_getBuffer)
 	const void* buf;
 
-	// Total lenght of database file (AAsset_getLength)
+	// Total length of database file (AAsset_getLength)
 	off_t len;
 };
 
@@ -94,8 +94,7 @@ struct ndk_file
  * sqlite3_vfs.xOpen - open database file.
  * Implemented using AAssetManager_open
  */
-static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile,
-		int flags, int *pOutFlags)
+static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, int flags, int *pOutFlags)
 {
 	const ndk_vfs* ndk = (ndk_vfs*) pVfs;
 	ndk_file *ndkFile = (ndk_file*) pFile;
@@ -111,15 +110,12 @@ static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile,
 	// Opening JOURNAL/TEMP/WAL/etc. files will make call fails.
 	// We don't need it, as DB opened from 'assets' .apk cannot
 	// be modified
-	if (
-			!zPath ||
-			(flags & SQLITE_OPEN_DELETEONCLOSE) ||
-
-			!(flags & SQLITE_OPEN_READONLY) ||
-			(flags & SQLITE_OPEN_READWRITE) ||
-			(flags & SQLITE_OPEN_CREATE) ||
-
-			!(flags & SQLITE_OPEN_MAIN_DB)
+	if (!zPath ||
+		(flags & SQLITE_OPEN_DELETEONCLOSE) ||
+		!(flags & SQLITE_OPEN_READONLY) ||
+		(flags & SQLITE_OPEN_READWRITE) ||
+		(flags & SQLITE_OPEN_CREATE) ||
+		!(flags & SQLITE_OPEN_MAIN_DB)
 		)
 	{
 		return SQLITE_PERM;
@@ -163,7 +159,7 @@ static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile,
 /*
  * sqlite3_vfs.xDelete - not implemented. Assets in .apk are read only
  */
-static int ndkDelete(sqlite3_vfs *pVfs, const char *zPath, int dirSync)
+static int ndkDelete(sqlite3_vfs *, const char *, int)
 {
 	return SQLITE_ERROR;
 }
@@ -172,8 +168,7 @@ static int ndkDelete(sqlite3_vfs *pVfs, const char *zPath, int dirSync)
  * sqlite3_vfs.xAccess - tests if file exists and/or can be read.
  * Implemented using AAssetManager_open
  */
-static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags,
-		int *pResOut)
+static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags, int *pResOut)
 {
 	const ndk_vfs* ndk = (ndk_vfs*) pVfs;
 
@@ -181,16 +176,18 @@ static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags,
 
 	switch (flags)
 	{
-	case SQLITE_ACCESS_EXISTS:
-	case SQLITE_ACCESS_READ:
-		AAsset* asset = AAssetManager_open(ndk->mgr, zPath, AASSET_MODE_RANDOM);
-		if (asset)
+		case SQLITE_ACCESS_EXISTS:
+		case SQLITE_ACCESS_READ:
 		{
-			AAsset_close(asset);
-			*pResOut = 1;
+			AAsset *asset = AAssetManager_open(ndk->mgr, zPath, AASSET_MODE_RANDOM);
+			if (asset) {
+				AAsset_close(asset);
+				*pResOut = 1;
+			}
 		}
-
-		break;
+			break;
+		default:
+			break;
 	}
 
 	return SQLITE_OK;
@@ -200,8 +197,7 @@ static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags,
  * sqlite3_vfs.xFullPathname - all paths are root paths to 'assets' directory,
  * so just return copy of input path
  */
-static int ndkFullPathname(sqlite3_vfs *pVfs, const char *zPath, int nOut,
-		char *zOut)
+static int ndkFullPathname(sqlite3_vfs *pVfs, const char *zPath, int nOut, char *zOut)
 {
 	if (!zPath)
 	{
@@ -259,7 +255,7 @@ static int ndkCurrentTime(sqlite3_vfs *pVfs, double *prNow)
 /*
  * sqlite3_vfs.xGetLastError - not implemented (no additional information)
  */
-static int ndkGetLastError(sqlite3_vfs *NotUsed1, int NotUsed2, char *NotUsed3)
+static int ndkGetLastError(sqlite3_vfs *, int, char *)
 {
 	return 0;
 }
@@ -298,8 +294,7 @@ static int ndkFileClose(sqlite3_file *pFile)
  * sqlite3_file.xRead - database read from asset memory.
  * See: AAsset_getBuffer in ndkOpen
  */
-static int ndkFileRead(sqlite3_file *pFile, void *pBuf, int amt,
-		sqlite3_int64 offset)
+static int ndkFileRead(sqlite3_file *pFile, void *pBuf, int amt, sqlite3_int64 offset)
 {
 	const ndk_file* file = (ndk_file*) pFile;
 	int got, off;
@@ -368,7 +363,7 @@ static int ndkFileTruncate(sqlite3_file *, sqlite3_int64)
 /*
  * sqlite3_file.xSync - not implemented (.apk is read-only)
  */
-static int ndkFileSync(sqlite3_file *, int flags)
+static int ndkFileSync(sqlite3_file *, int)
 {
 	return SQLITE_IOERR_FSYNC;
 }
@@ -438,8 +433,7 @@ static int ndkFileDeviceCharacteristics(sqlite3_file *)
 /*
  * Register into SQLite. For more information see sqlite3ndk.h
  */
-int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName,
-		int makeDflt, const char *osVfs)
+int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName, int makeDflt, const char *osVfs)
 {
 	static ndk_vfs ndkVfs;
 	int rc;
@@ -473,21 +467,21 @@ int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName,
 
 	// vfsFile
 	static const sqlite3_io_methods ndkFileMethods =
-	{
-		1,
-		ndkFileClose,
-		ndkFileRead,
-		ndkFileWrite,
-		ndkFileTruncate,
-		ndkFileSync,
-		ndkFileSize,
-		ndkFileLock,
-		ndkFileUnlock,
-		ndkFileCheckReservedLock,
-		ndkFileControl,
-		ndkFileSectorSize,
-		ndkFileDeviceCharacteristics
-	};
+		{
+			1,
+			ndkFileClose,
+			ndkFileRead,
+			ndkFileWrite,
+			ndkFileTruncate,
+			ndkFileSync,
+			ndkFileSize,
+			ndkFileLock,
+			ndkFileUnlock,
+			ndkFileCheckReservedLock,
+			ndkFileControl,
+			ndkFileSectorSize,
+			ndkFileDeviceCharacteristics
+		};
 
 	// pMethods will be used in ndkOpen
 	ndkVfs.pMethods = &ndkFileMethods;
@@ -528,7 +522,7 @@ int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName,
 
 	// Last part, try to register VFS
 	rc = sqlite3_vfs_register(&ndkVfs.vfs, makeDflt);
-   
+
 	if (rc != SQLITE_OK)
 	{
 		// sqlite3_vfs_register could fails in case of sqlite3_initialize failure
@@ -539,66 +533,66 @@ int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName,
 }
 
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
-    JNIEnv *env;
-    if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
-        return -1;
-    }
+	JNIEnv *env;
+	if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
+		return -1;
+	}
 
-    int version = sqlite3_libversion_number();
-    const char *version_str = sqlite3_libversion();
-    INFO("found sqlite library version %s", version_str);
-    if (version < 3024000) { WARN("sqlite version %s is older than 3.24.0!", version_str); }
-    if (version > 3024000) { WARN("sqlite version %s is newer than 3.24.0!", version_str); }
+	int version = sqlite3_libversion_number();
+	const char *version_str = sqlite3_libversion();
+	INFO("found sqlite library version %s", version_str);
+	if (version < 3024000) { WARN("sqlite version %s is older than 3.24.0!", version_str); }
+	if (version > 3024000) { WARN("sqlite version %s is newer than 3.24.0!", version_str); }
 
-    jclass cActivityThread = env->FindClass("android/app/ActivityThread");
-    if (cActivityThread == JNI_FALSE) { return JNI_ERR; }
+	jclass cActivityThread = env->FindClass("android/app/ActivityThread");
+	if (cActivityThread == JNI_FALSE) { return JNI_ERR; }
 
-    jmethodID mCurrentActivityThread = env->GetStaticMethodID(
-            cActivityThread,
-            "currentActivityThread",
-            "()Landroid/app/ActivityThread;");
-    if (mCurrentActivityThread == JNI_FALSE) { return JNI_ERR; }
-    jobject gActivity = env->CallStaticObjectMethod(cActivityThread, mCurrentActivityThread);
+	jmethodID mCurrentActivityThread = env->GetStaticMethodID(
+		cActivityThread,
+		"currentActivityThread",
+		"()Landroid/app/ActivityThread;");
+	if (mCurrentActivityThread == JNI_FALSE) { return JNI_ERR; }
+	jobject gActivity = env->CallStaticObjectMethod(cActivityThread, mCurrentActivityThread);
 
-    jmethodID mGetApplication = env->GetMethodID(
-            env->GetObjectClass(gActivity),
-            "getApplication",
-            "()Landroid/app/Application;");
-    if (mGetApplication == JNI_FALSE) { return JNI_ERR; }
-    jobject gApplication = env->CallObjectMethod(gActivity, mGetApplication);
+	jmethodID mGetApplication = env->GetMethodID(
+		env->GetObjectClass(gActivity),
+		"getApplication",
+		"()Landroid/app/Application;");
+	if (mGetApplication == JNI_FALSE) { return JNI_ERR; }
+	jobject gApplication = env->CallObjectMethod(gActivity, mGetApplication);
 
-    jclass cContext = env->FindClass("android/content/Context");
-    if (cContext == JNI_FALSE) { return JNI_ERR; }
+	jclass cContext = env->FindClass("android/content/Context");
+	if (cContext == JNI_FALSE) { return JNI_ERR; }
 
-    jmethodID mGetApplicationContext = env->GetMethodID(
-            cContext,
-            "getApplicationContext",
-            "()Landroid/content/Context;");
-    if (mGetApplicationContext == JNI_FALSE) { return JNI_ERR; }
-    jobject gApplicationContext = env->CallObjectMethod(gApplication, mGetApplicationContext);
+	jmethodID mGetApplicationContext = env->GetMethodID(
+		cContext,
+		"getApplicationContext",
+		"()Landroid/content/Context;");
+	if (mGetApplicationContext == JNI_FALSE) { return JNI_ERR; }
+	jobject gApplicationContext = env->CallObjectMethod(gApplication, mGetApplicationContext);
 
-    jmethodID mGetAssets = env->GetMethodID(
-            env->GetObjectClass(gApplicationContext),
-            "getAssets",
-            "()Landroid/content/res/AssetManager;");
-    if (mGetAssets == JNI_FALSE) { return JNI_ERR; }
-    jobject gAssetManager = env->CallObjectMethod(gApplicationContext, mGetAssets);
+	jmethodID mGetAssets = env->GetMethodID(
+		env->GetObjectClass(gApplicationContext),
+		"getAssets",
+		"()Landroid/content/res/AssetManager;");
+	if (mGetAssets == JNI_FALSE) { return JNI_ERR; }
+	jobject gAssetManager = env->CallObjectMethod(gApplicationContext, mGetAssets);
 
-    jobject assetManager = env->NewGlobalRef(gAssetManager);
-    AAssetManager *assetMgr = AAssetManager_fromJava(env, assetManager);
-    assert(NULL != assetMgr);
+	jobject assetManager = env->NewGlobalRef(gAssetManager);
+	AAssetManager *assetMgr = AAssetManager_fromJava(env, assetManager);
+	assert(NULL != assetMgr);
 
-    DEBUG("enabling sqlite3ndk");
-    if (sqlite3_ndk_init(
-            assetMgr,
-            SQLITE_NDK_VFS_NAME,
-            SQLITE_NDK_VFS_MAKE_DEFAULT,
-            SQLITE_NDK_VFS_PARENT_VFS) != SQLITE_OK) {
-        ERROR("sqlite3_ndk_init failed!");
-        return JNI_ERR;
-    }
+	DEBUG("enabling sqlite3ndk");
+	if (sqlite3_ndk_init(
+		assetMgr,
+		SQLITE_NDK_VFS_NAME,
+		SQLITE_NDK_VFS_MAKE_DEFAULT,
+		SQLITE_NDK_VFS_PARENT_VFS) != SQLITE_OK) {
+		ERROR("sqlite3_ndk_init failed!");
+		return JNI_ERR;
+	}
 
-    VERBOSE("sqlite3_ndk_init OK");
+	VERBOSE("sqlite3_ndk_init OK");
 
-    return JNI_VERSION_1_6;
+	return JNI_VERSION_1_6;
 }
