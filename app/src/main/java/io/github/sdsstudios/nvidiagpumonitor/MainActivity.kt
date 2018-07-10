@@ -629,82 +629,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-
-    fun updateMasterMarker() {
-        val p0 = mMarker
-        val googleMap = mMap
-        if (p0 != null && googleMap != null) {
-        doAsync {
-            val json1 = createJson1()
-
-            uiThread {
-                if (json1 != null) {
-                val country = json1.getString("country")
-                val city = json1.getString("city")
-                val lat = json1.getDouble("latitude")
-                val lon = json1.getDouble("longitude")
-                val emoji = json1.getString("emoji_flag")
-                val ip = json1.getString("ip")
-                //val threat = json1.optJSONObject("threat")
-
-                if (p0.isInfoWindowShown) {
-                    p0.hideInfoWindow()
-                }
-
-                p0.tag = json1
-                p0.position = LatLng(lat, lon)
-                p0.title = "$emoji $city".trimStart()
-                p0.snippet = "$ip${Typography.ellipsis}"
-
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(p0.position, googleMap.cameraPosition.zoom), 3000,
-                        object : CancelableCallback {
-                            override fun onFinish() {
-                                baseContext.longToast("Animation to $country complete")
-                                p0.showInfoWindow()
-                            }
-
-                            override fun onCancel() {
-                                baseContext.longToast("Animation to $country canceled")
-                                p0.showInfoWindow()
-                            }
-                        })
-                }
-            }
-        }
-        }
-    }
-
-    @MainThread
-    fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
-        if (mMap != null && items.count() != 0) {
-            for (item in items) {
-                if (item.zIndex == 1.0f) {
-                    return Pair(item.position, item.tag.toString())
-                }
-            }
-        }
-
-        return Pair(null, null)
-    }
-
-    override fun onMarkerClick(p0: Marker?): Boolean {
-        if (p0?.zIndex == 0f) {
-            debug(p0.tag)
-            if (items.count() != 0) {
-                for (item in items) {
-                    if (item.zIndex == 1.0f) {
-                        item.zIndex = 0f
-                        item.setIcon(null)
-                    }
-                }
-            }
-            p0.zIndex = 1.0f
-            p0.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
-        }
-
-        return false
-    }
-
     override fun onCameraIdle() {
         val bounds = mMap!!.projection.visibleRegion.latLngBounds
 
@@ -727,6 +651,24 @@ class MainActivity : AppCompatActivity(),
                 if (item.isVisible) item.isVisible = false
             }
         }
+    }
+
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        if (p0?.zIndex == 0f) {
+            debug(p0.tag)
+            if (items.count() != 0) {
+                for (item in items) {
+                    if (item.zIndex == 1.0f) {
+                        item.zIndex = 0f
+                        item.setIcon(null)
+                    }
+                }
+            }
+            p0.zIndex = 1.0f
+            p0.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+        }
+
+        return false
     }
 
     override fun onInfoWindowClick(p0: Marker?) {
@@ -860,6 +802,63 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
             }.show()
+        }
+    }
+
+    @MainThread
+    fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
+        if (mMap != null && items.count() != 0) {
+            for (item in items) {
+                if (item.zIndex == 1.0f) {
+                    return Pair(item.position, item.tag.toString())
+                }
+            }
+        }
+
+        return Pair(null, null)
+    }
+
+    fun updateMasterMarker() {
+        val p0 = mMarker
+        val googleMap = mMap
+        if (p0 != null && googleMap != null) {
+            doAsync {
+                val json1 = createJson1()
+
+                uiThread {
+                    if (json1 != null) {
+                        val country = json1.getString("country")
+                        val city = json1.getString("city")
+                        val lat = json1.getDouble("latitude")
+                        val lon = json1.getDouble("longitude")
+                        val emoji = json1.getString("emoji_flag")
+                        val ip = json1.getString("ip")
+                        //val threat = json1.optJSONObject("threat")
+
+                        if (p0.isInfoWindowShown) {
+                            p0.hideInfoWindow()
+                        }
+
+                        p0.tag = json1
+                        p0.position = LatLng(lat, lon)
+                        p0.title = "$emoji $city".trimStart()
+                        p0.snippet = "$ip${Typography.ellipsis}"
+
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(p0.position, googleMap.cameraPosition.zoom), 3000,
+                                object : CancelableCallback {
+                                    override fun onFinish() {
+                                        baseContext.longToast("Animation to $country complete")
+                                        p0.showInfoWindow()
+                                    }
+
+                                    override fun onCancel() {
+                                        baseContext.longToast("Animation to $country canceled")
+                                        p0.showInfoWindow()
+                                    }
+                                })
+                    }
+                }
+            }
         }
     }
 
