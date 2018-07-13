@@ -65,7 +65,8 @@ class MainActivity : AppCompatActivity(),
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnCameraIdleListener,
         GoogleMap.OnInfoWindowClickListener,
-        AnkoLogger {
+        AnkoLogger,
+        NetworkInfo.NetworkInfoListener {
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
@@ -99,8 +100,11 @@ class MainActivity : AppCompatActivity(),
 
     private val items by lazy { arrayListOf<Marker>() }
 
+    private var networkInfo: NetworkInfo? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
@@ -194,7 +198,8 @@ class MainActivity : AppCompatActivity(),
 //
 //            file.writeText(text)
 //        }
-//        generateXML()
+
+//        if (NetworkInfo.getConnectivity(applicationContext).status == NetworkInfo.NetworkStatus.INTERNET) generateXML()
     }
 
     override fun onStart() {
@@ -322,6 +327,9 @@ class MainActivity : AppCompatActivity(),
                     }
 
                     uiThread {
+                        networkInfo = NetworkInfo.getInstance(it)
+                        networkInfo!!.addListener(it)
+
                         offlineTileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
                         info(offlineTileProvider!!.minimumZoom)
                         info(offlineTileProvider!!.maximumZoom)
@@ -562,14 +570,25 @@ class MainActivity : AppCompatActivity(),
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
             if (location != null) {
-                mMap!!.addMarker(MarkerOptions().position(LatLng(location.latitude, location.longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).zIndex(0.5f))
-                //mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 5.0f))
+                val var1 = MarkerOptions().apply {
+                    flat(true)
+                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
+                    position(LatLng(location.latitude, location.longitude))
+                    zIndex(0.5f)
+                }
+
+                mMap!!.addMarker(var1)
             }
         }
         }
 
         doAsync {
-            val json1 = createJson1()
+            var json1: JSONObject? = null
+
+            if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET)
+            {
+                json1 = createJson1()
+            }
 
             uiThread {
                 // Create a new CameraUpdateAnimator for a given mMap
@@ -597,28 +616,26 @@ class MainActivity : AppCompatActivity(),
                 //val threat = json1.optJSONObject("threat")
 
                 val var1 = MarkerOptions().apply {
-                    position(LatLng(lat, lon))
-                    title("$emoji $city".trimStart())
-                    snippet("$ip${Typography.ellipsis}")
-                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    zIndex(1.0f)
                     flat(true)
+                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    position(LatLng(lat, lon))
+                    snippet("$ip${Typography.ellipsis}")
+                    title("$emoji $city".trimStart())
+                    zIndex(1.0f)
                 }
 
-                val marker = mMap!!.addMarker(var1)
-                marker.tag = json1
+                mMarker = mMap!!.addMarker(var1)
+                mMarker!!.tag = json1
 
-                mMarker = marker
-
-                animator.add(CameraUpdateFactory.newLatLng(var1.position), true, 0,
+                animator.add(CameraUpdateFactory.newLatLng(mMarker!!.position), true, 0,
                         object : CancelableCallback {
                             override fun onFinish() {
-                                baseContext.longToast("Animation to $country complete")
+                                longToast("Animation to $country complete")
                                 mMarker!!.showInfoWindow()
                             }
 
                             override fun onCancel() {
-                                baseContext.longToast("Animation to $country canceled")
+                                longToast("Animation to $country canceled")
                                 mMarker!!.showInfoWindow()
                             }
                         })
@@ -805,6 +822,18 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    override fun networkStatusChange(network: NetworkInfo.Network) {
+        when(network.status){
+            NetworkInfo.NetworkStatus.INTERNET -> {
+//                longToast("ONLINE: ${network.type}")
+                updateMasterMarker()
+            }
+            NetworkInfo.NetworkStatus.OFFLINE -> {
+//                longToast("OFFLINE: ${network.type}")
+            }
+        }
+    }
+
     @MainThread
     fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
         if (mMap != null && items.count() != 0) {
@@ -823,10 +852,19 @@ class MainActivity : AppCompatActivity(),
         val googleMap = mMap
         if (p0 != null && googleMap != null) {
             doAsync {
-                val json1 = createJson1()
+                var json1: JSONObject? = null
+
+                if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET)
+                {
+                    json1 = createJson1()
+                }
 
                 uiThread {
                     if (json1 != null) {
+                        if (p0.isInfoWindowShown) {
+                            p0.hideInfoWindow()
+                        }
+
                         val country = json1.getString("country")
                         val city = json1.getString("city")
                         val lat = json1.getDouble("latitude")
@@ -835,25 +873,21 @@ class MainActivity : AppCompatActivity(),
                         val ip = json1.getString("ip")
                         //val threat = json1.optJSONObject("threat")
 
-                        if (p0.isInfoWindowShown) {
-                            p0.hideInfoWindow()
-                        }
-
-                        p0.tag = json1
                         p0.position = LatLng(lat, lon)
-                        p0.title = "$emoji $city".trimStart()
                         p0.snippet = "$ip${Typography.ellipsis}"
+                        p0.tag = json1
+                        p0.title = "$emoji $city".trimStart()
 
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(p0.position, googleMap.cameraPosition.zoom), 3000,
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(p0.position),
                                 object : CancelableCallback {
                                     override fun onFinish() {
-                                        baseContext.longToast("Animation to $country complete")
-                                        p0.showInfoWindow()
+                                        longToast("Animation to $country complete")
+                                        mMarker!!.showInfoWindow()
                                     }
 
                                     override fun onCancel() {
-                                        baseContext.longToast("Animation to $country canceled")
-                                        p0.showInfoWindow()
+                                        longToast("Animation to $country canceled")
+                                        mMarker!!.showInfoWindow()
                                     }
                                 })
                     }
