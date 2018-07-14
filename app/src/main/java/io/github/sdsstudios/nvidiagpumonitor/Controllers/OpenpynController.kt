@@ -3,19 +3,11 @@ package io.github.sdsstudios.nvidiagpumonitor.controllers
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.preference.PreferenceManager
-import android.util.Xml
-import com.github.kittinunf.fuel.android.extension.responseJson
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
-import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import org.jetbrains.anko.longToast
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.StringWriter
 import java.util.*
 import kotlin.concurrent.schedule
 
