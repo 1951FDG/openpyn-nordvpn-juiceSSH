@@ -78,4 +78,5 @@ dependencies {
     implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.4'
+    implementation 'com.lucasurbas:guidelinescompattoolbar:1.0.2'
 }
