@@ -49,8 +49,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import kotlin.concurrent.schedule
@@ -193,10 +192,18 @@ class MainActivity : AppCompatActivity(),
 //            val text = jsonObjLast.toString()
 //            debug(text)
 //
-//            val file = File(this.getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
-//            debug(file)
+//            try {
+//                val file = File(this.getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+//                debug(file)
 //
-//            file.writeText(text)
+//                file.writeText(text)
+//            } catch (e: Resources.NotFoundException) {
+//                error(e)
+//            } catch (e: FileNotFoundException) {
+//                error(e)
+//            } catch (e: IOException) {
+//                error(e)
+//            }
 //        }
 
 //        if (NetworkInfo.getConnectivity(applicationContext).status == NetworkInfo.NetworkStatus.INTERNET) generateXML()
@@ -310,19 +317,21 @@ class MainActivity : AppCompatActivity(),
                     )
 
                     for ((id, ext) in list) {
-                        val file = File(getExternalFilesDir(null), resources.getResourceEntryName(id) + ext)
-
-                        if (!file.exists()) {
-                            try {
-                                val mInput = resources.openRawResource(id)
-                                val mOutput = FileOutputStream(file)
-                                mInput.copyTo(mOutput, 1024)
-                                mOutput.flush()
-                                mOutput.close()
-                                mInput.close()
-                            } catch (e: IOException) {
-                                error(e)
+                        try {
+                            val file = File(getExternalFilesDir(null), resources.getResourceEntryName(id) + ext)
+                            if (!file.exists()) {
+                                resources.openRawResource(id).use { input ->
+                                    file.outputStream().buffered().use { output ->
+                                        input.copyTo(output)
+                                    }
+                                }
                             }
+                        } catch (e: Resources.NotFoundException) {
+                            error(e)
+                        } catch (e: FileNotFoundException) {
+                            error(e)
+                        } catch (e: IOException) {
+                            error(e)
                         }
                     }
 
@@ -472,16 +481,18 @@ class MainActivity : AppCompatActivity(),
         //val silent = preferences.getBoolean("pref_silent", false)
         //val nvram = preferences.getBoolean("pref_nvram", false)
 
-        val file = File(this.getExternalFilesDir(null),resources.getResourceEntryName(R.raw.nordvpn) + ".json")
-
         var jsonArr: JSONArray? = null
 
         try {
-            val fis = FileInputStream(file)
-            val bytes = fis.readBytes()
-            fis.close()
-            val json = String(bytes, Charsets.UTF_8)
+            val file = File(getExternalFilesDir(null),resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+            val json = file.bufferedReader().use {
+                it.readText()
+            }
             jsonArr = JSONArray(json)
+        } catch (e: Resources.NotFoundException) {
+            error(e)
+        } catch (e: FileNotFoundException) {
+            error(e)
         } catch (e: IOException) {
             error(e)
         } catch (e: JSONException) {
