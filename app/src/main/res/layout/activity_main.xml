@@ -18,15 +18,16 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            app:theme="@style/Theme.MyApp.Toolbar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/Theme.MyApp.Toolbar">
 
             <Spinner
                 android:id="@+id/spinnerConnectionList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dialog"
-                android:theme="@style/Theme.AppCompat" />
+                android:theme="@style/Theme.AppCompat"
+                tools:listitem="@layout/spinner_item" />
 
         </android.support.v7.widget.Toolbar>
 
