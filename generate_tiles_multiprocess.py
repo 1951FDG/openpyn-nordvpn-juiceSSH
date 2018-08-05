@@ -27,7 +27,7 @@ class GoogleProjection(object):
         self.zc = []
         self.Ac = []
         c = tile_size
-        for _d in range(0, levels):
+        for _ in range(0, levels):
             e = c / 2
             self.Bc.append(c / 360.0)
             self.Cc.append(c / (2 * pi))
@@ -35,33 +35,33 @@ class GoogleProjection(object):
             self.Ac.append(c)
             c *= 2
 
-    def fromLLtoPixel(self, ll, zoom):
+    def from_ll_to_pixel(self, ll, zoom):
         d = self.zc[zoom]
         e = round(d[0] + ll[0] * self.Bc[zoom])
         f = minmax(sin(pi / 180 * ll[1]), -0.9999, 0.9999)
         g = round(d[1] + 0.5 * log((1 + f) / (1 - f)) * -self.Cc[zoom])
-        return (e, g)
+        return e, g
 
-    def fromPixelToLL(self, px, zoom):
+    def from_pixel_to_ll(self, px, zoom):
         e = self.zc[zoom]
         f = (px[0] - e[0]) / self.Bc[zoom]
         g = (px[1] - e[1]) / -self.Cc[zoom]
         h = 180 / pi * (2 * atan(exp(g)) - 0.5 * pi)
-        return (f, h)
+        return f, h
 
 
 class RenderThread(object):
-    def __init__(self, q, mapfile, maxZoom, tile_size, tile_format):
+    def __init__(self, q, map_file, max_zoom, tile_size, tile_format):
         self.q = q
         # Create a Map
         self.m = mapnik.Map(tile_size, tile_size)
         self.m.aspect_fix_mode = mapnik.aspect_fix_mode.RESPECT
         # Load style XML
-        mapnik.load_map(self.m, mapfile, True)
+        mapnik.load_map(self.m, map_file, True)
         # Obtain <Map> projection
         self.prj = mapnik.Projection(self.m.srs)
         # Projects between tile pixel co-ordinates and LatLong (EPSG:4326)
-        self.tileproj = GoogleProjection(maxZoom + 1, tile_size)
+        self.tileproj = GoogleProjection(max_zoom + 1, tile_size)
         self.tilesize = tile_size
         self.tileformat = tile_format
 
@@ -70,8 +70,8 @@ class RenderThread(object):
         p0 = (x * self.tilesize, (y + 1) * self.tilesize)
         p1 = ((x + 1) * self.tilesize, y * self.tilesize)
         # Convert to LatLong (EPSG:4326)
-        l0 = self.tileproj.fromPixelToLL(p0, z)
-        l1 = self.tileproj.fromPixelToLL(p1, z)
+        l0 = self.tileproj.from_pixel_to_ll(p0, z)
+        l1 = self.tileproj.from_pixel_to_ll(p1, z)
         # Convert to map projection (e.g. mercator coordinate system EPSG:900913)
         c0 = self.prj.forward(mapnik.Coord(l0[0], l0[1]))
         c1 = self.prj.forward(mapnik.Coord(l1[0], l1[1]))
@@ -120,15 +120,15 @@ class RenderThread(object):
             self.q.task_done()
 
 
-def render_tiles(bbox, mapfile, minZoom, maxZoom, threads, name, tile_dir, tile_size, tile_format, mbtiles_path):
+def render_tiles(bbox, map_file, min_zoom, max_zoom, threads, name, tile_dir, tile_size, tile_format, mbtiles_path):
     logger.info("render_tiles(%s, %s, %s, %s, %s, %s, %s, %s, %s)", bbox,
-                mapfile, tile_dir, minZoom, maxZoom, threads, name, tile_size,
+                map_file, tile_dir, min_zoom, max_zoom, threads, name, tile_size,
                 mbtiles_path)
     # Launch rendering threads
     queue = Queue(32)
     renderers = {}
     for i in range(threads):
-        renderer = RenderThread(queue, mapfile, maxZoom, tile_size, tile_format)
+        renderer = RenderThread(queue, map_file, max_zoom, tile_size, tile_format)
         render_thread = threading.Thread(target=renderer.loop)
         render_thread.start()
         logger.info("Started render thread %s", render_thread.getName())
@@ -137,12 +137,12 @@ def render_tiles(bbox, mapfile, minZoom, maxZoom, threads, name, tile_dir, tile_
     if not os.path.isdir(tile_dir):
         os.mkdir(tile_dir)
 
-    gprj = GoogleProjection(maxZoom + 1, tile_size)
+    gprj = GoogleProjection(max_zoom + 1, tile_size)
     ll0 = (bbox[0], bbox[3])
     ll1 = (bbox[2], bbox[1])
-    for z in range(minZoom, maxZoom + 1):
-        px0 = gprj.fromLLtoPixel(ll0, z)
-        px1 = gprj.fromLLtoPixel(ll1, z)
+    for z in range(min_zoom, max_zoom + 1):
+        px0 = gprj.from_ll_to_pixel(ll0, z)
+        px1 = gprj.from_ll_to_pixel(ll1, z)
         # check if we have directories in place
         str_z = "%s" % z
         tile_sizef = float(tile_size)
@@ -174,7 +174,7 @@ def render_tiles(bbox, mapfile, minZoom, maxZoom, threads, name, tile_dir, tile_
                     raise SystemExit("Ctrl-C detected, exiting...")
 
     # Signal render threads to exit by sending empty request to queue
-    for i in range(threads):
+    for _ in range(threads):
         queue.put(None)
     # Wait for pending rendering jobs to complete
     queue.join()
@@ -189,8 +189,8 @@ def render_tiles(bbox, mapfile, minZoom, maxZoom, threads, name, tile_dir, tile_
         else:
             data = {}
             # data["bounds"] = str(bbox[0]) + ", " + str(bbox[1]) + ", " + str(bbox[2]) + ", " + str(bbox[3])
-            data["maxzoom"] = str(maxZoom)
-            data["minzoom"] = str(minZoom)
+            data["maxzoom"] = str(max_zoom)
+            data["minzoom"] = str(min_zoom)
             # data["version"] = "1.0"
             with open(os.path.join(tile_dir, "metadata.json"), "w") as outfile:
                 json.dump(data, outfile, sort_keys=True, indent=4)

@@ -55,4 +55,6 @@ captures/
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 google_maps_api.xml
-tiles
+
+tiles/
+world/.thumb.png

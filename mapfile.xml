@@ -4,15 +4,13 @@
 
 <Parameters>
   <Parameter name="bounds">-180,-85.0511,180,85.0511</Parameter>
-  <Parameter name="center">0,0,0</Parameter>
-  <Parameter name="format">png8</Parameter>
-  <Parameter name="minzoom">0</Parameter>
+  <Parameter name="center">1,1,1</Parameter>
+  <Parameter name="format">webp</Parameter>
+  <Parameter name="minzoom">1</Parameter>
   <Parameter name="maxzoom">6</Parameter>
   <Parameter name="scale">1</Parameter>
   <Parameter name="metatile">1</Parameter>
-  <Parameter name="id"><![CDATA[geography]]></Parameter>
-  <Parameter name="_updated">1530319714000</Parameter>
-  <Parameter name="name"><![CDATA[Android]]></Parameter>
+  <Parameter name="id"><![CDATA[world]]></Parameter>
   <Parameter name="version">1.0.0</Parameter>
   <Parameter name="tilejson"><![CDATA[2.0.0]]></Parameter>
   <Parameter name="scheme"><![CDATA[xyz]]></Parameter>
@@ -21,14 +19,14 @@
 
 <Style name="ne10mland" filter-mode="first">
   <Rule>
-    <PolygonSymbolizer fill-opacity="1" fill="#f5f5f5" />
+    <PolygonSymbolizer fill-opacity="1" fill="#e3f2fd" />
   </Rule>
 </Style>
 <Layer name="ne10mland"
   srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
     <StyleName>ne10mland</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/Users/derrick/Documents/MapBox/project/geography/layers/ne10mland/a49ba6bd-ne_10m_land.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[./world/layers/ne10mland/ne_10m_land.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
   </Layer>
@@ -42,16 +40,21 @@
   srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
     <StyleName>ne10mlakes</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/Users/derrick/Documents/MapBox/project/geography/layers/ne10mlakes/aacae0d1-ne_10m_lakes.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[./world/layers/ne10mlakes/ne_10m_lakes.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
   </Layer>
 
+<Style name="ne10mglaciatedareas" filter-mode="first">
+  <Rule>
+    <PolygonSymbolizer fill-opacity="1" fill="#fafafa" />
+  </Rule>
+</Style>
 <Layer name="ne10mglaciatedareas"
   srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
-    
+    <StyleName>ne10mglaciatedareas</StyleName>
     <Datasource>
-       <Parameter name="file"><![CDATA[/Users/derrick/Documents/MapBox/project/geography/layers/ne10mglaciatedareas/4610f38f-ne_10m_glaciated_areas.shp]]></Parameter>
+       <Parameter name="file"><![CDATA[./world/layers/ne10mglaciatedareas/ne_10m_glaciated_areas.shp]]></Parameter>
        <Parameter name="type"><![CDATA[shape]]></Parameter>
     </Datasource>
   </Layer>
