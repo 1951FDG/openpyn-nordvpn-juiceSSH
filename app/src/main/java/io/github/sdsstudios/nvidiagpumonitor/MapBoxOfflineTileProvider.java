@@ -1,55 +1,47 @@
 package io.github.sdsstudios.nvidiagpumonitor;
 
-import java.io.Closeable;
-import java.io.File;
-
 import android.database.Cursor;
-import org.sqlite.database.sqlite.SQLiteDatabase;
-
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
+import org.sqlite.database.sqlite.SQLiteDatabase;
+
+import java.io.Closeable;
+import java.io.File;
 
 @MainThread
 public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
+    // ------------------------------------------------------------------------
+    // Instance Variables
+    // ------------------------------------------------------------------------
+    // TABLE tiles (zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB);
+    private static final String TABLE_TILES = "tiles";
+    private static final String TABLE_METADATA = "metadata";
+    private static final String COL_TILES_TILE_DATA = "tile_data";
+    private static final String COL_VALUE = "value";
+    // Used to measure distances relative to the total world size.
+    private static final double WORLD_WIDTH = 1;
+    // Tile dimension, in pixels.
+    private static final int TILE_DIM = 512;
+    private static final String TAG = "MBTileProvider";
 
     static {
         System.loadLibrary("sqliteX");
         System.loadLibrary("sqlite3ndk");
     }
 
-    // ------------------------------------------------------------------------
-    // Instance Variables
-    // ------------------------------------------------------------------------
-
-    private float mMinimumZoom = 0.0f;
-
-    private float mMaximumZoom = 22.0f;
-
+    private final SQLiteDatabase mDatabase;
     @Nullable
     private LatLngBounds mBounds;
-
-    private final SQLiteDatabase mDatabase;
-
-    // TABLE tiles (zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB);
-    private static final String TABLE_TILES = "tiles";
-    private static final String TABLE_METADATA = "metadata";
-    private static final String COL_TILES_TILE_DATA = "tile_data";
-    private static final String COL_VALUE = "value";
-
-    // Used to measure distances relative to the total world size.
-    private static final double WORLD_WIDTH = 1;
-
-    // Tile dimension, in pixels.
-    private static final int TILE_DIM = 512;
+    private float mMinimumZoom = 0.0f;
+    private float mMaximumZoom = 22.0f;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -114,6 +106,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     @Override
     @SuppressWarnings("unused")
     public Tile getTile(int x, int y, int z) {
+        //Log.e(TAG, String.format("%d %d", x, y));
         String[] columns = { COL_TILES_TILE_DATA };
         String[] selectionArgs = { String.valueOf(z), String.valueOf(x), String.valueOf((1 << z) - 1 - y) };
         String selection = "zoom_level = ? AND tile_column = ? AND tile_row = ?";
@@ -124,8 +117,33 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
         }
     }
 
+    // ------------------------------------------------------------------------
+    // Closeable Interface
+    // ------------------------------------------------------------------------
+
+    /**
+     * Closes the provider, cleaning up any background resources.
+     *
+     * <p>
+     * You must call {@code close()} when you are finished using an instance of
+     * this provider. Failing to do so may leak resources, such as the backing
+     * SQLiteDatabase.
+     * </p>
+     */
+    @Override
+    public void close() {
+        if (this.isDatabaseAvailable()) {
+            this.mDatabase.close();
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // Public Methods
+    // ------------------------------------------------------------------------
+
     /**
      * Convert tile coordinates and zoom into Bounds format.
+     *
      * @param x The requested x coordinate.
      * @param y The requested y coordinate.
      * @param z The requested zoom level.
@@ -153,35 +171,11 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
         return new LatLngBounds(sw, ne);
     }
 
-    // ------------------------------------------------------------------------
-    // Closeable Interface
-    // ------------------------------------------------------------------------
-
-    /**
-     * Closes the provider, cleaning up any background resources.
-     * 
-     * <p>
-     * You must call {@code close()} when you are finished using an instance of
-     * this provider. Failing to do so may leak resources, such as the backing
-     * SQLiteDatabase.
-     * </p>
-     */
-    @Override
-    public void close() {
-        if (this.isDatabaseAvailable()) {
-            this.mDatabase.close();
-        }
-    }
-
-    // ------------------------------------------------------------------------
-    // Public Methods
-    // ------------------------------------------------------------------------
-
     /**
      * The minimum zoom level supported by this provider.
-     * 
+     *
      * @return the minimum zoom level supported or {@link #mMinimumZoom} if
-     *         it could not be determined.
+     * it could not be determined.
      */
     @SuppressWarnings("unused")
     public float getMinimumZoom() {
@@ -190,9 +184,9 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     /**
      * The maximum zoom level supported by this provider.
-     * 
+     *
      * @return the maximum zoom level supported or {@link #mMaximumZoom} if
-     *         it could not be determined.
+     * it could not be determined.
      */
     @SuppressWarnings("unused")
     public float getMaximumZoom() {
@@ -201,9 +195,9 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     /**
      * The geographic bounds available from this provider.
-     * 
+     *
      * @return the geographic bounds available or {@link null} if it could not
-     *         be determined.
+     * be determined.
      */
     @Nullable
     @SuppressWarnings("unused")
@@ -213,35 +207,45 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     /**
      * Determines if the requested zoom level is supported by this provider.
-     * 
+     *
      * @param zoom The requested zoom level.
      * @return {@code true} if the requested zoom level is supported by this
-     *         provider.
+     * provider.
      */
-    @SuppressWarnings({"WeakerAccess", "unused"})
+    @SuppressWarnings({ "WeakerAccess", "unused" })
     public boolean isZoomLevelAvailable(float zoom) {
         return (zoom >= this.mMinimumZoom) && (zoom <= this.mMaximumZoom);
     }
 
     @Nullable
     @SuppressWarnings("unused")
-    public String getName() { return getStringValue("name"); }
+    public String getName() {
+        return getStringValue("name");
+    }
 
     @Nullable
     @SuppressWarnings("unused")
-    public String getType() { return getStringValue("template"); }
+    public String getType() {
+        return getStringValue("template");
+    }
 
     @Nullable
     @SuppressWarnings("unused")
-    public String getVersion() { return getStringValue("version"); }
+    public String getVersion() {
+        return getStringValue("version");
+    }
 
     @Nullable
     @SuppressWarnings("unused")
-    public String getDescription() { return getStringValue("description"); }
+    public String getDescription() {
+        return getStringValue("description");
+    }
 
     @Nullable
     @SuppressWarnings("unused")
-    public String getAttribution() { return getStringValue("attribution"); }
+    public String getAttribution() {
+        return getStringValue("attribution");
+    }
 
     // ------------------------------------------------------------------------
     // Private Methods
@@ -291,6 +295,4 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     private boolean isDatabaseAvailable() {
         return (this.mDatabase != null) && (this.mDatabase.isOpen());
     }
-
-    private static final String TAG = "MBTileProvider";
 }
