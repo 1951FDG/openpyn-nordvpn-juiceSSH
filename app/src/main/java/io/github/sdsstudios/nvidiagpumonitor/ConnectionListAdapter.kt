@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.sonelli.juicessh.pluginlibrary.PluginContract
-import java.util.*
+import java.util.UUID
 
 /**
  * Created by Seth on 04/03/18.

@@ -12,7 +12,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.sdsstudios.nvidiagpumonitor.controllers.*
 import org.jetbrains.anko.longToast
-import java.util.*
+import java.util.UUID
 
 /**
  * Created by Seth on 04/03/18.
