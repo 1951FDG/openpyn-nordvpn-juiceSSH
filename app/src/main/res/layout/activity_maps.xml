@@ -2,32 +2,17 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_width="match_parent"
+    android:transitionGroup="true"
     tools:context="io.github.sdsstudios.nvidiagpumonitor.MainActivity"
-    tools:showIn="@layout/activity_main">
-
-    <io.github.sdsstudios.nvidiagpumonitor.ConnectButton
-        android:id="@+id/buttonConnect"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:clickable="false"
-        android:enabled="true"
-        android:text="@string/btn_request_permissions"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Connect"
-        style="@style/Widget.AppCompat.Button.Colored"/>
+    tools:showIn="@layout/activity_main"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:visibility="gone"
         map:cameraTargetLat="85.05112877980659"
         map:cameraTargetLng="-135.0"
@@ -38,4 +23,45 @@
         map:uiTiltGestures="false"
         map:uiZoomControls="false"
         map:uiZoomGestures="false" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_width="wrap_content"
+        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:elevation="2dp"
+        app:fabCustomSize="40dp"
+        app:layout_constraintLeft_toLeftOf="@+id/fab0"
+        app:layout_constraintRight_toRightOf="@+id/fab0"
+        app:layout_constraintTop_toTopOf="@+id/map"
+        app:srcCompat="@drawable/ic_list_black_24dp"
+        app:useCompatPadding="false" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab1"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_width="wrap_content"
+        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:elevation="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/fab0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_my_location_black_24dp"
+        app:useCompatPadding="false" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab0"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_width="wrap_content"
+        app:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_flash_on_white_24dp"
+        app:useCompatPadding="false" />
+
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,7 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -14,6 +15,7 @@ import android.preference.PreferenceManager
 import android.support.annotation.MainThread
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
@@ -22,6 +24,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import com.abdeveloper.library.MultiSelectModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.LocationServices
@@ -31,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap.CancelableCallback
 import com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
@@ -39,6 +43,8 @@ import com.google.android.gms.maps.model.TileOverlayOptions
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
+import com.vdurmont.emoji.EmojiParser
+import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
@@ -51,8 +57,7 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.*
-import kotlin.concurrent.schedule
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity(),
         OnSessionStartedListener,
@@ -63,7 +68,6 @@ class MainActivity : AppCompatActivity(),
         GoogleMap.OnMapLoadedCallback,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnCameraIdleListener,
-        GoogleMap.OnInfoWindowClickListener,
         AnkoLogger,
         NetworkInfo.NetworkInfoListener {
     companion object {
@@ -75,8 +79,9 @@ class MainActivity : AppCompatActivity(),
         private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
     }
 
-    private var mReadConnectionsPerm = false
-    private var mOpenSessionsPerm = false
+    private val mConnectionListAdapter by lazy {
+        ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
+    }
 
     private val mConnectionManager by lazy {
         ConnectionManager(
@@ -86,20 +91,19 @@ class MainActivity : AppCompatActivity(),
         )
     }
 
-    private val mConnectionListAdapter by lazy { ConnectionListAdapter(supportActionBar!!.themedContext) }
+    private var mReadConnectionsPerm = false
+    private var mOpenSessionsPerm = false
 
     private val mPermissionsGranted
         get() = mReadConnectionsPerm && mOpenSessionsPerm
 
+    private val items by lazy { hashMapOf<LatLng, Marker>() }
+
+    private var cameraUpdateAnimator: CameraUpdateAnimator? = null
+    private var countryBoundaries: CountryBoundaries? = null
     private var mMap: GoogleMap? = null
-
-    var mMarker: Marker? = null
-
-    private var offlineTileProvider: MapBoxOfflineTileProvider? = null
-
-    private val items by lazy { arrayListOf<Marker>() }
-
     private var networkInfo: NetworkInfo? = null
+    private var offlineTileProvider: MapBoxOfflineTileProvider? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +113,7 @@ class MainActivity : AppCompatActivity(),
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        map.onCreate(savedInstanceState)
+        map?.onCreate(savedInstanceState)
 
         val api = GoogleApiAvailability.getInstance()
         val errorCode = api.isGooglePlayServicesAvailable(this)
@@ -117,7 +121,7 @@ class MainActivity : AppCompatActivity(),
         when {
             errorCode == ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, AppCompatActivity.RESULT_OK, null)
             api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
-            else -> this.longToast(api.getErrorString(errorCode))
+            else -> longToast(api.getErrorString(errorCode))
         }
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -163,60 +167,33 @@ class MainActivity : AppCompatActivity(),
                 onPermissionsGranted()
             }
 
-            buttonConnect.onClick {
+            fab0.onClick {
                 if (mConnectionListAdapter.count == 0) {
                     toast(R.string.error_must_have_atleast_one_server)
-
                     return@onClick
                 }
 
                 if (mPermissionsGranted) {
-                    if (buttonConnect.text.toString().equals(getString(R.string.btn_connect), true)) {
-                        buttonConnect.applyConnectingStyle()
-                    } else {
-                        buttonConnect.applyDisconnectingStyle()
-                    }
-
                     val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
                     mConnectionManager.toggleConnection(uuid = uuid!!, activity = this)
-
+                    it?.isClickable = false
                 } else {
                     requestPermissions()
                 }
             }
         }
 
-//        val jsonObjLast = createJson()
-//
-//        if (jsonObjLast != null) {
-//            val text = jsonObjLast.toString()
-//            debug(text)
-//
-//            try {
-//                val file = File(this.getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
-//                debug(file)
-//
-//                file.writeText(text)
-//            } catch (e: Resources.NotFoundException) {
-//                error(e)
-//            } catch (e: FileNotFoundException) {
-//                error(e)
-//            } catch (e: IOException) {
-//                error(e)
-//            }
-//        }
-
-//        if (NetworkInfo.getConnectivity(applicationContext).status == NetworkInfo.NetworkStatus.INTERNET) generateXML()
+        //if (NetworkInfo.getConnectivity(applicationContext).status == NetworkInfo.NetworkStatus.INTERNET) generateXML()
     }
 
     override fun onStart() {
         super.onStart()
-        map.onStart()
+        map?.onStart()
     }
 
     override fun onResume() {
         super.onResume()
-        map.onResume()
+        map?.onResume()
 
         if (!isJuiceSSHInstalled()) {
             indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_install_juicessh), "OK") { juiceSSHInstall() }
@@ -225,26 +202,25 @@ class MainActivity : AppCompatActivity(),
 
     override fun onPause() {
         super.onPause()
-        map.onPause()
+        map?.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        map.onStop()
+        map?.onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        map.onDestroy()
-
-        offlineTileProvider?.close()
+        map?.onDestroy()
 
         mConnectionManager.onDestroy()
+        offlineTileProvider?.close()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        map.onLowMemory()
+        map?.onLowMemory()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -281,7 +257,47 @@ class MainActivity : AppCompatActivity(),
         val id = item.itemId
         return when (id) {
             R.id.action_settings -> {
-                startActivity<SettingsActivity>(EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name, EXTRA_NO_HEADERS to true)
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+                val intent = Intent(this, SettingsActivity::class.java).apply {
+                    putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
+                    putExtra(EXTRA_NO_HEADERS, true)
+                }
+                ActivityCompat.startActivity(this, intent, options.toBundle())
+                //startActivity<SettingsActivity>(EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name, EXTRA_NO_HEADERS to true)
+                true
+            }
+            R.id.action_refresh -> {
+                //val drawable = item.icon as? Animatable
+                //drawable?.start()
+                doAsync {
+                    var json1: JSONArray? = null
+
+                    if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
+                        json1 = createJson()
+                    }
+
+                    if (json1 != null) {
+                        val text = json1.toString()
+                        debug(text)
+
+                        try {
+                            val file = File(getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+                            debug(file)
+
+                            file.writeText(text)
+                        } catch (e: Resources.NotFoundException) {
+                            error(e)
+                        } catch (e: FileNotFoundException) {
+                            error(e)
+                        } catch (e: IOException) {
+                            error(e)
+                        }
+                    }
+
+                    uiThread {
+                        //drawable?.stop()
+                    }
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -297,10 +313,11 @@ class MainActivity : AppCompatActivity(),
 
         if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
             if (resultCode == AppCompatActivity.RESULT_OK) {
-                val watermark = map.findViewWithTag<ImageView>("GoogleWatermark")
+                val watermark = map?.findViewWithTag<ImageView>("GoogleWatermark")
 
                 if (watermark != null) {
-                    watermark.imageAlpha = 204
+                    //watermark.imageAlpha = 204
+                    watermark.visibility = View.INVISIBLE
 
                     val params = watermark.layoutParams as RelativeLayout.LayoutParams
                     params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
@@ -335,6 +352,17 @@ class MainActivity : AppCompatActivity(),
                         }
                     }
 
+                    try {
+                        //var t = System.currentTimeMillis()
+                        countryBoundaries = CountryBoundaries.load(assets.open("boundaries.ser"))
+                        //t = System.currentTimeMillis() - t
+                        //debug( "Loading took " + t + "ms")
+                    } catch (e: FileNotFoundException) {
+                        error(e)
+                    } catch (e: IOException) {
+                        error(e)
+                    }
+
                     uiThread {
                         networkInfo = NetworkInfo.getInstance(it)
                         networkInfo!!.addListener(it)
@@ -343,7 +371,41 @@ class MainActivity : AppCompatActivity(),
                         info(offlineTileProvider!!.minimumZoom)
                         info(offlineTileProvider!!.maximumZoom)
 
-                        map.getMapAsync(it)
+                        val preferences = PreferenceManager.getDefaultSharedPreferences(it)
+                        /*
+                        val array = resources.getTextArray(R.array.pref_country_entries)
+
+                        if (preferences.getString("pref_country_values", "") == "") {
+                            val list = Array(size = array.size) { false }.toCollection(ArrayList())
+                            val editor = PrintArray.putListBoolean("pref_country_values", list, preferences)
+                            editor.commit()
+                        }
+
+                        val checkedItems = PrintArray.getListBoolean("pref_country_values", preferences).toBooleanArray()
+
+                        PrintArray.apply {
+                            setTitle(R.string.multi_select_dialog_title)
+                        }
+
+                        PrintArray.show( "pref_country_values", array, checkedItems, it, preferences)
+                        */
+
+                        // List of Countries with Name and ID
+                        val listOfCountries = ArrayList<MultiSelectModel>()
+                        resources.getStringArray(R.array.pref_country_entries).withIndex().forEach { (index: Int, item: String?) ->
+                            listOfCountries.add(MultiSelectModel(index, item))
+                        }
+
+                        // Preselected IDs of Country List
+                        val alreadySelectedCountries = PrintArray.getListInt("pref_country_values", preferences)
+
+                        PrintArray.apply {
+                            setTitle(R.string.multi_select_dialog_title)
+                            setItems(listOfCountries)
+                            setCheckedItems(alreadySelectedCountries)
+                        }
+
+                        map?.getMapAsync(it)
                     }
                 }
             }
@@ -351,31 +413,32 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
-        buttonConnect.applyDisconnectStyle()
+        fab0.setImageResource(R.drawable.ic_flash_off_white_24dp)
+        fab0.isClickable = true
         //cardViewLayout.visibility = View.VISIBLE
         spinnerConnectionList.isEnabled = false
     }
 
     override fun onSessionCancelled() {
-        buttonConnect.applyConnectStyle()
+        fab0.setImageResource(R.drawable.ic_flash_on_white_24dp)
+        fab0.isClickable = true
     }
 
     override fun onSessionFinished() {
-        buttonConnect.applyConnectStyle()
+        fab0.setImageResource(R.drawable.ic_flash_on_white_24dp)
+        fab0.isClickable = true
         //cardViewLayout.visibility = View.GONE
         spinnerConnectionList.isEnabled = true
 
-        Timer().schedule(5000){
+        android.os.Handler().postDelayed({
             updateMasterMarker()
-        }
+        }, 5000)
     }
 
     override fun onClientStarted() {
-        buttonConnect.isEnabled = true
     }
 
     override fun onClientStopped() {
-        buttonConnect.isEnabled = false
     }
 
     override fun onLoaderFinished(newCursor: Cursor?) {
@@ -385,8 +448,6 @@ class MainActivity : AppCompatActivity(),
     @MainThread
     private fun onPermissionsGranted() {
         mConnectionManager.startClient(onClientStartedListener = this)
-
-        buttonConnect.applyConnectStyle()
 
         spinnerConnectionList.adapter = mConnectionListAdapter
 
@@ -428,25 +489,17 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val params = buttonConnect.layoutParams as ConstraintLayout.LayoutParams
-
-        try {
-            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
-
-        } catch (e: Resources.NotFoundException) {
-            error(e)
-        }
+        val params = fab1.layoutParams as ConstraintLayout.LayoutParams
 
         googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
         googleMap.setMapType(MAP_TYPE_NORMAL)
         googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom)
         googleMap.setMinZoomPreference(offlineTileProvider!!.minimumZoom)
-        googleMap.setOnInfoWindowClickListener(this)
         googleMap.setOnMapLoadedCallback(this)
         googleMap.setOnMarkerClickListener(this)
         googleMap.setPadding(0,0,0,params.height + params.bottomMargin)
         googleMap.uiSettings.isScrollGesturesEnabled = true
-        googleMap.uiSettings.isZoomControlsEnabled = true
         googleMap.uiSettings.isZoomGesturesEnabled = true
 
         mMap = googleMap
@@ -459,7 +512,6 @@ class MainActivity : AppCompatActivity(),
         info(mMap!!.maxZoomLevel)
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-
         //val server = preferences.getString("pref_server", "")
         //val country_code = preferences.getString("pref_country", "")
         //val country = args.country
@@ -484,7 +536,7 @@ class MainActivity : AppCompatActivity(),
         var jsonArr: JSONArray? = null
 
         try {
-            val file = File(getExternalFilesDir(null),resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+            val file = File(getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
             val json = file.bufferedReader().use {
                 it.readText()
             }
@@ -503,9 +555,9 @@ class MainActivity : AppCompatActivity(),
 
         if (jsonArr != null) {
         for (res in jsonArr) {
-            val country = res.getString("flag").toLowerCase()
+            val flag = res.getString("flag").toLowerCase()
             /*
-            var pass = country.equals(country_code,true)
+            var pass = flag.equals(country_code, true)
 
             if (!pass) {
                 continue
@@ -524,11 +576,11 @@ class MainActivity : AppCompatActivity(),
 
             if (!pass && netflix) {
                 pass = when {
-                    country.equals("us", true) -> true
-                    country.equals("ca", true) -> true
-                    country.equals("fr", true) -> true
-                    country.equals("nl", true) -> true
-                    country.equals("jp", true) -> true
+                    flag.equals("us", true) -> true
+                    flag.equals("ca", true) -> true
+                    flag.equals("fr", true) -> true
+                    flag.equals("nl", true) -> true
+                    flag.equals("jp", true) -> true
                     else -> false
                 }
             }
@@ -548,10 +600,10 @@ class MainActivity : AppCompatActivity(),
                     } else if (double_vpn and name.equals("Double VPN", true)) {
                         pass = true
                         break
-                    } else if (tor_over_vpn and name.equals("Obfuscated Servers", true)) {
+                    } else if (tor_over_vpn and name.equals("Onion Over VPN", true)) {
                         pass = true
                         break
-                    } else if (anti_ddos and name.equals("Anti DDoS", true)) {
+                    } else if (anti_ddos and name.equals("Obfuscated Servers", true)) {
                         pass = true
                         break
                     }
@@ -562,49 +614,48 @@ class MainActivity : AppCompatActivity(),
                 continue
             }
 
+            val country = res.getString("country")
+            val emoji = EmojiParser.parseToUnicode(":$flag:")
             val location = res.getJSONObject("location")
-
+            val latLng = LatLng(location.getDouble("lat"), location.getDouble("long"))
             val var1 = MarkerOptions().apply {
-                position(LatLng(location.getDouble("lat"), location.getDouble("long")))
-                visible(false)
                 flat(true)
+                position(latLng)
+                title("$emoji $country")
+                visible(false)
             }
-
             val marker = mMap!!.addMarker(var1)
-            marker.tag = country
+            marker.tag = flag
 
-            items.add(marker)
+            items[latLng] = marker
         }
         }
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
-            if (location != null) {
-                val var1 = MarkerOptions().apply {
-                    flat(true)
-                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
-                    position(LatLng(location.latitude, location.longitude))
-                    zIndex(0.5f)
-                }
+        fab2?.onClick {
+            PrintArray.show( "pref_country_values", this, preferences)
 
-                mMap!!.addMarker(var1)
+            /*
+            for (i in alreadySelectedCountries.indices) {
+                val some_array = resources.getStringArray(R.array.pref_country_values)
             }
+            */
         }
+
+        fab1?.onClick {
+            updateMasterMarker()
         }
 
         doAsync {
             var json1: JSONObject? = null
 
-            if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET)
-            {
+            if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
                 json1 = createJson1()
             }
 
             uiThread {
-                // Create a new CameraUpdateAnimator for a given mMap
+                // Create a new CameraUpdateAnimator for a given map
                 // with an OnCameraIdleListener to set when the animation ends
-                val animator = CameraUpdateAnimator(mMap!!, it)
+                cameraUpdateAnimator = CameraUpdateAnimator(mMap!!, it)
                 val z = mMap!!.minZoomLevel.toInt()
                 val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
                 // Traverse through all rows
@@ -613,70 +664,183 @@ class MainActivity : AppCompatActivity(),
                         val bounds = offlineTileProvider!!.calculateTileBounds(x, y, z)
                         val cameraPosition = CameraPosition.Builder().target(bounds.northeast).build()
                         // Add animations
-                        animator.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
+                        cameraUpdateAnimator?.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
                     }
                 }
 
-                if (json1 != null) {
-                val country = json1.getString("country")
-                val city = json1.getString("city")
-                val lat = json1.getDouble("latitude")
-                val lon = json1.getDouble("longitude")
-                val emoji = json1.getString("emoji_flag")
-                val ip = json1.getString("ip")
-                //val threat = json1.optJSONObject("threat")
-
-                val var1 = MarkerOptions().apply {
-                    flat(true)
-                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    position(LatLng(lat, lon))
-                    snippet("$ip${Typography.ellipsis}")
-                    title("$emoji $city".trimStart())
-                    zIndex(1.0f)
-                }
-
-                mMarker = mMap!!.addMarker(var1)
-                mMarker!!.tag = json1
-
-                animator.add(CameraUpdateFactory.newLatLng(mMarker!!.position), true, 0,
-                        object : CancelableCallback {
-                            override fun onFinish() {
-                                longToast("Animation to $country complete")
-                                mMarker!!.showInfoWindow()
-                            }
-
-                            override fun onCancel() {
-                                longToast("Animation to $country canceled")
-                                mMarker!!.showInfoWindow()
-                            }
-                        })
-                }
-                // Execute the animation and set the final OnCameraIdleListener
-                animator.execute()
+                executeAnimation(it, json1, jsonArr, cameraUpdateAnimator)
             }
         }
+    }
+
+
+    @MainThread
+    private fun executeAnimation(it: Context, json1: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?) {
+        fun getDefaultLatLng(): LatLng
+        {
+            return LatLng(51.514125, -0.093689)
+        }
+
+        fun getLatLng(flag: String, latLng: LatLng, jsonArr: JSONArray?): LatLng {
+            info(flag)
+            info(latLng.toString())
+
+            operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
+
+            if (jsonArr != null) {
+                val latLngList = arrayListOf<LatLng>()
+                var match = false
+
+                loop@ for (res in jsonArr) {
+                    val flag_code = res.getString("flag").toLowerCase()
+                    val pass = flag_code.equals(flag, true)
+
+                    if (pass) {
+                        val location = res.getJSONObject("location")
+                        val element = LatLng(location.getDouble("lat"), location.getDouble("long"))
+
+                        match = element == latLng
+                        when {
+                            match -> break@loop
+                            else -> latLngList.add(element)
+                        }
+                    }
+                }
+
+                if (!latLngList.isEmpty() && !match) {
+                    val results = FloatArray(latLngList.size)
+
+                    latLngList.withIndex().forEach { (index, it) ->
+                        val result = FloatArray(1)
+                        Location.distanceBetween(latLng.latitude, latLng.longitude, it.latitude, it.longitude, result)
+                        results[index] = result[0]
+                    }
+
+                    val result = results.min()
+                    if (result != null) {
+                        val index = results.indexOf(result)
+                        return latLngList[index]
+                    }
+                }
+            }
+
+            return latLng
+        }
+
+        when {
+            json1 != null -> {
+                val flag = json1.getString("flag").toLowerCase()
+                //val country = json1.getString("country")
+                //val city = json1.getString("city")
+                val lat = json1.getDouble("latitude")
+                val lon = json1.getDouble("longitude")
+                //val emoji = json1.getString("emoji_flag")
+                //val ip = json1.getString("ip")
+                //val threat = json1.optJSONObject("threat")
+
+                animateCamera(getLatLng(flag, LatLng(lat, lon), jsonArr), animator)
+            }
+            ActivityCompat.checkSelfPermission(it, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
+                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(it)
+                fusedLocationClient.lastLocation
+                        .addOnSuccessListener { location: Location? ->
+                            if (location != null) {
+                                /*
+                                try {
+                                    val gcd =  Geocoder(it, Locale.getDefault())
+                                    val addresses = gcd.getFromLocation(location.latitude, location.longitude, 1)
+                                    if (addresses != null && !addresses.isEmpty()) {
+                                        country = addresses[0].countryCode
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                                */
+
+                                fun getToastString(ids: List<String>?): String {
+                                    return when {
+                                        ids == null || ids.isEmpty() -> "is nowhere"
+                                        else -> "is in " + ids.joinToString()
+                                    }
+                                }
+
+                                var t = System.nanoTime()
+                                val lat = location.latitude
+                                val lon = location.longitude
+                                val ids = countryBoundaries?.getIds(lon, lat)
+                                t = System.nanoTime() - t
+                                debug(getToastString(ids) + "\n(in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
+
+                                if (ids != null && !ids.isEmpty()) {
+                                    animateCamera(getLatLng(ids[0].toLowerCase(), LatLng(lat, lon), jsonArr), animator)
+                                }
+                                else {
+                                    animateCamera(getDefaultLatLng(), animator)
+                                }
+                            }
+                            else {
+                                animateCamera(getDefaultLatLng(), animator)
+                            }
+                        }
+                        .addOnFailureListener{ e: Exception ->
+                            error(e)
+                            animateCamera(getDefaultLatLng(), animator)
+                        }
+            }
+            else -> {
+                animateCamera(getDefaultLatLng(), animator)
+            }
+        }
+    }
+
+    @MainThread
+    private fun animateCamera(latLng: LatLng, animator: CameraUpdateAnimator?) {
+        info(latLng.toString())
+        animator?.add(CameraUpdateFactory.newLatLng(latLng), true, 0, object : CancelableCallback {
+            override fun onFinish() {
+                items.forEach { (key, value) ->
+                    if (key == latLng) {
+                        if (!value.isVisible) value.isVisible = true
+                        if (!value.isInfoWindowShown) value.showInfoWindow()
+
+                        if (value.zIndex == 0f) {
+                            value.zIndex = 1.0f
+                            value.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        }
+                    }
+                    else {
+                        if (value.zIndex == 1.0f) {
+                            value.zIndex = 0f
+                            value.setIcon(null)
+                        }
+                    }
+                }
+            }
+
+            override fun onCancel() {
+                items.forEach { (key, value) ->
+                    if (key == latLng) {
+                        debug("Animation to $value canceled")
+                        return@onCancel
+                    }
+                }
+            }
+        })
+
+        // Execute the animation and set the final OnCameraIdleListener
+        animator?.execute()
     }
 
     override fun onCameraIdle() {
         val bounds = mMap!!.projection.visibleRegion.latLngBounds
 
         if (items.count() != 0) {
-            for (item in items) {
-                if (bounds.contains(item.position)) {
-                    if (!item.isVisible) item.isVisible = true
+            items.forEach { (key, value) ->
+                if (bounds.contains(key)) {
+                    if (!value.isVisible) value.isVisible = true
                 } else {
-                    if (item.isVisible) item.isVisible = false
+                    if (value.isVisible) value.isVisible = false
                 }
-            }
-        }
-
-        val item = mMarker
-
-        if (item != null) {
-            if (bounds.contains(item.position)) {
-                if (!item.isVisible) item.isVisible = true
-            } else {
-                if (item.isVisible) item.isVisible = false
             }
         }
     }
@@ -685,21 +849,21 @@ class MainActivity : AppCompatActivity(),
         if (p0?.zIndex == 0f) {
             debug(p0.tag)
             if (items.count() != 0) {
-                for (item in items) {
-                    if (item.zIndex == 1.0f) {
-                        item.zIndex = 0f
-                        item.setIcon(null)
+                items.forEach { (key, value) ->
+                    if (value.zIndex == 1.0f) {
+                        value.zIndex = 0f
+                        value.setIcon(null)
                     }
                 }
             }
             p0.zIndex = 1.0f
-            p0.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+            p0.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
         }
 
         return false
     }
 
-    override fun onInfoWindowClick(p0: Marker?) {
+    fun onInfoWindowClick(p0: Marker?) {
         val jsonObj = p0?.tag as JSONObject
         debug(jsonObj)
 
@@ -848,9 +1012,9 @@ class MainActivity : AppCompatActivity(),
     @MainThread
     fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
         if (mMap != null && items.count() != 0) {
-            for (item in items) {
-                if (item.zIndex == 1.0f) {
-                    return Pair(item.position, item.tag.toString())
+            items.forEach { (key, value) ->
+                if (value.zIndex == 1.0f) {
+                    return Pair(key, value.tag.toString())
                 }
             }
         }
@@ -858,51 +1022,35 @@ class MainActivity : AppCompatActivity(),
         return Pair(null, null)
     }
 
+    @MainThread
     fun updateMasterMarker() {
-        val p0 = mMarker
-        val googleMap = mMap
-        if (p0 != null && googleMap != null) {
-            doAsync {
-                var json1: JSONObject? = null
+        doAsync {
+            var var1: JSONObject? = null
 
-                if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET)
-                {
-                    json1 = createJson1()
+            if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
+                var1 = createJson1()
+            }
+
+            var var2: JSONArray? = null
+
+            try {
+                val file = File(getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+                val json = file.bufferedReader().use {
+                    it.readText()
                 }
+                var2 = JSONArray(json)
+            } catch (e: Resources.NotFoundException) {
+                error(e)
+            } catch (e: FileNotFoundException) {
+                error(e)
+            } catch (e: IOException) {
+                error(e)
+            } catch (e: JSONException) {
+                error(e)
+            }
 
-                uiThread {
-                    if (json1 != null) {
-                        if (p0.isInfoWindowShown) {
-                            p0.hideInfoWindow()
-                        }
-
-                        val country = json1.getString("country")
-                        val city = json1.getString("city")
-                        val lat = json1.getDouble("latitude")
-                        val lon = json1.getDouble("longitude")
-                        val emoji = json1.getString("emoji_flag")
-                        val ip = json1.getString("ip")
-                        //val threat = json1.optJSONObject("threat")
-
-                        p0.position = LatLng(lat, lon)
-                        p0.snippet = "$ip${Typography.ellipsis}"
-                        p0.tag = json1
-                        p0.title = "$emoji $city".trimStart()
-
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(p0.position),
-                                object : CancelableCallback {
-                                    override fun onFinish() {
-                                        longToast("Animation to $country complete")
-                                        mMarker!!.showInfoWindow()
-                                    }
-
-                                    override fun onCancel() {
-                                        longToast("Animation to $country canceled")
-                                        mMarker!!.showInfoWindow()
-                                    }
-                                })
-                    }
-                }
+            uiThread {
+                executeAnimation(it, var1, var2, cameraUpdateAnimator)
             }
         }
     }

@@ -9,24 +9,22 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <!--android:theme="@style/AppTheme.AppBarOverlay">-->
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:transitionGroup="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/Theme.MyApp.Toolbar">
+            android:minHeight="?attr/actionBarSize">
 
             <Spinner
                 android:id="@+id/spinnerConnectionList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dialog"
-                android:theme="@style/Theme.AppCompat"
                 tools:listitem="@layout/spinner_item" />
 
         </android.support.v7.widget.Toolbar>

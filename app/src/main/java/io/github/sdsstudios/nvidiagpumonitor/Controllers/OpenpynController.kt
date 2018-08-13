@@ -8,9 +8,6 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
 import org.jetbrains.anko.info
 import org.jetbrains.anko.longToast
-import java.util.*
-import kotlin.concurrent.schedule
-
 
 class OpenpynController(
         ctx: Context,
@@ -101,7 +98,6 @@ class OpenpynController(
             openpyn_options.append(" --location " + location.latitude.toString() + " " + location.longitude.toString())
 
         val openpyn = openpyn_options.toString()
-
         info(openpyn)
 
         // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
@@ -128,9 +124,9 @@ class OpenpynController(
 
         mCtx.longToast(line)
         if (line.startsWith("CONNECTING TO SERVER", true)) {
-            Timer().schedule(10000){
+            android.os.Handler().postDelayed({
                 mainActivity.updateMasterMarker()
-            }
+            }, 10000)
         }
     }
 }

@@ -1,9 +1,7 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.preference.ListPreference
 import android.preference.Preference
@@ -59,7 +57,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     /**
      * {@inheritDoc}
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     override fun onBuildHeaders(target: List<PreferenceActivity.Header>) {
         loadHeadersFromResource(R.xml.pref_headers, target)
     }
@@ -75,7 +72,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     /**
      * This fragment shows settings preferences only.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     class SettingsSyncPreferenceFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -88,6 +84,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             bindPreferenceSummaryToValue(findPreference("pref_top_servers"))
             bindPreferenceSummaryToValue(findPreference("pref_pings"))
             bindPreferenceSummaryToValue(findPreference("pref_nvram_client"))
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            view.fitsSystemWindows = true
+            super.onViewCreated(view, savedInstanceState)
         }
     }
 

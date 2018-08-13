@@ -1,0 +1,197 @@
+package io.github.sdsstudios.nvidiagpumonitor
+
+import android.content.Context
+import android.content.SharedPreferences
+import android.support.annotation.Size
+import android.support.v7.app.AlertDialog.Builder
+import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
+import com.abdeveloper.library.MultiSelectDialog
+import com.abdeveloper.library.MultiSelectModel
+
+object PrintArray {
+    private var title = android.R.string.unknownName
+    private var positiveTitle = android.R.string.ok
+    private var negativeTitle = android.R.string.cancel
+    private var neutralTitle = android.R.string.selectAll
+    private var itemsList = ArrayList<MultiSelectModel>()
+    private var checkedItemsList = ArrayList<Int>()
+
+    fun setTitle(title: Int): PrintArray {
+        this.title = title
+        return this
+    }
+
+    @Suppress("unused")
+    fun setPositiveTitle(title: Int): PrintArray {
+        this.positiveTitle = title
+        return this
+    }
+
+    @Suppress("unused")
+    fun setNegativeTitle(title: Int): PrintArray {
+        this.negativeTitle = title
+        return this
+    }
+
+    @Suppress("unused")
+    fun setNeutralTitle(title: Int): PrintArray {
+        this.neutralTitle = title
+        return this
+    }
+
+    @Suppress("unused")
+    fun setItems(items: ArrayList<MultiSelectModel>): PrintArray {
+        this.itemsList = items
+        return this
+    }
+
+    @Suppress("unused")
+    fun setCheckedItems(checkedItems: ArrayList<Int>): PrintArray {
+        this.checkedItemsList = checkedItems
+        return this
+    }
+
+    // AlertDialog
+    fun show(@Size(min = 1) key: String, items: Array<CharSequence>, checkedItems: BooleanArray, context: Context, preferences:
+    SharedPreferences?) {
+        fun save(selectedItems: ArrayList<Boolean>): Boolean {
+            return when {
+                preferences != null -> putListBoolean(key = key, booleanList = selectedItems, preferences = preferences).commit()
+                else -> false
+            }
+        }
+
+        Builder(context).apply {
+            setTitle(title)
+            setMultiChoiceItems(items, checkedItems) { dialog, which, isChecked ->
+                checkedItems[which] = isChecked
+            }
+            setCancelable(false)
+            setPositiveButton(positiveTitle) { dialog, which ->
+                save(checkedItems.toCollection(ArrayList()))
+            }
+            setNegativeButton(negativeTitle) { dialog, which ->
+                dialog.dismiss()
+            }
+            setNeutralButton(neutralTitle) { dialog, which ->
+                checkedItems.indices.forEach {
+                    checkedItems[it] = true
+                }
+                save(checkedItems.toCollection(ArrayList()))
+            }
+            show()
+        }
+    }
+
+    // AlertDialog
+    fun show(@Size(min = 1) key: String, items: ArrayList<String>, checkedItems: ArrayList<Boolean>, context: Context, preferences:
+    SharedPreferences?) {
+        fun save(selectedItems: ArrayList<Boolean>): Boolean {
+            return when {
+                preferences != null -> putListBoolean(key = key, booleanList = selectedItems, preferences = preferences).commit()
+                else -> false
+            }
+        }
+
+        Builder(context).apply {
+            setTitle(title)
+            setMultiChoiceItems(items.toTypedArray(), checkedItems.toBooleanArray()) { dialog, which, isChecked ->
+                checkedItems[which] = isChecked
+            }
+            setCancelable(false)
+            setPositiveButton(positiveTitle) { dialog, which ->
+                save(checkedItems)
+            }
+            setNegativeButton(negativeTitle) { dialog, which ->
+                dialog.dismiss()
+            }
+            setNeutralButton(neutralTitle) { dialog, which ->
+                checkedItems.indices.forEach {
+                    checkedItems[it] = true
+                }
+                save(checkedItems)
+            }
+            show()
+        }
+    }
+
+    // MultiSelectDialog
+    fun show(@Size(min = 1) key: String, context: AppCompatActivity, preferences: SharedPreferences?) {
+        show(key, itemsList, checkedItemsList, context, preferences)
+    }
+
+    // MultiSelectDialog
+    fun show(@Size(min = 1) key: String, items: ArrayList<MultiSelectModel>, checkedItems: ArrayList<Int>, context: AppCompatActivity, preferences:
+    SharedPreferences?) {
+        fun save(selectedItems: ArrayList<Int>): Boolean {
+            return when {
+                preferences != null -> putListInt(key = key, intList = selectedItems, preferences = preferences).commit()
+                else -> false
+            }
+        }
+
+        MultiSelectDialog().apply {
+            title(context.getString(title))
+            titleSize(25f)
+            positiveText(context.getString(positiveTitle))
+            negativeText(context.getString(negativeTitle))
+            setMinSelectionLimit(0)
+            setMaxSelectionLimit(items.size)
+            preSelectIDsList(checkedItems)
+            multiSelectList(items)
+            onSubmit(object : MultiSelectDialog.SubmitCallbackListener {
+                override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
+                    if (save(selectedIds)) this@PrintArray.checkedItemsList = selectedIds
+                }
+
+                override fun onCancel() {
+                }
+            })
+
+            show(context.supportFragmentManager, "multiSelectDialog")
+        }
+    }
+
+    @Suppress("unused")
+    fun putListInt(@Size(min = 1) key: String, intList: ArrayList<Int>, preferences: SharedPreferences): SharedPreferences.Editor {
+        val array = intList.toTypedArray()
+        val editor = preferences.edit()
+        editor.putString(key, TextUtils.join("‚‗‚", array)).apply()
+        return editor
+    }
+
+    @Suppress("unused")
+    fun putListBoolean(@Size(min = 1) key: String, booleanList: ArrayList<Boolean>, preferences: SharedPreferences): SharedPreferences.Editor {
+        val array = booleanList.toTypedArray()
+        val editor = preferences.edit()
+        editor.putString(key, TextUtils.join("‚‗‚", array)).apply()
+        return editor
+    }
+
+    @Suppress("unused")
+    fun putListString(@Size(min = 1) key: String, stringList: ArrayList<String>, preferences: SharedPreferences): SharedPreferences.Editor {
+        val array = stringList.toTypedArray()
+        val editor = preferences.edit()
+        editor.putString(key, TextUtils.join("‚‗‚", array)).apply()
+        return editor
+    }
+
+    @Suppress("unused")
+    fun getListInt(@Size(min = 1) key: String, preferences: SharedPreferences): ArrayList<Int> {
+        val array = TextUtils.split(preferences.getString(key, ""), "‚‗‚")
+        return array.mapTo(ArrayList()) { it: String -> it.toInt() }
+    }
+
+    @Suppress("unused")
+    fun getListBoolean(@Size(min = 1) key: String, preferences: SharedPreferences): ArrayList<Boolean> {
+        val array = TextUtils.split(preferences.getString(key, ""), "‚‗‚")
+        return array.mapTo(ArrayList()) { it: String -> it.toBoolean() }
+    }
+
+    @Suppress("unused")
+    fun getListString(@Size(min = 1) key: String, preferences: SharedPreferences): ArrayList<String> {
+        val array = TextUtils.split(preferences.getString(key, ""), "‚‗‚")
+        return array.toCollection(ArrayList())
+    }
+}

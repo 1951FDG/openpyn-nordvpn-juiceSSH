@@ -13,7 +13,7 @@ import java.io.StringWriter
 
 @WorkerThread
 fun generateXML() {
-    //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
+    // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
     "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
         when (result) {
             is Result.Failure -> {
@@ -69,12 +69,17 @@ fun createJson1(): JSONObject? {
     for (name in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
         val timeout = 500
         val timeoutRead = 500
+        // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
         val (_, _, result) = name.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
-        val (data, error) = result
-        if (data != null) {
-            val content = data.obj()
+        when (result) {
+            is Result.Failure -> {
+                Log.error(result.getException().toString())
+            }
+            is Result.Success -> {
+            val content = result.get().obj()
             Log.debug(content.toString())
 
+            var flag = content.optString("country_code")
             var country = content.optString("country_name")
             val city = content.optString("city")
             var lat = content.optDouble("latitude", 0.0)
@@ -83,6 +88,7 @@ fun createJson1(): JSONObject? {
             var ip = content.optString("ip")
             val threat = content.optJSONObject("threat")
 
+            if (flag.isEmpty()) flag = content.optString("countryCode")
             if (country.isEmpty()) country = content.optString("country")
             //if (city.isEmpty()) city = content.optString("city")
             if (lat == 0.0) lat = content.optDouble("lat", 0.0)
@@ -91,6 +97,7 @@ fun createJson1(): JSONObject? {
             if (ip.isEmpty()) ip = content.optString("query")
             //if (threat == null) threat = content.optJSONObject("threat")
 
+            if (json1.optString("flag").isEmpty()) json1.put("flag", flag)
             if (json1.optString("country").isEmpty()) json1.put("country", country)
             if (json1.optString("city").isEmpty()) json1.put("city", city)
             if (json1.optDouble("latitude", 0.0) == 0.0) json1.put("latitude", lat)
@@ -100,8 +107,7 @@ fun createJson1(): JSONObject? {
             if (json1.optJSONObject("threat") == null) json1.putOpt("threat", threat)
 
             //break
-        } else {
-            Log.error(error.toString())
+            }
         }
     }
 
@@ -111,8 +117,10 @@ fun createJson1(): JSONObject? {
 @WorkerThread
 fun createJson(): JSONArray? {
     val jsonObjLast = JSONArray()
-    //an extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
+    val timeout = 1000
+    val timeoutRead = 1000
+    // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
+    val (_, _, result) = "https://api.nordvpn.com/server".httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
         when (result) {
             is Result.Failure -> {
                 Log.error(result.getException().toString())
@@ -150,9 +158,10 @@ fun createJson(): JSONArray? {
                                 name.equals("P2P", true) -> features.put("p2p", true)
                                 name.equals("Dedicated IP servers", true) -> features.put("dedicated", true)
                                 name.equals("Double VPN", true) -> features.put("double_vpn", true)
-                                name.equals("Obfuscated Servers", true) -> features.put("tor_over_vpn", true)
-                                name.equals("Anti DDoS", true) -> features.put("anti_ddos", true)
+                                name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
+                                name.equals("Obfuscated Servers", true) -> features.put("anti_ddos", true)
                                 name.equals("Standard VPN servers", true) -> features.put("standard", true)
+                                else -> Log.error(name)
                             }
                         }
 
@@ -161,7 +170,6 @@ fun createJson(): JSONArray? {
                         jsonObj.put(location.toString(), json1)
                     }
                     else {
-
                         val features = json1.getJSONObject("features")
 
                         val categories = res.getJSONArray("categories")
@@ -173,9 +181,10 @@ fun createJson(): JSONArray? {
                                 name.equals("P2P", true) -> features.put("p2p", true)
                                 name.equals("Dedicated IP servers", true) -> features.put("dedicated", true)
                                 name.equals("Double VPN", true) -> features.put("double_vpn", true)
-                                name.equals("Obfuscated Servers", true) -> features.put("tor_over_vpn", true)
-                                name.equals("Anti DDoS", true) -> features.put("anti_ddos", true)
+                                name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
+                                name.equals("Obfuscated Servers", true) -> features.put("anti_ddos", true)
                                 name.equals("Standard VPN servers", true) -> features.put("standard", true)
+                                else -> Log.error(name)
                             }
                         }
                     }
@@ -191,7 +200,7 @@ fun createJson(): JSONArray? {
                         val features = value.getJSONObject("features")
 
                         if (features.getBoolean("anti_ddos")) {
-                            jsonArr.put(JSONObject().put("name", "Anti DDoS"))
+                            jsonArr.put(JSONObject().put("name", "Obfuscated Servers"))
                         }
 
                         if (features.getBoolean("dedicated")) {
@@ -203,7 +212,7 @@ fun createJson(): JSONArray? {
                         }
 
                         if (features.getBoolean("tor_over_vpn")) {
-                            jsonArr.put(JSONObject().put("name", "Obfuscated Servers"))
+                            jsonArr.put(JSONObject().put("name", "Onion Over VPN"))
                         }
 
                         if (features.getBoolean("p2p")) {
@@ -228,7 +237,6 @@ fun createJson(): JSONArray? {
                 }
             }
         }
-    }
 
     return if (jsonObjLast.length() > 0) jsonObjLast else null
 }

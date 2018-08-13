@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="io.github.sdsstudios.nvidiagpumonitor.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context="io.github.sdsstudios.nvidiagpumonitor.MainActivity">
 
-    <io.github.sdsstudios.nvidiagpumonitor.ConnectButton
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonConnect"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,7 +15,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:enabled="false"
-        android:text="@string/btn_request_permissions"
+        android:text="Connect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +49,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/cardViewTemp"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlHardcoded">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -89,7 +89,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/textViewTitleMemUsed"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewTitleMemory" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewTitleMemory"
+                    tools:ignore="RtlHardcoded" />
 
                 <TextView
                     android:id="@+id/textViewTitleMemUsed"
@@ -107,7 +108,8 @@
                     app:layout_constraintEnd_toStartOf="@+id/textViewTitleMemFree"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewTitleMemory" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewTitleMemory"
+                    tools:ignore="RtlHardcoded" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewFreeMemory"
@@ -128,7 +130,8 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/textViewUsedMemory"
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitleMemFree"
-                    tools:text="2849 MB" />
+                    tools:text="2849 MB"
+                    tools:ignore="RtlHardcoded" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textViewUsedMemory"
@@ -149,7 +152,8 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitleMemUsed"
-                    tools:text="4501 MB" />
+                    tools:text="4501 MB"
+                    tools:ignore="RtlHardcoded" />
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
@@ -172,7 +176,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlHardcoded">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -237,7 +242,8 @@
             app:layout_constraintEnd_toStartOf="@+id/cardViewPower"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardViewClocks">
+            app:layout_constraintTop_toBottomOf="@+id/cardViewClocks"
+            tools:ignore="RtlHardcoded">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -340,7 +346,8 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/textViewClockVideo"
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitleClockMemory"
-                    tools:text="1974 MHz" />
+                    tools:text="1974 MHz"
+                    tools:ignore="RtlHardcoded" />
 
                 <TextView
                     android:id="@+id/textViewTitleClockGraphics"
@@ -358,7 +365,8 @@
                     app:layout_constraintEnd_toStartOf="@+id/textViewTitleClockVideo"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewTitleClocks" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewTitleClocks"
+                    tools:ignore="RtlHardcoded" />
 
                 <TextView
                     android:id="@+id/textViewTitleClockVideo"
@@ -432,7 +440,8 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/textViewClockGraphics"
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitleClockVideo"
-                    tools:text="1708 MHz" />
+                    tools:text="1708 MHz"
+                    tools:ignore="RtlHardcoded" />
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
@@ -454,7 +463,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/cardViewFanSpeed"
-            app:layout_constraintTop_toBottomOf="@+id/cardViewClocks">
+            app:layout_constraintTop_toBottomOf="@+id/cardViewClocks"
+            tools:ignore="RtlHardcoded">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"

@@ -1,15 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Nvidia Gpu Monitor</string>
     <string name="action_settings">Settings</string>
     <string name="no_data">-</string>
 
-    <!-- Button labels -->
-    <string name="btn_connect">Connect</string>
-    <string name="btn_disconnect">Disconnect</string>
-    <string name="btn_connecting">Connecting…</string>
-    <string name="btn_disconnecting">Disconnecting…</string>
-    <string name="btn_request_permissions">Request Permissions</string>
-    <!-- Button labels -->
+    <string name="multi_select_dialog_title">Select Countries</string>
+    <string name="menu_refresh">Refresh</string>
 
     <!-- Error -->
     <string name="error_must_enable_permissions">Must enable permissions!</string>
@@ -36,7 +32,7 @@
 
     <string name="pref_header_settings">Settings</string>
 
-    <string name="pref_category_basic">Basic</string>
+    <string name="pref_category_basic">Basics</string>
 
     <string name="pref_server">Server Name</string>
 
@@ -232,17 +228,17 @@
     <string name="pref_p2p">P2P</string>
     <string name="pref_description_p2p">Only look for servers with \"Peer To Peer\" support</string>
 
-    <string name="pref_dedicated">Dedicated IP Servers</string>
+    <string name="pref_dedicated">Dedicated IP</string>
     <string name="pref_description_dedicated">Only look for servers with \"Dedicated IP\" support</string>
 
     <string name="pref_double">Double VPN</string>
     <string name="pref_description_double">Only look for servers with \"Double VPN\" support</string>
 
-    <string name="pref_tor">Obfuscated Servers</string>
-    <string name="pref_description_tor">Only look for servers with \"Onion Over VPN\" support</string>
+    <string name="pref_tor">Onion Over VPN</string>
+    <string name="pref_description_tor">Only look for servers with \"Tor Over VPN\" support</string>
 
-    <string name="pref_anti_ddos">Anti DDoS</string>
-    <string name="pref_description_anti_ddos">Only look for servers with \"Anti DDoS\" support</string>
+    <string name="pref_anti_ddos">Obfuscated</string>
+    <string name="pref_description_anti_ddos">Only look for servers with \"Obfuscated Servers\" support</string>
 
     <string name="pref_netflix">Netflix</string>
     <string name="pref_description_netflix">Only look for servers that are optimised for \"Netflix\"</string>
