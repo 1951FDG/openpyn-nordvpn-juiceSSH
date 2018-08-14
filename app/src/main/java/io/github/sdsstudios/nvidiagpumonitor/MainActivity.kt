@@ -503,15 +503,33 @@ class MainActivity : AppCompatActivity(),
         googleMap.uiSettings.isZoomGesturesEnabled = true
 
         mMap = googleMap
+        cameraUpdateAnimator = CameraUpdateAnimator(mMap!!, this)
 
         map.visibility = View.VISIBLE
     }
 
     override fun onMapLoaded() {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val z = mMap!!.minZoomLevel.toInt()
+
+        fab1?.onClick {
+            updateMasterMarker()
+        }
+
+        fab2?.onClick {
+            PrintArray.show( "pref_country_values", this, preferences)
+
+            /*
+            for (i in alreadySelectedCountries.indices) {
+                val some_array = resources.getStringArray(R.array.pref_country_values)
+            }
+            */
+        }
+
         info(mMap!!.minZoomLevel)
         info(mMap!!.maxZoomLevel)
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        doAsync {
         //val server = preferences.getString("pref_server", "")
         //val country_code = preferences.getString("pref_country", "")
         //val country = args.country
@@ -631,32 +649,12 @@ class MainActivity : AppCompatActivity(),
         }
         }
 
-        fab2?.onClick {
-            PrintArray.show( "pref_country_values", this, preferences)
-
-            /*
-            for (i in alreadySelectedCountries.indices) {
-                val some_array = resources.getStringArray(R.array.pref_country_values)
-            }
-            */
-        }
-
-        fab1?.onClick {
-            updateMasterMarker()
-        }
-
-        doAsync {
             var json1: JSONObject? = null
 
             if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
                 json1 = createJson1()
             }
 
-            uiThread {
-                // Create a new CameraUpdateAnimator for a given map
-                // with an OnCameraIdleListener to set when the animation ends
-                cameraUpdateAnimator = CameraUpdateAnimator(mMap!!, it)
-                val z = mMap!!.minZoomLevel.toInt()
                 val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
                 // Traverse through all rows
                 for (y in 0..rows) {
@@ -668,6 +666,7 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
 
+            uiThread {
                 executeAnimation(it, json1, jsonArr, cameraUpdateAnimator)
             }
         }
@@ -1001,7 +1000,6 @@ class MainActivity : AppCompatActivity(),
         when(network.status){
             NetworkInfo.NetworkStatus.INTERNET -> {
 //                longToast("ONLINE: ${network.type}")
-                updateMasterMarker()
             }
             NetworkInfo.NetworkStatus.OFFLINE -> {
 //                longToast("OFFLINE: ${network.type}")
