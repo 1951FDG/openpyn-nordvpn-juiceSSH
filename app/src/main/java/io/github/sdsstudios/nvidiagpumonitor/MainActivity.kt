@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(),
     private val mPermissionsGranted
         get() = mReadConnectionsPerm && mOpenSessionsPerm
 
-    private val items by lazy { hashMapOf<LatLng, Marker>() }
+    private val items by lazy { hashMapOf<LatLng, LazyMarker>() }
 
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
@@ -624,7 +624,7 @@ class MainActivity : AppCompatActivity(),
                 title("$emoji $country")
                 visible(false)
             }
-            val marker = mMap!!.addMarker(var1)
+            val marker = LazyMarker(mMap!!, var1)
             marker.tag = flag
 
             items[latLng] = marker
