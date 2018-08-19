@@ -6,7 +6,7 @@
  *
  */
 
-package io.github.sdsstudios.nvidiagpumonitor
+package com.ariascode.networkutility
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver

@@ -2,14 +2,14 @@
 
 buildscript {
     ext.anko_version = '0.10.5'
-    ext.kotlin_version = '1.2.51'
+    ext.kotlin_version = '1.2.60'
     ext.android_version = '27.1.1'
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-beta04'
+        classpath 'com.android.tools.build:gradle:3.2.0-beta05'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
 
@@ -29,4 +29,26 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+task unzip(type: Copy) {
+    from zipTree("${project.rootDir}/sqlite-android-3240000/sqlite-android-3240000.aar")
+    into "${project.rootDir}/app/src/main/jniLibs/"
+    include "jni/*/*.so"
+
+    eachFile { details ->
+        details.setRelativePath new RelativePath(true, details.path - "jni/")
+    }
+
+    includeEmptyDirs = false
+}
+
+task unzip2(type: Copy) {
+    from zipTree("${project.rootDir}/sqlite-android-3240000/sqlite-android-3240000.aar")
+    into "${project.rootDir}/app/src/main/libs/"
+    include "classes.jar"
+
+    eachFile { details ->
+        details.setRelativePath new RelativePath(true, "libsqliteX.jar")
+    }
 }

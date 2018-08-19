@@ -12,18 +12,27 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
         externalNativeBuild {
             cmake {
                 cppFlags ""
+                arguments "-DANDROID_STL=c++_shared"
             }
         }
     }
 
     buildTypes {
         release {
+            ndk {
+                abiFilters 'x86', 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
+            minifyEnabled false
         }
     }
 
@@ -50,38 +59,52 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':sqlite-android-3240000')
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
-    implementation 'android.arch.lifecycle:runtime:1.1.1'
-    implementation 'androidx.core:core-ktx:0.3'
+    implementation fileTree(include: ['*.jar'], dir: 'src/main/libs')
+    implementation project(':Android-Multi-Select-Dialog-v1.9')
+
+    // Anko
+    implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    implementation "org.jetbrains.anko:anko-design:$anko_version"
+    implementation "org.jetbrains.anko:anko-sdk25-listeners:$anko_version"
+    implementation "org.jetbrains.anko:anko-sdk25:$anko_version"
+
+    // Annotations
     implementation "com.android.support:support-annotations:$android_version"
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.4'
+
+    // Emoji
+    implementation('com.vdurmont:emoji-java:4.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+
+    // Geocoder
+    implementation 'de.westnordost:countryboundaries:1.2'
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Logger
+    implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
+
+    // Maps
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+
+    // Misc
+    implementation 'com.lucasurbas:guidelinescompattoolbar:1.0.2'
+
+    // Networking
+    implementation 'com.sonelli:juicessh-pluginlibrary:1.0.13@aar'
+    implementation 'com.github.kittinunf.fuel:fuel-android:1.13.0'
+    implementation 'com.github.kittinunf.result:result:1.4.0'
+
+    // UI
     implementation "com.android.support:appcompat-v7:$android_version"
     implementation "com.android.support:cardview-v7:$android_version"
     implementation "com.android.support:design:$android_version"
-    implementation "com.android.support:preference-v14:$android_version"
-    implementation "com.android.support:preference-v7:$android_version"
-    implementation "com.android.support:support-vector-drawable:$android_version"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    implementation 'com.sonelli:juicessh-pluginlibrary:1.0.13@aar'
-    implementation "org.jetbrains.anko:anko-commons:$anko_version"
-    implementation "org.jetbrains.anko:anko-design:$anko_version"
-    implementation "org.jetbrains.anko:anko-sdk25:$anko_version"
-    implementation "org.jetbrains.anko:anko-sdk25-listeners:$anko_version"
-    implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.github.kittinunf.fuel:fuel-android:1.13.0'
-    implementation 'com.github.kittinunf.result:result:1.4.0'
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
-    implementation 'com.google.maps.android:android-maps-utils:0.5'
-    implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.4'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.4'
-    implementation 'com.lucasurbas:guidelinescompattoolbar:1.0.2'
-    implementation 'com.github.abumoallim:Android-Multi-Select-Dialog:v1.9'
-    implementation 'de.westnordost:countryboundaries:1.2'
-    implementation("com.vdurmont:emoji-java:4.0.0") {
-        exclude group: 'org.json', module: 'json'
-    }
 }

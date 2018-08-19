@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.sdsstudios.nvidiagpumonitor;
+package com.antoniocarlon.map;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;

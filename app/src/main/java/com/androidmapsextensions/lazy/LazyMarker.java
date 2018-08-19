@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.sdsstudios.nvidiagpumonitor;
+package com.androidmapsextensions.lazy;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

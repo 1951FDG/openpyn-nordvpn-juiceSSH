@@ -25,6 +25,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.abdeveloper.library.MultiSelectModel
+import com.androidmapsextensions.lazy.LazyMarker
+import com.antoniocarlon.map.CameraUpdateAnimator
+import com.ariascode.networkutility.NetworkInfo
+import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.LocationServices
@@ -383,24 +387,81 @@ class MainActivity : AppCompatActivity(),
 
                         val checkedItems = PrintArray.getListBoolean("pref_country_values", preferences).toBooleanArray()
 
-                        PrintArray.apply {
-                            setTitle(R.string.multi_select_dialog_title)
-                        }
-
                         PrintArray.show( "pref_country_values", array, checkedItems, it, preferences)
                         */
 
                         // List of Countries with Name and ID
-                        val listOfCountries = ArrayList<MultiSelectModel>()
-                        resources.getStringArray(R.array.pref_country_entries).withIndex().forEach { (index: Int, item: String?) ->
-                            listOfCountries.add(MultiSelectModel(index, item))
-                        }
+                        val listOfCountries: ArrayList<MultiSelectModel> = arrayListOf(
+                                MultiSelectModel(0, "Albania", R.drawable.flag_al),
+                                MultiSelectModel(1, "Argentina", R.drawable.flag_ar),
+                                MultiSelectModel(2, "Australia", R.drawable.flag_au),
+                                MultiSelectModel(3, "Austria", R.drawable.flag_at),
+                                MultiSelectModel(4, "Azerbaijan", R.drawable.flag_az),
+                                MultiSelectModel(5, "Belgium", R.drawable.flag_be),
+                                MultiSelectModel(6, "Bosnia and Herzegovina", R.drawable.flag_ba),
+                                MultiSelectModel(7, "Brazil", R.drawable.flag_br),
+                                MultiSelectModel(8, "Bulgaria", R.drawable.flag_bg),
+                                MultiSelectModel(9, "Canada", R.drawable.flag_ca),
+                                MultiSelectModel(10, "Chile", R.drawable.flag_cl),
+                                MultiSelectModel(11, "Costa Rica", R.drawable.flag_cr),
+                                MultiSelectModel(12, "Croatia", R.drawable.flag_hr),
+                                MultiSelectModel(13, "Cyprus", R.drawable.flag_cy),
+                                MultiSelectModel(14, "Czech Republic", R.drawable.flag_cz),
+                                MultiSelectModel(15, "Denmark", R.drawable.flag_dk),
+                                MultiSelectModel(16, "Egypt", R.drawable.flag_eg),
+                                MultiSelectModel(17, "Estonia", R.drawable.flag_ee),
+                                MultiSelectModel(18, "Finland", R.drawable.flag_fi),
+                                MultiSelectModel(19, "France", R.drawable.flag_fr),
+                                MultiSelectModel(20, "Georgia", R.drawable.flag_ge),
+                                MultiSelectModel(21, "Germany", R.drawable.flag_de),
+                                MultiSelectModel(22, "Greece", R.drawable.flag_gr),
+                                MultiSelectModel(23, "Hong Kong", R.drawable.flag_hk),
+                                MultiSelectModel(24, "Hungary", R.drawable.flag_hu),
+                                MultiSelectModel(25, "Iceland", R.drawable.flag_is),
+                                MultiSelectModel(26, "India", R.drawable.flag_in),
+                                MultiSelectModel(27, "Indonesia", R.drawable.flag_id),
+                                MultiSelectModel(28, "Ireland", R.drawable.flag_ie),
+                                MultiSelectModel(29, "Israel", R.drawable.flag_il),
+                                MultiSelectModel(30, "Italy", R.drawable.flag_it),
+                                MultiSelectModel(31, "Japan", R.drawable.flag_jp),
+                                MultiSelectModel(32, "Latvia", R.drawable.flag_lv),
+                                MultiSelectModel(33, "Luxembourg", R.drawable.flag_lu),
+                                MultiSelectModel(34, "Macedonia", R.drawable.flag_mk),
+                                MultiSelectModel(35, "Malaysia", R.drawable.flag_my),
+                                MultiSelectModel(36, "Mexico", R.drawable.flag_mx),
+                                MultiSelectModel(37, "Moldova", R.drawable.flag_md),
+                                MultiSelectModel(38, "Netherlands", R.drawable.flag_nl),
+                                MultiSelectModel(39, "New Zealand", R.drawable.flag_nz),
+                                MultiSelectModel(40, "Norway", R.drawable.flag_no),
+                                MultiSelectModel(41, "Poland", R.drawable.flag_pl),
+                                MultiSelectModel(42, "Portugal", R.drawable.flag_pt),
+                                MultiSelectModel(43, "Romania", R.drawable.flag_ro),
+                                MultiSelectModel(44, "Russia", R.drawable.flag_ru),
+                                MultiSelectModel(45, "Serbia", R.drawable.flag_rs),
+                                MultiSelectModel(46, "Singapore", R.drawable.flag_sg),
+                                MultiSelectModel(47, "Slovakia", R.drawable.flag_sk),
+                                MultiSelectModel(48, "Slovenia", R.drawable.flag_si),
+                                MultiSelectModel(49, "South Africa", R.drawable.flag_za),
+                                MultiSelectModel(50, "South Korea", R.drawable.flag_kr),
+                                MultiSelectModel(51, "Spain", R.drawable.flag_es),
+                                MultiSelectModel(52, "Sweden", R.drawable.flag_se),
+                                MultiSelectModel(53, "Switzerland", R.drawable.flag_ch),
+                                MultiSelectModel(54, "Taiwan", R.drawable.flag_tw),
+                                MultiSelectModel(55, "Thailand", R.drawable.flag_th),
+                                MultiSelectModel(56, "Turkey", R.drawable.flag_tr),
+                                MultiSelectModel(57, "Ukraine", R.drawable.flag_ua),
+                                MultiSelectModel(58, "United Arab Emirates", R.drawable.flag_ae),
+                                MultiSelectModel(59, "United Kingdom", R.drawable.flag_uk),
+                                MultiSelectModel(60, "United States", R.drawable.flag_us),
+                                MultiSelectModel(61, "Vietnam", R.drawable.flag_vn)
+                        )
 
                         // Preselected IDs of Country List
                         val alreadySelectedCountries = PrintArray.getListInt("pref_country_values", preferences)
 
                         PrintArray.apply {
-                            setTitle(R.string.multi_select_dialog_title)
+                            setHint(R.string.empty)
+                            setTitle(R.string.empty)
                             setItems(listOfCountries)
                             setCheckedItems(alreadySelectedCountries)
                         }

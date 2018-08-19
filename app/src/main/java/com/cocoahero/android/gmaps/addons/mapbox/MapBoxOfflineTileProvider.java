@@ -1,4 +1,4 @@
-package io.github.sdsstudios.nvidiagpumonitor;
+package com.cocoahero.android.gmaps.addons.mapbox;
 
 import android.database.Cursor;
 import android.support.annotation.MainThread;

@@ -10,12 +10,18 @@ import com.abdeveloper.library.MultiSelectDialog
 import com.abdeveloper.library.MultiSelectModel
 
 object PrintArray {
+    private var hint = android.R.string.unknownName
     private var title = android.R.string.unknownName
     private var positiveTitle = android.R.string.ok
     private var negativeTitle = android.R.string.cancel
     private var neutralTitle = android.R.string.selectAll
     private var itemsList = ArrayList<MultiSelectModel>()
     private var checkedItemsList = ArrayList<Int>()
+
+    fun setHint(hint: Int): PrintArray {
+        this.hint = hint
+        return this
+    }
 
     fun setTitle(title: Int): PrintArray {
         this.title = title
@@ -132,10 +138,8 @@ object PrintArray {
         }
 
         MultiSelectDialog().apply {
+            hint(context.getString(hint))
             title(context.getString(title))
-            titleSize(25f)
-            positiveText(context.getString(positiveTitle))
-            negativeText(context.getString(negativeTitle))
             setMinSelectionLimit(0)
             setMaxSelectionLimit(items.size)
             preSelectIDsList(checkedItems)
