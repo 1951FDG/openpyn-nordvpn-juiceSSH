@@ -2208,6 +2208,18 @@
     ]
   },
   {
+    "emojiChar": "🇹🇼",
+    "emoji": "\uD83C\uDDF9\uD83C\uDDFC",
+    "description": "regional indicator symbol letter t + regional indicator symbol letter w",
+    "aliases": [
+      "tw"
+    ],
+    "tags": [
+      "flag",
+      "taiwan"
+    ]
+  },
+  {
     "emojiChar": "🇹🇯",
     "emoji": "\uD83C\uDDF9\uD83C\uDDEF",
     "description": "regional indicator symbol letter t + regional indicator symbol letter j",
