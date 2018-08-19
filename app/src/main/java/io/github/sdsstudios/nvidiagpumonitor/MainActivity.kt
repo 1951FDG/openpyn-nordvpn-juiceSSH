@@ -47,7 +47,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
-import com.vdurmont.emoji.EmojiParser
+import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import kotlinx.android.synthetic.main.activity_main.*
@@ -693,8 +693,19 @@ class MainActivity : AppCompatActivity(),
                 continue
             }
 
+            fun parseToUnicode(input: String): String {
+                // Replace the aliases by their unicode
+                var result = input
+                val emoji = EmojiFlagManager.getForAlias(input)
+                if (emoji != null) {
+                    result = emoji.unicode
+                }
+
+                return result
+            }
+
             val country = res.getString("country")
-            val emoji = EmojiParser.parseToUnicode(":$flag:")
+            val emoji = parseToUnicode(flag)
             val location = res.getJSONObject("location")
             val latLng = LatLng(location.getDouble("lat"), location.getDouble("long"))
             val var1 = MarkerOptions().apply {
