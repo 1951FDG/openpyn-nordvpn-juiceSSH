@@ -16,7 +16,7 @@
 
 package com.google.maps.android.geometry;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class Point {
     public final double x;

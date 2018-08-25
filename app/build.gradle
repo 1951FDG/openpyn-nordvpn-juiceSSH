@@ -3,15 +3,15 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "io.github.sdsstudios.nvidiagpumonitor"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
                 cppFlags ""
@@ -60,15 +60,17 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'src/main/libs')
     implementation project(':Android-Multi-Select-Dialog-v1.9')
 
+    // Android
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
+    implementation "androidx.preference:preference:1.0.0-rc01"
+    implementation "com.google.android.material:material:1.0.0-rc01"
+
     // Anko
     implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation "org.jetbrains.anko:anko-design:$anko_version"
     implementation "org.jetbrains.anko:anko-sdk25-listeners:$anko_version"
     implementation "org.jetbrains.anko:anko-sdk25:$anko_version"
-
-    // Annotations
-    implementation "com.android.support:support-annotations:$android_version"
 
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.4'
@@ -100,9 +102,4 @@ dependencies {
     implementation 'com.github.kittinunf.fuel:fuel-android:1.13.0'
     implementation 'com.github.kittinunf.result:result:1.4.0'
 
-    // UI
-    implementation "com.android.support:appcompat-v7:$android_version"
-    implementation "com.android.support:cardview-v7:$android_version"
-    implementation "com.android.support:design:$android_version"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 }

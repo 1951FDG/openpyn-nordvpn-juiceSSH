@@ -11,19 +11,21 @@ import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceActivity.EXTRA_NO_HEADERS
 import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT
-import android.preference.PreferenceManager
-import android.support.annotation.MainThread
-import android.support.constraint.ConstraintLayout
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.preference.PreferenceManager
+import androidx.annotation.MainThread
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.fragment.app.FragmentActivity
+import androidx.loader.app.LoaderManager
 import com.abdeveloper.library.MultiSelectModel
 import com.androidmapsextensions.lazy.LazyMarker
 import com.antoniocarlon.map.CameraUpdateAnimator
@@ -512,7 +514,7 @@ class MainActivity : AppCompatActivity(),
 
         spinnerConnectionList.adapter = mConnectionListAdapter
 
-        supportLoaderManager.initLoader(0, null, ConnectionListLoader(
+        LoaderManager.getInstance<FragmentActivity>(this).initLoader(0, null, ConnectionListLoader(
                 mCtx = this,
                 mLoaderFinishCallback = this
         ))

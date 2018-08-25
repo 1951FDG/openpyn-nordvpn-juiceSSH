@@ -1,6 +1,6 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import android.util.Xml
 import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpGet

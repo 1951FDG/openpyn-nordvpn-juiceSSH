@@ -2,8 +2,8 @@ package io.github.sdsstudios.nvidiagpumonitor
 
 import android.content.Context
 import android.database.Cursor
-import android.support.annotation.MainThread
-import android.support.v4.widget.CursorAdapter
+import androidx.annotation.MainThread
+import androidx.cursoradapter.widget.CursorAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

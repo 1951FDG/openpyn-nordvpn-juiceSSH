@@ -2,9 +2,9 @@ package io.github.sdsstudios.nvidiagpumonitor
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.support.annotation.Size
-import android.support.v7.app.AlertDialog.Builder
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.Size
+import androidx.appcompat.app.AlertDialog.Builder
+import androidx.appcompat.app.AppCompatActivity
 import android.text.TextUtils
 import com.abdeveloper.library.MultiSelectDialog
 import com.abdeveloper.library.MultiSelectModel

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="io.github.sdsstudios.nvidiagpumonitor.MainActivity">
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonConnect"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Connect" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cardViewLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardViewMemory"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -52,7 +52,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlHardcoded">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -111,7 +111,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitleMemory"
                     tools:ignore="RtlHardcoded" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewFreeMemory"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -133,7 +133,7 @@
                     tools:text="2849 MB"
                     tools:ignore="RtlHardcoded" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewUsedMemory"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -155,10 +155,10 @@
                     tools:text="4501 MB"
                     tools:ignore="RtlHardcoded" />
 
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardViewTemp"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -179,7 +179,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlHardcoded">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -201,7 +201,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewTemp"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -221,11 +221,11 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitleTemp"
                     tools:text="67C" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardViewFanSpeed"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -245,7 +245,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cardViewClocks"
             tools:ignore="RtlHardcoded">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -267,7 +267,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewFanSpeed"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -287,10 +287,10 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitleFanSpeed"
                     tools:text="45%" />
 
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardViewClocks"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -307,7 +307,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardViewMemory">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -328,7 +328,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewClockMemory"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -402,7 +402,7 @@
                     app:layout_constraintStart_toEndOf="@+id/textViewTitleClockVideo"
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitleClocks" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewClockGraphics"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -422,7 +422,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitleClockGraphics"
                     tools:text="2948 MHz" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewClockVideo"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -443,10 +443,10 @@
                     tools:text="1708 MHz"
                     tools:ignore="RtlHardcoded" />
 
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardViewPower"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -466,7 +466,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cardViewClocks"
             tools:ignore="RtlHardcoded">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -488,7 +488,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewPower"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -508,7 +508,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewTitlePower"
                     tools:text="107 W" />
 
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
-    </android.support.constraint.ConstraintLayout>
-</android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

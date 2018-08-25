@@ -1,8 +1,8 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug

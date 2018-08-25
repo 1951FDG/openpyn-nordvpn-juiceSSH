@@ -16,7 +16,7 @@
 
 package com.google.maps.android.projection;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.geometry.Point;
 

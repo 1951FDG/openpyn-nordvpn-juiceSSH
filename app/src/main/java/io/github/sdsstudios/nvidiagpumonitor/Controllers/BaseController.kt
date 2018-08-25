@@ -1,9 +1,9 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.Context
-import android.support.annotation.CallSuper
-import android.support.annotation.MainThread
+import androidx.annotation.CallSuper
+import androidx.annotation.MainThread
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener

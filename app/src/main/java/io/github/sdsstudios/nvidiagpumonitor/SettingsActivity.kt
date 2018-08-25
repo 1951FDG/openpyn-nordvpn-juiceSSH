@@ -3,13 +3,13 @@ package io.github.sdsstudios.nvidiagpumonitor
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.preference.ListPreference
-import android.preference.Preference
 import android.preference.PreferenceActivity
-import android.preference.PreferenceFragment
-import android.preference.PreferenceManager
 import android.view.MenuItem
 import android.view.View
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragment
+import androidx.preference.PreferenceManager
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -75,7 +75,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     class SettingsSyncPreferenceFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            addPreferencesFromResource(R.xml.pref_settings)
             setHasOptionsMenu(false)
 
             bindPreferenceSummaryToValue(findPreference("pref_server"))
@@ -84,6 +83,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             bindPreferenceSummaryToValue(findPreference("pref_top_servers"))
             bindPreferenceSummaryToValue(findPreference("pref_pings"))
             bindPreferenceSummaryToValue(findPreference("pref_nvram_client"))
+        }
+
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            // Load the preferences from an XML resource
+            setPreferencesFromResource(R.xml.pref_settings, rootKey)
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

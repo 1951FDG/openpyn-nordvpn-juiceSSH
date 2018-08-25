@@ -35,6 +35,8 @@
 
         <item name="colorButtonNormal">@color/colorAccent</item>
 
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
     </style>
 
 </resources>
