@@ -2,14 +2,14 @@
 
 buildscript {
     ext.anko_version = '0.10.5'
-    ext.kotlin_version = '1.2.60'
+    ext.kotlin_version = '1.2.61'
     ext.android_version = '27.1.1'
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-beta05'
+        classpath 'com.android.tools.build:gradle:3.2.0-rc02'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
 
