@@ -22,14 +22,14 @@ class OpenpynController(
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
 
-        val server = preferences.getString("pref_server", "")
-        val country_code = preferences.getString("pref_country", "")
+        val server = preferences.getString("pref_server", null)
+        val country_code = preferences.getString("pref_country", "uk")
         //val country = args.country
         //val area = args.area
         val tcp = preferences.getBoolean("pref_tcp", false)
-        val max_load = preferences.getString("pref_max_load", "")
-        val top_servers = preferences.getString("pref_top_servers", "")
-        val pings = preferences.getString("pref_pings", "")
+        val max_load = preferences.getString("pref_max_load", "70")
+        val top_servers = preferences.getString("pref_top_servers", "10")
+        val pings = preferences.getString("pref_pings", "3")
         val force_fw_rules = preferences.getBoolean("pref_force_fw", false)
         val p2p = preferences.getBoolean("pref_p2p", false)
         val dedicated = preferences.getBoolean("pref_dedicated", false)
@@ -48,22 +48,22 @@ class OpenpynController(
 
         val openpyn_options = StringBuilder()
 
-        if (!server.isEmpty())
+        if (server != null && !server.isEmpty())
             openpyn_options.append(" --server $server")
         else if (flag != null)
             openpyn_options.append(flag)
-        else
+        else if (country_code != null)
             openpyn_options.append(country_code)
 
         //if area:
         //openpyn_options += " --area " + area
         if (tcp)
             openpyn_options.append(" --tcp")
-        if (!max_load.isEmpty())
+        if (max_load != null)
             openpyn_options.append(" --max-load $max_load")
-        if (!top_servers.isEmpty())
+        if (top_servers != null)
             openpyn_options.append(" --top-servers $top_servers")
-        if (!pings.isEmpty())
+        if (pings != null)
             openpyn_options.append(" --pings $pings")
         if (force_fw_rules)
             openpyn_options.append(" --force-fw-rules")

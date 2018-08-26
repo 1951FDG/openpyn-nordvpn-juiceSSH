@@ -121,6 +121,8 @@ class MainActivity : AppCompatActivity(),
 
         map?.onCreate(savedInstanceState)
 
+        PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
+
         val api = GoogleApiAvailability.getInstance()
         val errorCode = api.isGooglePlayServicesAvailable(this)
 
