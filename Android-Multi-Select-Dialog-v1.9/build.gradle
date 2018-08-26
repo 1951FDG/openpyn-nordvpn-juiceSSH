@@ -1,2 +1,0 @@
-configurations.maybeCreate("default")
-artifacts.add("default", file('Android-Multi-Select-Dialog-v1.9.aar'))

@@ -21,7 +21,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url 'https://raw.github.com/Sonelli/maven/master' }
         maven { url 'https://jitpack.io' }
     }
 }

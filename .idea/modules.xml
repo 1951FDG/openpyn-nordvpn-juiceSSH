@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Android-Multi-Select-Dialog-v1.9/Android-Multi-Select-Dialog-v1.9.iml" filepath="$PROJECT_DIR$/Android-Multi-Select-Dialog-v1.9/Android-Multi-Select-Dialog-v1.9.iml" />
       <module fileurl="file://$PROJECT_DIR$/NvidiaGpuMonitor.iml" filepath="$PROJECT_DIR$/NvidiaGpuMonitor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sqlite-android-3240000/sqlite-android-3240000.iml" filepath="$PROJECT_DIR$/sqlite-android-3240000/sqlite-android-3240000.iml" />
     </modules>
   </component>
 </project>
