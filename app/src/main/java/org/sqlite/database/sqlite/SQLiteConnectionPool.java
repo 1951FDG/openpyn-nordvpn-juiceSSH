@@ -72,6 +72,7 @@ import java.util.concurrent.locks.LockSupport;
  *
  * @hide
  */
+@SuppressWarnings("ALL")
 public final class SQLiteConnectionPool implements Closeable {
     private static final String TAG = "SQLiteConnectionPool";
 

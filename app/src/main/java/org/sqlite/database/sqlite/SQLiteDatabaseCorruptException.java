@@ -23,6 +23,7 @@ package org.sqlite.database.sqlite;
 /**
  * An exception that indicates that the SQLite database file is corrupt.
  */
+@SuppressWarnings("ALL")
 public class SQLiteDatabaseCorruptException extends SQLiteException {
     public SQLiteDatabaseCorruptException() {}
 

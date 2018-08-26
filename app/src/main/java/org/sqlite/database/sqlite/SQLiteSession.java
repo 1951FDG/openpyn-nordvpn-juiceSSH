@@ -164,6 +164,7 @@ import android.os.ParcelFileDescriptor;
  *
  * @hide
  */
+@SuppressWarnings("ALL")
 public final class SQLiteSession {
     private final SQLiteConnectionPool mConnectionPool;
 

@@ -37,6 +37,7 @@ import android.os.StatFs;
  *
  * @hide
  */
+@SuppressWarnings("ALL")
 public final class SQLiteGlobal {
     private static final String TAG = "SQLiteGlobal";
 

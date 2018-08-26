@@ -31,6 +31,7 @@ import java.util.Arrays;
  * This class is not thread-safe.
  * </p>
  */
+@SuppressWarnings("ALL")
 public abstract class SQLiteProgram extends SQLiteClosable {
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 

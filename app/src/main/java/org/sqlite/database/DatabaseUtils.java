@@ -49,6 +49,7 @@ import java.util.Map;
 /**
  * Static utility methods for dealing with databases and {@link Cursor}s.
  */
+@SuppressWarnings("ALL")
 public class DatabaseUtils {
     private static final String TAG = "DatabaseUtils";
 

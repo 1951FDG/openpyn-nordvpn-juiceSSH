@@ -24,6 +24,7 @@ package org.sqlite.database.sqlite;
  * This exception class is used when sqlite can't access the database file
  * due to lack of permissions on the file.
  */
+@SuppressWarnings("ALL")
 public class SQLiteAccessPermException extends SQLiteException {
     public SQLiteAccessPermException() {}
 

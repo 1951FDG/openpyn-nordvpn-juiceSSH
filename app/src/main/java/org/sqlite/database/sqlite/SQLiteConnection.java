@@ -88,6 +88,7 @@ import java.util.regex.Pattern;
  *
  * @hide
  */
+@SuppressWarnings("ALL")
 public final class SQLiteConnection implements CancellationSignal.OnCancelListener {
     private static final String TAG = "SQLiteConnection";
     private static final boolean DEBUG = false;

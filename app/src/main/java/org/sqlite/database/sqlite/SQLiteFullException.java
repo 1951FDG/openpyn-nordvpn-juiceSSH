@@ -23,6 +23,7 @@ package org.sqlite.database.sqlite;
 /**
  * An exception that indicates that the SQLite database is full.
  */
+@SuppressWarnings("ALL")
 public class SQLiteFullException extends SQLiteException {
     public SQLiteFullException() {}
 

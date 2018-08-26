@@ -32,6 +32,7 @@ package org.sqlite.database.sqlite;
  * Create a local instance of the SQLiteStatement whenever it is needed, use it and close it ASAP.
  * NEVER make it globally available.
  */
+@SuppressWarnings("ALL")
 public class SQLiteMisuseException extends SQLiteException {
     public SQLiteMisuseException() {}
 

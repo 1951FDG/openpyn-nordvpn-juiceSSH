@@ -25,6 +25,7 @@ package org.sqlite.database.sqlite;
  *
  * @hide
  */
+@SuppressWarnings("ALL")
 public final class SQLiteCustomFunction {
     public final String name;
     public final int numArgs;

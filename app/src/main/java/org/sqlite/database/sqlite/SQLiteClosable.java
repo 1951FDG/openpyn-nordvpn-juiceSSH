@@ -27,6 +27,7 @@ import java.io.Closeable;
  *
  * This class implements a primitive reference counting scheme for database objects.
  */
+@SuppressWarnings("ALL")
 public abstract class SQLiteClosable implements Closeable {
     private int mReferenceCount = 1;
 

@@ -20,6 +20,7 @@
 
 package org.sqlite.database.sqlite;
 
+@SuppressWarnings("ALL")
 public class SQLiteDatatypeMismatchException extends SQLiteException {
     public SQLiteDatatypeMismatchException() {}
 

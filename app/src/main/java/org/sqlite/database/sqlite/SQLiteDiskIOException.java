@@ -24,6 +24,7 @@ package org.sqlite.database.sqlite;
  * An exception that indicates that an IO error occured while accessing the 
  * SQLite database file.
  */
+@SuppressWarnings("ALL")
 public class SQLiteDiskIOException extends SQLiteException {
     public SQLiteDiskIOException() {}
 
