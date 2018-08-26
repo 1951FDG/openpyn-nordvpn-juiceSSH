@@ -765,8 +765,7 @@ class MainActivity : AppCompatActivity(),
                 var match = false
 
                 loop@ for (res in jsonArr) {
-                    val flag_code = res.getString("flag").toLowerCase()
-                    val pass = flag_code.equals(flag, true)
+                    val pass = flag.equals(res.getString("flag"), true)
 
                     if (pass) {
                         val location = res.getJSONObject("location")

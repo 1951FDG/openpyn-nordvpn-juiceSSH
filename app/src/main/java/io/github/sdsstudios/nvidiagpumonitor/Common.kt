@@ -21,14 +21,14 @@ fun generateXML() {
             }
             is Result.Success -> {
                 operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
-                val countries_mapping = mutableMapOf<String, String>()
-                val json_response = result.get().array()
-                for (res in json_response) {
-                    if (res.getString("country") !in countries_mapping) {
-                        countries_mapping[res.getString("country")] = res.getString("domain").take(2)
+                val mutableMap = mutableMapOf<String, String>()
+                val jsonArray = result.get().array()
+                for (res in jsonArray) {
+                    if (res.getString("country") !in mutableMap) {
+                        mutableMap[res.getString("country")] = res.getString("domain").take(2)
                     }
                 }
-                val sorted_countries_mapping = countries_mapping.toSortedMap(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
+                val sortedMap = mutableMap.toSortedMap(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
                 val serializer = Xml.newSerializer()
                 val writer = StringWriter()
                 try {
@@ -37,7 +37,7 @@ fun generateXML() {
                     serializer.startTag("", "head")
                     serializer.startTag("", "string-array")
                     serializer.attribute("", "name", "pref_country_entries")
-                    for ((key, _) in sorted_countries_mapping) {
+                    for ((key, _) in sortedMap) {
                         serializer.startTag("", "item")
                         serializer.text(key)
                         serializer.endTag("", "item")
@@ -45,7 +45,7 @@ fun generateXML() {
                     serializer.endTag("", "string-array")
                     serializer.startTag("", "string-array")
                     serializer.attribute("", "name", "pref_country_values")
-                    for ((_, value) in sorted_countries_mapping) {
+                    for ((_, value) in sortedMap) {
                         serializer.startTag("", "item")
                         serializer.text(value)
                         serializer.endTag("", "item")
