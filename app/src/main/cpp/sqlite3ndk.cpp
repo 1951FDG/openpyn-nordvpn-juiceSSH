@@ -35,7 +35,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "sqlite3ndk.h"
-#include "sqlite3.h"
+#include "../jni/sqlite/sqlite3.h"
 
 #include <android/asset_manager_jni.h>
 #include <android/log.h>
