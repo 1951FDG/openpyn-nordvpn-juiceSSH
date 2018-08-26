@@ -38,7 +38,7 @@ public final class SQLiteQuery extends SQLiteProgram {
 
     private final CancellationSignal mCancellationSignal;
 
-    SQLiteQuery(SQLiteDatabase db, String query, CancellationSignal cancellationSignal) {
+    public SQLiteQuery(SQLiteDatabase db, String query, CancellationSignal cancellationSignal) {
         super(db, query, null, cancellationSignal);
 
         mCancellationSignal = cancellationSignal;
