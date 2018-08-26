@@ -24,7 +24,6 @@ import android.database.AbstractWindowedCursor;
 import android.database.CursorWindow;
 import org.sqlite.database.DatabaseUtils;
 
-import android.os.StrictMode;
 import android.util.Log;
 
 import java.util.HashMap;
