@@ -23,6 +23,16 @@ allprojects {
         jcenter()
         maven { url 'https://jitpack.io' }
     }
+
+    apply plugin: 'idea'
+
+    idea.module {
+        excludeDirs += file("app/src/main/jni/sqlite")
+        excludeDirs += file("app/src/main/obj")
+        excludeDirs += file("svg")
+        excludeDirs += file("tiles")
+        excludeDirs += file("world")
+    }
 }
 
 task clean(type: Delete) {
