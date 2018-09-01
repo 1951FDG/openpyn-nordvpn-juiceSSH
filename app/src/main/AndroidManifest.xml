@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.sdsstudios.nvidiagpumonitor">
 
-    <uses-sdk android:minSdkVersion="21" />
-
+    <!--<uses-sdk android:minSdkVersion="21" />-->
     <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS" />
     <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS" />
     <!--
