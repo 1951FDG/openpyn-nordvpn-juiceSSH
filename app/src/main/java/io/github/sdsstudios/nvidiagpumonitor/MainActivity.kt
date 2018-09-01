@@ -380,9 +380,9 @@ class MainActivity : AppCompatActivity(),
                         networkInfo = NetworkInfo.getInstance(it)
                         networkInfo!!.addListener(it)
 
-                        offlineTileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-                        info(offlineTileProvider!!.minimumZoom)
-                        info(offlineTileProvider!!.maximumZoom)
+                        offlineTileProvider = MapBoxOfflineTileProvider(null, "file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
+                        //offlineTileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
+                        info(offlineTileProvider!!.toString())
 
                         storage = MyStorage(favorites)
 
