@@ -93,6 +93,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             view.fitsSystemWindows = true
             super.onViewCreated(view, savedInstanceState)
+            setDivider(null)
         }
     }
 
