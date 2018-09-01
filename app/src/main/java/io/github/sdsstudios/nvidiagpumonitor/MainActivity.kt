@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
 import com.abdeveloper.library.MultiSelectModel
 import com.androidmapsextensions.lazy.LazyMarker
+import com.androidmapsextensions.lazy.OnLevelChangeCallback
 import com.antoniocarlon.map.CameraUpdateAnimator
 import com.ariascode.networkutility.NetworkInfo
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
@@ -71,11 +72,13 @@ class MainActivity : AppCompatActivity(),
         OnClientStartedListener,
         ConnectionListLoaderFinishedCallback,
         OnMapReadyCallback,
+        GoogleMap.OnMapClickListener,
         GoogleMap.OnMapLoadedCallback,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnCameraIdleListener,
         AnkoLogger,
-        NetworkInfo.NetworkInfoListener {
+        NetworkInfo.NetworkInfoListener,
+        OnLevelChangeCallback {
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
@@ -104,6 +107,8 @@ class MainActivity : AppCompatActivity(),
         get() = mReadConnectionsPerm && mOpenSessionsPerm
 
     private val items by lazy { hashMapOf<LatLng, LazyMarker>() }
+    private var storage: MyStorage? = null
+    private var favorites = "pref_favorites"
 
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
@@ -379,6 +384,8 @@ class MainActivity : AppCompatActivity(),
                         info(offlineTileProvider!!.minimumZoom)
                         info(offlineTileProvider!!.maximumZoom)
 
+                        storage = MyStorage(favorites)
+
                         val preferences = PreferenceManager.getDefaultSharedPreferences(it)
                         /*
                         val array = resources.getTextArray(R.array.pref_country_entries)
@@ -561,6 +568,7 @@ class MainActivity : AppCompatActivity(),
         googleMap.setMapType(MAP_TYPE_NORMAL)
         googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom)
         googleMap.setMinZoomPreference(offlineTileProvider!!.minimumZoom)
+        googleMap.setOnMapClickListener(this)
         googleMap.setOnMapLoadedCallback(this)
         googleMap.setOnMarkerClickListener(this)
         googleMap.setPadding(0,0,0,params.height + params.bottomMargin)
@@ -574,6 +582,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMapLoaded() {
+        val arrayList = storage?.loadFavorites(this) as ArrayList<LazyMarker>?
+        val iconDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1)
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val z = mMap!!.minZoomLevel.toInt()
 
@@ -589,6 +599,26 @@ class MainActivity : AppCompatActivity(),
                 val some_array = resources.getStringArray(R.array.pref_country_values)
             }
             */
+        }
+
+        fab3?.onClick {
+            if (mMap != null && items.count() != 0) {
+                items.forEach { (key, value) ->
+                    if (value.zIndex == 1.0f) {
+                        val level = value.level
+                        when (level) {
+                            0 -> {
+                                value.setLevel(1, null)
+                                storage?.addFavorite(this, value)
+                            }
+                            1 -> {
+                                value.setLevel(0, null)
+                                storage?.removeFavorite(this, value)
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         info(mMap!!.minZoomLevel)
@@ -717,9 +747,18 @@ class MainActivity : AppCompatActivity(),
                 position(latLng)
                 title("$emoji $country")
                 visible(false)
+                icon(iconDescriptor)
             }
-            val marker = LazyMarker(mMap!!, var1)
-            marker.tag = flag
+            val marker = LazyMarker(mMap!!, var1, flag)
+
+            if (arrayList != null) {
+                val index = arrayList.indexOf(marker)
+                if (index >= 0) {
+                    val level = arrayList[index].level
+                    marker.setLevel(level, null)
+                    onLevelChange(marker, level)
+                }
+            }
 
             items[latLng] = marker
         }
@@ -877,15 +916,18 @@ class MainActivity : AppCompatActivity(),
                         if (!value.isVisible) value.isVisible = true
                         if (!value.isInfoWindowShown) value.showInfoWindow()
 
-                        if (value.zIndex == 0f) {
-                            value.zIndex = 1.0f
-                            value.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                        }
+                        value.zIndex = 1.0f
+                        value.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+
+                        fab3.isChecked = (value.level == 1)
+                        fab3.refreshDrawableState()
+
+                        fab3.show()
                     }
                     else {
                         if (value.zIndex == 1.0f) {
-                            value.zIndex = 0f
-                            value.setIcon(null)
+                            value.setLevel(value.level, null)
+                            onLevelChange(value, value.level)
                         }
                     }
                 }
@@ -919,22 +961,43 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    override fun onMapClick(p0: LatLng?) {
+        fab3.hide()
+    }
+
     override fun onMarkerClick(p0: Marker?): Boolean {
-        if (p0?.zIndex == 0f) {
+        if (p0 != null && p0.zIndex != 1.0f) {
             debug(p0.tag)
             if (items.count() != 0) {
                 items.forEach { (key, value) ->
                     if (value.zIndex == 1.0f) {
-                        value.zIndex = 0f
-                        value.setIcon(null)
+                        value.setLevel(value.level, this)
                     }
                 }
             }
             p0.zIndex = 1.0f
-            p0.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+            p0.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+
+            fab3.isChecked = (items[p0.position]?.level == 1)
+            fab3.refreshDrawableState()
         }
 
+        fab3.show()
+
         return false
+    }
+
+    override fun onLevelChange(marker: LazyMarker, level: Int) {
+        when (level) {
+            0 -> {
+                marker.zIndex = 0f
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map1))
+            }
+            1 -> {
+                marker.zIndex = level/10.toFloat()
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map2))
+            }
+        }
     }
 
     fun onInfoWindowClick(p0: Marker?) {

@@ -83,6 +83,9 @@ dependencies {
     // Geocoder
     implementation 'de.westnordost:countryboundaries:1.2'
 
+    // JSON
+    implementation 'com.squareup.moshi:moshi:1.6.0'
+
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
