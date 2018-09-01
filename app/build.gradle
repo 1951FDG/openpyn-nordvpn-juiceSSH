@@ -72,8 +72,8 @@ dependencies {
     implementation "org.jetbrains.anko:anko-sdk25:$anko_version"
 
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.4'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.25.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.25.0'
 
     // Emoji
     implementation('com.vdurmont:emoji-java:4.0.0') {
