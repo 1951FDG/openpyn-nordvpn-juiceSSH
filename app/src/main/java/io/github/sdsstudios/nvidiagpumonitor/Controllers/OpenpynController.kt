@@ -23,7 +23,7 @@ class OpenpynController(
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
 
         val server = preferences.getString("pref_server", null)
-        val country_code = preferences.getString("pref_country", "uk")
+        val country_code = preferences.getString("pref_country", "gb")
         //val country = args.country
         //val area = args.area
         val tcp = preferences.getBoolean("pref_tcp", false)

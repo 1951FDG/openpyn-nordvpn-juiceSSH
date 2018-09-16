@@ -462,7 +462,7 @@ class MainActivity : AppCompatActivity(),
                                 MultiSelectModel(56, "Turkey", R.drawable.flag_tr),
                                 MultiSelectModel(57, "Ukraine", R.drawable.flag_ua),
                                 MultiSelectModel(58, "United Arab Emirates", R.drawable.flag_ae),
-                                MultiSelectModel(59, "United Kingdom", R.drawable.flag_uk),
+                                MultiSelectModel(59, "United Kingdom", R.drawable.flag_gb),
                                 MultiSelectModel(60, "United States", R.drawable.flag_us),
                                 MultiSelectModel(61, "Vietnam", R.drawable.flag_vn)
                         )
@@ -668,7 +668,7 @@ class MainActivity : AppCompatActivity(),
 
         if (jsonArr != null) {
         for (res in jsonArr) {
-            val flag = res.getString("flag").toLowerCase()
+            var flag = res.getString("flag").toLowerCase()
             /*
             var pass = flag.equals(country_code, true)
 
@@ -676,6 +676,12 @@ class MainActivity : AppCompatActivity(),
                 continue
             }
             */
+
+            if (flag == "uk")
+            {
+                flag = "gb"
+                warn(flag)
+            }
 
             var pass = when {
                 p2p -> false
