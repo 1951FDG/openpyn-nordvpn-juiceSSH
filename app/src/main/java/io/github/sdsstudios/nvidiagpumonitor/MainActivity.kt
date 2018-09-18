@@ -78,7 +78,8 @@ class MainActivity : AppCompatActivity(),
         GoogleMap.OnCameraIdleListener,
         AnkoLogger,
         NetworkInfo.NetworkInfoListener,
-        OnLevelChangeCallback {
+        OnLevelChangeCallback,
+        SubmitCallbackListener {
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
@@ -109,6 +110,7 @@ class MainActivity : AppCompatActivity(),
     private val items by lazy { hashMapOf<LatLng, LazyMarker>() }
     private var storage: MyStorage? = null
     private var favorites = "pref_favorites"
+    private var countryList: ArrayList<String>? = null
 
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
@@ -402,7 +404,7 @@ class MainActivity : AppCompatActivity(),
                         */
 
                         // List of Countries with Name and ID
-                        val listOfCountries: ArrayList<MultiSelectModel> = arrayListOf(
+                        val listOfCountries = arrayListOf(
                                 MultiSelectModel(0, "Albania", R.drawable.flag_al),
                                 MultiSelectModel(1, "Argentina", R.drawable.flag_ar),
                                 MultiSelectModel(2, "Australia", R.drawable.flag_au),
@@ -469,6 +471,12 @@ class MainActivity : AppCompatActivity(),
 
                         // Preselected IDs of Country List
                         val alreadySelectedCountries = PrintArray.getListInt("pref_country_values", preferences)
+
+                        countryList = arrayListOf()
+                        val strings: Array<String> = resources.getStringArray(R.array.pref_country_values)
+                        alreadySelectedCountries.forEach { index ->
+                            countryList!!.add(strings[index])
+                        }
 
                         PrintArray.apply {
                             setHint(R.string.empty)
@@ -592,13 +600,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         fab2?.onClick {
-            PrintArray.show( "pref_country_values", this, preferences)
-
-            /*
-            for (i in alreadySelectedCountries.indices) {
-                val some_array = resources.getStringArray(R.array.pref_country_values)
-            }
-            */
+            PrintArray.show("pref_country_values", this, preferences)
         }
 
         fab3?.onClick {
@@ -770,6 +772,14 @@ class MainActivity : AppCompatActivity(),
         }
         }
 
+            /*
+            items.forEach { (key, value) ->
+                if (!countryList!!.contains(value.tag)) {
+                    error(value.tag)
+                }
+            }
+            */
+
             var json1: JSONObject? = null
 
             if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
@@ -788,21 +798,25 @@ class MainActivity : AppCompatActivity(),
                 }
 
             uiThread {
-                executeAnimation(it, json1, jsonArr, cameraUpdateAnimator)
+                if (json1 != null && countryList!!.contains(json1.getString("flag").toLowerCase())) {
+                    executeAnimation(it, json1, jsonArr, cameraUpdateAnimator, true)
+                }
+                else {
+                    executeAnimation(it, json1, jsonArr, cameraUpdateAnimator, false)
+                }
             }
         }
     }
 
 
     @MainThread
-    private fun executeAnimation(it: Context, json1: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?) {
+    private fun executeAnimation(it: Context, json1: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
         fun getDefaultLatLng(): LatLng
         {
             return LatLng(51.514125, -0.093689)
         }
 
         fun getLatLng(flag: String, latLng: LatLng, jsonArr: JSONArray?): LatLng {
-            info(flag)
             info(latLng.toString())
 
             operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
@@ -857,7 +871,12 @@ class MainActivity : AppCompatActivity(),
                 //val ip = json1.getString("ip")
                 //val threat = json1.optJSONObject("threat")
 
-                animateCamera(getLatLng(flag, LatLng(lat, lon), jsonArr), animator)
+                if (closest) {
+                    animateCamera(getLatLng(flag, LatLng(lat, lon), jsonArr), animator, closest)
+                }
+                else {
+                    animateCamera(LatLng(lat, lon), animator, closest)
+                }
             }
             ActivityCompat.checkSelfPermission(it, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
                 val fusedLocationClient = LocationServices.getFusedLocationProviderClient(it)
@@ -891,59 +910,69 @@ class MainActivity : AppCompatActivity(),
                                 debug(getToastString(ids) + "\n(in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
 
                                 if (ids != null && !ids.isEmpty()) {
-                                    animateCamera(getLatLng(ids[0].toLowerCase(), LatLng(lat, lon), jsonArr), animator)
+                                    if (closest) {
+                                        animateCamera(getLatLng(ids[0].toLowerCase(), LatLng(lat, lon), jsonArr), animator, closest)
+                                    }
+                                    else {
+                                        animateCamera(LatLng(lat, lon), animator, closest)
+                                    }
                                 }
                                 else {
-                                    animateCamera(getDefaultLatLng(), animator)
+                                    animateCamera(getDefaultLatLng(), animator, closest)
                                 }
                             }
                             else {
-                                animateCamera(getDefaultLatLng(), animator)
+                                animateCamera(getDefaultLatLng(), animator, closest)
                             }
                         }
                         .addOnFailureListener{ e: Exception ->
                             error(e)
-                            animateCamera(getDefaultLatLng(), animator)
+                            animateCamera(getDefaultLatLng(), animator, closest)
                         }
             }
             else -> {
-                animateCamera(getDefaultLatLng(), animator)
+                animateCamera(getDefaultLatLng(), animator, closest)
             }
         }
     }
 
     @MainThread
-    private fun animateCamera(latLng: LatLng, animator: CameraUpdateAnimator?) {
+    private fun animateCamera(latLng: LatLng, animator: CameraUpdateAnimator?, closest: Boolean) {
         info(latLng.toString())
         animator?.add(CameraUpdateFactory.newLatLng(latLng), true, 0, object : CancelableCallback {
             override fun onFinish() {
-                items.forEach { (key, value) ->
-                    if (key == latLng) {
-                        if (!value.isVisible) value.isVisible = true
-                        if (!value.isInfoWindowShown) value.showInfoWindow()
+                if (closest) {
+                    items.forEach { (key, value) ->
+                        if (key == latLng) {
+                            if (!value.isVisible) value.isVisible = true
+                            if (!value.isInfoWindowShown) value.showInfoWindow()
 
-                        value.zIndex = 1.0f
-                        value.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+                            value.zIndex = 1.0f
+                            value.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
-                        fab3.isChecked = (value.level == 1)
-                        fab3.refreshDrawableState()
+                            fab3.isChecked = (value.level == 1)
+                            fab3.refreshDrawableState()
 
-                        fab3.show()
-                    }
-                    else {
-                        if (value.zIndex == 1.0f) {
-                            value.setLevel(value.level, null)
-                            onLevelChange(value, value.level)
+                            fab3.show()
+                        } else {
+                            if (value.zIndex == 1.0f) {
+                                //if (value.isInfoWindowShown) value.hideInfoWindow()
+
+                                value.setLevel(value.level, null)
+                                onLevelChange(value, value.level)
+                            }
                         }
                     }
                 }
             }
 
             override fun onCancel() {
-                items.forEach { (key, value) ->
-                    if (key == latLng) {
-                        debug("Animation to $value canceled")
-                        return@onCancel
+                if (closest) {
+                    items.forEach { (key, value) ->
+                        if (key == latLng) {
+                            debug("Animation to $value canceled")
+                            return@onCancel
+                        }
                     }
                 }
             }
@@ -958,10 +987,16 @@ class MainActivity : AppCompatActivity(),
 
         if (items.count() != 0) {
             items.forEach { (key, value) ->
-                if (bounds.contains(key)) {
+                if (bounds.contains(key) && countryList!!.contains(value.tag)) {
                     if (!value.isVisible) value.isVisible = true
                 } else {
                     if (value.isVisible) value.isVisible = false
+
+                    if (value.zIndex == 1.0f) {
+                        value.setLevel(value.level, this)
+
+                        fab3.hide()
+                    }
                 }
             }
         }
@@ -1140,6 +1175,20 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
+        // Preselected IDs of Country List
+        countryList = arrayListOf()
+        val strings: Array<String> = resources.getStringArray(R.array.pref_country_values)
+        selectedIds.forEach { index ->
+            countryList!!.add(strings[index])
+        }
+
+        onCameraIdle()
+    }
+
+    override fun onCancel() {
+    }
+
     override fun networkStatusChange(network: NetworkInfo.Network) {
         when(network.status){
             NetworkInfo.NetworkStatus.INTERNET -> {
@@ -1166,6 +1215,7 @@ class MainActivity : AppCompatActivity(),
 
     @MainThread
     fun updateMasterMarker() {
+        fab1.isClickable = false
         doAsync {
             var var1: JSONObject? = null
 
@@ -1192,7 +1242,9 @@ class MainActivity : AppCompatActivity(),
             }
 
             uiThread {
-                executeAnimation(it, var1, var2, cameraUpdateAnimator)
+                executeAnimation(it, var1, var2, cameraUpdateAnimator, false)
+
+                fab1.isClickable = true
             }
         }
     }

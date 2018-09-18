@@ -9,6 +9,12 @@ import android.text.TextUtils
 import com.abdeveloper.library.MultiSelectDialog
 import com.abdeveloper.library.MultiSelectModel
 
+interface SubmitCallbackListener {
+    fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String)
+
+    fun onCancel()
+}
+
 object PrintArray {
     private var hint = android.R.string.unknownName
     private var title = android.R.string.unknownName
@@ -140,16 +146,33 @@ object PrintArray {
         MultiSelectDialog().apply {
             hint(context.getString(hint))
             title(context.getString(title))
-            setMinSelectionLimit(0)
+            setMinSelectionLimit(1)
             setMaxSelectionLimit(items.size)
             preSelectIDsList(checkedItems)
             multiSelectList(items)
             onSubmit(object : MultiSelectDialog.SubmitCallbackListener {
                 override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
                     if (save(selectedIds)) this@PrintArray.checkedItemsList = selectedIds
+
+                    // This makes sure that the container activity has implemented
+                    // the callback interface. If not, it throws an exception
+                    try {
+                        val mCallback = context as SubmitCallbackListener
+                        mCallback.onSelected(selectedIds, selectedNames, dataString)
+                    } catch (e: ClassCastException) {
+                        //throw ClassCastException(context.toString() + " must implement SubmitCallbackListener")
+                    }
                 }
 
                 override fun onCancel() {
+                    // This makes sure that the container activity has implemented
+                    // the callback interface. If not, it throws an exception
+                    try {
+                        val mCallback = context as SubmitCallbackListener
+                        mCallback.onCancel()
+                    } catch (e: ClassCastException) {
+                        //throw ClassCastException(context.toString() + " must implement SubmitCallbackListener")
+                    }
                 }
             })
 
