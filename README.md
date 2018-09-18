@@ -192,7 +192,7 @@ Pull requests are welcome. For major changes, please submit an issue first to di
 
 ## Acknowledgments
 
-Many thanks to [Sonelli](https://github.com/Sonelli) who made this project possible and painless. Special thanks to [Krystian Bigaj](https://github.com/KrystianBigaj/sqlite-ndk), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
+Many thanks to [Sonelli](https://github.com/Sonelli) who made this project possible and painless. Special thanks to [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
 
 ## License
 
