@@ -34,12 +34,14 @@ The idea all started when I wanted to connect to OpenVPN servers hosted by NordV
 
 - Supports most arguments available in Openpyn with easy to use preferences
 - Allows to use location based filtering in Openpyn
-- Map view which displays markers for all countries supported by NordVPN
+- Map view displays markers for every country supported by NordVPN
 - Allows to hide countries in the map view
 - Allows to star a country in the map view
-- Uses Geolocation APIs to determine the current location based on the current public IP address
+- API keys stored in shared preferences are encrypted ("AES/GCM/NoPadding")
 - On app start, it will use a smart location, to determine the closest country
 - A floating action button (FAB), to determine current location based on the current public IP address
+- Uses Geolocation APIs to determine the current location based on the current public IP address
+  - http://ip-api.com/, https://ipdata.co/, https://ipinfo.io/, https://ipstack.com/
 
 *Am I missing some essential feature?*
 
@@ -84,6 +86,7 @@ To compile and run the project you'll need:
 - Solver for ConstrainstLayout
 - Android Support Repository
 - Google repository
+- Geolocation APIs
 
 ## Libraries used
 
@@ -165,6 +168,11 @@ This app uses (modified) code from several open source projects.
 
 - [PrintArray.kt](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/sdsstudios/nvidiagpumonitor/PrintArray.kt) inspired by Github repo, [PrintArray
 ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
+
+- [SecurityManager.java](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/sdsstudios/nvidiagpumonitor/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
+  - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
+  - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
+  - [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
 
 ## Feedback
 
