@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import androidx.annotation.Size
 import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.app.AppCompatActivity
-import android.text.TextUtils
 import com.abdeveloper.library.MultiSelectDialog
 import com.abdeveloper.library.MultiSelectModel
 
@@ -23,6 +22,7 @@ object PrintArray {
     private var neutralTitle = android.R.string.selectAll
     private var itemsList = ArrayList<MultiSelectModel>()
     private var checkedItemsList = ArrayList<Int>()
+    const val delimiter = "‚‗‚"
 
     fun setHint(hint: Int): PrintArray {
         this.hint = hint
@@ -153,7 +153,6 @@ object PrintArray {
             onSubmit(object : MultiSelectDialog.SubmitCallbackListener {
                 override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
                     if (save(selectedIds)) this@PrintArray.checkedItemsList = selectedIds
-
                     // This makes sure that the container activity has implemented
                     // the callback interface. If not, it throws an exception
                     try {
@@ -184,7 +183,7 @@ object PrintArray {
     fun putListInt(@Size(min = 1) key: String, intList: ArrayList<Int>, preferences: SharedPreferences): SharedPreferences.Editor {
         val array = intList.toTypedArray()
         val editor = preferences.edit()
-        editor.putString(key, TextUtils.join("‚‗‚", array)).apply()
+        editor.putString(key, array.joinToString(separator = delimiter)).apply()
         return editor
     }
 
@@ -192,7 +191,7 @@ object PrintArray {
     fun putListBoolean(@Size(min = 1) key: String, booleanList: ArrayList<Boolean>, preferences: SharedPreferences): SharedPreferences.Editor {
         val array = booleanList.toTypedArray()
         val editor = preferences.edit()
-        editor.putString(key, TextUtils.join("‚‗‚", array)).apply()
+        editor.putString(key, array.joinToString(separator = delimiter)).apply()
         return editor
     }
 
@@ -200,25 +199,25 @@ object PrintArray {
     fun putListString(@Size(min = 1) key: String, stringList: ArrayList<String>, preferences: SharedPreferences): SharedPreferences.Editor {
         val array = stringList.toTypedArray()
         val editor = preferences.edit()
-        editor.putString(key, TextUtils.join("‚‗‚", array)).apply()
+        editor.putString(key, array.joinToString(separator = delimiter)).apply()
         return editor
     }
 
     @Suppress("unused")
-    fun getListInt(@Size(min = 1) key: String, preferences: SharedPreferences): ArrayList<Int> {
-        val array = TextUtils.split(preferences.getString(key, ""), "‚‗‚")
+    fun getListInt(@Size(min = 1) key: String, defValue: String = "", preferences: SharedPreferences): ArrayList<Int> {
+        val array = preferences.getString(key, defValue)!!.split(delimiter)
         return array.mapTo(ArrayList()) { it: String -> it.toInt() }
     }
 
     @Suppress("unused")
-    fun getListBoolean(@Size(min = 1) key: String, preferences: SharedPreferences): ArrayList<Boolean> {
-        val array = TextUtils.split(preferences.getString(key, ""), "‚‗‚")
+    fun getListBoolean(@Size(min = 1) key: String, defValue: String = "", preferences: SharedPreferences): ArrayList<Boolean> {
+        val array = preferences.getString(key, defValue)!!.split(delimiter)
         return array.mapTo(ArrayList()) { it: String -> it.toBoolean() }
     }
 
     @Suppress("unused")
-    fun getListString(@Size(min = 1) key: String, preferences: SharedPreferences): ArrayList<String> {
-        val array = TextUtils.split(preferences.getString(key, ""), "‚‗‚")
+    fun getListString(@Size(min = 1) key: String, defValue: String = "", preferences: SharedPreferences): ArrayList<String> {
+        val array = preferences.getString(key, defValue)!!.split(delimiter)
         return array.toCollection(ArrayList())
     }
 }

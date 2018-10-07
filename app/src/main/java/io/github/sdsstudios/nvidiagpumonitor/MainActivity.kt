@@ -472,7 +472,12 @@ class MainActivity : AppCompatActivity(),
                         )
 
                         // Preselected IDs of Country List
-                        val alreadySelectedCountries = PrintArray.getListInt("pref_country_values", preferences)
+                        val array = ArrayList<Int>()
+                        for (i in listOfCountries.indices) {
+                            array.add(i)
+                        }
+                        val defValue = array.joinToString(separator = PrintArray.delimiter)
+                        val alreadySelectedCountries = PrintArray.getListInt("pref_country_values", defValue, preferences)
 
                         countryList = arrayListOf()
                         val strings: Array<String> = resources.getStringArray(R.array.pref_country_values)
