@@ -93,8 +93,8 @@ dependencies {
     implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
 
     // Maps
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
 
     // Misc
     implementation 'com.lucasurbas:guidelinescompattoolbar:1.0.2'
