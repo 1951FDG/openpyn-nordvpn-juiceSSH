@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.view.MenuItem
 import android.view.View
+import androidx.preference.AndroidResources
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragment
 import androidx.preference.PreferenceManager
+import androidx.preference.PreferenceScreen
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -72,17 +74,24 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     /**
      * This fragment shows settings preferences only.
      */
-    class SettingsSyncPreferenceFragment : PreferenceFragment() {
+    class SettingsSyncPreferenceFragment : PreferenceFragment(),
+            PreferenceFragment.OnPreferenceStartScreenCallback {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setHasOptionsMenu(false)
 
-            bindPreferenceSummaryToValue(findPreference("pref_server"))
-            bindPreferenceSummaryToValue(findPreference("pref_country"))
-            bindPreferenceSummaryToValue(findPreference("pref_max_load"))
-            bindPreferenceSummaryToValue(findPreference("pref_top_servers"))
-            bindPreferenceSummaryToValue(findPreference("pref_pings"))
-            bindPreferenceSummaryToValue(findPreference("pref_nvram_client"))
+            findPreference("pref_server")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_country")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_max_load")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_top_servers")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_pings")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_nvram_client")?.let { bindPreferenceSummaryToValue(it) }
+
+            findPreference("pref_geo_client")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_api_ipdata")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_api_ipinfo")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_api_ipstack")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_api_google_maps")?.let { bindPreferenceSummaryToValue(it) }
         }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -94,6 +103,23 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             view.fitsSystemWindows = true
             super.onViewCreated(view, savedInstanceState)
             setDivider(null)
+        }
+
+        override fun onPreferenceStartScreen(caller: PreferenceFragment?, pref: PreferenceScreen?): Boolean {
+            val ft = fragmentManager.beginTransaction()
+            val fragment = SettingsSyncPreferenceFragment()
+            val args = Bundle()
+            args.putString(PreferenceFragment.ARG_PREFERENCE_ROOT, pref?.key)
+            fragment.arguments = args
+
+            ft.add(AndroidResources.ANDROID_R_LIST_CONTAINER, fragment, pref?.key)
+            ft.addToBackStack(null)
+            ft.commit()
+            return true
+        }
+
+        override fun getCallbackFragment(): PreferenceFragment {
+            return this
         }
     }
 
@@ -114,7 +140,13 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
-                preference.summary = stringValue
+                when {
+                    stringValue.isEmpty() -> preference.summary = "N/A"
+                    preference.key.equals("pref_api_ipdata", true) -> preference.summary = "Available (SSL)"
+                    preference.key.equals("pref_api_ipinfo", true) -> preference.summary = "Available (SSL)"
+                    preference.key.startsWith("pref_api", true) -> preference.summary = "Available"
+                    else -> preference.summary = stringValue
+                }
             }
             true
         }

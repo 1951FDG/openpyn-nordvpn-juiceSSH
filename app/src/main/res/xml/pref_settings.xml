@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="first_preferencescreen">
     <PreferenceCategory android:title="@string/pref_category_basic">
         <EditTextPreference
             android:key="pref_server"
@@ -35,6 +36,49 @@
             android:entryValues="@array/pref_pings_values"
             android:key="pref_pings"
             android:title="@string/pref_pings" />
+        <PreferenceScreen
+            android:key="api_settings"
+            android:title="APIs">
+            <PreferenceCategory android:title="@string/pref_category_geolocation">
+                <SwitchPreference
+                    android:defaultValue="true"
+                    android:key="pref_geo"
+                    android:summary="@string/pref_description_geolocation"
+                    android:title="@string/pref_geo" />
+                <ListPreference
+                    android:defaultValue="ipapi"
+                    android:dependency="pref_geo"
+                    android:entries="@array/pref_geo_client_entries"
+                    android:entryValues="@array/pref_geo_client_values"
+                    android:key="pref_geo_client"
+                    android:title="@string/pref_geo_client" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/pref_category_api_keys">
+                <io.github.sdsstudios.nvidiagpumonitor.SecuredEditTextPreference
+                    android:key="pref_api_google_maps"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:title="@string/pref_api_google_maps" />
+                <io.github.sdsstudios.nvidiagpumonitor.SecuredEditTextPreference
+                    android:dependency="pref_geo"
+                    android:key="pref_api_ipdata"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:title="@string/pref_api_ipdata" />
+                <io.github.sdsstudios.nvidiagpumonitor.SecuredEditTextPreference
+                    android:dependency="pref_geo"
+                    android:key="pref_api_ipinfo"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:title="@string/pref_api_ipinfo" />
+                <io.github.sdsstudios.nvidiagpumonitor.SecuredEditTextPreference
+                    android:dependency="pref_geo"
+                    android:key="pref_api_ipstack"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:title="@string/pref_api_ipstack" />
+            </PreferenceCategory>
+        </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_category_advanced">
         <SwitchPreference

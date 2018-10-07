@@ -3,6 +3,7 @@ package io.github.sdsstudios.nvidiagpumonitor
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
@@ -24,6 +25,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.annotation.WorkerThread
 import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
 import com.abdeveloper.library.MultiSelectModel
@@ -593,6 +595,7 @@ class MainActivity : AppCompatActivity(),
         val arrayList = storage?.loadFavorites(this) as ArrayList<LazyMarker>?
         val iconDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1)
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val securityManager = SecurityManager.getInstance(this)
         val z = mMap!!.minZoomLevel.toInt()
 
         fab1?.onClick {
@@ -780,11 +783,7 @@ class MainActivity : AppCompatActivity(),
             }
             */
 
-            var json1: JSONObject? = null
-
-            if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
-                json1 = createJson1()
-            }
+            val json1 = createGeoJson(networkInfo!!, preferences, securityManager)
 
                 val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
                 // Traverse through all rows
@@ -867,7 +866,6 @@ class MainActivity : AppCompatActivity(),
                 //val city = json1.getString("city")
                 val lat = json1.getDouble("latitude")
                 val lon = json1.getDouble("longitude")
-                //val emoji = json1.getString("emoji_flag")
                 //val ip = json1.getString("ip")
                 //val threat = json1.optJSONObject("threat")
 
@@ -1041,9 +1039,8 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    fun onInfoWindowClick(p0: Marker?) {
-        val jsonObj = p0?.tag as JSONObject
-        debug(jsonObj)
+    private fun showThreats(jsonObj: JSONObject) {
+        error(jsonObj)
 
         val threats: JSONObject? = jsonObj.optJSONObject("threat")
 
@@ -1216,12 +1213,10 @@ class MainActivity : AppCompatActivity(),
     @MainThread
     fun updateMasterMarker() {
         fab1.isClickable = false
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val securityManager = SecurityManager.getInstance(this)
         doAsync {
-            var var1: JSONObject? = null
-
-            if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
-                var1 = createJson1()
-            }
+            val var1 = createGeoJson(networkInfo!!, preferences, securityManager)
 
             var var2: JSONArray? = null
 
@@ -1242,11 +1237,46 @@ class MainActivity : AppCompatActivity(),
             }
 
             uiThread {
+                //var1?.let { jsonObject -> showThreats(jsonObject) }
+
                 executeAnimation(it, var1, var2, cameraUpdateAnimator, false)
 
                 fab1.isClickable = true
             }
         }
+    }
+
+    @WorkerThread
+    fun createGeoJson(value: NetworkInfo, preferences: SharedPreferences, securityManager: SecurityManager): JSONObject? {
+        if (value.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
+            val geo = preferences.getBoolean("pref_geo", false)
+            val geo_api = preferences.getString("pref_geo_client", "")
+            val ipdata = preferences.getString("pref_api_ipdata", "")
+            val ipinfo = preferences.getString("pref_api_ipinfo", "")
+            val ipstack = preferences.getString("pref_api_ipstack", "")
+
+            if (geo) {
+                var geo_api_key: String? = null
+                when {
+                    geo_api.equals("ipdata", true) -> {
+                        geo_api_key = ipdata
+                    }
+                    geo_api.equals("ipinfo", true) -> {
+                        geo_api_key = ipinfo
+                    }
+                    geo_api.equals("ipstack", true) -> {
+                        geo_api_key = ipstack
+                    }
+                }
+
+                return when {
+                    geo_api_key != null && geo_api_key.isNotEmpty() -> createJson2(geo_api, securityManager.decryptString(geo_api_key))
+                    else -> createJson2(geo_api, null)
+                }
+            }
+        }
+
+        return null
     }
 
 //    class MainActivityUI : AnkoComponent<MainActivity> {

@@ -285,4 +285,33 @@
     <string name="is_known_abuser">is_known_abuser</string>
     <string name="is_threat">is_threat</string>
     <string name="is_bogon">is_bogon</string>
+
+    <string name="pref_category_geolocation">Geolocation API</string>
+    <string name="pref_geo">GeoIP</string>
+    <string name="pref_description_geolocation">Specify service to use to determine current location based on public IP address</string>
+
+    <string name="pref_geo_client">GeoIP Service</string>
+
+    <string-array name="pref_geo_client_entries">
+        <item>IPApi</item>
+        <item>IPData (requires API Key)</item>
+        <item>IPInfo</item>
+        <item>IPStack (requires API Key)</item>
+    </string-array>
+
+    <string-array name="pref_geo_client_values">
+        <item>ipapi</item>
+        <item>ipdata</item>
+        <item>ipinfo</item>
+        <item>ipstack</item>
+    </string-array>
+
+    <string name="pref_category_api_keys">API keys</string>
+
+    <string name="pref_api_google_maps">Google Maps</string>
+
+    <string name="pref_api_ipdata">IPData</string>
+    <string name="pref_api_ipinfo">IPInfo</string>
+    <string name="pref_api_ipstack">IPStack</string>
+
 </resources>

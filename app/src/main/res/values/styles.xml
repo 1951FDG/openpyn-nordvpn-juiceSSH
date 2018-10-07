@@ -21,6 +21,8 @@
 
     <style name="Theme.MyApp.Settings" parent="Theme.GuidelinesCompat.Light.LightToolbar">
 
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>
+
         <item name="android:windowEnterTransition">@android:transition/slide_bottom</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
@@ -35,8 +37,14 @@
 
         <item name="colorButtonNormal">@color/colorAccent</item>
 
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
-
     </style>
 
+    <style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">
+        <item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>
+    </style>
+
+    <style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:cacheColorHint">@color/colorPrimary</item>
+    </style>
 </resources>

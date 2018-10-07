@@ -63,6 +63,110 @@ fun generateXML() {
 }
 
 @WorkerThread
+fun createJson2(value: String?, token: String?): JSONObject? {
+    var name = "http://ip-api.com/json"
+
+    when {
+        value.equals("ipdata", true) -> {
+            if (token != null && token.isNotEmpty())
+            {
+                name = "https://api.ipdata.co?api-key=$token"
+            }
+        }
+        value.equals("ipinfo", true) -> {
+            name = when {
+                token != null && token.isNotEmpty() -> "https://ipinfo.io/json?token=$token"
+                else -> "https://ipinfo.io/json"
+            }
+        }
+        value.equals("ipstack", true) -> {
+            if (token != null && token.isNotEmpty())
+            {
+                name = "http://api.ipstack.com/check?access_key=$token"
+            }
+        }
+
+    }
+
+    val json1 = JSONObject()
+
+    val timeout = 500
+    val timeoutRead = 500
+    // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
+    val (_, _, result) = name.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
+    when (result) {
+        is Result.Failure -> {
+            Log.error(result.getException().toString())
+        }
+        is Result.Success -> {
+            val content = result.get().obj()
+            Log.debug(content.toString())
+
+            var flag = ""
+            var country = ""
+            var city = ""
+            var lat = 0.0
+            var lon = 0.0
+            var ip = ""
+
+            var threat: JSONObject? = null
+
+            when {
+                name.startsWith("http://ip-api.com", true) -> {
+                    flag = content.optString("countryCode")
+                    country = content.optString("country")
+                    city = content.optString("city")
+                    lat = content.optDouble("lat", 0.0)
+                    lon = content.optDouble("lon", 0.0)
+                    ip = content.optString("query")
+                }
+                name.startsWith("https://api.ipdata.co", true) -> {
+                    flag = content.optString("country_code")
+                    country = content.optString("country_name")
+                    city = content.optString("city")
+                    lat = content.optDouble("latitude", 0.0)
+                    lon = content.optDouble("longitude", 0.0)
+                    ip = content.optString("ip")
+
+                    threat = content.optJSONObject("threat")
+                }
+                name.startsWith("https://ipinfo.io", true) -> {
+                    flag = content.optString("country")
+                    city = content.optString("city")
+                    lat = java.lang.Double.valueOf(content.optString("loc").split(",")[0])
+                    lon = java.lang.Double.valueOf(content.optString("loc").split(",")[1])
+                    ip = content.optString("ip")
+                }
+                name.startsWith("http://api.ipstack.com", true) -> {
+                    flag = content.optString("country_code")
+                    country = content.optString("country_name")
+                    city = content.optString("city")
+                    lat = content.optDouble("latitude", 0.0)
+                    lon = content.optDouble("longitude", 0.0)
+                    ip = content.optString("ip")
+                }
+            }
+
+            json1.put("flag", flag)
+            json1.put("country", country)
+            json1.put("city", city)
+            json1.put("latitude", lat)
+            json1.put("longitude", lon)
+            json1.put("ip", ip)
+
+            json1.putOpt("threat", threat)
+        }
+    }
+
+    if (json1.optString("flag").isEmpty()) return null
+    if (json1.optDouble("latitude", 0.0) == 0.0) return null
+    if (json1.optDouble("longitude", 0.0) == 0.0) return null
+    if (json1.optString("ip").isEmpty()) return null
+
+    return json1
+}
+
+@WorkerThread
 fun createJson1(): JSONObject? {
     val json1 = JSONObject()
 
