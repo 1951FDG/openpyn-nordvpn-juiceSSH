@@ -61,8 +61,8 @@ dependencies {
 
     // Android
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
-    implementation "androidx.preference:preference:1.0.0-rc02"
-    implementation "com.google.android.material:material:1.0.0-rc02"
+    implementation "androidx.preference:preference:1.0.0"
+    implementation "com.google.android.material:material:1.0.0"
 
     // Anko
     implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
