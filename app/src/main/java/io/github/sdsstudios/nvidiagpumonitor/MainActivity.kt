@@ -501,22 +501,47 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
-        fab0.setImageResource(R.drawable.ic_flash_off_white_24dp)
         fab0.isClickable = true
-        //cardViewLayout.visibility = View.VISIBLE
+
+        fab0.setImageResource(R.drawable.ic_flash_off_white_24dp)
+
+        fab1.hide()
+        fab2.hide()
+        items.forEach { (key, value) ->
+            if (value.zIndex == 1.0f) fab3.hide()
+        }
+
         spinnerConnectionList.isEnabled = false
+
+        mMap!!.setOnMapClickListener(null)
+        mMap!!.setOnMarkerClickListener(null)
+        mMap!!.uiSettings.isScrollGesturesEnabled = false
+        mMap!!.uiSettings.isZoomGesturesEnabled = false
+
+        //cardViewLayout.visibility = View.VISIBLE
     }
 
     override fun onSessionCancelled() {
-        fab0.setImageResource(R.drawable.ic_flash_on_white_24dp)
         fab0.isClickable = true
     }
 
     override fun onSessionFinished() {
         fab0.setImageResource(R.drawable.ic_flash_on_white_24dp)
-        fab0.isClickable = true
-        //cardViewLayout.visibility = View.GONE
+
+        fab1.show()
+        fab2.show()
+        items.forEach { (key, value) ->
+            if (value.zIndex == 1.0f) fab3.show()
+        }
+
         spinnerConnectionList.isEnabled = true
+
+        mMap!!.setOnMapClickListener(this)
+        mMap!!.setOnMarkerClickListener(this)
+        mMap!!.uiSettings.isScrollGesturesEnabled = true
+        mMap!!.uiSettings.isZoomGesturesEnabled = true
+
+        //cardViewLayout.visibility = View.GONE
 
         Handler().postDelayed({
             updateMasterMarker()
@@ -989,7 +1014,6 @@ class MainActivity : AppCompatActivity(),
     override fun onCameraIdle() {
         val bounds = mMap!!.projection.visibleRegion.latLngBounds
 
-        if (items.count() != 0) {
             items.forEach { (key, value) ->
                 if (bounds.contains(key) && countryList!!.contains(value.tag)) {
                     if (!value.isVisible) value.isVisible = true
@@ -1003,23 +1027,26 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
             }
-        }
     }
 
     override fun onMapClick(p0: LatLng?) {
-        fab3.hide()
+        items.forEach { (key, value) ->
+            if (value.zIndex == 1.0f) {
+                value.setLevel(value.level, this)
+
+                fab3.hide()
+            }
+        }
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         if (p0 != null && p0.zIndex != 1.0f) {
             debug(p0.tag)
-            if (items.count() != 0) {
                 items.forEach { (key, value) ->
                     if (value.zIndex == 1.0f) {
                         value.setLevel(value.level, this)
                     }
                 }
-            }
             p0.zIndex = 1.0f
             p0.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
