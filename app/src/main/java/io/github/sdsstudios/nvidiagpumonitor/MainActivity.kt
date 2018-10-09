@@ -10,6 +10,7 @@ import android.database.Cursor
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceActivity.EXTRA_NO_HEADERS
 import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT
 import androidx.preference.PreferenceManager
@@ -517,7 +518,7 @@ class MainActivity : AppCompatActivity(),
         //cardViewLayout.visibility = View.GONE
         spinnerConnectionList.isEnabled = true
 
-        android.os.Handler().postDelayed({
+        Handler().postDelayed({
             updateMasterMarker()
         }, 5000)
     }

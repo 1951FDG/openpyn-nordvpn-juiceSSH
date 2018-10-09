@@ -75,7 +75,7 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
         if (!cameraUpdates.isEmpty()) {
             final Animation animation = cameraUpdates.remove(0);
 
-            Handler handler = new android.os.Handler();
+            Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
                     if (animation.mAnimate) {

@@ -2,6 +2,7 @@ package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import androidx.lifecycle.MutableLiveData
 import android.content.Context
+import android.os.Handler
 import androidx.preference.PreferenceManager
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import org.jetbrains.anko.AnkoLogger
@@ -124,7 +125,7 @@ class OpenpynController(
 
         mCtx.longToast(line)
         if (line.startsWith("CONNECTING TO SERVER", true)) {
-            android.os.Handler().postDelayed({
+            Handler().postDelayed({
                 mainActivity.updateMasterMarker()
             }, 10000)
         }
