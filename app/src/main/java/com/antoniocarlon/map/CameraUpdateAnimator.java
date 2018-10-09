@@ -29,21 +29,15 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
     private final GoogleMap mMap;
     private final GoogleMap.OnCameraIdleListener mOnCameraIdleListener;
     private final List<Animation> cameraUpdates = new ArrayList<>();
-    private final boolean mIsRotateGestureEnabled;
-    private final boolean mIsScrollGestureEnabled;
-    private final boolean mIsTiltGestureEnabled;
-    private final boolean mIsZoomControlsEnabled;
-    private final boolean mIsZoomGestureEnabled;
+    private boolean mIsRotateGestureEnabled;
+    private boolean mIsScrollGestureEnabled;
+    private boolean mIsTiltGestureEnabled;
+    private boolean mIsZoomControlsEnabled;
+    private boolean mIsZoomGestureEnabled;
 
     public CameraUpdateAnimator(@NonNull GoogleMap map,
                                 @NonNull GoogleMap.OnCameraIdleListener onCameraIdleListener) {
         mMap = map;
-        mIsRotateGestureEnabled = mMap.getUiSettings().isRotateGesturesEnabled();
-        mIsScrollGestureEnabled = mMap.getUiSettings().isScrollGesturesEnabled();
-        mIsTiltGestureEnabled = mMap.getUiSettings().isTiltGesturesEnabled();
-        mIsZoomControlsEnabled = mMap.getUiSettings().isZoomControlsEnabled();
-        mIsZoomGestureEnabled = mMap.getUiSettings().isZoomGesturesEnabled();
-
         mOnCameraIdleListener = onCameraIdleListener;
     }
 
@@ -61,6 +55,12 @@ public class CameraUpdateAnimator implements GoogleMap.OnCameraIdleListener {
     }
 
     public void execute() {
+        mIsRotateGestureEnabled = mMap.getUiSettings().isRotateGesturesEnabled();
+        mIsScrollGestureEnabled = mMap.getUiSettings().isScrollGesturesEnabled();
+        mIsTiltGestureEnabled = mMap.getUiSettings().isTiltGesturesEnabled();
+        mIsZoomControlsEnabled = mMap.getUiSettings().isZoomControlsEnabled();
+        mIsZoomGestureEnabled = mMap.getUiSettings().isZoomGesturesEnabled();
+
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
