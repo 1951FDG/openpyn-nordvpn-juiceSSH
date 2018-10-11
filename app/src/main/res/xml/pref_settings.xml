@@ -55,11 +55,6 @@
             </PreferenceCategory>
             <PreferenceCategory android:title="@string/pref_category_api_keys">
                 <io.github.sdsstudios.nvidiagpumonitor.SecuredEditTextPreference
-                    android:key="pref_api_google_maps"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:title="@string/pref_api_google_maps" />
-                <io.github.sdsstudios.nvidiagpumonitor.SecuredEditTextPreference
                     android:dependency="pref_geo"
                     android:key="pref_api_ipdata"
                     android:selectAllOnFocus="true"

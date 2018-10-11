@@ -308,8 +308,6 @@
 
     <string name="pref_category_api_keys">API keys</string>
 
-    <string name="pref_api_google_maps">Google Maps</string>
-
     <string name="pref_api_ipdata">IPData</string>
     <string name="pref_api_ipinfo">IPInfo</string>
     <string name="pref_api_ipstack">IPStack</string>
