@@ -136,7 +136,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 // the preference's 'entries' list.
                 val index = preference.findIndexOfValue(stringValue)
                 // Set the summary to reflect the new value.
-                preference.setSummary(if (index >= 0) preference.entries[index] else null)
+                preference.summary = if (index >= 0) preference.entries[index] else null
             } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
@@ -145,6 +145,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     preference.key.equals("pref_api_ipdata", true) -> preference.summary = "Available (SSL)"
                     preference.key.equals("pref_api_ipinfo", true) -> preference.summary = "Available (SSL)"
                     preference.key.startsWith("pref_api", true) -> preference.summary = "Available"
+                    preference.key.equals("pref_server", true) && !validate(stringValue) -> return@OnPreferenceChangeListener false
                     else -> preference.summary = stringValue
                 }
             }
@@ -175,6 +176,21 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             // current value.
             val newValue = PreferenceManager.getDefaultSharedPreferences(preference.context).getString(preference.key, "")
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, newValue)
+        }
+
+        private fun validate(str: String): Boolean {
+            val regex = Regex("""^[a-z]{2}\d{1,4}$""")
+            if (regex.matches(str)) {
+                return hashSetOf(
+                        "al", "ar", "au", "at", "az", "be", "ba", "br", "bg", "ca", "cl",
+                        "cr", "hr", "cy", "cz", "dk", "eg", "ee", "fi", "fr", "ge", "de",
+                        "gr", "hk", "hu", "is", "in", "id", "ie", "il", "it", "jp", "lv",
+                        "lu", "mk", "my", "mx", "md", "nl", "nz", "no", "pl", "pt", "ro",
+                        "ru", "rs", "sg", "sk", "si", "za", "kr", "es", "se", "ch", "tw",
+                        "th", "tr", "ua", "ae", "gb", "us", "vn").contains(str.take(2))
+            }
+
+            return false
         }
     }
 }
