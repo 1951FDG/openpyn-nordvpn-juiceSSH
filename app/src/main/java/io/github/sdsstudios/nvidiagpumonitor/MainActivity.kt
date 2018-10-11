@@ -30,6 +30,7 @@ import androidx.annotation.WorkerThread
 import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
 import com.abdeveloper.library.MultiSelectModel
+import com.adityaanand.morphdialog.MorphDialog
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.OnLevelChangeCallback
 import com.antoniocarlon.map.CameraUpdateAnimator
@@ -50,6 +51,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.TileOverlayOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
@@ -187,7 +189,11 @@ class MainActivity : AppCompatActivity(),
 
             fab0.onClick {
                 if (mConnectionListAdapter.count == 0) {
-                    toast(R.string.error_must_have_atleast_one_server)
+                    MorphDialog.Builder(this, it as FloatingActionButton)
+                            .title("Error")
+                            .content(R.string.error_must_have_atleast_one_server)
+                            .positiveText(android.R.string.ok)
+                            .show()
                     return@onClick
                 }
 

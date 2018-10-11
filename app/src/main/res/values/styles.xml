@@ -3,7 +3,6 @@
 
     <style name="Theme.MyApp" parent="Theme.GuidelinesCompat.Light.LightToolbar">
 
-        <item name="android:windowExitTransition">@android:transition/slide_top</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
 
@@ -46,5 +45,11 @@
     <style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:cacheColorHint">@color/colorPrimary</item>
+    </style>
+
+    <style name="MorphDialog.Custom.Light" parent="MorphDialog.Base.Light">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 </resources>
