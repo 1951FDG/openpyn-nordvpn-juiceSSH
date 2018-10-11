@@ -18,6 +18,7 @@
         map:cameraTargetLng="-135.0"
         map:mapType="none"
         map:uiCompass="false"
+        map:uiMapToolbar="false"
         map:uiRotateGestures="false"
         map:uiScrollGestures="false"
         map:uiTiltGestures="false"
