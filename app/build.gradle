@@ -110,7 +110,7 @@ dependencies {
     implementation 'com.github.kittinunf.result:result:1.4.0'
 
     // UI
-    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:v2.0'
+    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:v2.2'
     implementation 'com.github.AdityaAnand1:Morphing-Material-Dialogs:0.0.4'
     implementation "com.afollestad.material-dialogs:core:0.9.6.0"
 
