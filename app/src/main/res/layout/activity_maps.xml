@@ -25,6 +25,12 @@
         map:uiZoomControls="false"
         map:uiZoomGestures="false" />
 
+    <com.mayurrokade.minibar.MinibarView
+        android:id="@+id/minibarView"
+        style="@style/MinibarViewCustom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab2"
         android:layout_width="wrap_content"

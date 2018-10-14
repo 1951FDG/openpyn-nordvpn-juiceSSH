@@ -126,7 +126,7 @@ class OpenpynController(
         mCtx.longToast(line)
         if (line.startsWith("CONNECTING TO SERVER", true)) {
             Handler().postDelayed({
-                mainActivity.updateMasterMarker()
+                mainActivity.updateMasterMarker(true)
             }, 10000)
         }
     }

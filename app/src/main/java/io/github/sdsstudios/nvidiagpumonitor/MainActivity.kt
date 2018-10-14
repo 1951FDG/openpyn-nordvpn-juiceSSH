@@ -24,6 +24,7 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.WorkerThread
@@ -52,6 +53,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.TileOverlayOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.mayurrokade.minibar.UserMessage
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
@@ -1250,7 +1252,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     @MainThread
-    fun updateMasterMarker() {
+    fun updateMasterMarker(show: Boolean = false) {
         fab1.isClickable = false
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val securityManager = SecurityManager.getInstance(this)
@@ -1281,6 +1283,28 @@ class MainActivity : AppCompatActivity(),
                 executeAnimation(it, var1, var2, cameraUpdateAnimator, false)
 
                 fab1.isClickable = true
+
+                if (show && var1 != null) {
+                    val flag = var1.getString("flag").toUpperCase()
+                    //val country = var1.getString("country")
+                    val city = var1.getString("city")
+                    //val lat = var1.getDouble("latitude")
+                    //val lon = var1.getDouble("longitude")
+                    val ip = var1.getString("ip")
+
+                    val userMessage = UserMessage.Builder()
+                            .with(this@MainActivity)
+                            .setBackgroundColor(R.color.accent_material_indigo_200)
+                            .setTextColor(android.R.color.white)
+                            .setMessage("Connected to $city, $flag ($ip)")
+                            .setDuration(5000)
+                            .setShowInterpolator(AccelerateInterpolator())
+                            .setDismissInterpolator(AccelerateInterpolator())
+                            .build()
+
+                    minibarView.translationZ = 0.0f
+                    minibarView.show(userMessage)
+                }
             }
         }
     }
