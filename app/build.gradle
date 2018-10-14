@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -112,7 +111,6 @@ dependencies {
     // UI
     implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:v2.2'
     implementation 'com.github.AdityaAnand1:Morphing-Material-Dialogs:0.0.4'
-    implementation "com.afollestad.material-dialogs:core:0.9.6.0"
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
-    kapt 'androidx.databinding:databinding-compiler:3.2.0'
 }
