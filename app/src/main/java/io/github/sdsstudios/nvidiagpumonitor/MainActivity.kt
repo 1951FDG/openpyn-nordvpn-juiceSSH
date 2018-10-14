@@ -534,6 +534,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSessionFinished() {
+        fab0.isClickable = true
+
         fab0.setImageResource(R.drawable.ic_flash_on_white_24dp)
 
         fab1.show()
