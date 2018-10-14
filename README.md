@@ -104,6 +104,8 @@ To compile and run the project you'll need:
 * [Fuel](https://github.com/kittinunf/Fuel)
 * [Result](https://github.com/kittinunf/Result)
 * [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
+* [Morphing Material Dialogs](https://github.com/AdityaAnand1/Morphing-Material-Dialogs)
+* [Minibar](https://github.com/mayuroks/minibar)
 
 ## Links used
 
@@ -186,10 +188,12 @@ Pull requests are welcome. For major changes, please submit an issue first to di
 - [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
 - [Android Studio](https://developer.android.com/studio/)
 - [Atom](https://atom.io/)
+- [AX2J](http://ax2j.sickworm.com/) - Android XML to Java
 - [DB Browser for SQLite](http://sqlitebrowser.org/)
 - [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 - [MBUtil](https://github.com/mapbox/mbutil) - Importer and Exporter of MBTiles
 - [Python](https://www.python.org/downloads/)
+- [Regex101](https://regex101.com/)
 - [Sourcetree](https://www.sourcetreeapp.com/)
 - [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip) - Exporter of Mapnik XML files
 
