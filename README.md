@@ -105,6 +105,7 @@ To compile and run the project you'll need:
 * [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
 * [Morphing Material Dialogs](https://github.com/AdityaAnand1/Morphing-Material-Dialogs)
 * [Minibar](https://github.com/mayuroks/minibar)
+* [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
 
 ## Links used
 
