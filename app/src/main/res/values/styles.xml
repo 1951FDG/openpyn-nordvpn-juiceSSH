@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MyApp" parent="Theme.GuidelinesCompat.Light.LightToolbar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
 
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
@@ -18,7 +18,7 @@
 
     </style>
 
-    <style name="Theme.MyApp.Settings" parent="Theme.GuidelinesCompat.Light.LightToolbar">
+    <style name="AppTheme.Settings" parent="Theme.AppCompat.Light">
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>
 
@@ -59,4 +59,14 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">16sp</item>
     </style>
+
+    <style name="ToolbarProgress" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:indeterminate">true</item>
+        <item name="mpb_indeterminateTint">?android:attr/colorAccent</item>
+        <item name="mpb_progressStyle">horizontal</item>
+        <item name="mpb_progressTint">?android:attr/colorAccent</item>
+        <item name="mpb_showProgressBackground">false</item>
+        <item name="mpb_useIntrinsicPadding">false</item>
+    </style>
+
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,12 +13,13 @@
         android:animateLayoutChanges="true"
         android:transitionGroup="true">
 
-        <androidx.appcompat.widget.Toolbar
+        <tk.wasdennnoch.progresstoolbar.ProgressToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize">
+            android:minHeight="?attr/actionBarSize"
+            app:ptb_progressHeight="1dp">
 
             <Spinner
                 android:id="@+id/spinnerConnectionList"
@@ -26,7 +28,7 @@
                 android:spinnerMode="dialog"
                 tools:listitem="@layout/spinner_item" />
 
-        </androidx.appcompat.widget.Toolbar>
+        </tk.wasdennnoch.progresstoolbar.ProgressToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 

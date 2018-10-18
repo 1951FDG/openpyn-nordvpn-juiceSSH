@@ -99,7 +99,6 @@ To compile and run the project you'll need:
 * [Moshi](https://github.com/square/moshi)
 * [Kotlin](https://github.com/JetBrains/kotlin)
 * [StaticLog](https://github.com/jupf/staticlog)
-* [GuidelinesCompatToolbar](https://github.com/lurbas/GuidelinesCompatToolbar)
 * [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 * [Fuel](https://github.com/kittinunf/Fuel)
 * [Result](https://github.com/kittinunf/Result)

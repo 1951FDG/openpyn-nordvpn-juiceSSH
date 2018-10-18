@@ -130,6 +130,9 @@ class MainActivity : AppCompatActivity(),
 
         setContentView(R.layout.activity_main)
 
+        toolbar.hideProgress()
+        toolbar.isIndeterminate = true
+
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -295,6 +298,9 @@ class MainActivity : AppCompatActivity(),
             R.id.action_refresh -> {
                 //val drawable = item.icon as? Animatable
                 //drawable?.start()
+
+                toolbar.showProgress(true)
+
                 doAsync {
                     var json1: JSONArray? = null
 
@@ -322,6 +328,9 @@ class MainActivity : AppCompatActivity(),
 
                     uiThread {
                         //drawable?.stop()
+
+                        toolbar.hideProgress(true)
+                    }
                     }
                 }
                 true
@@ -670,6 +679,8 @@ class MainActivity : AppCompatActivity(),
         info(mMap!!.minZoomLevel)
         info(mMap!!.maxZoomLevel)
 
+        toolbar.showProgress(true)
+
         doAsync {
         //val server = preferences.getString("pref_server", "")
         //val country_code = preferences.getString("pref_country", "")
@@ -838,6 +849,8 @@ class MainActivity : AppCompatActivity(),
                 }
 
             uiThread {
+                toolbar.hideProgress(true)
+
                 if (json1 != null && countryList!!.contains(json1.getString("flag").toLowerCase())) {
                     executeAnimation(it, json1, jsonArr, cameraUpdateAnimator, true)
                 }
@@ -1258,6 +1271,9 @@ class MainActivity : AppCompatActivity(),
         fab1.isClickable = false
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val securityManager = SecurityManager.getInstance(this)
+
+        toolbar.showProgress(true)
+
         doAsync {
             val var1 = createGeoJson(networkInfo!!, preferences, securityManager)
 
@@ -1280,6 +1296,8 @@ class MainActivity : AppCompatActivity(),
             }
 
             uiThread {
+                toolbar.hideProgress(true)
+
                 //var1?.let { jsonObject -> showThreats(jsonObject) }
 
                 executeAnimation(it, var1, var2, cameraUpdateAnimator, false)

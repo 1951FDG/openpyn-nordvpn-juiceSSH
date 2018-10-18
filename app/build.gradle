@@ -100,18 +100,16 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
 
-    // Misc
-    implementation 'com.lucasurbas:guidelinescompattoolbar:1.0.2'
-
     // Networking
     implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.13'
     implementation 'com.github.kittinunf.fuel:fuel-android:1.13.0'
     implementation 'com.github.kittinunf.result:result:1.4.0'
 
     // UI
-    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:v2.2'
-    implementation 'com.github.AdityaAnand1:Morphing-Material-Dialogs:0.0.4'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:v2.2'
+    implementation 'com.github.1951FDG:ProgressToolbar:1.0.5'
+    implementation 'com.github.AdityaAnand1:Morphing-Material-Dialogs:0.0.4'
     implementation 'com.github.mayuroks:minibar:0.2.0'
 
 }
