@@ -30,6 +30,7 @@ abstract class BaseController(
     var command = ""
     var stopcommand = ""
 
+    @Suppress("MagicNumber")
     override fun onCompleted(exitCode: Int) {
         when (exitCode) {
             127 -> {

@@ -120,6 +120,7 @@ class OpenpynController(
         return data.toInt()
     }
 
+    @Suppress("MagicNumber")
     override fun onOutputLine(line: String) {
         debug(line)
 

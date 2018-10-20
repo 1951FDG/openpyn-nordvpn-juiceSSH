@@ -363,6 +363,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    @Suppress("MagicNumber")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -566,6 +567,7 @@ class MainActivity : AppCompatActivity(),
         fab0.isClickable = true
     }
 
+    @Suppress("MagicNumber")
     override fun onSessionFinished() {
         fab0.isClickable = true
 
@@ -887,6 +889,7 @@ class MainActivity : AppCompatActivity(),
 
 
     @MainThread
+    @Suppress("MagicNumber")
     private fun executeAnimation(it: Context, json1: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
         fun getDefaultLatLng(): LatLng
         {
@@ -1104,6 +1107,7 @@ class MainActivity : AppCompatActivity(),
         return false
     }
 
+    @Suppress("MagicNumber")
     override fun onLevelChange(marker: LazyMarker, level: Int) {
         when (level) {
             0 -> {
@@ -1117,6 +1121,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    @Suppress("MagicNumber")
     private fun showThreats(jsonObj: JSONObject) {
         error(jsonObj)
 
@@ -1133,113 +1138,114 @@ class MainActivity : AppCompatActivity(),
 
             val color1 = ContextCompat.getColor(this, R.color.colorConnect)
             val color2 = ContextCompat.getColor(this, R.color.colorDisconnect)
-
+            val fl = 22f
+            val weight = 1.0f
             alert {
                 customView {
                     verticalLayout {
                         linearLayout {
                             textView {
                                 text = getString(R.string.is_tor)
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                             textView {
                                 text = if (tor) "YES" else "NO"
                                 textColor = if (tor) color2 else color1
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                         }
                         linearLayout {
                             textView {
                                 text = getString(R.string.is_proxy)
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                             textView {
                                 text = if (proxy) "YES" else "NO"
                                 textColor = if (proxy) color2 else color1
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                         }
                         linearLayout {
                             textView {
                                 text = getString(R.string.is_anonymous)
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                             textView {
                                 text = if (anonymous) "YES" else "NO"
                                 textColor = if (anonymous) color2 else color1
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                         }
                         linearLayout {
                             textView {
                                 text = getString(R.string.is_known_attacker)
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                             textView {
                                 text = if (attacker) "YES" else "NO"
                                 textColor = if (attacker) color2 else color1
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                         }
                         linearLayout {
                             textView {
                                 text = getString(R.string.is_known_abuser)
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                             textView {
                                 text = if (abuser) "YES" else "NO"
                                 textColor = if (abuser) color2 else color1
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                         }
                         linearLayout {
                             textView {
                                 text = getString(R.string.is_threat)
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                             textView {
                                 text = if (threat) "YES" else "NO"
                                 textColor = if (threat) color2 else color1
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                         }
                         linearLayout {
                             textView {
                                 text = getString(R.string.is_bogon)
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                             textView {
                                 text = if (bogon) "YES" else "NO"
                                 textColor = if (bogon) color2 else color1
-                                textSize = 22f
+                                textSize = fl
                                 gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = 1.0f) {
+                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
                             }
                         }
                         gravity = Gravity.CENTER
@@ -1289,6 +1295,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     @MainThread
+    @Suppress("MagicNumber")
     fun updateMasterMarker(show: Boolean = false) {
         fab1.isClickable = false
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)

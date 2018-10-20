@@ -38,6 +38,7 @@ class NetworkInfo(context: Context) : BroadcastReceiver(), AnkoLogger {
     }
 
     // receive network changes
+    @Suppress("MagicNumber")
     override fun onReceive(context: Context, intent: Intent) = runBlocking {
         debug("onReceive")
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -86,6 +87,7 @@ class NetworkInfo(context: Context) : BroadcastReceiver(), AnkoLogger {
     }
 
     // verify host availability
+    @Suppress("MagicNumber")
     private fun hostAvailable(host: String, port: Int): Boolean {
         debug("Verifying host availability: $host:$port")
         try {

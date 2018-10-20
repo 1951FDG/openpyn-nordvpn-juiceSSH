@@ -124,6 +124,7 @@ class ConnectionManager(ctx: Context,
         mClient.stop(mCtx)
     }
 
+    @Suppress("MagicNumber")
     private fun disconnect() {
         Thread(Runnable {
             try {

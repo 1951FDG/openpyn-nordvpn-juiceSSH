@@ -72,6 +72,7 @@ fun generateXML() {
 }
 
 @WorkerThread
+@Suppress("MagicNumber")
 fun createJson2(value: String?, token: String?): JSONObject? {
     var name = "http://ip-api.com/json"
 
@@ -172,6 +173,7 @@ fun createJson2(value: String?, token: String?): JSONObject? {
 }
 
 @WorkerThread
+@Suppress("MagicNumber")
 fun createJson1(): JSONObject? {
     val json1 = JSONObject()
 
@@ -224,6 +226,7 @@ fun createJson1(): JSONObject? {
 }
 
 @WorkerThread
+@Suppress("MagicNumber")
 fun createJson(): JSONArray? {
     var name = "https://api.nordvpn.com/server"
     val timeout = 1000
