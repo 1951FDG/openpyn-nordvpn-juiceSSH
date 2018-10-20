@@ -7,6 +7,10 @@
     <string name="empty" />
     <string name="menu_refresh">Refresh</string>
 
+    <!-- Warning -->
+    <string name="warning_must_restart_app">Please restart app for changes to take effect</string>
+    <!-- Warning -->
+
     <!-- Error -->
     <string name="error_must_enable_permissions">Must enable permissions!</string>
     <string name="error_couldnt_connect_to_service">Could not connect to JuiceSSH Plugin Service</string>

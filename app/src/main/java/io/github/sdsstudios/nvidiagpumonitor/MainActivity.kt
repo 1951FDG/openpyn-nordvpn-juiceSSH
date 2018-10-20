@@ -32,6 +32,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
 import com.abdeveloper.library.MultiSelectModel
 import com.adityaanand.morphdialog.MorphDialog
+import com.afollestad.materialdialogs.MaterialDialog
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.OnLevelChangeCallback
 import com.antoniocarlon.map.CameraUpdateAnimator
@@ -307,6 +308,7 @@ class MainActivity : AppCompatActivity(),
                     if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
                         json1 = createJson()
                     }
+                    var thrown = true
 
                     if (json1 != null) {
                         val text = json1.toString()
@@ -317,6 +319,7 @@ class MainActivity : AppCompatActivity(),
                             debug(file)
 
                             file.writeText(text)
+                            thrown = false
                         } catch (e: Resources.NotFoundException) {
                             error(e)
                         } catch (e: FileNotFoundException) {
@@ -330,7 +333,18 @@ class MainActivity : AppCompatActivity(),
                         //drawable?.stop()
 
                         toolbar.hideProgress(true)
+
+                        if (!thrown) {
+                            MaterialDialog.Builder(it)
+                                    .title("Warning")
+                                    .content(R.string.warning_must_restart_app)
+                                    .positiveText(android.R.string.ok)
+                                    .show()
+                        }
                     }
+
+                    onComplete {
+
                     }
                 }
                 true
