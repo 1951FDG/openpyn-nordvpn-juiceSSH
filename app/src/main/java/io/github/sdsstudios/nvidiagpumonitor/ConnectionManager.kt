@@ -10,7 +10,7 @@ import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedExceptio
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
-import io.github.sdsstudios.nvidiagpumonitor.controllers.*
+import io.github.sdsstudios.nvidiagpumonitor.controllers.OpenpynController
 import org.jetbrains.anko.longToast
 import java.util.UUID
 
@@ -58,7 +58,7 @@ class ConnectionManager(ctx: Context,
 //    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
     private val mOpenpynController = OpenpynController(ctx, openpyn)
 
-    private val mControllers = listOf<BaseController>(
+    private val mControllers = listOf(
 //            mPowerController,
 //            mTempController,
 //            mFanSpeedController,
