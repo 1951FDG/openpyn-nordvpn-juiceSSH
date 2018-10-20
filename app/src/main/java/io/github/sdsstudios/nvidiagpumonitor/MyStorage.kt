@@ -24,9 +24,15 @@ class MyStorage(val key: String) {
 
     fun loadFavorites(context: Context): ArrayList<Any> {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val string = preferences.getString(key, null) ?: return ArrayList()
-        val items = jsonAdapter.fromJson(string) ?: return ArrayList()
-        return ArrayList(items)
+        val string = preferences.getString(key, null)
+        if (string != null) {
+            val items = jsonAdapter.fromJson(string)
+            if (items != null) {
+                return ArrayList(items)
+            }
+        }
+
+        return ArrayList()
     }
 
     fun jsonAdapter(): JsonAdapter<List<Any>> {

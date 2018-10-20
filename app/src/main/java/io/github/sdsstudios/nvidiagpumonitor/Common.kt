@@ -91,10 +91,7 @@ fun createJson2(value: String?, token: String?): JSONObject? {
                 name = "http://api.ipstack.com/check?access_key=$token"
             }
         }
-
     }
-
-    val json1 = JSONObject()
 
     val timeout = 500
     val timeoutRead = 500
@@ -153,23 +150,22 @@ fun createJson2(value: String?, token: String?): JSONObject? {
                 }
             }
 
-            json1.put("flag", flag)
-            json1.put("country", country)
-            json1.put("city", city)
-            json1.put("latitude", lat)
-            json1.put("longitude", lon)
-            json1.put("ip", ip)
+            if (flag.isNotEmpty() && city.isNotEmpty() && lat != 0.0 && lon != 0.0 && ip.isNotEmpty()) {
+                return JSONObject().apply {
+                    put("flag", flag)
+                    put("country", country)
+                    put("city", city)
+                    put("latitude", lat)
+                    put("longitude", lon)
+                    put("ip", ip)
 
-            json1.putOpt("threat", threat)
+                    putOpt("threat", threat)
+                }
+            }
         }
     }
 
-    if (json1.optString("flag").isEmpty()) return null
-    if (json1.optDouble("latitude", 0.0) == 0.0) return null
-    if (json1.optDouble("longitude", 0.0) == 0.0) return null
-    if (json1.optString("ip").isEmpty()) return null
-
-    return json1
+    return null
 }
 
 @WorkerThread
@@ -226,7 +222,6 @@ fun createJson1(): JSONObject? {
 
 @WorkerThread
 fun createJson(): JSONArray? {
-    val jsonObjLast = JSONArray()
     val timeout = 1000
     val timeoutRead = 1000
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
@@ -300,6 +295,8 @@ fun createJson(): JSONArray? {
                     }
                 }
 
+                val jsonArray = JSONArray()
+
                 try {
                     val keys = jsonObj.keys()
                     while (keys.hasNext()) {
@@ -333,20 +330,24 @@ fun createJson(): JSONArray? {
                             jsonArr.put(JSONObject().put("name", "Standard VPN servers"))
                         }
 
-                        val objLast = JSONObject().apply {
+                        val json1 = JSONObject().apply {
                             put("flag", value.getString("flag"))
                             put("country", value.getString("country"))
                             put("location", value.getJSONObject("location"))
                             put("categories", jsonArr)
                         }
 
-                        jsonObjLast.put(objLast)
+                        jsonArray.put(json1)
                     }
                 } catch (e: JSONException) {
                     Log.error(e.toString())
                 }
+
+                if (jsonArray.length() > 0) {
+                    return jsonArray
+                }
             }
         }
 
-    return if (jsonObjLast.length() > 0) jsonObjLast else null
+    return null
 }
