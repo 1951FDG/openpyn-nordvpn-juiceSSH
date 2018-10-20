@@ -2,6 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+detekt {
+    version = "1.0.0.RC8"
+    defaultProfile {
+        input = file("src/main/java")
+        filters = ".*/resources/.*,.*/build/.*"
+        output = "$buildDir/reports/detekt"
+    }
+}
+
 android {
     compileSdkVersion 28
 
