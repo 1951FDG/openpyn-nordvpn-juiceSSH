@@ -190,6 +190,7 @@ Pull requests are welcome. For major changes, please submit an issue first to di
 - [Atom](https://atom.io/)
 - [AX2J](http://ax2j.sickworm.com/) - Android XML to Java
 - [DB Browser for SQLite](http://sqlitebrowser.org/)
+- [Detekt](https://github.com/arturbosch/detekt)
 - [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 - [MBUtil](https://github.com/mapbox/mbutil) - Importer and Exporter of MBTiles
 - [Python](https://www.python.org/downloads/)
