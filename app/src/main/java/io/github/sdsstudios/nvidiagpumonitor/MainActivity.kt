@@ -707,9 +707,9 @@ class MainActivity : AppCompatActivity(),
         //val force_fw_rules = preferences.getBoolean("pref_force_fw", false)
         val p2p = preferences.getBoolean("pref_p2p", false)
         val dedicated = preferences.getBoolean("pref_dedicated", false)
-        val double_vpn = preferences.getBoolean("pref_double", false)
-        val tor_over_vpn = preferences.getBoolean("pref_tor", false)
-        val anti_ddos = preferences.getBoolean("pref_anti_ddos", false)
+        val double = preferences.getBoolean("pref_double", false)
+        val onion = preferences.getBoolean("pref_tor", false)
+        val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
         val netflix = preferences.getBoolean("pref_netflix", false)
         //val test = preferences.getBoolean("pref_test", false)
         //val internally_allowed = args.internally_allowed
@@ -757,9 +757,9 @@ class MainActivity : AppCompatActivity(),
             var pass = when {
                 p2p -> false
                 dedicated -> false
-                double_vpn -> false
-                tor_over_vpn -> false
-                anti_ddos -> false
+                double -> false
+                onion -> false
+                obfuscated -> false
                 netflix -> false
                 else -> true
             }
@@ -787,13 +787,13 @@ class MainActivity : AppCompatActivity(),
                     } else if (dedicated and name.equals("Dedicated IP servers", true)) {
                         pass = true
                         break
-                    } else if (double_vpn and name.equals("Double VPN", true)) {
+                    } else if (double and name.equals("Double VPN", true)) {
                         pass = true
                         break
-                    } else if (tor_over_vpn and name.equals("Onion Over VPN", true)) {
+                    } else if (onion and name.equals("Onion Over VPN", true)) {
                         pass = true
                         break
-                    } else if (anti_ddos and name.equals("Obfuscated Servers", true)) {
+                    } else if (obfuscated and name.equals("Obfuscated Servers", true)) {
                         pass = true
                         break
                     }
@@ -1347,29 +1347,28 @@ class MainActivity : AppCompatActivity(),
     fun createGeoJson(value: NetworkInfo, preferences: SharedPreferences, securityManager: SecurityManager): JSONObject? {
         if (value.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
             val geo = preferences.getBoolean("pref_geo", false)
-            val geo_api = preferences.getString("pref_geo_client", "")
+            val api = preferences.getString("pref_geo_client", "")
             val ipdata = preferences.getString("pref_api_ipdata", "")
             val ipinfo = preferences.getString("pref_api_ipinfo", "")
             val ipstack = preferences.getString("pref_api_ipstack", "")
 
             if (geo) {
-                var geo_api_key: String? = null
+                var key: String? = null
                 when {
-                    geo_api.equals("ipdata", true) -> {
-                        geo_api_key = ipdata
+                    api.equals("ipdata", true) -> {
+                        key = ipdata
                     }
-                    geo_api.equals("ipinfo", true) -> {
-                        geo_api_key = ipinfo
+                    api.equals("ipinfo", true) -> {
+                        key = ipinfo
                     }
-                    geo_api.equals("ipstack", true) -> {
-                        geo_api_key = ipstack
+                    api.equals("ipstack", true) -> {
+                        key = ipstack
                     }
                 }
 
-                return when {
-                    geo_api_key != null && geo_api_key.isNotEmpty() -> createJson2(geo_api, securityManager.decryptString(geo_api_key))
-                    else -> createJson2(geo_api, null)
-                }
+                if (key != null && key.isNotEmpty()) key = securityManager.decryptString(key)
+
+                return createJson2(api, key)
             }
         }
 
