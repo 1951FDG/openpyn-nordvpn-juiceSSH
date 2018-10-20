@@ -1,7 +1,8 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
 import android.content.Context
-import android.content.res.Configuration
+import android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK
+import android.content.res.Configuration.SCREENLAYOUT_SIZE_XLARGE
 import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.view.MenuItem
@@ -10,7 +11,7 @@ import androidx.preference.AndroidResources
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragment
-import androidx.preference.PreferenceManager
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.preference.PreferenceScreen
 
 /**
@@ -145,7 +146,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     preference.key.equals("pref_api_ipdata", true) -> preference.summary = "Available (SSL)"
                     preference.key.equals("pref_api_ipinfo", true) -> preference.summary = "Available (SSL)"
                     preference.key.startsWith("pref_api", true) -> preference.summary = "Available"
-                    preference.key.equals("pref_server", true) && !validate(stringValue) -> return@OnPreferenceChangeListener false
+                    preference.key.equals("pref_server", true) && !validate(stringValue) -> {
+                        return@OnPreferenceChangeListener false
+                    }
                     else -> preference.summary = stringValue
                 }
             }
@@ -157,7 +160,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
          * example, 10" tablets are extra-large.
          */
         private fun isXLargeTablet(context: Context): Boolean {
-            return context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_XLARGE
+            return context.resources.configuration.screenLayout and SCREENLAYOUT_SIZE_MASK >= SCREENLAYOUT_SIZE_XLARGE
         }
 
         /**
@@ -174,7 +177,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
             // Trigger the listener immediately with the preference's
             // current value.
-            val newValue = PreferenceManager.getDefaultSharedPreferences(preference.context).getString(preference.key, "")
+            val newValue = getDefaultSharedPreferences(preference.context).getString(preference.key, "")
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, newValue)
         }
 

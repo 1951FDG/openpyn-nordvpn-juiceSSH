@@ -65,11 +65,11 @@ object PrintArray {
     }
 
     // AlertDialog
-    fun show(@Size(min = 1) key: String, items: Array<CharSequence>, checkedItems: BooleanArray, context: Context, preferences:
-    SharedPreferences?) {
+    fun show(@Size(min = 1) key: String, items: Array<CharSequence>, checkedItems: BooleanArray, context: Context,
+            prefs: SharedPreferences?) {
         fun save(selectedItems: ArrayList<Boolean>): Boolean {
             return when {
-                preferences != null -> putListBoolean(key = key, booleanList = selectedItems, preferences = preferences).commit()
+                prefs != null -> putListBoolean(key, selectedItems, prefs).commit()
                 else -> false
             }
         }
@@ -97,11 +97,11 @@ object PrintArray {
     }
 
     // AlertDialog
-    fun show(@Size(min = 1) key: String, items: ArrayList<String>, checkedItems: ArrayList<Boolean>, context: Context, preferences:
-    SharedPreferences?) {
+    fun show(@Size(min = 1) key: String, items: ArrayList<String>, checkedItems: ArrayList<Boolean>, context: Context,
+            prefs: SharedPreferences?) {
         fun save(selectedItems: ArrayList<Boolean>): Boolean {
             return when {
-                preferences != null -> putListBoolean(key = key, booleanList = selectedItems, preferences = preferences).commit()
+                prefs != null -> putListBoolean(key, selectedItems, prefs).commit()
                 else -> false
             }
         }
@@ -129,16 +129,16 @@ object PrintArray {
     }
 
     // MultiSelectDialog
-    fun show(@Size(min = 1) key: String, context: AppCompatActivity, preferences: SharedPreferences?) {
-        show(key, itemsList, checkedItemsList, context, preferences)
+    fun show(@Size(min = 1) key: String, context: AppCompatActivity, prefs: SharedPreferences?) {
+        show(key, itemsList, checkedItemsList, context, prefs)
     }
 
     // MultiSelectDialog
-    fun show(@Size(min = 1) key: String, items: ArrayList<MultiSelectModel>, checkedItems: ArrayList<Int>, context: AppCompatActivity, preferences:
-    SharedPreferences?) {
+    fun show(@Size(min = 1) key: String, items: ArrayList<MultiSelectModel>, checkedItems: ArrayList<Int>, context: AppCompatActivity,
+            prefs: SharedPreferences?) {
         fun save(selectedItems: ArrayList<Int>): Boolean {
             return when {
-                preferences != null -> putListInt(key = key, intList = selectedItems, preferences = preferences).commit()
+                prefs != null -> putListInt(key, selectedItems, prefs).commit()
                 else -> false
             }
         }
@@ -180,44 +180,44 @@ object PrintArray {
     }
 
     @Suppress("unused")
-    fun putListInt(@Size(min = 1) key: String, intList: ArrayList<Int>, preferences: SharedPreferences): SharedPreferences.Editor {
+    fun putListInt(@Size(min = 1) key: String, intList: ArrayList<Int>, prefs: SharedPreferences): SharedPreferences.Editor {
         val array = intList.toTypedArray()
-        val editor = preferences.edit()
+        val editor = prefs.edit()
         editor.putString(key, array.joinToString(separator = delimiter)).apply()
         return editor
     }
 
     @Suppress("unused")
-    fun putListBoolean(@Size(min = 1) key: String, booleanList: ArrayList<Boolean>, preferences: SharedPreferences): SharedPreferences.Editor {
+    fun putListBoolean(@Size(min = 1) key: String, booleanList: ArrayList<Boolean>, prefs: SharedPreferences): SharedPreferences.Editor {
         val array = booleanList.toTypedArray()
-        val editor = preferences.edit()
+        val editor = prefs.edit()
         editor.putString(key, array.joinToString(separator = delimiter)).apply()
         return editor
     }
 
     @Suppress("unused")
-    fun putListString(@Size(min = 1) key: String, stringList: ArrayList<String>, preferences: SharedPreferences): SharedPreferences.Editor {
+    fun putListString(@Size(min = 1) key: String, stringList: ArrayList<String>, prefs: SharedPreferences): SharedPreferences.Editor {
         val array = stringList.toTypedArray()
-        val editor = preferences.edit()
+        val editor = prefs.edit()
         editor.putString(key, array.joinToString(separator = delimiter)).apply()
         return editor
     }
 
     @Suppress("unused")
-    fun getListInt(@Size(min = 1) key: String, defValue: String = "", preferences: SharedPreferences): ArrayList<Int> {
-        val array = preferences.getString(key, defValue)!!.split(delimiter)
+    fun getListInt(@Size(min = 1) key: String, defValue: String = "", prefs: SharedPreferences): ArrayList<Int> {
+        val array = prefs.getString(key, defValue)!!.split(delimiter)
         return array.mapTo(ArrayList()) { it: String -> it.toInt() }
     }
 
     @Suppress("unused")
-    fun getListBoolean(@Size(min = 1) key: String, defValue: String = "", preferences: SharedPreferences): ArrayList<Boolean> {
-        val array = preferences.getString(key, defValue)!!.split(delimiter)
+    fun getListBoolean(@Size(min = 1) key: String, defValue: String = "", prefs: SharedPreferences): ArrayList<Boolean> {
+        val array = prefs.getString(key, defValue)!!.split(delimiter)
         return array.mapTo(ArrayList()) { it: String -> it.toBoolean() }
     }
 
     @Suppress("unused")
-    fun getListString(@Size(min = 1) key: String, defValue: String = "", preferences: SharedPreferences): ArrayList<String> {
-        val array = preferences.getString(key, defValue)!!.split(delimiter)
+    fun getListString(@Size(min = 1) key: String, defValue: String = "", prefs: SharedPreferences): ArrayList<String> {
+        val array = prefs.getString(key, defValue)!!.split(delimiter)
         return array.toCollection(ArrayList())
     }
 }

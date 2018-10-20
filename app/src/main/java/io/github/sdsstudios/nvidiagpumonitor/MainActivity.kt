@@ -1,5 +1,6 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -124,7 +125,7 @@ class MainActivity : AppCompatActivity(),
     private var countryBoundaries: CountryBoundaries? = null
     private var mMap: GoogleMap? = null
     private var networkInfo: NetworkInfo? = null
-    private var offlineTileProvider: MapBoxOfflineTileProvider? = null
+    private var tileProvider: MapBoxOfflineTileProvider? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,8 +151,8 @@ class MainActivity : AppCompatActivity(),
             else -> longToast(api.getErrorString(errorCode))
         }
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
         }
 
         if (isJuiceSSHInstalled()) {
@@ -226,7 +227,9 @@ class MainActivity : AppCompatActivity(),
         map?.onResume()
 
         if (!isJuiceSSHInstalled()) {
-            indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_install_juicessh), "OK") { juiceSSHInstall() }
+            indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_install_juicessh), "OK") {
+                juiceSSHInstall()
+            }
         }
     }
 
@@ -245,7 +248,7 @@ class MainActivity : AppCompatActivity(),
         map?.onDestroy()
 
         mConnectionManager.onDestroy()
-        offlineTileProvider?.close()
+        tileProvider?.close()
     }
 
     override fun onLowMemory() {
@@ -278,7 +281,9 @@ class MainActivity : AppCompatActivity(),
             if (mPermissionsGranted) {
                 onPermissionsGranted()
             } else {
-                indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_enable_permissions), "OK") { requestPermissions() }
+                indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_enable_permissions), "OK") {
+                    requestPermissions()
+                }
             }
         }
     }
@@ -293,7 +298,12 @@ class MainActivity : AppCompatActivity(),
                     putExtra(EXTRA_NO_HEADERS, true)
                 }
                 ActivityCompat.startActivity(this, intent, options.toBundle())
-                //startActivity<SettingsActivity>(EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name, EXTRA_NO_HEADERS to true)
+                /*
+                startActivity<SettingsActivity>(
+                        EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name,
+                        EXTRA_NO_HEADERS to true
+                )
+                */
                 true
             }
             R.id.action_refresh -> {
@@ -416,9 +426,9 @@ class MainActivity : AppCompatActivity(),
                         networkInfo = NetworkInfo.getInstance(it)
                         networkInfo!!.addListener(it)
 
-                        offlineTileProvider = MapBoxOfflineTileProvider(null, "file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-                        //offlineTileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-                        info(offlineTileProvider!!.toString())
+                        tileProvider = MapBoxOfflineTileProvider(null, "file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
+                        //tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
+                        info(tileProvider!!.toString())
 
                         storage = MyStorage(favorites)
 
@@ -509,11 +519,11 @@ class MainActivity : AppCompatActivity(),
                             array.add(i)
                         }
                         val defValue = array.joinToString(separator = PrintArray.delimiter)
-                        val alreadySelectedCountries = PrintArray.getListInt("pref_country_values", defValue, preferences)
+                        val selectedCountries = PrintArray.getListInt("pref_country_values", defValue, preferences)
 
                         countryList = arrayListOf()
                         val strings: Array<String> = resources.getStringArray(R.array.pref_country_values)
-                        alreadySelectedCountries.forEach { index ->
+                        selectedCountries.forEach { index ->
                             countryList!!.add(strings[index])
                         }
 
@@ -521,7 +531,7 @@ class MainActivity : AppCompatActivity(),
                             setHint(R.string.empty)
                             setTitle(R.string.empty)
                             setItems(listOfCountries)
-                            setCheckedItems(alreadySelectedCountries)
+                            setCheckedItems(selectedCountries)
                         }
 
                         map?.getMapAsync(it)
@@ -626,9 +636,11 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun juiceSSHInstall() {
-        val launchIntent = packageManager.getLaunchIntentForPackage("com.android.vending")
+        val pkg = "com.android.vending"
+        val cls = "com.google.android.finsky.activities.LaunchUrlHandlerActivity"
+        val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
         if (launchIntent != null) {
-            launchIntent.component = ComponentName("com.android.vending", "com.google.android.finsky.activities.LaunchUrlHandlerActivity")
+            launchIntent.component = ComponentName(pkg, cls)
             launchIntent.data = Uri.parse("market://details?id=$JUICE_SSH_PACKAGE_NAME")
             startActivity(launchIntent)
         }
@@ -637,11 +649,11 @@ class MainActivity : AppCompatActivity(),
     override fun onMapReady(googleMap: GoogleMap) {
         val params = fab1.layoutParams as ConstraintLayout.LayoutParams
 
-        googleMap.addTileOverlay(TileOverlayOptions().tileProvider(offlineTileProvider).fadeIn(false))
+        googleMap.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider).fadeIn(false))
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json))
-        googleMap.setMapType(MAP_TYPE_NORMAL)
-        googleMap.setMaxZoomPreference(offlineTileProvider!!.maximumZoom)
-        googleMap.setMinZoomPreference(offlineTileProvider!!.minimumZoom)
+        googleMap.mapType = MAP_TYPE_NORMAL
+        googleMap.setMaxZoomPreference(tileProvider!!.maximumZoom)
+        googleMap.setMinZoomPreference(tileProvider!!.minimumZoom)
         googleMap.setOnMapClickListener(this)
         googleMap.setOnMapLoadedCallback(this)
         googleMap.setOnMarkerClickListener(this)
@@ -734,8 +746,6 @@ class MainActivity : AppCompatActivity(),
         } catch (e: JSONException) {
             error(e)
         }
-
-        operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
         if (jsonArr != null) {
         for (res in jsonArr) {
@@ -855,7 +865,7 @@ class MainActivity : AppCompatActivity(),
                 // Traverse through all rows
                 for (y in 0..rows) {
                     for (x in 0..rows) {
-                        val bounds = offlineTileProvider!!.calculateTileBounds(x, y, z)
+                        val bounds = tileProvider!!.calculateTileBounds(x, y, z)
                         val cameraPosition = CameraPosition.Builder().target(bounds.northeast).build()
                         // Add animations
                         cameraUpdateAnimator?.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
@@ -885,8 +895,6 @@ class MainActivity : AppCompatActivity(),
 
         fun getLatLng(flag: String, latLng: LatLng, jsonArr: JSONArray?): LatLng {
             info(latLng.toString())
-
-            operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
             if (jsonArr != null) {
                 val latLngList = arrayListOf<LatLng>()
@@ -944,7 +952,7 @@ class MainActivity : AppCompatActivity(),
                     animateCamera(LatLng(lat, lon), animator, closest)
                 }
             }
-            ActivityCompat.checkSelfPermission(it, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
+            ActivityCompat.checkSelfPermission(it, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
                 val fusedLocationClient = LocationServices.getFusedLocationProviderClient(it)
                 fusedLocationClient.lastLocation
                         .addOnSuccessListener { location: Location? ->

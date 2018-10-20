@@ -13,16 +13,19 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.StringWriter
 
+operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
+
+
 @WorkerThread
 fun generateXML() {
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    "https://api.nordvpn.com/server".httpGet().responseJson { _, _, result ->
+    val name = "https://api.nordvpn.com/server"
+    name.httpGet().responseJson { _, _, result ->
         when (result) {
             is Result.Failure -> {
                 Log.error(result.getException().toString())
             }
             is Result.Success -> {
-                operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
                 val mutableMap = mutableMapOf<String, String>()
                 val jsonArray = result.get().array()
                 for (res in jsonArray) {
@@ -222,16 +225,16 @@ fun createJson1(): JSONObject? {
 
 @WorkerThread
 fun createJson(): JSONArray? {
+    var name = "https://api.nordvpn.com/server"
     val timeout = 1000
     val timeoutRead = 1000
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    val (_, _, result) = "https://api.nordvpn.com/server".httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
+    val (_, _, result) = name.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
         when (result) {
             is Result.Failure -> {
                 Log.error(result.getException().toString())
             }
             is Result.Success -> {
-                operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
                 val jsonObj = JSONObject()
                 val content = result.get().array() //JSONArray
                 for (res in content) {
