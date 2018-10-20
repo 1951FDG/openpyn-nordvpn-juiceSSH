@@ -9,6 +9,8 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import de.jupf.staticlog.Log
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.io.StringWriter
 
 @WorkerThread
@@ -54,8 +56,12 @@ fun generateXML() {
                     serializer.endTag("", "head")
                     serializer.endDocument()
                     println(writer.toString())
-                } catch (e: Exception) {
-                    throw RuntimeException(e)
+                } catch (e: FileNotFoundException) {
+                    Log.error(e.toString())
+                } catch (e: IOException) {
+                    Log.error(e.toString())
+                } catch (e: JSONException) {
+                    Log.error(e.toString())
                 }
             }
         }
