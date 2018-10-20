@@ -23,7 +23,7 @@ test-pattern: # Configure exclusions for test sources
 build:
   maxIssues: 10
   weights:
-    # complexity: 2
+    complexity: 0
     # LongParameterList: 1
     # style: 1
     # comments: 1
@@ -417,7 +417,7 @@ style:
     active: false
   MaxLineLength:
     active: true
-    maxLineLength: 120
+    maxLineLength: 140
     excludePackageStatements: false
     excludeImportStatements: false
     excludeCommentStatements: false

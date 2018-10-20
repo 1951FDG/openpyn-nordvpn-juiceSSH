@@ -6,6 +6,7 @@ detekt {
     version = "1.0.0.RC8"
     defaultProfile {
         input = file("src/main/java")
+        config = "$rootDir/default-detekt-config.yml"
         filters = ".*/resources/.*,.*/build/.*"
         output = "$buildDir/reports/detekt"
     }
