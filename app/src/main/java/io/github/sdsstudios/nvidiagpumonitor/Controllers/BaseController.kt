@@ -10,6 +10,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.MainActivity
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
+import org.jetbrains.anko.error
 import org.jetbrains.anko.longToast
 
 /**
@@ -35,7 +36,7 @@ abstract class BaseController(
         when (exitCode) {
             127 -> {
                 mLiveData.value = null
-                debug("Tried to run a command but the command was not found on the server")
+                error("Tried to run a command but the command was not found on the server")
 
             }
         }
@@ -69,7 +70,7 @@ abstract class BaseController(
             )
 
         } catch (e: ServiceNotConnectedException) {
-            debug("Tried to execute a command but could not connect to JuiceSSH plugin service")
+            error("Tried to execute a command but could not connect to JuiceSSH plugin service")
         }
     }
 
@@ -91,7 +92,7 @@ abstract class BaseController(
             )
 
         } catch (e: ServiceNotConnectedException) {
-            debug("Tried to execute a command but could not connect to JuiceSSH plugin service")
+            error("Tried to execute a command but could not connect to JuiceSSH plugin service")
         }
     }
 

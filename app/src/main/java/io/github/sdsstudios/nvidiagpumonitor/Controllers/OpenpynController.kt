@@ -122,8 +122,7 @@ class OpenpynController(
 
     @Suppress("MagicNumber")
     override fun onOutputLine(line: String) {
-        debug(line)
-
+        info(line)
         mCtx.longToast(line)
         if (line.startsWith("CONNECTING TO SERVER", true)) {
             Handler().postDelayed({

@@ -328,20 +328,17 @@ class MainActivity : AppCompatActivity(),
 
                     if (json1 != null) {
                         val text = json1.toString()
-                        debug(text)
 
                         try {
                             val file = File(getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
-                            debug(file)
-
                             file.writeText(text)
                             thrown = false
                         } catch (e: Resources.NotFoundException) {
-                            error(e)
+                            Crashlytics.logException(e)
                         } catch (e: FileNotFoundException) {
-                            error(e)
+                            Crashlytics.logException(e)
                         } catch (e: IOException) {
-                            error(e)
+                            Crashlytics.logException(e)
                         }
                     }
 
@@ -410,11 +407,11 @@ class MainActivity : AppCompatActivity(),
                                 }
                             }
                         } catch (e: Resources.NotFoundException) {
-                            error(e)
+                            Crashlytics.logException(e)
                         } catch (e: FileNotFoundException) {
-                            error(e)
+                            Crashlytics.logException(e)
                         } catch (e: IOException) {
-                            error(e)
+                            Crashlytics.logException(e)
                         }
                     }
 
@@ -422,11 +419,11 @@ class MainActivity : AppCompatActivity(),
                         //var t = System.currentTimeMillis()
                         countryBoundaries = CountryBoundaries.load(assets.open("boundaries.ser"))
                         //t = System.currentTimeMillis() - t
-                        //debug( "Loading took " + t + "ms")
+                        //info("Loading took " + t + "ms")
                     } catch (e: FileNotFoundException) {
-                        error(e)
+                        Crashlytics.logException(e)
                     } catch (e: IOException) {
-                        error(e)
+                        Crashlytics.logException(e)
                     }
 
                     uiThread {
@@ -746,13 +743,13 @@ class MainActivity : AppCompatActivity(),
             }
             jsonArr = JSONArray(json)
         } catch (e: Resources.NotFoundException) {
-            error(e)
+            Crashlytics.logException(e)
         } catch (e: FileNotFoundException) {
-            error(e)
+            Crashlytics.logException(e)
         } catch (e: IOException) {
-            error(e)
+            Crashlytics.logException(e)
         } catch (e: JSONException) {
-            error(e)
+            Crashlytics.logException(e)
         }
 
         if (jsonArr != null) {
@@ -769,7 +766,8 @@ class MainActivity : AppCompatActivity(),
             if (flag == "uk")
             {
                 flag = "gb"
-                warn(flag)
+                Crashlytics.logException(Exception(flag))
+                error(flag)
             }
 
             var pass = when {
@@ -859,13 +857,12 @@ class MainActivity : AppCompatActivity(),
         }
         }
 
-            /*
             items.forEach { (key, value) ->
                 if (!countryList!!.contains(value.tag)) {
+                    Crashlytics.logException(Exception(value.tag.toString()))
                     error(value.tag)
                 }
             }
-            */
 
             val json1 = createGeoJson(networkInfo!!, preferences, securityManager)
 
@@ -976,7 +973,6 @@ class MainActivity : AppCompatActivity(),
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
-                                */
 
                                 fun getToastString(ids: List<String>?): String {
                                     return when {
@@ -984,13 +980,14 @@ class MainActivity : AppCompatActivity(),
                                         else -> "is in " + ids.joinToString()
                                     }
                                 }
+                                */
 
-                                var t = System.nanoTime()
+                                //var t = System.nanoTime()
                                 val lat = location.latitude
                                 val lon = location.longitude
                                 val ids = countryBoundaries?.getIds(lon, lat)
-                                t = System.nanoTime() - t
-                                debug(getToastString(ids) + "\n(in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
+                                //t = System.nanoTime() - t
+                                //info(getToastString(ids) + "\n(in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
 
                                 if (ids != null && !ids.isEmpty()) {
                                     if (closest) {
@@ -1053,7 +1050,7 @@ class MainActivity : AppCompatActivity(),
                 if (closest) {
                     items.forEach { (key, value) ->
                         if (key == latLng) {
-                            debug("Animation to $value canceled")
+                            info("Animation to $value canceled")
                             return@onCancel
                         }
                     }
@@ -1095,7 +1092,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         if (p0 != null && p0.zIndex != 1.0f) {
-            debug(p0.tag)
+            //info(p0.tag)
                 items.forEach { (key, value) ->
                     if (value.zIndex == 1.0f) {
                         value.setLevel(value.level, this)
@@ -1129,9 +1126,8 @@ class MainActivity : AppCompatActivity(),
 
     @Suppress("MagicNumber")
     private fun showThreats(jsonObj: JSONObject) {
-        error(jsonObj)
-
         val threats: JSONObject? = jsonObj.optJSONObject("threat")
+        info(threats)
 
         if (threats != null) {
             val tor = threats.getBoolean("is_tor")
@@ -1321,13 +1317,13 @@ class MainActivity : AppCompatActivity(),
                 }
                 var2 = JSONArray(json)
             } catch (e: Resources.NotFoundException) {
-                error(e)
+                Crashlytics.logException(e)
             } catch (e: FileNotFoundException) {
-                error(e)
+                Crashlytics.logException(e)
             } catch (e: IOException) {
-                error(e)
+                Crashlytics.logException(e)
             } catch (e: JSONException) {
-                error(e)
+                Crashlytics.logException(e)
             }
 
             uiThread {

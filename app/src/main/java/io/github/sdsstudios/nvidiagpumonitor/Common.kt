@@ -2,6 +2,7 @@ package io.github.sdsstudios.nvidiagpumonitor
 
 import androidx.annotation.WorkerThread
 import android.util.Xml
+import com.crashlytics.android.Crashlytics
 import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
@@ -19,11 +20,11 @@ operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asS
 @WorkerThread
 fun generateXML() {
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    val name = "https://api.nordvpn.com/server"
-    name.httpGet().responseJson { _, _, result ->
+    val server = "https://api.nordvpn.com/server"
+    server.httpGet().responseJson { _, _, result ->
         when (result) {
             is Result.Failure -> {
-                Log.error(result.getException().toString())
+                Crashlytics.logException(result.getException())
             }
             is Result.Success -> {
                 val mutableMap = mutableMapOf<String, String>()
@@ -60,11 +61,11 @@ fun generateXML() {
                     serializer.endDocument()
                     println(writer.toString())
                 } catch (e: FileNotFoundException) {
-                    Log.error(e.toString())
+                    Crashlytics.logException(e)
                 } catch (e: IOException) {
-                    Log.error(e.toString())
+                    Crashlytics.logException(e)
                 } catch (e: JSONException) {
-                    Log.error(e.toString())
+                    Crashlytics.logException(e)
                 }
             }
         }
@@ -74,17 +75,17 @@ fun generateXML() {
 @WorkerThread
 @Suppress("MagicNumber")
 fun createJson2(value: String?, token: String?): JSONObject? {
-    var name = "http://ip-api.com/json"
+    var server = "http://ip-api.com/json"
 
     when {
         value.equals("ipdata", true) -> {
             if (token != null && token.isNotEmpty())
             {
-                name = "https://api.ipdata.co?api-key=$token"
+                server = "https://api.ipdata.co?api-key=$token"
             }
         }
         value.equals("ipinfo", true) -> {
-            name = when {
+            server = when {
                 token != null && token.isNotEmpty() -> "https://ipinfo.io/json?token=$token"
                 else -> "https://ipinfo.io/json"
             }
@@ -92,7 +93,7 @@ fun createJson2(value: String?, token: String?): JSONObject? {
         value.equals("ipstack", true) -> {
             if (token != null && token.isNotEmpty())
             {
-                name = "http://api.ipstack.com/check?access_key=$token"
+                server = "http://api.ipstack.com/check?access_key=$token"
             }
         }
     }
@@ -100,14 +101,14 @@ fun createJson2(value: String?, token: String?): JSONObject? {
     val timeout = 500
     val timeoutRead = 500
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    val (_, _, result) = name.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
+    val (_, _, result) = server.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
     when (result) {
         is Result.Failure -> {
             Log.error(result.getException().toString())
         }
         is Result.Success -> {
             val content = result.get().obj()
-            Log.debug(content.toString())
+            //Log.info(content.toString())
 
             var flag = ""
             var country = ""
@@ -119,7 +120,7 @@ fun createJson2(value: String?, token: String?): JSONObject? {
             var threat: JSONObject? = null
 
             when {
-                name.startsWith("http://ip-api.com", true) -> {
+                server.startsWith("http://ip-api.com", true) -> {
                     flag = content.optString("countryCode")
                     country = content.optString("country")
                     city = content.optString("city")
@@ -127,9 +128,9 @@ fun createJson2(value: String?, token: String?): JSONObject? {
                     lon = content.optDouble("lon", 0.0)
                     ip = content.optString("query")
                 }
-                name.startsWith("https://api.ipdata.co", true) -> {
+                server.startsWith("https://api.ipdata.co", true) -> {
                     flag = content.optString("country_code")
-                    country = content.optString("country_name")
+                    country = content.optString("country_server")
                     city = content.optString("city")
                     lat = content.optDouble("latitude", 0.0)
                     lon = content.optDouble("longitude", 0.0)
@@ -137,14 +138,14 @@ fun createJson2(value: String?, token: String?): JSONObject? {
 
                     threat = content.optJSONObject("threat")
                 }
-                name.startsWith("https://ipinfo.io", true) -> {
+                server.startsWith("https://ipinfo.io", true) -> {
                     flag = content.optString("country")
                     city = content.optString("city")
                     lat = java.lang.Double.valueOf(content.optString("loc").split(",")[0])
                     lon = java.lang.Double.valueOf(content.optString("loc").split(",")[1])
                     ip = content.optString("ip")
                 }
-                name.startsWith("http://api.ipstack.com", true) -> {
+                server.startsWith("http://api.ipstack.com", true) -> {
                     flag = content.optString("country_code")
                     country = content.optString("country_name")
                     city = content.optString("city")
@@ -177,18 +178,18 @@ fun createJson2(value: String?, token: String?): JSONObject? {
 fun createJson1(): JSONObject? {
     val json1 = JSONObject()
 
-    for (name in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
+    for (server in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
         val timeout = 500
         val timeoutRead = 500
         // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-        val (_, _, result) = name.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
+        val (_, _, result) = server.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
         when (result) {
             is Result.Failure -> {
                 Log.error(result.getException().toString())
             }
             is Result.Success -> {
             val content = result.get().obj()
-            Log.debug(content.toString())
+            //Log.info(content.toString())
 
             var flag = content.optString("country_code")
             var country = content.optString("country_name")
@@ -228,14 +229,14 @@ fun createJson1(): JSONObject? {
 @WorkerThread
 @Suppress("MagicNumber")
 fun createJson(): JSONArray? {
-    var name = "https://api.nordvpn.com/server"
+    var server = "https://api.nordvpn.com/server"
     val timeout = 1000
     val timeoutRead = 1000
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    val (_, _, result) = name.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
+    val (_, _, result) = server.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
         when (result) {
             is Result.Failure -> {
-                Log.error(result.getException().toString())
+                Crashlytics.logException(result.getException())
             }
             is Result.Success -> {
                 val jsonObj = JSONObject()
@@ -272,7 +273,10 @@ fun createJson(): JSONArray? {
                                 name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
                                 name.equals("Obfuscated Servers", true) -> features.put("anti_ddos", true)
                                 name.equals("Standard VPN servers", true) -> features.put("standard", true)
-                                else -> Log.error(name)
+                                else -> {
+                                    Crashlytics.logException(Exception(name))
+                                    Log.error(name)
+                                }
                             }
                         }
 
@@ -295,7 +299,10 @@ fun createJson(): JSONArray? {
                                 name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
                                 name.equals("Obfuscated Servers", true) -> features.put("anti_ddos", true)
                                 name.equals("Standard VPN servers", true) -> features.put("standard", true)
-                                else -> Log.error(name)
+                                else -> {
+                                    Crashlytics.logException(Exception(name))
+                                    Log.error(name)
+                                }
                             }
                         }
                     }
@@ -346,7 +353,7 @@ fun createJson(): JSONArray? {
                         jsonArray.put(json1)
                     }
                 } catch (e: JSONException) {
-                    Log.error(e.toString())
+                    Crashlytics.logException(e)
                 }
 
                 if (jsonArray.length() > 0) {
