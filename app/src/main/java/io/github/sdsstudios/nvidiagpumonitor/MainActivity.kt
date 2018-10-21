@@ -800,7 +800,7 @@ class MainActivity : AppCompatActivity(),
                     if (p2p and name.equals("P2P", true)) {
                         pass = true
                         break
-                    } else if (dedicated and name.equals("Dedicated IP servers", true)) {
+                    } else if (dedicated and name.equals("Dedicated IP", true)) {
                         pass = true
                         break
                     } else if (double and name.equals("Double VPN", true)) {
@@ -857,8 +857,9 @@ class MainActivity : AppCompatActivity(),
         }
         }
 
+            val strings = resources.getStringArray(R.array.pref_country_values)
             items.forEach { (key, value) ->
-                if (!countryList!!.contains(value.tag)) {
+                if (!strings.contains(value.tag)) {
                     Crashlytics.logException(Exception(value.tag.toString()))
                     error(value.tag)
                 }

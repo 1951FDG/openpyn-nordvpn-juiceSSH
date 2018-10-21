@@ -268,7 +268,7 @@ fun createJson(): JSONArray? {
 
                             when {
                                 name.equals("P2P", true) -> features.put("p2p", true)
-                                name.equals("Dedicated IP servers", true) -> features.put("dedicated", true)
+                                name.equals("Dedicated IP", true) -> features.put("dedicated", true)
                                 name.equals("Double VPN", true) -> features.put("double_vpn", true)
                                 name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
                                 name.equals("Obfuscated Servers", true) -> features.put("anti_ddos", true)
@@ -294,7 +294,7 @@ fun createJson(): JSONArray? {
 
                             when {
                                 name.equals("P2P", true) -> features.put("p2p", true)
-                                name.equals("Dedicated IP servers", true) -> features.put("dedicated", true)
+                                name.equals("Dedicated IP", true) -> features.put("dedicated", true)
                                 name.equals("Double VPN", true) -> features.put("double_vpn", true)
                                 name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
                                 name.equals("Obfuscated Servers", true) -> features.put("anti_ddos", true)
@@ -324,7 +324,7 @@ fun createJson(): JSONArray? {
                         }
 
                         if (features.getBoolean("dedicated")) {
-                            jsonArr.put(JSONObject().put("name", "Dedicated IP servers"))
+                            jsonArr.put(JSONObject().put("name", "Dedicated IP"))
                         }
 
                         if (features.getBoolean("double_vpn")) {

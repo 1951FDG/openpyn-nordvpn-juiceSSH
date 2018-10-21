@@ -40,7 +40,7 @@ package io.github.sdsstudios.nvidiagpumonitor
                                     pass = true
                                     break
                                 }
-                                else if (dedicated and name.equals("Dedicated IP servers", true)) {
+                                else if (dedicated and name.equals("Dedicated IP", true)) {
                                     pass = true
                                     break
                                 }
