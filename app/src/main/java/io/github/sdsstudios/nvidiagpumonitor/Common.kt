@@ -271,8 +271,8 @@ fun createJson(): JSONArray? {
                                 name.equals("Dedicated IP", true) -> features.put("dedicated", true)
                                 name.equals("Double VPN", true) -> features.put("double_vpn", true)
                                 name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
-                                name.equals("Obfuscated Servers", true) -> features.put("anti_ddos", true)
-                                name.equals("Standard VPN servers", true) -> features.put("standard", true)
+                                name.startsWith("Obfuscated", true) -> features.put("anti_ddos", true)
+                                name.startsWith("Standard VPN", true) -> features.put("standard", true)
                                 else -> {
                                     Crashlytics.logException(Exception(name))
                                     Log.error(name)
@@ -297,8 +297,8 @@ fun createJson(): JSONArray? {
                                 name.equals("Dedicated IP", true) -> features.put("dedicated", true)
                                 name.equals("Double VPN", true) -> features.put("double_vpn", true)
                                 name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
-                                name.equals("Obfuscated Servers", true) -> features.put("anti_ddos", true)
-                                name.equals("Standard VPN servers", true) -> features.put("standard", true)
+                                name.startsWith("Obfuscated", true) -> features.put("anti_ddos", true)
+                                name.startsWith("Standard VPN", true) -> features.put("standard", true)
                                 else -> {
                                     Crashlytics.logException(Exception(name))
                                     Log.error(name)
