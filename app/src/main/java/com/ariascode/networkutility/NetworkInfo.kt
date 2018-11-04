@@ -8,83 +8,121 @@
 
 package com.ariascode.networkutility
 
-import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
+import android.app.Application
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.net.ConnectivityManager
-import de.jupf.staticlog.Log
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.runBlocking
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
+import android.net.Network
+import android.net.NetworkCapabilities.TRANSPORT_BLUETOOTH
+import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
+import android.net.NetworkCapabilities.TRANSPORT_ETHERNET
+import android.net.NetworkCapabilities.TRANSPORT_LOWPAN
+import android.net.NetworkCapabilities.TRANSPORT_VPN
+import android.net.NetworkCapabilities.TRANSPORT_WIFI
+import android.net.NetworkCapabilities.TRANSPORT_WIFI_AWARE
+import android.net.NetworkRequest
+import android.os.Handler
+import android.os.Looper
+import androidx.annotation.MainThread
+import androidx.annotation.RequiresPermission
+import androidx.lifecycle.LiveData
+import org.jetbrains.anko.*
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
 
+class NetworkInfo internal constructor(private val connectivityManager: ConnectivityManager) : LiveData<Boolean>(), AnkoLogger {
+    private val mLock = Any()
+    @Volatile
+    private var mMainHandler: Handler? = null
 
-class NetworkInfo(context: Context) : BroadcastReceiver(), AnkoLogger {
+    private fun postToMainThread(runnable: Runnable) {
+        if (mMainHandler == null) {
+            synchronized(mLock) {
+                if (mMainHandler == null) {
+                    mMainHandler = Handler(Looper.getMainLooper())
+                }
+            }
+        }
 
-    private var network: Network
+        mMainHandler!!.post(runnable)
+    }
+
+    private fun executeOnMainThread(runnable: Runnable) {
+        if (isMainThread()) {
+            runnable.run()
+        } else {
+            postToMainThread(runnable)
+        }
+    }
+
+    private fun isMainThread(): Boolean {
+        return Looper.getMainLooper().thread === Thread.currentThread()
+    }
+
+    // constructor
+    init {
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            // receive network changes
+            @Suppress("MagicNumber")
+            override fun onAvailable(network: Network) {
+                // network available
+                debug("Network available")
+                // get network type
+                val netCap = connectivityManager.getNetworkCapabilities(network)
+                when {
+                    netCap.hasTransport(TRANSPORT_CELLULAR) -> {
+                        debug("Connectivity: CELLULAR")
+                    }
+                    netCap.hasTransport(TRANSPORT_WIFI) -> {
+                        debug("Connectivity: WIFI")
+                    }
+                    netCap.hasTransport(TRANSPORT_BLUETOOTH) -> {
+                        debug("Connectivity: BLUETOOTH")
+                    }
+                    netCap.hasTransport(TRANSPORT_ETHERNET) -> {
+                        debug("Connectivity: ETHERNET")
+                    }
+                    netCap.hasTransport(TRANSPORT_VPN) -> {
+                        debug("Connectivity: VPN")
+                    }
+                    netCap.hasTransport(TRANSPORT_WIFI_AWARE) -> {
+                        debug("Connectivity: WIFI_AWARE")
+                    }
+                    netCap.hasTransport(TRANSPORT_LOWPAN) -> {
+                        debug("Connectivity: LOWPAN")
+                    }
+                }
+                // verify internet access
+                if (hostAvailable("google.com", 80)) {
+                    // internet access
+                    debug("Internet Access Detected")
+                    postValue(true)
+                } else {
+                    // no internet access
+                    debug("Unable to access Internet")
+                    postValue(false)
+                }
+
+                notifyNetworkChangeToAll(network)
+            }
+
+            override fun onLost(network: Network) {
+                // no network available
+                debug("Network not available")
+                postValue(false)
+
+                notifyNetworkChangeToAll(network)
+            }
+        }
+        val builder = NetworkRequest.Builder()
+        connectivityManager.registerNetworkCallback(builder.build(), networkCallback)
+    }
 
     // collection of listeners
     private val listeners = mutableSetOf<NetworkInfoListener>()
 
-    // constructor
-    init {
-        context.registerReceiver(this, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-        network = Network()
-    }
-
-    // receive network changes
-    @Suppress("MagicNumber")
-    override fun onReceive(context: Context, intent: Intent) = runBlocking {
-        debug("onReceive")
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetworkInfo
-        val job = launch {
-            // verify network availability
-            if (activeNetwork != null && activeNetwork.isConnectedOrConnecting) {
-                debug("Network available")
-                // verify internet access
-                if(hostAvailable("google.com", 80)){
-                    // internet access
-                    debug("Internet Access Detected")
-                    network.status = NetworkStatus.INTERNET
-                } else {
-                    // no internet access
-                    debug("Unable to access Internet")
-                    network.status = NetworkStatus.OFFLINE
-                }
-                // get network type
-                when (activeNetwork.type) {
-                    ConnectivityManager.TYPE_MOBILE -> {
-                        // mobile network
-                        debug("Connectivity: MOBILE")
-                        network.type = NetworkType.MOBILE
-                    }
-                    ConnectivityManager.TYPE_WIFI -> {
-                        // wifi network
-                        debug("Connectivity: WIFI")
-                        network.type = NetworkType.WIFI
-                    }
-                    else -> {
-                        // no network available
-                        debug("Network not available")
-                        network.type = NetworkType.NONE
-                    }
-                }
-            } else {
-                // no network available
-                debug("Network not available")
-                network.type = NetworkType.NONE
-                network.status = NetworkStatus.OFFLINE
-            }
-        }
-        job.join()
-        notifyNetworkChangeToAll()
-    }
+    @RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)
+    constructor(application: Application) : this(application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
 
     // verify host availability
     @Suppress("MagicNumber")
@@ -106,102 +144,59 @@ class NetworkInfo(context: Context) : BroadcastReceiver(), AnkoLogger {
     }
 
     // notify network change to all listeners
-    private fun notifyNetworkChangeToAll() {
+    private fun notifyNetworkChangeToAll(network: Network?) {
         debug("notifyStateToAll")
         for (listener in listeners) {
-            notifyNetworkChange(listener)
+            notifyNetworkChange(listener, network)
         }
     }
 
     // notify network change
-    private fun notifyNetworkChange(listener: NetworkInfoListener) {
+    private fun notifyNetworkChange(listener: NetworkInfoListener, network: Network?) {
         debug("notifyState")
-        listener.networkStatusChange(network)
+        executeOnMainThread(Runnable { listener.networkStatusChange(network) })
     }
 
     // add a listener
+    @Suppress("unused")
     fun addListener(listener: NetworkInfoListener) {
         debug("addListener")
         listeners.add(listener)
-        notifyNetworkChange(listener)
     }
 
     // remove a listener
+    @Suppress("unused")
     fun removeListener(listener: NetworkInfoListener) {
         debug("removeListener")
         listeners.remove(listener)
     }
 
-    // get current network information
-    fun getNetwork(): Network {
-        return network
+    // get current network status
+    @Suppress("unused")
+    fun isOnline(): Boolean {
+        var ns = this.value
+        if (ns == null) {
+            ns = false
+        }
+        return ns
     }
 
     // static content
     companion object {
-        @SuppressLint("StaticFieldLeak")
         private var ns: NetworkInfo? = null
 
         // get a singleton
-        fun getInstance(ctx: Context): NetworkInfo {
+        @MainThread
+        fun getInstance(application: Application): NetworkInfo {
             if (ns == null) {
-                ns = NetworkInfo(ctx.applicationContext)
+                ns = NetworkInfo(application)
             }
             return ns as NetworkInfo
-        }
-
-        // get current network connectivity
-        fun getConnectivity(ctx: Context): Network {
-            val network = Network()
-            // application context is recommended here
-            val manager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetwork = manager.activeNetworkInfo
-
-            if (activeNetwork != null && activeNetwork.isConnectedOrConnecting) {
-                Log.debug("Network available")
-                // internet access
-                Log.debug("Internet Access Detected")
-                network.status = NetworkStatus.INTERNET
-                // get network type
-                when (activeNetwork.type) {
-                    ConnectivityManager.TYPE_MOBILE -> {
-                        // mobile network
-                        Log.debug("Connectivity: MOBILE")
-                        network.type = NetworkType.MOBILE
-                    }
-                    ConnectivityManager.TYPE_WIFI -> {
-                        // wifi network
-                        Log.debug("Connectivity: WIFI")
-                        network.type = NetworkType.WIFI
-                    }
-                    else -> {
-                        // no network available
-                        Log.debug("Network not available")
-                        network.type = NetworkType.NONE
-                    }
-                }
-            } else {
-                // no network available
-                Log.debug("Network not available")
-                network.type = NetworkType.NONE
-                network.status = NetworkStatus.OFFLINE
-            }
-
-            return network
         }
     }
 
     // interface that represent the [NetworkStatusListener]
     interface NetworkInfoListener {
-        fun networkStatusChange(network: Network)
+        fun networkStatusChange(network: Network?)
     }
-
-    data class Network(
-            var type: NetworkType = NetworkType.NONE,
-            var status: NetworkStatus = NetworkStatus.OFFLINE
-    )
-
-    enum class NetworkType { NONE, WIFI, MOBILE }
-
-    enum class NetworkStatus { OFFLINE, INTERNET }
 }

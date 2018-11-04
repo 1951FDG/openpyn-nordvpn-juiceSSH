@@ -89,7 +89,6 @@ class MainActivity : AppCompatActivity(),
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnCameraIdleListener,
         AnkoLogger,
-        NetworkInfo.NetworkInfoListener,
         OnLevelChangeCallback,
         SubmitCallbackListener {
     companion object {
@@ -321,7 +320,7 @@ class MainActivity : AppCompatActivity(),
                 doAsync {
                     var json1: JSONArray? = null
 
-                    if (networkInfo!!.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
+                    if (networkInfo!!.isOnline()) {
                         json1 = createJson()
                     }
                     var thrown = true
@@ -427,8 +426,7 @@ class MainActivity : AppCompatActivity(),
                     }
 
                     uiThread {
-                        networkInfo = NetworkInfo.getInstance(it)
-                        networkInfo!!.addListener(it)
+                        networkInfo = NetworkInfo.getInstance(application)
 
                         tileProvider = MapBoxOfflineTileProvider(null, "file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
                         //tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
@@ -1273,17 +1271,6 @@ class MainActivity : AppCompatActivity(),
     override fun onCancel() {
     }
 
-    override fun networkStatusChange(network: NetworkInfo.Network) {
-        when(network.status){
-            NetworkInfo.NetworkStatus.INTERNET -> {
-//                longToast("ONLINE: ${network.type}")
-            }
-            NetworkInfo.NetworkStatus.OFFLINE -> {
-//                longToast("OFFLINE: ${network.type}")
-            }
-        }
-    }
-
     @MainThread
     fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
         if (mMap != null && items.count() != 0) {
@@ -1363,7 +1350,7 @@ class MainActivity : AppCompatActivity(),
 
     @WorkerThread
     fun createGeoJson(value: NetworkInfo, preferences: SharedPreferences, securityManager: SecurityManager): JSONObject? {
-        if (value.getNetwork().status == NetworkInfo.NetworkStatus.INTERNET) {
+        if (value.isOnline()) {
             val geo = preferences.getBoolean("pref_geo", false)
             val api = preferences.getString("pref_geo_client", "")
             val ipdata = preferences.getString("pref_api_ipdata", "")
