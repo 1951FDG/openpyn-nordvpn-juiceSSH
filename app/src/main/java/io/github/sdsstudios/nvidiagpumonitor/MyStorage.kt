@@ -35,15 +35,17 @@ class MyStorage(val key: String) {
         return ArrayList()
     }
 
-    fun jsonAdapter(): JsonAdapter<List<Any>> {
+    private fun jsonAdapter(): JsonAdapter<List<Any>> {
         val moshi = Moshi.Builder()
                 .add(object {
                     @ToJson
+                    @Suppress("unused")
                     fun toJson(value: LatLng): Map<String, Double> {
                         return mapOf("lat" to value.latitude, "long" to value.longitude)
                     }
 
                     @FromJson
+                    @Suppress("unused")
                     fun fromJson(value: Map<String, Double>): LatLng {
                         return LatLng(value["lat"]!!, value["long"]!!)
                     }

@@ -195,9 +195,9 @@ class MainActivity : AppCompatActivity(),
                 onPermissionsGranted()
             }
 
-            fab0.onClick {
-                if (mConnectionListAdapter.count == 0) {
-                    MorphDialog.Builder(this, it as FloatingActionButton)
+            fab0?.onClick {
+                if (mConnectionListAdapter.count == 0 && it is FloatingActionButton) {
+                    MorphDialog.Builder(this, it)
                             .title("Error")
                             .content(R.string.error_must_have_atleast_one_server)
                             .positiveText(android.R.string.ok)
@@ -319,6 +319,7 @@ class MainActivity : AppCompatActivity(),
                     if (networkInfo!!.isOnline()) {
                         json1 = createJson()
                     }
+
                     var thrown = true
 
                     if (json1 != null) {
@@ -520,7 +521,7 @@ class MainActivity : AppCompatActivity(),
                         val selectedCountries = PrintArray.getListInt("pref_country_values", defValue, preferences)
 
                         countryList = arrayListOf()
-                        val strings: Array<String> = resources.getStringArray(R.array.pref_country_values)
+                        val strings = resources.getStringArray(R.array.pref_country_values)
                         selectedCountries.forEach { index ->
                             countryList!!.add(strings[index])
                         }
@@ -546,7 +547,7 @@ class MainActivity : AppCompatActivity(),
 
         fab1.hide()
         fab2.hide()
-        items.forEach { (key, value) ->
+        items.forEach { (_, value) ->
             if (value.zIndex == 1.0f) fab3.hide()
         }
 
@@ -572,7 +573,7 @@ class MainActivity : AppCompatActivity(),
 
         fab1.show()
         fab2.show()
-        items.forEach { (key, value) ->
+        items.forEach { (_, value) ->
             if (value.zIndex == 1.0f) fab3.show()
         }
 
@@ -667,7 +668,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMapLoaded() {
-        val arrayList = storage?.loadFavorites(this) as ArrayList<LazyMarker>?
+        val arrayList = storage?.loadFavorites(this)
         val iconDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1)
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val securityManager = SecurityManager.getInstance(this)
@@ -683,7 +684,7 @@ class MainActivity : AppCompatActivity(),
 
         fab3?.onClick {
             if (mMap != null && items.count() != 0) {
-                items.forEach { (key, value) ->
+                items.forEach { (_, value) ->
                     if (value.zIndex == 1.0f) {
                         val level = value.level
                         when (level) {
@@ -701,32 +702,18 @@ class MainActivity : AppCompatActivity(),
             }
         }
 
-        info(mMap!!.minZoomLevel)
-        info(mMap!!.maxZoomLevel)
+        debug(mMap!!.minZoomLevel)
+        debug(mMap!!.maxZoomLevel)
 
         toolbar.showProgress(true)
 
         doAsync {
-        //val server = preferences.getString("pref_server", "")
-        //val country_code = preferences.getString("pref_country", "")
-        //val country = args.country
-        //val area = args.area
-        //val tcp = preferences.getBoolean("pref_tcp", false)
-        //val max_load = preferences.getString("pref_max_load", "")
-        //val top_servers = preferences.getString("pref_top_servers", "")
-        //val pings = preferences.getString("pref_pings", "")
-        //val force_fw_rules = preferences.getBoolean("pref_force_fw", false)
         val p2p = preferences.getBoolean("pref_p2p", false)
         val dedicated = preferences.getBoolean("pref_dedicated", false)
         val double = preferences.getBoolean("pref_double", false)
         val onion = preferences.getBoolean("pref_tor", false)
         val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
         val netflix = preferences.getBoolean("pref_netflix", false)
-        //val test = preferences.getBoolean("pref_test", false)
-        //val internally_allowed = args.internally_allowed
-        //val skip_dns_patch = preferences.getBoolean("pref_skip_dns_patch", false)
-        //val silent = preferences.getBoolean("pref_silent", false)
-        //val nvram = preferences.getBoolean("pref_nvram", false)
 
         var jsonArr: JSONArray? = null
 
@@ -841,9 +828,12 @@ class MainActivity : AppCompatActivity(),
             if (arrayList != null) {
                 val index = arrayList.indexOf(marker)
                 if (index >= 0) {
-                    val level = arrayList[index].level
-                    marker.setLevel(level, null)
-                    onLevelChange(marker, level)
+                    val any = arrayList[index]
+                    if (any is LazyMarker) {
+                        val level = any.level
+                        marker.setLevel(level, null)
+                        onLevelChange(marker, level)
+                    }
                 }
             }
 
@@ -852,7 +842,7 @@ class MainActivity : AppCompatActivity(),
         }
 
             val strings = resources.getStringArray(R.array.pref_country_values)
-            items.forEach { (key, value) ->
+            items.forEach { (_, value) ->
                 if (!strings.contains(value.tag)) {
                     Crashlytics.logException(Exception(value.tag.toString()))
                     error(value.tag)
@@ -1076,7 +1066,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMapClick(p0: LatLng?) {
-        items.forEach { (key, value) ->
+        items.forEach { (_, value) ->
             if (value.zIndex == 1.0f) {
                 value.setLevel(value.level, this)
 
@@ -1088,7 +1078,7 @@ class MainActivity : AppCompatActivity(),
     override fun onMarkerClick(p0: Marker?): Boolean {
         if (p0 != null && p0.zIndex != 1.0f) {
             //info(p0.tag)
-                items.forEach { (key, value) ->
+                items.forEach { (_, value) ->
                     if (value.zIndex == 1.0f) {
                         value.setLevel(value.level, this)
                     }
@@ -1119,7 +1109,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "unused")
     private fun showThreats(jsonObj: JSONObject) {
         val threats: JSONObject? = jsonObj.optJSONObject("threat")
         info(threats)
@@ -1255,7 +1245,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
         // Preselected IDs of Country List
-        countryList = arrayListOf()
+        countryList.clear()
         val strings: Array<String> = resources.getStringArray(R.array.pref_country_values)
         selectedIds.forEach { index ->
             countryList!!.add(strings[index])

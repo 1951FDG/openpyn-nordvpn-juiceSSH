@@ -2,7 +2,6 @@ package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import androidx.lifecycle.MutableLiveData
 import android.content.Context
-import com.sonelli.juicessh.pluginlibrary.PluginClient
 import kotlin.math.roundToInt
 
 /**

@@ -9,7 +9,6 @@ import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedExceptio
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.MainActivity
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
 import org.jetbrains.anko.error
 import org.jetbrains.anko.longToast
 

@@ -6,7 +6,6 @@ import android.os.Handler
 import androidx.preference.PreferenceManager
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
 import org.jetbrains.anko.info
 import org.jetbrains.anko.longToast
 
@@ -24,8 +23,6 @@ class OpenpynController(
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
 
         val server = preferences.getString("pref_server", null)
-        //val country = args.country
-        //val area = args.area
         val country = preferences.getString("pref_country", "gb")
         val tcp = preferences.getBoolean("pref_tcp", false)
         val load = preferences.getString("pref_max_load", "70")

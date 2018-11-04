@@ -229,7 +229,7 @@ fun createJson1(): JSONObject? {
 @WorkerThread
 @Suppress("MagicNumber")
 fun createJson(): JSONArray? {
-    var server = "https://api.nordvpn.com/server"
+    val server = "https://api.nordvpn.com/server"
     val timeout = 1000
     val timeoutRead = 1000
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
