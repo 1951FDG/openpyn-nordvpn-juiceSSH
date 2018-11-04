@@ -39,6 +39,12 @@ allprojects {
         excludeDirs += file("tiles")
         excludeDirs += file("world")
     }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:deprecation"
+        }
+    }
 }
 
 task clean(type: Delete) {
