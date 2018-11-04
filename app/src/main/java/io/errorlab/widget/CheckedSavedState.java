@@ -2,9 +2,10 @@ package io.errorlab.widget;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.View.BaseSavedState;
 
-class CheckedSavedState extends BaseSavedState {
+import androidx.customview.view.AbsSavedState;
+
+class CheckedSavedState extends AbsSavedState {
     protected boolean checked;
 
     protected CheckedSavedState(Parcelable superState) {
@@ -17,9 +18,13 @@ class CheckedSavedState extends BaseSavedState {
         out.writeInt(checked ? 1 : 0);
     }
 
-    public static final Parcelable.Creator<CheckedSavedState> CREATOR = new Parcelable.Creator<CheckedSavedState>() {
+    public static final Creator<CheckedSavedState> CREATOR = new ClassLoaderCreator<CheckedSavedState>() {
+        public CheckedSavedState createFromParcel(Parcel in, ClassLoader loader) {
+            return new CheckedSavedState(in, loader);
+        }
+
         public CheckedSavedState createFromParcel(Parcel in) {
-            return new CheckedSavedState(in);
+            return new CheckedSavedState(in, null);
         }
 
         public CheckedSavedState[] newArray(int size) {
@@ -27,8 +32,8 @@ class CheckedSavedState extends BaseSavedState {
         }
     };
 
-    private CheckedSavedState(Parcel in) {
-        super(in);
+    private CheckedSavedState(Parcel in, ClassLoader loader) {
+        super(in, loader);
         checked = in.readInt() == 1;
     }
 }
