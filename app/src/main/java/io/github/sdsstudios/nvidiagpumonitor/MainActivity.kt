@@ -69,7 +69,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.indefiniteSnackbar
-import org.jetbrains.anko.sdk25.listeners.onClick
+import org.jetbrains.anko.sdk27.listeners.onClick
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -233,7 +233,7 @@ class MainActivity : AppCompatActivity(),
         map?.onResume()
 
         if (!isJuiceSSHInstalled()) {
-            indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_install_juicessh), "OK") {
+            findViewById<View>(android.R.id.content).indefiniteSnackbar(getString(R.string.error_must_install_juicessh), getString(android.R.string.ok)) {
                 juiceSSHInstall()
             }
         }
@@ -287,7 +287,7 @@ class MainActivity : AppCompatActivity(),
             if (mPermissionsGranted) {
                 onPermissionsGranted()
             } else {
-                indefiniteSnackbar(findViewById<View>(android.R.id.content), getString(R.string.error_must_enable_permissions), "OK") {
+                findViewById<View>(android.R.id.content).indefiniteSnackbar(getString(R.string.error_must_enable_permissions), getString(android.R.string.ok)) {
                     requestPermissions()
                 }
             }
