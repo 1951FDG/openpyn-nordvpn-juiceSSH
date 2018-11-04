@@ -104,13 +104,7 @@ class MainActivity : AppCompatActivity(),
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
     }
 
-    private val mConnectionManager by lazy {
-        ConnectionManager(
-                ctx = this,
-                mActivitySessionStartedListener = this,
-                mActivitySessionFinishedListener = this
-        )
-    }
+    private var mConnectionManager: ConnectionManager? = null
 
     private var mReadConnectionsPerm = false
     private var mOpenSessionsPerm = false
@@ -161,6 +155,8 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (isJuiceSSHInstalled()) {
+            mConnectionManager = ConnectionManager(this, this, this)
+
 //            mConnectionManager.powerUsage.observe(this, Observer {
 //                textViewPower.setData(it, "W")
 //            })
@@ -211,7 +207,7 @@ class MainActivity : AppCompatActivity(),
 
                 if (mPermissionsGranted) {
                     val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
-                    mConnectionManager.toggleConnection(uuid = uuid!!, activity = this)
+                    mConnectionManager?.toggleConnection(uuid = uuid!!, activity = this)
                     it?.isClickable = false
                 } else {
                     requestPermissions()
@@ -252,7 +248,7 @@ class MainActivity : AppCompatActivity(),
         super.onDestroy()
         map?.onDestroy()
 
-        mConnectionManager.onDestroy()
+        mConnectionManager?.onDestroy()
         tileProvider?.close()
     }
 
@@ -370,7 +366,7 @@ class MainActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == JUICESSH_REQUEST_CODE) {
-            mConnectionManager.gotActivityResult(requestCode, resultCode, data)
+            mConnectionManager?.gotActivityResult(requestCode, resultCode, data)
         }
 
         if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
@@ -606,7 +602,7 @@ class MainActivity : AppCompatActivity(),
 
     @MainThread
     private fun onPermissionsGranted() {
-        mConnectionManager.startClient(onClientStartedListener = this)
+        mConnectionManager?.startClient(onClientStartedListener = this)
 
         spinnerConnectionList.adapter = mConnectionListAdapter
 
