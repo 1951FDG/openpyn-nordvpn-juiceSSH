@@ -51,7 +51,10 @@ The idea all started when I wanted to connect to OpenVPN servers hosted by NordV
 
 A lot of components make this app work, I'll cover some of the basics here. Basically on app startup, the map is loaded asynchronously, an MBTile file (SQLite database) located in the assets resource folder within the APK is loaded and then stored and read in memory. The [world.mbtiles](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/assets/world.mbtiles) was generated using a custom python script, [generate_tiles_multiprocess.py](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/generate_tiles_multiprocess.py).
 
-`./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/world.mbtiles 1 6 --format webp`
+```
+rm ./app/src/main/assets/world.mbtiles
+./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/world.mbtiles 1 4 --format webp
+```
 
 After the map is done loading, the NordVPN API is invoked to query all the supported countries, filtering based on preferences such as server type is done here, markers are generated lazily for all the countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the minimum zoom scale specified by the MBTile file. The closest country is determined (based on the current public IP address), if no connection is available, the last know location to Android is used instead. The map then animates to the marker closest to this specific location. After animation completes, only the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
 
@@ -82,8 +85,8 @@ To compile and run the project you'll need:
 - Android SDK Platform-Tools
 - Android SDK Tools
 - [Android NDK](https://developer.android.com/ndk/)
-- ConstrainstLayout for Android
-- Solver for ConstrainstLayout
+- ConstraintLayout for Android
+- Solver for ConstraintLayout
 - Android Support Repository
 - Google repository
 - Geolocation APIs
@@ -189,6 +192,7 @@ Pull requests are welcome. For major changes, please submit an issue first to di
 - [Android Studio](https://developer.android.com/studio/)
 - [Atom](https://atom.io/)
 - [AX2J](http://ax2j.sickworm.com/) - Android XML to Java
+- [Crashlytics for Android](https://fabric.io/kits/android/crashlytics)
 - [DB Browser for SQLite](http://sqlitebrowser.org/)
 - [Detekt](https://github.com/arturbosch/detekt)
 - [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
