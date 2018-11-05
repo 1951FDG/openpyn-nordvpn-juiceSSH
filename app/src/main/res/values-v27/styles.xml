@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.V27.Theme.AppTheme" parent="Base.V21.Theme.AppTheme">
+        <item name="android:navigationBarColor">#fffafafa</item>
+        <item name="android:statusBarColor">#fffafafa</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Base.Theme.AppTheme" parent="Base.V27.Theme.AppTheme" />
+
+    <style name="Base.V27.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings">
+        <item name="android:navigationBarColor">#fffafafa</item>
+        <item name="android:statusBarColor">#fffafafa</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Base.Theme.AppTheme.Settings" parent="Base.V27.Theme.AppTheme.Settings" />
+
+</resources>

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="Base.V21.Theme.AppTheme" parent="Theme.AppCompat.Light" />
 
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+    <style name="Base.Theme.AppTheme" parent="Base.V21.Theme.AppTheme" />
+
+    <style name="AppTheme" parent="Base.Theme.AppTheme">
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -18,13 +19,15 @@
 
     </style>
 
-    <style name="AppTheme.Settings" parent="Theme.AppCompat.Light">
+    <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.AppCompat.Light" />
+
+    <style name="Base.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings" />
+
+    <style name="AppTheme.Settings" parent="Base.Theme.AppTheme.Settings">
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>
 
         <item name="android:windowEnterTransition">@android:transition/slide_bottom</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
 
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
