@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="io.github.sdsstudios.nvidiagpumonitor.MainActivity">
     <item
+        android:id="@+id/action_github"
+        android:icon="@drawable/ic_github_black_24dp"
+        android:orderInCategory="98"
+        android:title="@string/menu_github"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_refresh"
         android:orderInCategory="99"
         android:title="@string/menu_refresh"

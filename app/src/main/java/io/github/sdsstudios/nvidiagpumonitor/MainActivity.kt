@@ -373,6 +373,10 @@ class MainActivity : AppCompatActivity(),
                 }
                 true
             }
+            R.id.action_github -> {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/1951FDG/openpyn-nordvpn-juiceSSH")))
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -6,6 +6,7 @@
 
     <string name="empty" />
     <string name="menu_refresh">Refresh</string>
+    <string name="menu_github">GitHub</string>
 
     <!-- Warning -->
     <string name="warning_must_restart_app">Please restart app for changes to take effect</string>
