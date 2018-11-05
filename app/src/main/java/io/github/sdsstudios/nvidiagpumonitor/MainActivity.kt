@@ -777,7 +777,8 @@ class MainActivity : AppCompatActivity(),
                 }
             }
 
-            val z = tileProvider!!.minimumZoom.toInt()
+            val z = 3
+            //val z = tileProvider!!.minimumZoom.toInt()
             val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
             // Traverse through all rows
             for (y in 0..rows) {
