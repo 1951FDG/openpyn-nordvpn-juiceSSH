@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/textView"
+    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:gravity="center_vertical"
+    android:singleLine="true"
+    tools:text="192.168.1.1" />
+<!--<br.com.stickyindex.view.StickyIndex xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--android:id="@+id/stickyIndex"-->
+    <!--android:layout_width="80dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:textSize="20sp"-->
+    <!--android:textStyle="bold"-->
+    <!--app:rowHeight="56dp"-->
+    <!--app:stickyWidth="60dp" />-->
