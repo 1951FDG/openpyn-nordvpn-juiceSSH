@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
+            android:textAppearance="@style/AppTheme.Title"
             app:ptb_progressHeight="1dp">
 
             <Spinner

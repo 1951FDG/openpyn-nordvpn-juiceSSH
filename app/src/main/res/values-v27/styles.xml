@@ -11,6 +11,7 @@
     <style name="Base.Theme.AppTheme" parent="Base.V27.Theme.AppTheme" />
 
     <style name="Base.V27.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings">
+        <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
         <item name="android:navigationBarColor">#fffafafa</item>
         <item name="android:statusBarColor">#fffafafa</item>
         <item name="android:windowLightNavigationBar">true</item>
@@ -18,5 +19,14 @@
     </style>
 
     <style name="Base.Theme.AppTheme.Settings" parent="Base.V27.Theme.AppTheme.Settings" />
+
+    <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">#ffbebebe</item>
+        <item name="android:textColorPrimary">#ffbebebe</item>
+    </style>
+
+    <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">#ffbebebe</item>
+    </style>
 
 </resources>

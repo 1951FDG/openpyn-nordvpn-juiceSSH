@@ -41,6 +41,8 @@
 
     </style>
 
+    <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
     <style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">
         <item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>
     </style>
