@@ -129,7 +129,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
          * A preference value change listener that updates the preference's summary
          * to reflect its new value.
          */
-        private val sBindPreferenceSummaryToValueListener = Preference.OnPreferenceChangeListener { preference, value ->
+        @Suppress("WeakerAccess")
+        val sBindPreferenceSummaryToValueListener: Preference.OnPreferenceChangeListener = Preference.OnPreferenceChangeListener { preference, value ->
             val stringValue = value.toString()
 
             if (preference is ListPreference) {
@@ -159,7 +160,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
          * Helper method to determine if the device has an extra-large screen. For
          * example, 10" tablets are extra-large.
          */
-        private fun isXLargeTablet(context: Context): Boolean {
+        fun isXLargeTablet(context: Context): Boolean {
             return context.resources.configuration.screenLayout and SCREENLAYOUT_SIZE_MASK >= SCREENLAYOUT_SIZE_XLARGE
         }
 
@@ -172,7 +173,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
          * @see sBindPreferenceSummaryToValueListener
          */
-        private fun bindPreferenceSummaryToValue(preference: Preference) {
+        fun bindPreferenceSummaryToValue(preference: Preference) {
             // Set the listener to watch for value changes.
             preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
             // Trigger the listener immediately with the preference's
@@ -181,7 +182,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, newValue)
         }
 
-        private fun validate(str: String): Boolean {
+        @Suppress("WeakerAccess")
+        fun validate(str: String): Boolean {
             val regex = Regex("""^[a-z]{2}\d{1,4}$""")
             if (regex.matches(str)) {
                 return hashSetOf(

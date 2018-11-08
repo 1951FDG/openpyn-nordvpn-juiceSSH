@@ -20,9 +20,9 @@ object PrintArray {
     private var positiveTitle = android.R.string.ok
     private var negativeTitle = android.R.string.cancel
     private var neutralTitle = android.R.string.selectAll
-    private var itemsList = ArrayList<MultiSelectModel>()
-    private var checkedItemsList = ArrayList<Int>()
-    const val delimiter = "‚‗‚"
+    private var itemsList: ArrayList<MultiSelectModel>? = null
+    var checkedItemsList: ArrayList<Int>? = null
+    const val delimiter: String = "‚‗‚"
 
     fun setHint(hint: Int): PrintArray {
         this.hint = hint
@@ -130,7 +130,7 @@ object PrintArray {
 
     // MultiSelectDialog
     fun show(@Size(min = 1) key: String, context: AppCompatActivity, prefs: SharedPreferences?) {
-        show(key, itemsList, checkedItemsList, context, prefs)
+        show(key, checkNotNull(itemsList), checkNotNull(checkedItemsList), context, prefs)
     }
 
     // MultiSelectDialog

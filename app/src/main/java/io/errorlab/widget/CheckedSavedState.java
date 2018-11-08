@@ -13,18 +13,18 @@ class CheckedSavedState extends AbsSavedState {
     }
 
     @Override
-    public void writeToParcel(Parcel out, int flags) {
-        super.writeToParcel(out, flags);
-        out.writeInt(checked ? 1 : 0);
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(checked ? 1 : 0);
     }
 
     public static final Creator<CheckedSavedState> CREATOR = new ClassLoaderCreator<CheckedSavedState>() {
-        public CheckedSavedState createFromParcel(Parcel in, ClassLoader loader) {
-            return new CheckedSavedState(in, loader);
+        public CheckedSavedState createFromParcel(Parcel source, ClassLoader loader) {
+            return new CheckedSavedState(source, loader);
         }
 
-        public CheckedSavedState createFromParcel(Parcel in) {
-            return new CheckedSavedState(in, null);
+        public CheckedSavedState createFromParcel(Parcel source) {
+            return new CheckedSavedState(source, null);
         }
 
         public CheckedSavedState[] newArray(int size) {
@@ -32,8 +32,9 @@ class CheckedSavedState extends AbsSavedState {
         }
     };
 
-    private CheckedSavedState(Parcel in, ClassLoader loader) {
-        super(in, loader);
-        checked = in.readInt() == 1;
+    @SuppressWarnings("WeakerAccess")
+    CheckedSavedState(Parcel source, ClassLoader loader) {
+        super(source, loader);
+        checked = source.readInt() == 1;
     }
 }

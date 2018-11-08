@@ -119,14 +119,14 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     }
 
     // collection of listeners
-    private val listeners = mutableSetOf<NetworkInfoListener>()
+    private val listeners by lazy { LinkedHashSet<NetworkInfoListener>() }
 
     @RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)
     constructor(application: Application) : this(application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
 
     // verify host availability
     @Suppress("MagicNumber")
-    private fun hostAvailable(host: String, port: Int): Boolean {
+    fun hostAvailable(host: String, port: Int): Boolean {
         debug("Verifying host availability: $host:$port")
         try {
             Socket().use { socket ->
@@ -144,7 +144,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     }
 
     // notify network change to all listeners
-    private fun notifyNetworkChangeToAll(network: Network?) {
+    fun notifyNetworkChangeToAll(network: Network?) {
         debug("notifyStateToAll")
         for (listener in listeners) {
             notifyNetworkChange(listener, network)
@@ -183,7 +183,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
 
     // static content
     companion object {
-        private var ns: NetworkInfo? = null
+        var ns: NetworkInfo? = null
 
         // get a singleton
         @MainThread

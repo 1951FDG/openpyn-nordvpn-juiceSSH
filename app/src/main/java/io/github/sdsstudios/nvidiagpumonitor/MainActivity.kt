@@ -34,7 +34,7 @@ import com.abdeveloper.library.MultiSelectModel
 import com.adityaanand.morphdialog.MorphDialog
 import com.afollestad.materialdialogs.MaterialDialog
 import com.androidmapsextensions.lazy.LazyMarker
-import com.androidmapsextensions.lazy.OnLevelChangeCallback
+import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
 import com.antoniocarlon.map.CameraUpdateAnimator
 import com.ariascode.networkutility.NetworkInfo
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
@@ -60,6 +60,11 @@ import com.mayurrokade.minibar.UserMessage
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.ToJson
+import com.squareup.moshi.Types
 import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.fabric.sdk.android.Fabric
@@ -76,6 +81,28 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.lang.Exception
+
+class LazyMarkerStorage(key: String) : MyStorage(key) {
+    override fun jsonAdapter(): JsonAdapter<List<Any>> {
+        val moshi = Moshi.Builder()
+                .add(object {
+                    @ToJson
+                    @Suppress("unused")
+                    fun toJson(value: LatLng): Map<String, Double> {
+                        return mapOf("lat" to value.latitude, "long" to value.longitude)
+                    }
+
+                    @FromJson
+                    @Suppress("unused")
+                    fun fromJson(value: Map<String, Double>): LatLng {
+                        return LatLng(value["lat"]!!, value["long"]!!)
+                    }
+                })
+                .build()
+        val type = Types.newParameterizedType(List::class.java, LazyMarker::class.java)
+        return moshi.adapter(type)
+    }
+}
 
 class MainActivity : AppCompatActivity(),
         OnSessionStartedListener,
@@ -112,9 +139,9 @@ class MainActivity : AppCompatActivity(),
     private val mPermissionsGranted
         get() = mReadConnectionsPerm && mOpenSessionsPerm
 
-    private val items by lazy { hashMapOf<LatLng, LazyMarker>() }
-    private val storage by lazy { MyStorage(favorites) }
-    private val countryList by lazy { arrayListOf<String>() }
+    val items: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
+    private val storage by lazy { LazyMarkerStorage(favorites) }
+    private val countryList by lazy { ArrayList<String>() }
 
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
@@ -757,7 +784,7 @@ class MainActivity : AppCompatActivity(),
                         visible(false)
                         icon(iconDescriptor)
                     }
-                    val marker = LazyMarker(googleMap, var1, flag)
+                    val marker = LazyMarker(googleMap, var1, flag, null)
 
                     val index = arrayList.indexOf(marker)
                     if (index >= 0) {
@@ -787,7 +814,7 @@ class MainActivity : AppCompatActivity(),
             // Traverse through all rows
             for (y in 0..rows) {
                 for (x in 0..rows) {
-                    val bounds = tileProvider!!.calculateTileBounds(x, y, z)
+                    val bounds = MapBoxOfflineTileProvider.calculateTileBounds(x, y, z)
                     val cameraPosition = CameraPosition.Builder().target(bounds.northeast).build()
                     // Add animations
                     cameraUpdateAnimator?.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
@@ -850,7 +877,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         fab3?.onClick {
-            if (mMap != null && items.count() != 0) {
+            if (mMap != null && items.size != 0) {
                 items.forEach { (_, value) ->
                     if (value.zIndex == 1.0f) {
                         val level = value.level
@@ -1311,7 +1338,7 @@ class MainActivity : AppCompatActivity(),
 
     @MainThread
     fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
-        if (mMap != null && items.count() != 0) {
+        if (mMap != null && items.size != 0) {
             items.forEach { (key, value) ->
                 if (value.zIndex == 1.0f) {
                     return Pair(key, value.tag.toString())

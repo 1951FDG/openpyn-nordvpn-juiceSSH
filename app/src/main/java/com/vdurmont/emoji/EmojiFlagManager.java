@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Vincent DURMONT [vdurmont@gmail.com]
  */
-public class EmojiFlagManager {
+public final class EmojiFlagManager {
     private static final String PATH = "/assets/emojis.json";
     private static final Map<String, Emoji> EMOJIS_BY_ALIAS = new HashMap<>();
 

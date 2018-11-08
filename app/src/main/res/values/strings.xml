@@ -231,22 +231,22 @@
     <string name="pref_category_advanced">Advanced</string>
 
     <string name="pref_p2p">P2P</string>
-    <string name="pref_description_p2p">Only look for servers with \"Peer To Peer\" support</string>
+    <string name="pref_description_p2p">Only look for servers with \“Peer To Peer\” support</string>
 
     <string name="pref_dedicated">Dedicated IP</string>
-    <string name="pref_description_dedicated">Only look for servers with \"Dedicated IP\" support</string>
+    <string name="pref_description_dedicated">Only look for servers with \“Dedicated IP\” support</string>
 
     <string name="pref_double">Double VPN</string>
-    <string name="pref_description_double">Only look for servers with \"Double VPN\" support</string>
+    <string name="pref_description_double">Only look for servers with \“Double VPN\” support</string>
 
     <string name="pref_tor">Onion Over VPN</string>
-    <string name="pref_description_tor">Only look for servers with \"Tor Over VPN\" support</string>
+    <string name="pref_description_tor">Only look for servers with \“Tor Over VPN\” support</string>
 
     <string name="pref_anti_ddos">Obfuscated</string>
-    <string name="pref_description_anti_ddos">Only look for servers with \"Obfuscated Servers\" support</string>
+    <string name="pref_description_anti_ddos">Only look for servers with \“Obfuscated Servers\” support</string>
 
     <string name="pref_netflix">Netflix</string>
-    <string name="pref_description_netflix">Only look for servers that are optimised for \"Netflix\"</string>
+    <string name="pref_description_netflix">Only look for servers that are optimised for \“Netflix\”</string>
 
     <string name="pref_category_expert">Expert</string>
 
@@ -281,7 +281,7 @@
     </string-array>
 
     <string name="pref_silent">Silent</string>
-    <string name="pref_description_silent">Do not try to send notifications. Use if \"libnotify\" or \"gi\" are not available</string>
+    <string name="pref_description_silent">Do not try to send notifications. Use if \“libnotify\” or \“gi\” are not available</string>
 
     <string name="is_tor">is_tor</string>
     <string name="is_proxy">is_proxy</string>

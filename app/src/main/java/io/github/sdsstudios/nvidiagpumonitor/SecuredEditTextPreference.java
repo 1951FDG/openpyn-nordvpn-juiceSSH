@@ -3,24 +3,27 @@ package io.github.sdsstudios.nvidiagpumonitor;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.EditTextPreference;
 
-public class SecuredEditTextPreference extends EditTextPreference {
+public final class SecuredEditTextPreference extends EditTextPreference {
 
-    public SecuredEditTextPreference(Context context) {
+    private final SecurityManager securityManager = SecurityManager.getInstance(getContext());
+
+    public SecuredEditTextPreference(@NonNull Context context) {
         super(context);
     }
 
-    public SecuredEditTextPreference(Context context, AttributeSet attrs) {
+    public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SecuredEditTextPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public SecuredEditTextPreference(Context context, AttributeSet attrs, int defStyleAttr,
+    public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
                                      int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -30,25 +33,20 @@ public class SecuredEditTextPreference extends EditTextPreference {
         super.setText(getPersistedString(null));
     }
 
+    @Nullable
     @Override
     public String getText() {
         String text = super.getText();
-        if (text == null || text.length() == 0) {
-            return text;
-        }
-        return SecurityManager
-                .getInstance(getContext())
-                .decryptString(text);
+        return ((text == null) || (text.isEmpty())) ? text : securityManager.decryptString(text);
     }
 
     @Override
-    public void setText(String text) {
-        if (text == null || text.length() == 0) {
+    public void setText(@Nullable String text) {
+        if ((text == null) || text.isEmpty()) {
             super.setText(text);
-            return;
         }
-        super.setText(SecurityManager
-                .getInstance(getContext())
-                .encryptString(text));
+        else {
+            super.setText(securityManager.encryptString(text));
+        }
     }
 }

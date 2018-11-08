@@ -22,13 +22,13 @@ abstract class BaseController(
         private val mLiveData: MutableLiveData<Int>) : OnSessionExecuteListener, AnkoLogger {
 
     val mCtx: Context = ctx.applicationContext
-    val mainActivity = ctx as MainActivity
+    val mainActivity: MainActivity = ctx as MainActivity
 
     private var isRunning = false
 
     abstract val regex: Regex
-    var command = ""
-    var stopcommand = ""
+    var command: String = ""
+    var stopcommand: String = ""
 
     @Suppress("MagicNumber")
     override fun onCompleted(exitCode: Int) {

@@ -26,7 +26,7 @@ class ConnectionManager(ctx: Context,
 ) : OnSessionStartedListener, OnSessionFinishedListener {
 
     companion object {
-        const val JUICESSH_REQUEST_CODE = 345
+        const val JUICESSH_REQUEST_CODE: Int = 345
     }
 
 //    val powerUsage = MutableLiveData<Int>()

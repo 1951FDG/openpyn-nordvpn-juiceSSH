@@ -14,7 +14,7 @@ class OpenpynController(
         liveData: MutableLiveData<Int>
 ) : BaseController(ctx, liveData), AnkoLogger {
 
-    override val regex = Regex("""\d+""")
+    override val regex: Regex = Regex("""\d+""")
 
     override fun start(pluginClient: PluginClient,
             sessionId: Int,

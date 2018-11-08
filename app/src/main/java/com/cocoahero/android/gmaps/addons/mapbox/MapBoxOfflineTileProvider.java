@@ -13,6 +13,7 @@ import com.google.maps.android.projection.SphericalMercatorProjection;
 import org.sqlite.database.sqlite.SQLiteCursor;
 import org.sqlite.database.sqlite.SQLiteCursorDriver;
 import org.sqlite.database.sqlite.SQLiteDatabase;
+import org.sqlite.database.sqlite.SQLiteDatabase.CursorFactory;
 import org.sqlite.database.sqlite.SQLiteQuery;
 
 import java.io.Closeable;
@@ -34,7 +35,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     private static final String TABLE_METADATA = "metadata";
     private static final String COL_VALUE = "value";
     // Used to measure distances relative to the total world size.
-    private static final double WORLD_WIDTH = 1;
+    private static final double WORLD_WIDTH = 1.0;
     // Tile dimension, in pixels.
     private static final int TILE_DIM = 512;
     private static final String TAG = "MBTileProvider";
@@ -45,12 +46,12 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     }
 
     private final SQLiteDatabase mDatabase;
-    private final String mEditTable = "tiles";
-    private final String mSql = "SELECT tile_data FROM tiles WHERE zoom_level = ? AND tile_column = ? AND tile_row = ?";
+    private static final String mEditTable = "tiles";
+    private static final String mSql = "SELECT tile_data FROM tiles WHERE zoom_level = ? AND tile_column = ? AND tile_row = ?";
     @Nullable
-    private LatLngBounds mBounds;
-    private float mMinimumZoom = 0.0f;
-    private float mMaximumZoom = 22.0f;
+    private LatLngBounds bounds;
+    private float minimumZoom;
+    private float maximumZoom;
     private SQLiteQuery mQuery;
 
     // ------------------------------------------------------------------------
@@ -62,13 +63,13 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
         this(file.getAbsolutePath());
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public MapBoxOfflineTileProvider(@NonNull String pathToFile) {
         this(SQLiteDatabase.openDatabase(pathToFile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS));
     }
 
-    @SuppressWarnings("unused")
-    public MapBoxOfflineTileProvider(@Nullable SQLiteDatabase.CursorFactory factory, @NonNull String pathToFile) {
+    @SuppressWarnings({"LambdaLast", "unused"})
+    public MapBoxOfflineTileProvider(@Nullable CursorFactory factory, @NonNull String pathToFile) {
         this(create(factory, pathToFile));
     }
 
@@ -86,11 +87,11 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
      *                cursor when query is called
      * @return a SQLiteDatabase object, or null if the database can't be created
      */
-    private static SQLiteDatabase create(@Nullable SQLiteDatabase.CursorFactory factory, @NonNull String pathToFile) {
+    private static SQLiteDatabase create(@Nullable CursorFactory factory, @NonNull String pathToFile) {
         SQLiteDatabase database = SQLiteDatabase.create(factory);
         database.execSQL("ATTACH DATABASE '" + pathToFile + "' AS db");
         database.execSQL("CREATE TABLE main." + "map" + " AS SELECT * FROM db." + "map");
-        database.execSQL("CREATE TABLE main." + "metadata" + " AS SELECT * FROM db." + "metadata");
+        database.execSQL("CREATE TABLE main." + TABLE_METADATA + " AS SELECT * FROM db." + TABLE_METADATA);
         database.execSQL("CREATE TABLE main." + "images" + " AS SELECT * FROM db." + "images");
         database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS map_index ON map (zoom_level, tile_column, tile_row);");
         database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS images_id ON images (tile_id);");
@@ -105,11 +106,11 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
 
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name!='android_metadata' order by name";
-            try (Cursor c = database.rawQuery(sql, null)) {
-                if (c.moveToFirst()) {
-                    while (!c.isAfterLast()) {
-                        Log.d(TAG, c.getString(0));
-                        c.moveToNext();
+            try (Cursor cursor = database.rawQuery(sql, null)) {
+                if (cursor.moveToFirst()) {
+                    while (!cursor.isAfterLast()) {
+                        Log.d(TAG, cursor.getString(0));
+                        cursor.moveToNext();
                     }
                 }
             }
@@ -135,10 +136,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
 
         String[] selectionArgs = { Integer.toString(z), Integer.toString(x), Integer.toString((1 << z) - 1 - y) };
 
-        try (Cursor c = query(null, selectionArgs)) {
-            if (c.moveToFirst()) {
-                return new Tile(TILE_DIM, TILE_DIM, c.getBlob(0));
-            } else return NO_TILE;
+        try (Cursor cursor = query(null, selectionArgs)) {
+            return cursor.moveToFirst() ? new Tile(TILE_DIM, TILE_DIM, cursor.getBlob(0)) : NO_TILE;
         }
     }
 
@@ -153,11 +152,13 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
      *                null if standard SQLiteCursors should be returned.
      * @return a Cursor over the result set
      */
-    public Cursor query(@Nullable SQLiteDatabase.CursorFactory factory, @NonNull String[] selectionArgs) {
-        final SQLiteQuery query = new SQLiteQuery(mDatabase, mSql, null);
-        query.bindAllArgsAsStrings(selectionArgs);
+    @NonNull
+    @SuppressWarnings("LambdaLast")
+    public Cursor query(@Nullable CursorFactory factory, @NonNull String[] bindArgs) {
+        SQLiteQuery query = new SQLiteQuery(mDatabase, mSql, null);
+        query.bindAllArgsAsStrings(bindArgs);
 
-        final Cursor cursor = new SQLiteCursor(this, mEditTable, query);
+        Cursor cursor = new SQLiteCursor(this, mEditTable, query);
 
         mQuery = query;
         return cursor;
@@ -173,7 +174,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     /**
      * Called by a SQLiteCursor when it is requeried.
      */
-    public void cursorRequeried(Cursor cursor) {
+    public void cursorRequeried(@NonNull Cursor cursor) {
         // Do nothing
     }
 
@@ -193,15 +194,16 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
         mQuery.bindAllArgsAsStrings(bindArgs);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "MapBoxOfflineTileProvider{" +
                 "mDatabase='" + mDatabase.getPath() + '\'' +
                 ", mEditTable='" + mEditTable + '\'' +
                 ", mSql='" + mSql + '\'' +
-                ", mBounds=" + mBounds +
-                ", mMinimumZoom=" + mMinimumZoom +
-                ", mMaximumZoom=" + mMaximumZoom +
+                ", mBounds=" + bounds +
+                ", mMinimumZoom=" + minimumZoom +
+                ", mMaximumZoom=" + maximumZoom +
                 '}';
     }
 
@@ -238,12 +240,13 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
      * @return the geographic bounds of the tile
      */
     @NonNull
-    public LatLngBounds calculateTileBounds(int x, int y, int z) {
+    @SuppressWarnings("MagicNumber")
+    public static LatLngBounds calculateTileBounds(int x, int y, int z) {
         // Width of the world = WORLD_WIDTH = 1
 
         // Calculate width of one tile, given there are 2 ^ zoom tiles in that zoom level
         // In terms of world width units
-        double tileWidth = WORLD_WIDTH / Math.pow(2, z);
+        double tileWidth = WORLD_WIDTH / Math.pow(2.0, z);
 
         // Make bounds: minX, maxX, minY, maxY
         double minX = x * tileWidth;
@@ -262,23 +265,23 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     /**
      * The minimum zoom level supported by this provider.
      *
-     * @return the minimum zoom level supported or {@link #mMinimumZoom} if
+     * @return the minimum zoom level supported or {@link #minimumZoom} if
      * it could not be determined.
      */
     @SuppressWarnings("unused")
     public float getMinimumZoom() {
-        return mMinimumZoom;
+        return minimumZoom;
     }
 
     /**
      * The maximum zoom level supported by this provider.
      *
-     * @return the maximum zoom level supported or {@link #mMaximumZoom} if
+     * @return the maximum zoom level supported or {@link #maximumZoom} if
      * it could not be determined.
      */
     @SuppressWarnings("unused")
     public float getMaximumZoom() {
-        return mMaximumZoom;
+        return maximumZoom;
     }
 
     /**
@@ -290,7 +293,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     @Nullable
     @SuppressWarnings("unused")
     public LatLngBounds getBounds() {
-        return mBounds;
+        return bounds;
     }
 
     /**
@@ -302,7 +305,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
     public boolean isZoomLevelAvailable(float zoom) {
-        return (zoom >= mMinimumZoom) && (zoom <= mMaximumZoom);
+        return (zoom >= minimumZoom) && (zoom <= maximumZoom);
     }
 
     @Nullable
@@ -343,23 +346,22 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
         String[] columns = { COL_VALUE };
         String[] selectionArgs = { key };
 
-        try (Cursor c = mDatabase.query(TABLE_METADATA, columns, "name = ?", selectionArgs, null, null, null)) {
-            if (c.moveToFirst()) return c.getString(0);
-            else return null;
+        try (Cursor cursor = mDatabase.query(TABLE_METADATA, columns, "name = ?", selectionArgs, null, null, null)) {
+            return cursor.moveToFirst() ? cursor.getString(0) : null;
         }
     }
 
     private void calculateMinZoomLevel() {
         String result = getStringValue("minzoom");
         if (result != null) {
-            mMinimumZoom = Float.parseFloat(result);
+            minimumZoom = Float.parseFloat(result);
         }
     }
 
     private void calculateMaxZoomLevel() {
         String result = getStringValue("maxzoom");
         if (result != null) {
-            mMaximumZoom = Float.parseFloat(result);
+            maximumZoom = Float.parseFloat(result);
         }
     }
 
@@ -376,7 +378,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
             LatLng sw = new LatLng(s, w);
             LatLng ne = new LatLng(n, e);
 
-            mBounds = new LatLngBounds(sw, ne);
+            bounds = new LatLngBounds(sw, ne);
         }
     }
 

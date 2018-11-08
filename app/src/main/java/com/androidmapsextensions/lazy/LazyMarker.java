@@ -28,6 +28,7 @@ import java.util.Objects;
 
 public class LazyMarker {
 
+    @NonNull
     @Override
     public String toString() {
         return "LazyMarker{" +
@@ -38,56 +39,64 @@ public class LazyMarker {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LazyMarker that = (LazyMarker) o;
-        return Objects.equals(location, that.location);
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) return true;
+        if ((obj == null) || (getClass() != obj.getClass())) return false;
+        return Objects.equals(location, ((LazyMarker)obj).location);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(location);
+        return location.hashCode();
     }
 
+    @FunctionalInterface
     @SuppressWarnings("WeakerAccess")
     public interface OnMarkerCreateListener {
 
         void onMarkerCreate(@NonNull LazyMarker marker);
     }
 
+    @FunctionalInterface
+    @SuppressWarnings("WeakerAccess")
+    public interface OnLevelChangeCallback {
+
+        void onLevelChange(@NonNull LazyMarker marker, int level);
+    }
+
+    @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient Marker marker;
+    @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient GoogleMap map;
+    @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient MarkerOptions markerOptions;
+    @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient OnMarkerCreateListener listener;
     private Object tag;
     private int level;
-    private LatLng location;
+    private final LatLng location;
 
     @SuppressWarnings("unused")
-    public LazyMarker(@NonNull GoogleMap map, @NonNull MarkerOptions options) {
-        this(map, options, null, null);
+    public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options) {
+        this(googleMap, options, null, null);
     }
 
     @SuppressWarnings("unused")
-    public LazyMarker(@NonNull GoogleMap map, @NonNull MarkerOptions options, @Nullable Object tag) {
-        this(map, options, tag, null);
+    public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options, @Nullable Object aTag) {
+        this(googleMap, options, aTag, null);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public LazyMarker(@NonNull GoogleMap map, @NonNull MarkerOptions options, @Nullable Object tag, @Nullable OnMarkerCreateListener listener) {
+    public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options, @Nullable Object aTag, @Nullable OnMarkerCreateListener markerCreateListener) {
         if (options.isVisible()) {
-            createMarker(map, options, tag, listener);
-            this.tag = tag;
-            this.location = options.getPosition();
+            createMarker(googleMap, options, aTag, markerCreateListener);
         } else {
-            this.map = map;
-            this.markerOptions = copy(options);
-            this.listener = listener;
-            this.tag = tag;
-            this.location = options.getPosition();
+            map = googleMap;
+            markerOptions = copy(options);
+            listener = markerCreateListener;
         }
+        tag = aTag;
+        location = options.getPosition();
     }
 
     public float getAlpha() {
@@ -108,11 +117,6 @@ public class LazyMarker {
     @IntRange(from=0,to=9)
     public int getLevel() {
         return level;
-    }
-
-    @Nullable
-    private Marker getMarker() {
-        return marker;
     }
 
     @NonNull
@@ -261,15 +265,14 @@ public class LazyMarker {
         }
     }
 
-    public void setLevel(@IntRange(from=0,to=9) int level, OnLevelChangeCallback callback) {
-        this.level = level;
+    public void setLevel(@IntRange(from=0,to=9) int aLevel, @Nullable OnLevelChangeCallback callback) {
+        level = aLevel;
         if (callback != null) {
-            callback.onLevelChange(this, level);
+            callback.onLevelChange(this, aLevel);
         }
     }
 
     public void setPosition(@NonNull LatLng position) {
-        this.location = position;
         if (marker != null) {
             marker.setPosition(position);
         } else {
@@ -293,10 +296,10 @@ public class LazyMarker {
         }
     }
 
-    public void setTag(@Nullable Object tag) {
-        this.tag = tag;
+    public void setTag(@Nullable Object aTag) {
+        tag = aTag;
         if (marker != null) {
-            marker.setTag(tag);
+            marker.setTag(aTag);
         }
     }
 
@@ -340,13 +343,13 @@ public class LazyMarker {
         }
     }
 
-    private void createMarker(GoogleMap map, MarkerOptions options, Object tag, OnMarkerCreateListener listener) {
-        marker = map.addMarker(options);
-        if (tag != null) {
-            marker.setTag(tag);
+    private void createMarker(GoogleMap googleMap, MarkerOptions options, Object aTag, OnMarkerCreateListener markerCreateListener) {
+        marker = googleMap.addMarker(options);
+        if (aTag != null) {
+            marker.setTag(aTag);
         }
-        if (listener != null) {
-            listener.onMarkerCreate(this);
+        if (markerCreateListener != null) {
+            markerCreateListener.onMarkerCreate(this);
         }
     }
 

@@ -2,8 +2,9 @@ package io.github.sdsstudios.nvidiagpumonitor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.provider.Settings;
+import android.provider.Settings.Secure;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -21,12 +22,16 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class SecurityManager {
+import androidx.annotation.NonNull;
+
+public final class SecurityManager {
 
     private static final int IV_LENGTH = 16;
-    private static volatile SecurityManager sInstance;
+    private static final String AES_GCM_NO_PADDING = "AES/GCM/NoPadding";
+    private static volatile SecurityManager sInstance = null;
     private SecretKey mKey;
 
+    @SuppressWarnings("unused")
     private SecurityManager() {
         if (sInstance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
@@ -35,21 +40,20 @@ public class SecurityManager {
 
     @SuppressLint("HardwareIds")
     private SecurityManager(Context context) {
-        String androidId = Settings
-                .Secure
-                .getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         try {
             byte[] key = androidId.getBytes("UTF8");
             MessageDigest sha = MessageDigest.getInstance("SHA-1");
             key = sha.digest(key);
-            key = Arrays.copyOf(key, 16);
+            key = Arrays.copyOf(key, IV_LENGTH);
             mKey = new SecretKeySpec(key, "AES");
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Log.wtf(getClass().getSimpleName(), e);
         }
     }
 
-    public static SecurityManager getInstance(Context context) {
+    @NonNull
+    public static SecurityManager getInstance(@NonNull Context context) {
         if (sInstance == null) {
             synchronized (SecurityManager.class) {
                 if (sInstance == null) {
@@ -74,11 +78,13 @@ public class SecurityManager {
         return result;
     }
 
-    public String encryptString(String stringToEncrypt) {
+    @NonNull
+    @SuppressWarnings("WeakerAccess")
+    public String encryptString(@NonNull String stringToEncrypt) {
         String output = stringToEncrypt;
         try {
             byte[] clearText = stringToEncrypt.getBytes("UTF8");
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
             byte[] iv = new byte[IV_LENGTH];
             new SecureRandom().nextBytes(iv);
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
@@ -90,16 +96,18 @@ public class SecurityManager {
                 | InvalidKeyException | UnsupportedEncodingException
                 | IllegalBlockSizeException | BadPaddingException
                 | InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
+            Log.wtf(getClass().getSimpleName(), e);
         }
         return output;
     }
 
-    public String decryptString(String stringToDecrypt) {
+    @NonNull
+    @SuppressWarnings("WeakerAccess")
+    public String decryptString(@NonNull String stringToDecrypt) {
         String output = stringToDecrypt;
         try {
             byte[] encryptedBytes = Base64.decode(stringToDecrypt, Base64.DEFAULT);
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
             IvParameterSpec ivSpec = new IvParameterSpec(encryptedBytes, 0, IV_LENGTH);
             cipher.init(Cipher.DECRYPT_MODE, mKey, ivSpec);
 
@@ -110,7 +118,7 @@ public class SecurityManager {
                 | InvalidKeyException | UnsupportedEncodingException
                 | IllegalBlockSizeException | BadPaddingException
                 | InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
+            Log.wtf(getClass().getSimpleName(), e);
         }
         return output;
     }
