@@ -103,7 +103,7 @@ dependencies {
     implementation 'de.westnordost:countryboundaries:1.4'
 
     // JSON
-    implementation 'com.squareup.moshi:moshi:1.6.0'
+    implementation 'com.squareup.moshi:moshi:1.7.0'
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
