@@ -60,3 +60,4 @@ fabric.properties
 tiles/
 world/.thumb.png
 app/src/main/obj
+fastlane/report.xml
