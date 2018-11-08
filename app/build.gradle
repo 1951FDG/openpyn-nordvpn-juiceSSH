@@ -56,6 +56,12 @@ android {
         }
     }
 
+    lintOptions {
+        disable 'GoogleAppIndexingWarning', 'MissingRegistered', 'UnusedIds', 'UnusedResources'
+        checkAllWarnings true
+        xmlReport false
+        abortOnError false
+        baseline file("lint-baseline.xml")
     }
 
     compileOptions {

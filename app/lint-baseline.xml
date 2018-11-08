@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="4" by="lint 3.2.1" client="gradle" variant="debug" version="3.2.1">
+
+    <issue
+        id="UnknownNullness"
+        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
+        errorLine1="    void onCorruption(SQLiteDatabase dbObj);"
+        errorLine2="                      ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/sqlite/database/DatabaseErrorHandler.java"
+            line="36"
+            column="23"/>
+    </issue>
+
+</issues>
