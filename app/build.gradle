@@ -100,7 +100,7 @@ dependencies {
     }
 
     // Geocoder
-    implementation 'de.westnordost:countryboundaries:1.2'
+    implementation 'de.westnordost:countryboundaries:1.4'
 
     // JSON
     implementation 'com.squareup.moshi:moshi:1.6.0'
