@@ -249,7 +249,7 @@ class MainActivity : AppCompatActivity(),
 
                 if (mPermissionsGranted) {
                     val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
-                    mConnectionManager?.toggleConnection(uuid = uuid!!, activity = this)
+                    mConnectionManager?.toggleConnection(uuid!!, this)
                     it?.isClickable = false
                 } else {
                     requestPermissions()
@@ -423,7 +423,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
+    override fun onSessionStarted(sessionId: Int, sessionKey: String) {
         fab0.isClickable = true
 
         fab0.setImageResource(R.drawable.ic_flash_off_white_24dp)

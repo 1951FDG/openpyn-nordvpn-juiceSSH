@@ -40,8 +40,6 @@ class ConnectionManager(ctx: Context,
 
     private val openpyn = MutableLiveData<Int>()
 
-    private var connected = false
-
     private var mSessionKey = ""
     private var mSessionId = 0
 
@@ -70,44 +68,36 @@ class ConnectionManager(ctx: Context,
             mOpenpynController
     )
 
-    override fun onSessionStarted(sessionId: Int, sessionKey: String?) {
+    override fun onSessionStarted(sessionId: Int, sessionKey: String) {
         mSessionId = sessionId
-        mSessionKey = sessionKey!!
+        mSessionKey = sessionKey
 
         mActivitySessionStartedListener.onSessionStarted(sessionId, sessionKey)
 
         mClient.addSessionFinishedListener(sessionId, sessionKey, this)
 
-        connected = true
-
         mControllers.forEach { it.start(mClient, mSessionId, mSessionKey) }
     }
 
     override fun onSessionFinished() {
+        mSessionId = 0
+        mSessionKey = ""
+        
         mActivitySessionFinishedListener.onSessionFinished()
-
-        connected = false
 
         mControllers.forEach { it.stop() }
     }
 
     override fun onSessionCancelled() {
-        /*
-        onSessionCancelled is still called even during a successful connection.
-        Only execute onSessionCancelled when its a failed connection
-        */
-
-        if (!connected) {
-            mActivitySessionStartedListener.onSessionCancelled()
-        }
+        mActivitySessionStartedListener.onSessionCancelled()
+    }
+    
+    fun isConnected() : Boolean {
+        return mSessionId > 0
     }
 
     fun toggleConnection(uuid: UUID, activity: AppCompatActivity) {
-        if (!connected) {
-            connect(uuid, activity)
-        } else {
-            disconnect()
-        }
+        if (isConnected()) disconnect() else connect(uuid, activity)
     }
 
     fun startClient(onClientStartedListener: OnClientStartedListener) {
@@ -119,7 +109,7 @@ class ConnectionManager(ctx: Context,
     }
 
     fun onDestroy() {
-        if (connected) disconnect()
+        if (isConnected()) disconnect()
 
         mClient.stop(mCtx)
     }
