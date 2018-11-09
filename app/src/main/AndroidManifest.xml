@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name="io.github.sdsstudios.nvidiagpumonitor.ExampleApplication"
         android:allowBackup="true"
         android:extractNativeLibs="true"
         android:fullBackupContent="@xml/backup_descriptor"
