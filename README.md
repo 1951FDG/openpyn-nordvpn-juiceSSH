@@ -103,23 +103,24 @@ To compile and run the project you'll need:
 
 ## Libraries used
 
-* [SQLite](https://sqlite.org/android/doc/trunk/www/install.wiki)
 * [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
 * [Anko](https://github.com/Kotlin/anko)
 * [Barista](https://github.com/SchibstedSpain/Barista)
-* [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
-* [emoji-java](https://github.com/vdurmont/emoji-java)
 * [countryboundaries](https://github.com/westnordost/countryboundaries)
-* [Moshi](https://github.com/square/moshi)
-* [Kotlin](https://github.com/JetBrains/kotlin)
-* [StaticLog](https://github.com/jupf/staticlog)
-* [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
+* [emoji-java](https://github.com/vdurmont/emoji-java)
 * [Fuel](https://github.com/kittinunf/Fuel)
-* [Result](https://github.com/kittinunf/Result)
-* [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
-* [Morphing Material Dialogs](https://github.com/AdityaAnand1/Morphing-Material-Dialogs)
+* [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
+* [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+* [Kotlin](https://github.com/JetBrains/kotlin)
+* [LeakCanary](https://github.com/square/leakcanary)
 * [Minibar](https://github.com/mayuroks/minibar)
+* [Morphing Material Dialogs](https://github.com/AdityaAnand1/Morphing-Material-Dialogs)
+* [Moshi](https://github.com/square/moshi)
+* [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
 * [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
+* [Result](https://github.com/kittinunf/Result)
+* [SQLite](https://sqlite.org/android/doc/trunk/www/install.wiki)
+* [StaticLog](https://github.com/jupf/staticlog)
 
 ## Links used
 
