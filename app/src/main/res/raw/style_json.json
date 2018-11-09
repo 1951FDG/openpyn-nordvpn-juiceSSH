@@ -9,27 +9,9 @@
   },
   {
     "featureType": "administrative",
-    "elementType": "geometry",
     "stylers": [
       {
         "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "administrative",
-    "elementType": "labels",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "administrative.locality",
-    "stylers": [
-      {
-        "visibility": "on"
       }
     ]
   },
