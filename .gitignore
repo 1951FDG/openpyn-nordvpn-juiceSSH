@@ -61,3 +61,4 @@ tiles/
 world/.thumb.png
 app/src/main/obj
 fastlane/report.xml
+fastlane/metadata/android/screenshots.html

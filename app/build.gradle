@@ -72,6 +72,10 @@ android {
     dataBinding {
         enabled = true
     }
+
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 dependencies {
@@ -128,4 +132,11 @@ dependencies {
     implementation 'com.github.mayuroks:minibar:0.2.0'
 
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
+
+    androidTestImplementation('com.schibsted.spain:barista:2.7.0') {
+        exclude group: 'com.android.support'
+        exclude group: 'org.jetbrains.kotlin'
+    }
+
+    androidTestImplementation 'tools.fastlane:screengrab:1.2.0'
 }
