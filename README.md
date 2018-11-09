@@ -96,6 +96,7 @@ To compile and run the project you'll need:
 * [SQLite](https://sqlite.org/android/doc/trunk/www/install.wiki)
 * [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
 * [Anko](https://github.com/Kotlin/anko)
+* [Barista](https://github.com/SchibstedSpain/Barista)
 * [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 * [emoji-java](https://github.com/vdurmont/emoji-java)
 * [countryboundaries](https://github.com/westnordost/countryboundaries)
@@ -161,8 +162,8 @@ This app uses (modified) code from several open source projects.
 
 
 - [Checkable Floating Button](https://github.com/kiddouk/CheckableFloatingActionButton)
-  - [CheckableFloatingActionButton.java](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/errorlab/widget/CheckableFloatingActionButton.java)
-  - [CheckedSavedState.java](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/errorlab/widget/CheckedSavedState.java)
+  - Modified [CheckableFloatingActionButton.java](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/errorlab/widget/CheckableFloatingActionButton.java)
+  - Modified [CheckedSavedState.java](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/errorlab/widget/CheckedSavedState.java)
 
 >**Note**:
 >Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
@@ -195,9 +196,11 @@ Pull requests are welcome. For major changes, please submit an issue first to di
 - [Crashlytics for Android](https://fabric.io/kits/android/crashlytics)
 - [DB Browser for SQLite](http://sqlitebrowser.org/)
 - [Detekt](https://github.com/arturbosch/detekt)
+- [Fastlane](https://fastlane.tools/)
 - [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 - [MBUtil](https://github.com/mapbox/mbutil) - Importer and Exporter of MBTiles
 - [Python](https://www.python.org/downloads/)
+- [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 - [Regex101](https://regex101.com/)
 - [Sourcetree](https://www.sourcetreeapp.com/)
 - [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip) - Exporter of Mapnik XML files
