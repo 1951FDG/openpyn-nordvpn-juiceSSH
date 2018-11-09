@@ -9,6 +9,7 @@ An Android app written in C/C++, [Java](https://www.oracle.com/java/), and [Kotl
 - [Introduction](#introduction)
 - [Features](#features)
 - [How it works](#how-it-works)
+- [Screenshots](#screenshots)
 - [How to use](#how-to-use)
 - [Download](#download)
 - [Requirements](#requirements)
@@ -57,6 +58,15 @@ rm ./app/src/main/assets/world.mbtiles
 ```
 
 After the map is done loading, the NordVPN API is invoked to query all the supported countries, filtering based on preferences such as server type is done here, markers are generated lazily for all the countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the minimum zoom scale specified by the MBTile file. The closest country is determined (based on the current public IP address), if no connection is available, the last know location to Android is used instead. The map then animates to the marker closest to this specific location. After animation completes, only the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
+
+## Screenshots
+
+<p align="middle">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01_1541723218021.png" width="24%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02_1541723220359.png" width="24%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03_1541723225449.png" width="24%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04_1541723227484.png" width="24%">
+</p>
 
 ## How to use
 
