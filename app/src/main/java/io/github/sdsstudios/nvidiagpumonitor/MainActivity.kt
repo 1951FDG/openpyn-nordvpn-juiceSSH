@@ -437,7 +437,7 @@ class MainActivity : AppCompatActivity(),
         spinnerConnectionList.isEnabled = false
 
         mMap!!.setOnMapClickListener(null)
-        mMap!!.setOnMarkerClickListener(null)
+        mMap!!.setOnMarkerClickListener { true }
         mMap!!.uiSettings.isScrollGesturesEnabled = false
         mMap!!.uiSettings.isZoomGesturesEnabled = false
 
