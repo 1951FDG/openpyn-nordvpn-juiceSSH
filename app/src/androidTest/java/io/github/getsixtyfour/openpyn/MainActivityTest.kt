@@ -21,6 +21,7 @@ import androidx.test.runner.lifecycle.Stage
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
 import com.schibsted.spain.barista.rule.cleardata.ClearFilesRule
 import com.schibsted.spain.barista.rule.cleardata.ClearPreferencesRule
+import io.github.getsixtyfour.openpyn.MainActivity
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`
