@@ -25,42 +25,42 @@ object PrintArray {
     const val delimiter: String = "‚‗‚"
 
     fun setHint(hint: Int): PrintArray {
-        this.hint = hint
+        PrintArray.hint = hint
         return this
     }
 
     fun setTitle(title: Int): PrintArray {
-        this.title = title
+        PrintArray.title = title
         return this
     }
 
     @Suppress("unused")
     fun setPositiveTitle(title: Int): PrintArray {
-        this.positiveTitle = title
+        positiveTitle = title
         return this
     }
 
     @Suppress("unused")
     fun setNegativeTitle(title: Int): PrintArray {
-        this.negativeTitle = title
+        negativeTitle = title
         return this
     }
 
     @Suppress("unused")
     fun setNeutralTitle(title: Int): PrintArray {
-        this.neutralTitle = title
+        neutralTitle = title
         return this
     }
 
     @Suppress("unused")
     fun setItems(items: ArrayList<MultiSelectModel>): PrintArray {
-        this.itemsList = items
+        itemsList = items
         return this
     }
 
     @Suppress("unused")
     fun setCheckedItems(checkedItems: ArrayList<Int>): PrintArray {
-        this.checkedItemsList = checkedItems
+        checkedItemsList = checkedItems
         return this
     }
 
@@ -152,7 +152,7 @@ object PrintArray {
             multiSelectList(items)
             onSubmit(object : MultiSelectDialog.SubmitCallbackListener {
                 override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
-                    if (save(selectedIds)) this@PrintArray.checkedItemsList = selectedIds
+                    if (save(selectedIds)) checkedItemsList = selectedIds
                     // This makes sure that the container activity has implemented
                     // the callback interface. If not, it throws an exception
                     try {
