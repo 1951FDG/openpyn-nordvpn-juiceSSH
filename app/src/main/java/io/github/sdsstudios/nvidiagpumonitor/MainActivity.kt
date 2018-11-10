@@ -151,6 +151,7 @@ class MainActivity : AppCompatActivity(),
     private var lastLocation: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
 
         val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
