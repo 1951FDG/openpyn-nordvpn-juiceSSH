@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn;
+package io.github.getsixtyfour.openpyn.security;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

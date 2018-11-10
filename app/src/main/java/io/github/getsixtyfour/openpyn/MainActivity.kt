@@ -68,6 +68,12 @@ import com.squareup.moshi.Types
 import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.fabric.sdk.android.Fabric
+import io.github.getsixtyfour.openpyn.security.SecurityManager
+import io.github.getsixtyfour.openpyn.utilities.MyStorage
+import io.github.getsixtyfour.openpyn.utilities.PrintArray
+import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener
+import io.github.getsixtyfour.openpyn.utilities.createJson
+import io.github.getsixtyfour.openpyn.utilities.createJson2
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
@@ -84,6 +90,8 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+
+operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
 class LazyMarkerStorage(key: String) : MyStorage(key) {
     override fun jsonAdapter(): JsonAdapter<List<Any>> {
@@ -151,7 +159,7 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        val core = CrashlyticsCore.Builder().disabled(false).build()
+        val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
         Fabric.with(this, Crashlytics.Builder().core(core).build())
 
         setContentView(R.layout.activity_main)
