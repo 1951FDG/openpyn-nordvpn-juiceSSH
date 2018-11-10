@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="io.github.sdsstudios.nvidiagpumonitor.MainActivity">
+    tools:context="io.github.getsixtyfour.openpyn.MainActivity">
     <item
         android:id="@+id/action_github"
         android:icon="@drawable/ic_github_black_24dp"

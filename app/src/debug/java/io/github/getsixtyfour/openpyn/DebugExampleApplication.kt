@@ -1,7 +1,6 @@
-package io.github.sdsstudios.nvidiagpumonitor
+package io.github.getsixtyfour.openpyn
 
 import com.squareup.leakcanary.LeakCanary
-import io.github.getsixtyfour.openpyn.ExampleApplication
 
 class DebugExampleApplication : ExampleApplication() {
     override fun installLeakCanary() {

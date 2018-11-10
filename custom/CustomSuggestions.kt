@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
 import com.abdeveloper.library.MultiSelectModel
 //import com.lapism.searchview.widget.SearchItem
-import io.github.sdsstudios.nvidiagpumonitor.R
 
 @Suppress("MagicNumber")
 object CustomSuggestions {

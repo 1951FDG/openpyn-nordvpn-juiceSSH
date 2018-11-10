@@ -1,4 +1,4 @@
-package io.github.sdsstudios.nvidiagpumonitor;
+package io.github.getsixtyfour.openpyn;
 
 import android.content.Context;
 import android.util.AttributeSet;

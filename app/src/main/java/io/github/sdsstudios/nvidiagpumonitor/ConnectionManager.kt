@@ -10,6 +10,7 @@ import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedExceptio
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
+import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.controllers.OpenpynController
 import org.jetbrains.anko.longToast
 import java.util.UUID

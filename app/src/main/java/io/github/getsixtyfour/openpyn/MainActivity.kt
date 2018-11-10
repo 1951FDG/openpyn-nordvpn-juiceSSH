@@ -1,4 +1,4 @@
-package io.github.sdsstudios.nvidiagpumonitor
+package io.github.getsixtyfour.openpyn
 
 import android.Manifest
 import android.content.ComponentName
@@ -68,6 +68,10 @@ import com.squareup.moshi.Types
 import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.fabric.sdk.android.Fabric
+import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
+import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
+import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
+import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*

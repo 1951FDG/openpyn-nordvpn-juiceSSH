@@ -7,7 +7,7 @@ import androidx.annotation.MainThread
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
-import io.github.sdsstudios.nvidiagpumonitor.MainActivity
+import io.github.getsixtyfour.openpyn.MainActivity
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.longToast

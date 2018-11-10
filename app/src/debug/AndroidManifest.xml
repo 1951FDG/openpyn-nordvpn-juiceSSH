@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="io.github.sdsstudios.nvidiagpumonitor">
+    package="io.github.getsixtyfour.openpyn">
     <!-- Allows for storing and retrieving screenshots -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -10,6 +10,6 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name="io.github.sdsstudios.nvidiagpumonitor.DebugExampleApplication"
+        android:name=".DebugExampleApplication"
         tools:replace="android:name" />
 </manifest>

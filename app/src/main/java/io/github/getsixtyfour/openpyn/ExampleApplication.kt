@@ -1,4 +1,4 @@
-package io.github.sdsstudios.nvidiagpumonitor
+package io.github.getsixtyfour.openpyn
 
 import android.app.Application
 import com.squareup.leakcanary.LeakCanary

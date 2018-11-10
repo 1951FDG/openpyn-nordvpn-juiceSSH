@@ -18,7 +18,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "io.github.sdsstudios.nvidiagpumonitor"
+        applicationId "io.github.getsixtyfour.openpyn"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1

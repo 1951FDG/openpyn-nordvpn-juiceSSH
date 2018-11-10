@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="io.github.sdsstudios.nvidiagpumonitor">
+    package="io.github.getsixtyfour.openpyn">
 
     <!--<uses-sdk android:minSdkVersion="21" />-->
     <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS" />
@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name="io.github.sdsstudios.nvidiagpumonitor.ExampleApplication"
+        android:name=".ExampleApplication"
         android:allowBackup="true"
         android:extractNativeLibs="true"
         android:fullBackupContent="@xml/backup_descriptor"

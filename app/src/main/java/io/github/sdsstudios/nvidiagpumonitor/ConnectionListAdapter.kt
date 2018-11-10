@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.cursoradapter.widget.CursorAdapter
 import com.sonelli.juicessh.pluginlibrary.PluginContract
+import io.github.getsixtyfour.openpyn.R
 import java.util.UUID
 
 /**
