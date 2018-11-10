@@ -17,7 +17,6 @@
 package com.antoniocarlon.map;
 
 import android.os.Handler;
-import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +26,8 @@ import com.google.android.gms.maps.UiSettings;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class CameraUpdateAnimator implements OnCameraIdleListener {
     @SuppressWarnings("WeakerAccess")

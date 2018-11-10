@@ -14,22 +14,22 @@ import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceActivity.EXTRA_NO_HEADERS
 import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT
-import androidx.preference.PreferenceManager
-import androidx.annotation.MainThread
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.widget.ImageView
+import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
+import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModel
 import com.adityaanand.morphdialog.MorphDialog
 import com.afollestad.materialdialogs.MaterialDialog
@@ -80,7 +80,6 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.lang.Exception
 
 class LazyMarkerStorage(key: String) : MyStorage(key) {
     override fun jsonAdapter(): JsonAdapter<List<Any>> {
@@ -130,19 +129,14 @@ class MainActivity : AppCompatActivity(),
     private val mConnectionListAdapter by lazy {
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
     }
-
     private var mConnectionManager: ConnectionManager? = null
-
     private var mReadConnectionsPerm = false
     private var mOpenSessionsPerm = false
-
     private val mPermissionsGranted
         get() = mReadConnectionsPerm && mOpenSessionsPerm
-
     val items: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
     private val storage by lazy { LazyMarkerStorage(favorites) }
     private val countryList by lazy { ArrayList<String>() }
-
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
     private var mMap: GoogleMap? = null
@@ -170,7 +164,6 @@ class MainActivity : AppCompatActivity(),
         PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
 
         networkInfo = NetworkInfo.getInstance(application)
-
         val api = GoogleApiAvailability.getInstance()
         val errorCode = api.isGooglePlayServicesAvailable(this)
 
@@ -192,14 +185,13 @@ class MainActivity : AppCompatActivity(),
                             lastLocation = location
                         }
                     }
-                    .addOnFailureListener{ e: Exception ->
+                    .addOnFailureListener { e: Exception ->
                         error(e)
                     }
         }
 
         if (isJuiceSSHInstalled()) {
             mConnectionManager = ConnectionManager(this, this, this)
-
 //            mConnectionManager.powerUsage.observe(this, Observer {
 //                textViewPower.setData(it, "W")
 //            })
@@ -231,7 +223,6 @@ class MainActivity : AppCompatActivity(),
 //            mConnectionManager.memoryClock.observe(this, Observer {
 //                textViewClockMemory.setData(it, "MHz")
 //            })
-
             requestPermissions()
 
             if (mPermissionsGranted) {
@@ -257,7 +248,6 @@ class MainActivity : AppCompatActivity(),
                 }
             }
         }
-
         //if (NetworkInfo.getConnectivity(applicationContext).status == NetworkInfo.NetworkStatus.INTERNET) generateXML()
     }
 
@@ -308,7 +298,6 @@ class MainActivity : AppCompatActivity(),
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>,
                                             grantResults: IntArray) {
-
         fun isGranted(resultIndex: Int): Boolean {
             return grantResults.isNotEmpty() && grantResults[resultIndex] ==
                     PackageManager.PERMISSION_GRANTED
@@ -353,7 +342,6 @@ class MainActivity : AppCompatActivity(),
             R.id.action_refresh -> {
                 //val drawable = item.icon as? Animatable
                 //drawable?.start()
-
                 toolbar.showProgress(true)
 
                 doAsync {
@@ -362,7 +350,6 @@ class MainActivity : AppCompatActivity(),
                     if (networkInfo!!.isOnline()) {
                         json1 = createJson()
                     }
-
                     var thrown = true
 
                     if (json1 != null) {
@@ -383,9 +370,7 @@ class MainActivity : AppCompatActivity(),
 
                     uiThread {
                         toolbar.hideProgress(true)
-
                         //drawable?.stop()
-
                         if (!thrown) {
                             MaterialDialog.Builder(it)
                                     .title("Warning")
@@ -396,7 +381,6 @@ class MainActivity : AppCompatActivity(),
                     }
 
                     onComplete {
-
                     }
                 }
                 true
@@ -441,7 +425,6 @@ class MainActivity : AppCompatActivity(),
         mMap!!.setOnMarkerClickListener { true }
         mMap!!.uiSettings.isScrollGesturesEnabled = false
         mMap!!.uiSettings.isZoomGesturesEnabled = false
-
         //cardViewLayout.visibility = View.VISIBLE
     }
 
@@ -467,9 +450,7 @@ class MainActivity : AppCompatActivity(),
         mMap!!.setOnMarkerClickListener(this)
         mMap!!.uiSettings.isScrollGesturesEnabled = true
         mMap!!.uiSettings.isZoomGesturesEnabled = true
-
         //cardViewLayout.visibility = View.GONE
-
         Handler().postDelayed({
             updateMasterMarker()
         }, 5000)
@@ -533,7 +514,6 @@ class MainActivity : AppCompatActivity(),
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         cameraUpdateAnimator = CameraUpdateAnimator(googleMap, this)
-
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val arrayList = storage.loadFavorites(this)
         val iconDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1)
@@ -545,7 +525,6 @@ class MainActivity : AppCompatActivity(),
             tileProvider = MapBoxOfflineTileProvider(null, "file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
             //tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
             info(tileProvider!!.toString())
-
             val list = listOf(
                     Pair(R.raw.nordvpn, ".json")
             )
@@ -576,7 +555,6 @@ class MainActivity : AppCompatActivity(),
             } catch (e: IOException) {
                 Crashlytics.logException(e)
             }
-
             /*
             val array = resources.getTextArray(R.array.pref_country_entries)
 
@@ -590,7 +568,6 @@ class MainActivity : AppCompatActivity(),
 
             PrintArray.show( "pref_country_values", array, checkedItems, it, preferences)
             */
-
             // List of Countries with Name and ID
             val listOfCountries = arrayListOf(
                     MultiSelectModel(0, "Albania", R.drawable.flag_al),
@@ -656,7 +633,6 @@ class MainActivity : AppCompatActivity(),
                     MultiSelectModel(60, "United States", R.drawable.flag_us),
                     MultiSelectModel(61, "Vietnam", R.drawable.flag_vn)
             )
-
             // Preselected IDs of Country List
             val array = ArrayList<Int>()
             for (i in listOfCountries.indices) {
@@ -664,7 +640,6 @@ class MainActivity : AppCompatActivity(),
             }
             val defValue = array.joinToString(separator = PrintArray.delimiter)
             val selectedCountries = PrintArray.getListInt("pref_country_values", defValue, preferences)
-
             val strings = resources.getStringArray(R.array.pref_country_values)
             selectedCountries.forEach { index ->
                 countryList.add(strings[index])
@@ -676,14 +651,12 @@ class MainActivity : AppCompatActivity(),
                 setItems(listOfCountries)
                 setCheckedItems(selectedCountries)
             }
-
             val p2p = preferences.getBoolean("pref_p2p", false)
             val dedicated = preferences.getBoolean("pref_dedicated", false)
             val double = preferences.getBoolean("pref_double", false)
             val onion = preferences.getBoolean("pref_tor", false)
             val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
             val netflix = preferences.getBoolean("pref_netflix", false)
-
             var jsonArr: JSONArray? = null
 
             try {
@@ -706,13 +679,11 @@ class MainActivity : AppCompatActivity(),
                 for (res in jsonArr) {
                     var flag = res.getString("flag").toLowerCase()
 
-                    if (flag == "uk")
-                    {
+                    if (flag == "uk") {
                         flag = "gb"
                         Crashlytics.logException(Exception(flag))
                         error(flag)
                     }
-
                     var pass = when {
                         p2p -> false
                         dedicated -> false
@@ -786,7 +757,6 @@ class MainActivity : AppCompatActivity(),
                         icon(iconDescriptor)
                     }
                     val marker = LazyMarker(googleMap, var1, flag, null)
-
                     val index = arrayList.indexOf(marker)
                     if (index >= 0) {
                         val any = arrayList[index]
@@ -808,7 +778,6 @@ class MainActivity : AppCompatActivity(),
                     error(element)
                 }
             }
-
             val z = 3
             //val z = tileProvider!!.minimumZoom.toInt()
             val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
@@ -821,13 +790,11 @@ class MainActivity : AppCompatActivity(),
                     cameraUpdateAnimator?.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
                 }
             }
-
             val json1 = createGeoJson(networkInfo!!, preferences, securityManager)
             addAnimation(json1, jsonArr, cameraUpdateAnimator, true)
 
             uiThread {
                 toolbar.hideProgress(true)
-
                 val params = fab1.layoutParams as ConstraintLayout.LayoutParams
 
                 googleMap.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider).fadeIn(false))
@@ -838,15 +805,13 @@ class MainActivity : AppCompatActivity(),
                 googleMap.setOnMapClickListener(it)
                 googleMap.setOnMapLoadedCallback(it)
                 googleMap.setOnMarkerClickListener(it)
-                googleMap.setPadding(0,0,0,params.height + params.bottomMargin)
+                googleMap.setPadding(0, 0, 0, params.height + params.bottomMargin)
                 googleMap.uiSettings.isScrollGesturesEnabled = true
                 googleMap.uiSettings.isZoomGesturesEnabled = true
-
                 val watermark = map?.findViewWithTag<ImageView>("GoogleWatermark")
 
                 if (watermark != null) {
                     watermark.visibility = View.INVISIBLE
-
                     /*
                     val params = watermark.layoutParams as RelativeLayout.LayoutParams
                     params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
@@ -902,8 +867,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     @Suppress("MagicNumber")
-    private fun getDefaultLatLng(): LatLng
-    {
+    private fun getDefaultLatLng(): LatLng {
         return LatLng(51.514125, -0.093689)
     }
 
@@ -937,7 +901,6 @@ class MainActivity : AppCompatActivity(),
                     Location.distanceBetween(latLng.latitude, latLng.longitude, it.latitude, it.longitude, result)
                     results[index] = result[0]
                 }
-
                 val result = results.min()
                 if (result != null) {
                     val index = results.indexOf(result)
@@ -963,7 +926,6 @@ class MainActivity : AppCompatActivity(),
                 val lat = json1.getDouble("latitude")
                 val lon = json1.getDouble("longitude")
                 val flag = json1.getString("flag").toLowerCase()
-
                 val latLng = if (closest && countryList.contains(flag)) {
                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                 } else {
@@ -976,7 +938,6 @@ class MainActivity : AppCompatActivity(),
                 val lat = lastLocation!!.latitude
                 val lon = lastLocation!!.longitude
                 val flag = getFlag(lon, lat).toLowerCase()
-
                 val latLng = if (closest && countryList.contains(flag)) {
                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                 } else {
@@ -998,7 +959,6 @@ class MainActivity : AppCompatActivity(),
                 val lat = json1.getDouble("latitude")
                 val lon = json1.getDouble("longitude")
                 val flag = json1.getString("flag").toLowerCase()
-
                 val latLng = if (closest && countryList.contains(flag)) {
                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                 } else {
@@ -1035,7 +995,6 @@ class MainActivity : AppCompatActivity(),
                                 t = System.nanoTime() - t
                                 info(getToastString(ids) + "\n(in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
                                 */
-
                                 val lat = location.latitude
                                 val lon = location.longitude
                                 val flag = getFlag(lon, lat).toLowerCase()
@@ -1049,7 +1008,7 @@ class MainActivity : AppCompatActivity(),
 
                             animateCamera(latLng, animator, closest, true)
                         }
-                        .addOnFailureListener{ e: Exception ->
+                        .addOnFailureListener { e: Exception ->
                             error(e)
                             animateCamera(getDefaultLatLng(), animator, closest, true)
                         }
@@ -1098,7 +1057,6 @@ class MainActivity : AppCompatActivity(),
                         } else {
                             if (value.zIndex == 1.0f) {
                                 //if (value.isInfoWindowShown) value.hideInfoWindow()
-
                                 value.setLevel(value.level, null)
                                 onLevelChange(value, value.level)
                             }
@@ -1122,7 +1080,6 @@ class MainActivity : AppCompatActivity(),
                 onEnd()
             }
         })
-
         // Execute the animation and set the final OnCameraIdleListener
         if (animate) animator?.execute()
     }
@@ -1130,19 +1087,19 @@ class MainActivity : AppCompatActivity(),
     override fun onCameraIdle() {
         val bounds = mMap!!.projection.visibleRegion.latLngBounds
 
-            items.forEach { (key, value) ->
-                if (bounds.contains(key) && countryList.contains(value.tag)) {
-                    if (!value.isVisible) value.isVisible = true
-                } else {
-                    if (value.isVisible) value.isVisible = false
+        items.forEach { (key, value) ->
+            if (bounds.contains(key) && countryList.contains(value.tag)) {
+                if (!value.isVisible) value.isVisible = true
+            } else {
+                if (value.isVisible) value.isVisible = false
 
-                    if (value.zIndex == 1.0f) {
-                        value.setLevel(value.level, this)
+                if (value.zIndex == 1.0f) {
+                    value.setLevel(value.level, this)
 
-                        fab3.hide()
-                    }
+                    fab3.hide()
                 }
             }
+        }
     }
 
     override fun onMapClick(p0: LatLng?) {
@@ -1158,11 +1115,11 @@ class MainActivity : AppCompatActivity(),
     override fun onMarkerClick(p0: Marker?): Boolean {
         if (p0 != null && p0.zIndex != 1.0f) {
             //info(p0.tag)
-                items.forEach { (_, value) ->
-                    if (value.zIndex == 1.0f) {
-                        value.setLevel(value.level, this)
-                    }
+            items.forEach { (_, value) ->
+                if (value.zIndex == 1.0f) {
+                    value.setLevel(value.level, this)
                 }
+            }
             p0.zIndex = 1.0f
             p0.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
@@ -1183,7 +1140,7 @@ class MainActivity : AppCompatActivity(),
                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map1))
             }
             1 -> {
-                marker.zIndex = level/10.toFloat()
+                marker.zIndex = level / 10.toFloat()
                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map2))
             }
         }
@@ -1202,7 +1159,6 @@ class MainActivity : AppCompatActivity(),
             val abuser = threats.getBoolean("is_known_abuser")
             val threat = threats.getBoolean("is_threat")
             val bogon = threats.getBoolean("is_bogon")
-
             val color1 = ContextCompat.getColor(this, R.color.colorConnect)
             val color2 = ContextCompat.getColor(this, R.color.colorDisconnect)
             val fl = 22f
@@ -1354,7 +1310,6 @@ class MainActivity : AppCompatActivity(),
     @Suppress("MagicNumber")
     fun updateMasterMarker(show: Boolean = false) {
         fab1.isClickable = false
-
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val securityManager = SecurityManager.getInstance(this)
 
@@ -1362,7 +1317,6 @@ class MainActivity : AppCompatActivity(),
 
         doAsync {
             val var1 = createGeoJson(networkInfo!!, preferences, securityManager)
-
             var var2: JSONArray? = null
 
             try {
@@ -1383,9 +1337,7 @@ class MainActivity : AppCompatActivity(),
 
             uiThread {
                 toolbar.hideProgress(true)
-
                 //var1?.let { jsonObject -> showThreats(jsonObject) }
-
                 executeAnimation(it, var1, var2, cameraUpdateAnimator, false)
 
                 if (show && var1 != null) {
@@ -1395,7 +1347,6 @@ class MainActivity : AppCompatActivity(),
                     //val lat = var1.getDouble("latitude")
                     //val lon = var1.getDouble("longitude")
                     val ip = var1.getString("ip")
-
                     val userMessage = UserMessage.Builder()
                             .with(this@MainActivity)
                             .setBackgroundColor(R.color.accent_material_indigo_200)

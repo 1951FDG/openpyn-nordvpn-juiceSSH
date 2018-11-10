@@ -44,8 +44,7 @@ public final class SecuredEditTextPreference extends EditTextPreference {
     public void setText(@Nullable String text) {
         if ((text == null) || text.isEmpty()) {
             super.setText(text);
-        }
-        else {
+        } else {
             super.setText(securityManager.encryptString(text));
         }
     }

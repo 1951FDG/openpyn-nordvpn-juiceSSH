@@ -1,13 +1,13 @@
 package com.vdurmont.emoji;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Holds the loaded emojis and provides search functions.
@@ -32,13 +32,13 @@ public final class EmojiFlagManager {
     /**
      * No need for a constructor, all the methods are static.
      */
-    private EmojiFlagManager() {}
+    private EmojiFlagManager() {
+    }
 
     /**
      * Returns the {@link com.vdurmont.emoji.Emoji} for a given alias.
      *
      * @param alias the alias
-     *
      * @return the associated {@link com.vdurmont.emoji.Emoji}, null if the alias
      * is unknown
      */

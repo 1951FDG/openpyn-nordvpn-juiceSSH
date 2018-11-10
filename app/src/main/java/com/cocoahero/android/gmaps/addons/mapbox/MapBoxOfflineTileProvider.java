@@ -39,6 +39,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     // Tile dimension, in pixels.
     private static final int TILE_DIM = 512;
     private static final String TAG = "MBTileProvider";
+    private static final String mEditTable = "tiles";
+    private static final String mSql = "SELECT tile_data FROM tiles WHERE zoom_level = ? AND tile_column = ? AND tile_row = ?";
 
     static {
         System.loadLibrary("sqliteX");
@@ -46,8 +48,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     }
 
     private final SQLiteDatabase mDatabase;
-    private static final String mEditTable = "tiles";
-    private static final String mSql = "SELECT tile_data FROM tiles WHERE zoom_level = ? AND tile_column = ? AND tile_row = ?";
     @Nullable
     private LatLngBounds bounds;
     private float minimumZoom;
@@ -134,7 +134,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
         //String sql = SQLiteQueryBuilder.buildQueryString(false, TABLE_TILES, columns, selection, null, null, null, null);
         //Log.e(TAG, sql);
 
-        String[] selectionArgs = { Integer.toString(z), Integer.toString(x), Integer.toString((1 << z) - 1 - y) };
+        String[] selectionArgs = {Integer.toString(z), Integer.toString(x), Integer.toString((1 << z) - 1 - y)};
 
         try (Cursor cursor = query(null, selectionArgs)) {
             return cursor.moveToFirst() ? new Tile(TILE_DIM, TILE_DIM, cursor.getBlob(0)) : NO_TILE;
@@ -343,8 +343,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     // ------------------------------------------------------------------------
 
     private String getStringValue(@NonNull String key) {
-        String[] columns = { COL_VALUE };
-        String[] selectionArgs = { key };
+        String[] columns = {COL_VALUE};
+        String[] selectionArgs = {key};
 
         try (Cursor cursor = mDatabase.query(TABLE_METADATA, columns, "name = ?", selectionArgs, null, null, null)) {
             return cursor.moveToFirst() ? cursor.getString(0) : null;

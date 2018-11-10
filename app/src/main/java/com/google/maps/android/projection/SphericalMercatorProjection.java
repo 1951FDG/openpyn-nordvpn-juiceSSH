@@ -16,9 +16,10 @@
 
 package com.google.maps.android.projection;
 
-import androidx.annotation.NonNull;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.geometry.Point;
+
+import androidx.annotation.NonNull;
 
 public class SphericalMercatorProjection {
     private final double mWorldWidth;

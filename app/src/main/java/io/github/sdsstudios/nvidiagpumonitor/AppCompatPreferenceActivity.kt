@@ -3,20 +3,19 @@ package io.github.sdsstudios.nvidiagpumonitor
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceActivity
+import android.view.MenuInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
 
 /**
  * A [android.preference.PreferenceActivity] which implements and proxies the necessary calls
  * to be used with AppCompat.
  */
 abstract class AppCompatPreferenceActivity : PreferenceActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         delegate.installViewFactory()
         delegate.onCreate(savedInstanceState)

@@ -66,7 +66,7 @@ object PrintArray {
 
     // AlertDialog
     fun show(@Size(min = 1) key: String, items: Array<CharSequence>, checkedItems: BooleanArray, context: Context,
-            prefs: SharedPreferences?) {
+             prefs: SharedPreferences?) {
         fun save(selectedItems: ArrayList<Boolean>): Boolean {
             return when {
                 prefs != null -> putListBoolean(key, selectedItems, prefs).commit()
@@ -98,7 +98,7 @@ object PrintArray {
 
     // AlertDialog
     fun show(@Size(min = 1) key: String, items: ArrayList<String>, checkedItems: ArrayList<Boolean>, context: Context,
-            prefs: SharedPreferences?) {
+             prefs: SharedPreferences?) {
         fun save(selectedItems: ArrayList<Boolean>): Boolean {
             return when {
                 prefs != null -> putListBoolean(key, selectedItems, prefs).commit()
@@ -135,7 +135,7 @@ object PrintArray {
 
     // MultiSelectDialog
     fun show(@Size(min = 1) key: String, items: ArrayList<MultiSelectModel>, checkedItems: ArrayList<Int>, context: AppCompatActivity,
-            prefs: SharedPreferences?) {
+             prefs: SharedPreferences?) {
         fun save(selectedItems: ArrayList<Int>): Boolean {
             return when {
                 prefs != null -> putListInt(key, selectedItems, prefs).commit()

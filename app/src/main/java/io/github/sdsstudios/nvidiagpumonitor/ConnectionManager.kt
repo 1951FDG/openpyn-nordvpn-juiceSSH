@@ -1,10 +1,10 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
-import androidx.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
@@ -17,18 +17,14 @@ import java.util.UUID
 /**
  * Created by Seth on 04/03/18.
  */
-
 @MainThread
 class ConnectionManager(ctx: Context,
                         private val mActivitySessionStartedListener: OnSessionStartedListener,
                         private val mActivitySessionFinishedListener: OnSessionFinishedListener
-
 ) : OnSessionStartedListener, OnSessionFinishedListener {
-
     companion object {
         const val JUICESSH_REQUEST_CODE: Int = 345
     }
-
 //    val powerUsage = MutableLiveData<Int>()
 //    val temperature = MutableLiveData<Int>()
 //    val fanSpeed = MutableLiveData<Int>()
@@ -37,15 +33,11 @@ class ConnectionManager(ctx: Context,
 //    val graphicsClock = MutableLiveData<Int>()
 //    val videoClock = MutableLiveData<Int>()
 //    val memoryClock = MutableLiveData<Int>()
-
     private val openpyn = MutableLiveData<Int>()
-
     private var mSessionKey = ""
     private var mSessionId = 0
-
     private val mClient = PluginClient()
     private val mCtx: Context = ctx.applicationContext
-
 //    private val mPowerController = PowerController(mCtx, powerUsage)
 //    private val mTempController = TempController(mCtx, temperature)
 //    private val mFanSpeedController = FanSpeedController(mCtx, fanSpeed)
@@ -55,7 +47,6 @@ class ConnectionManager(ctx: Context,
 //    private val mVideoClockController = VideoClockController(mCtx, videoClock)
 //    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
     private val mOpenpynController = OpenpynController(ctx, openpyn)
-
     private val mControllers = listOf(
 //            mPowerController,
 //            mTempController,
@@ -82,7 +73,7 @@ class ConnectionManager(ctx: Context,
     override fun onSessionFinished() {
         mSessionId = 0
         mSessionKey = ""
-        
+
         mActivitySessionFinishedListener.onSessionFinished()
 
         mControllers.forEach { it.stop() }
@@ -91,8 +82,8 @@ class ConnectionManager(ctx: Context,
     override fun onSessionCancelled() {
         mActivitySessionStartedListener.onSessionCancelled()
     }
-    
-    fun isConnected() : Boolean {
+
+    fun isConnected(): Boolean {
         return mSessionId > 0
     }
 
@@ -121,7 +112,6 @@ class ConnectionManager(ctx: Context,
                 mControllers.forEach { it.kill(mClient, mSessionId, mSessionKey) }
                 Thread.sleep(5000)
                 mClient.disconnect(mSessionId, mSessionKey)
-
             } catch (e: ServiceNotConnectedException) {
                 mCtx.longToast(R.string.error_couldnt_connect_to_service)
             }
@@ -132,7 +122,6 @@ class ConnectionManager(ctx: Context,
         Thread(Runnable {
             try {
                 mClient.connect(activity, uuid, this, JUICESSH_REQUEST_CODE)
-
             } catch (e: ServiceNotConnectedException) {
                 mCtx.longToast(R.string.error_couldnt_connect_to_service)
             }

@@ -12,12 +12,10 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract
 /**
  * Created by Seth on 04/03/18.
  */
-
 @MainThread
 class ConnectionListLoader(private val mCtx: Context,
                            private val mLoaderFinishCallback: ConnectionListLoaderFinishedCallback
 ) : LoaderManager.LoaderCallbacks<Cursor> {
-
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         return CursorLoader(
                 mCtx,

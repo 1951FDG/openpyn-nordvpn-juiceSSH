@@ -2,22 +2,20 @@ package io.github.sdsstudios.nvidiagpumonitor
 
 import android.content.Context
 import android.database.Cursor
-import androidx.annotation.MainThread
-import androidx.cursoradapter.widget.CursorAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.MainThread
+import androidx.cursoradapter.widget.CursorAdapter
 import com.sonelli.juicessh.pluginlibrary.PluginContract
 import java.util.UUID
 
 /**
  * Created by Seth on 04/03/18.
  */
-
 @MainThread
 class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
-
     private val mInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun newView(context: Context?, cursor: Cursor?, parent: ViewGroup?): View {

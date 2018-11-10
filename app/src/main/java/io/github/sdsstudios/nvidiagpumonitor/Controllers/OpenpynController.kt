@@ -1,27 +1,19 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
-import androidx.lifecycle.MutableLiveData
 import android.content.Context
 import android.os.Handler
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import org.jetbrains.anko.longToast
 
-class OpenpynController(
-        ctx: Context,
-        liveData: MutableLiveData<Int>
-) : BaseController(ctx, liveData), AnkoLogger {
-
+class OpenpynController(ctx: Context, liveData: MutableLiveData<Int>) : BaseController(ctx, liveData), AnkoLogger {
     override val regex: Regex = Regex("""\d+""")
 
-    override fun start(pluginClient: PluginClient,
-            sessionId: Int,
-            sessionKey: String) {
-
+    override fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
-
         val server = preferences.getString("pref_server", null)
         val country = preferences.getString("pref_country", "gb")
         val tcp = preferences.getBoolean("pref_tcp", false)
@@ -43,7 +35,6 @@ class OpenpynController(
         //val openvpn_options = args.openvpn_options
         val openvpn = "--syslog openpyn"
         val (location, flag) = mainActivity.positionAndFlagForSelectedMarker()
-
         val options = StringBuilder()
 
         if (server != null && !server.isEmpty())
@@ -52,7 +43,6 @@ class OpenpynController(
             options.append(flag)
         else if (country != null)
             options.append(country)
-
         //if area:
         //openpyn_options += " --area " + area
         if (tcp)
@@ -94,10 +84,8 @@ class OpenpynController(
             options.append(" --openvpn-options '$openvpn'")
         if (location != null)
             options.append(" --location " + location.latitude.toString() + " " + location.longitude.toString())
-
         val openpyn = options.toString()
         info(openpyn)
-
         // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
         // command = "echo \$PATH ; echo \$-"
         command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; openpyn $openpyn"
@@ -105,9 +93,7 @@ class OpenpynController(
         super.start(pluginClient, sessionId, sessionKey)
     }
 
-    override fun kill(pluginClient: PluginClient,
-                       sessionId: Int,
-                       sessionKey: String) {
+    override fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
         stopcommand = "sudo openpyn --kill"
 
         super.kill(pluginClient, sessionId, sessionKey)
