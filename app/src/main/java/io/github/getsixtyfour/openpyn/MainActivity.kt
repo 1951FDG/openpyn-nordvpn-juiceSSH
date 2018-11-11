@@ -1067,9 +1067,6 @@ class MainActivity : AppCompatActivity(),
         }
 
         fun onEnd() {
-            fab1.show()
-            fab2.show()
-
             fab0.isClickable = true
             fab1.isClickable = true
             fab2.isClickable = true
@@ -1100,6 +1097,9 @@ class MainActivity : AppCompatActivity(),
                             }
                         }
                     }
+
+                    fab1.show()
+                    fab2.show()
                 }
 
                 onEnd()
