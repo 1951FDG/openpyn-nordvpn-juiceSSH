@@ -181,12 +181,12 @@ This app uses (modified) code from several open source projects.
 
 ## References
 
-- [MyStorage.kt](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/sdsstudios/nvidiagpumonitor/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
+- [MyStorage.kt](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
 
-- [PrintArray.kt](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/sdsstudios/nvidiagpumonitor/PrintArray.kt) inspired by Github repo, [PrintArray
+- [PrintArray.kt](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
 ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
 
-- [SecurityManager.java](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/sdsstudios/nvidiagpumonitor/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
+- [SecurityManager.java](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
   - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
   - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
   - [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
