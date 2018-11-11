@@ -468,7 +468,7 @@ class MainActivity : AppCompatActivity(),
         //cardViewLayout.visibility = View.GONE
         Handler().postDelayed({
             updateMasterMarker()
-        }, 5000)
+        }, 10000)
     }
 
     override fun onClientStarted() {
