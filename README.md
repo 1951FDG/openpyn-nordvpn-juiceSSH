@@ -1,11 +1,11 @@
 # openpyn-nordvpn-juiceSSH, a JuiceSSH plugin
 
-![/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/LICENSE](https://img.shields.io/github/license/1951fdg/openpyn-nordvpn-juicessh.svg)
-![https://kotlinlang.org/](https://img.shields.io/github/languages/top/1951fdg/openpyn-nordvpn-juicessh.svg)
-![](https://img.shields.io/github/languages/count/1951fdg/openpyn-nordvpn-juicessh.svg)
-![/1951FDG/openpyn-nordvpn-juiceSSH/commits/master](https://img.shields.io/github/last-commit/1951fdg/openpyn-nordvpn-juicessh.svg)
-![https://snyk.io/test/github/1951FDG/openpyn-nordvpn-juiceSSH?targetFile=app%2Fbuild.gradle](https://snyk.io/test/github/1951FDG/openpyn-nordvpn-juiceSSH/badge.svg?targetFile=app%2Fbuild.gradle)
-![https://www.codacy.com/app/1951FDG/openpyn-nordvpn-juiceSSH?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=1951FDG/openpyn-nordvpn-juiceSSH&amp;utm_campaign=Badge_Grade](https://img.shields.io/codacy/grade/0b6672c6a62a4efc92a51f029ae310e4.svg)
+[![](https://img.shields.io/github/license/1951fdg/openpyn-nordvpn-juicessh.svg)](LICENSE)
+[![](https://img.shields.io/github/languages/top/1951fdg/openpyn-nordvpn-juicessh.svg)](https://kotlinlang.org/)
+[![](https://img.shields.io/github/languages/count/1951fdg/openpyn-nordvpn-juicessh.svg)]()
+[![](https://img.shields.io/github/last-commit/1951fdg/openpyn-nordvpn-juicessh.svg)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/commits/master)
+[![](https://snyk.io/test/github/1951FDG/openpyn-nordvpn-juiceSSH/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/1951FDG/openpyn-nordvpn-juiceSSH?targetFile=app%2Fbuild.gradle)
+[![](https://img.shields.io/codacy/grade/0b6672c6a62a4efc92a51f029ae310e4.svg)](https://www.codacy.com/app/1951FDG/openpyn-nordvpn-juiceSSH?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=1951FDG/openpyn-nordvpn-juiceSSH&amp;utm_campaign=Badge_Grade)
 
 An Android app written in C/C++, [Java](https://www.oracle.com/java/), and [Kotlin](https://kotlinlang.org/) to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely through JuiceSSH. Special thanks to [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor), a JuiceSSH plugin written in Kotlin by [sds100](https://github.com/sds100) which served as a base for this JuiceSSH plugin.
 
@@ -54,11 +54,11 @@ The idea all started when I wanted to connect to OpenVPN servers hosted by NordV
 
 _Am I missing some essential feature?_
 
--   Submit an [issue](/1951FDG/openpyn-nordvpn-juiceSSH/issues/new) and let's make this app better together!
+-   Submit an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new) and let's make this app better together!
 
 ## How it works
 
-A lot of components make this app work, I'll cover some of the basics here. Basically on app startup, the map is loaded asynchronously, an MBTile file (SQLite database) located in the assets resource folder within the APK is loaded and then stored and read in memory. The [world.mbtiles](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/assets/world.mbtiles) was generated using a custom python script, [generate_tiles_multiprocess.py](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/generate_tiles_multiprocess.py).
+A lot of components make this app work, I'll cover some of the basics here. Basically on app startup, the map is loaded asynchronously, an MBTile file (SQLite database) located in the assets resource folder within the APK is loaded and then stored and read in memory. The [world.mbtiles](app/src/main/assets/world.mbtiles) was generated using a custom python script, [generate_tiles_multiprocess.py](generate_tiles_multiprocess.py).
 
     rm ./app/src/main/assets/world.mbtiles
     ./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/world.mbtiles 1 4 --format webp
@@ -89,7 +89,7 @@ After the map is done loading, the NordVPN API is invoked to query all the suppo
 
 ## Download
 
-No download available yet, [watch](/1951FDG/openpyn-nordvpn-juiceSSH/subscription) this repository in the meanwhile...
+No download available yet, [watch](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/subscription) this repository in the meanwhile...
 
 ## Requirements
 
@@ -148,58 +148,58 @@ Tiles
 This app uses (modified) code from several open source projects.
 
 -   [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk)
-    -   Modified [sqlite3ndk.h](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/cpp/sqlite3ndk.h)
-    -   Modified [sqlite3ndk.cpp](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/cpp/sqlite3ndk.cpp)
+    -   Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
+    -   Modified [sqlite3ndk.cpp](app/src/main/cpp/sqlite3ndk.cpp)
 
 
 -   [Android Maps Extensions](https://github.com/mg6maciej/android-maps-extensions)
     -   Modified
-        [LazyMarker.java](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/com/androidmapsextensions/lazy/LazyMarker.java)
+        [LazyMarker.java](app/src/main/java/com/androidmapsextensions/lazy/LazyMarker.java)
 
 
 -   [Map Utils](https://github.com/antoniocarlon/MapUtils)
-    -   Modified [CameraUpdateAnimator.java](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
+    -   Modified [CameraUpdateAnimator.java](app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
 
 
 -   [Android Network Utility](https://github.com/evert-arias/android-network-utility)
-    -   Modified [NetworkInfo.kt](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/com/ariascode/networkutility/NetworkInfo.kt)
+    -   Modified [NetworkInfo.kt](app/src/main/java/com/ariascode/networkutility/NetworkInfo.kt)
 
 
 -   [Android Google Maps API v2 Add-ons](https://github.com/cocoahero/android-gmaps-addons)
-    -   Modified [MapBoxOfflineTileProvider.java](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/com/cocoahero/android/gmaps/addons/mapbox/MapBoxOfflineTileProvider.java)
+    -   Modified [MapBoxOfflineTileProvider.java](app/src/main/java/com/cocoahero/android/gmaps/addons/mapbox/MapBoxOfflineTileProvider.java)
 
 
 -   [Old XML format Mapnik stylesheets](https://github.com/openstreetmap/mapnik-stylesheets)
-    -   Modified [generate_tiles_multiprocess.py](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/generate_tiles_multiprocess.py)
+    -   Modified [generate_tiles_multiprocess.py](generate_tiles_multiprocess.py)
 
 
 -   [Google Maps Android API utility library](https://github.com/kiddouk/CheckableFloatingActionButton)
-    -   [Point.java](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/com/google/maps/android/geometry/Point.java)
-    -   [SphericalMercatorProjection.java](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
+    -   [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
+    -   [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
 
 
 -   [Checkable Floating Button](https://github.com/kiddouk/CheckableFloatingActionButton)
-    -   Modified [CheckableFloatingActionButton.java](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/errorlab/widget/CheckableFloatingActionButton.java)
-    -   Modified [CheckedSavedState.java](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/errorlab/widget/CheckedSavedState.java)
+    -   Modified [CheckableFloatingActionButton.java](app/src/main/java/io/errorlab/widget/CheckableFloatingActionButton.java)
+    -   Modified [CheckedSavedState.java](app/src/main/java/io/errorlab/widget/CheckedSavedState.java)
 
 > **Note**:
 > Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
 
 ## References
 
--   [MyStorage.kt](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
+-   [MyStorage.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
 
--   [PrintArray.kt](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
+-   [PrintArray.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
     ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
 
--   [SecurityManager.java](/1951FDG/openpyn-nordvpn-juiceSSH/blob/master/app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
+-   [SecurityManager.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
     -   [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
     -   [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
     -   [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
 
 ## Feedback
 
-Feel free to send us feedback by submitting an [issue](/1951FDG/openpyn-nordvpn-juiceSSH/issues/new). Bug reports, feature requests, patches, and well-wishes are always welcome.
+Feel free to send us feedback by submitting an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new). Bug reports, feature requests, patches, and well-wishes are always welcome.
 
 ## Contributing
 
