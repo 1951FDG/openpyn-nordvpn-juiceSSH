@@ -92,7 +92,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             findPreference("pref_api_ipdata")?.let { bindPreferenceSummaryToValue(it) }
             findPreference("pref_api_ipinfo")?.let { bindPreferenceSummaryToValue(it) }
             findPreference("pref_api_ipstack")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_api_google_maps")?.let { bindPreferenceSummaryToValue(it) }
         }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
