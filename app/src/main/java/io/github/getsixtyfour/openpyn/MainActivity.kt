@@ -499,7 +499,7 @@ class MainActivity : AppCompatActivity(),
         longToast(exitCode.toString())
         when (exitCode) {
             0 -> {
-                error("Success")
+                info("Success")
             }
         }
     }

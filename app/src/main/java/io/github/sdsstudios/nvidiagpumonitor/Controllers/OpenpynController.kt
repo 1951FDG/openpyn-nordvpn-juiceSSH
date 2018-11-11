@@ -21,6 +21,8 @@ class OpenpynController(
     override fun onCompleted(exitCode: Int) {
         super.onCompleted(exitCode)
 
+        info(exitCode.toString())
+
         mActivitySessionExecuteListener?.onCompleted(exitCode)
     }
 
@@ -63,14 +65,14 @@ class OpenpynController(
         val nvram = preferences.getBoolean("pref_nvram", false)
         //val openvpn_options = args.openvpn_options
         val openvpn = "--syslog openpyn"
-        val options = StringBuilder()
+        val options = StringBuilder("openpyn")
 
         if (server != null && !server.isEmpty())
             options.append(" --server $server")
         else if (flag != null)
-            options.append(flag)
+            options.append(" $flag")
         else if (country != null)
-            options.append(country)
+            options.append(" $country")
         //if area:
         //openpyn_options += " --area " + area
         if (tcp)
@@ -116,13 +118,15 @@ class OpenpynController(
         info(openpyn)
         // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
         // command = "echo \$PATH ; echo \$-"
-        command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; openpyn $openpyn"
+        command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; $openpyn"
+        info(command)
 
         super.start(pluginClient, sessionId, sessionKey)
     }
 
     override fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
         stopcommand = "sudo openpyn --kill"
+        info(stopcommand)
 
         super.kill(pluginClient, sessionId, sessionKey)
     }
