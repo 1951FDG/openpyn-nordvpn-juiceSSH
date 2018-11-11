@@ -96,15 +96,15 @@ struct ndk_file
  */
 static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, int flags, int *pOutFlags)
 {
-	const ndk_vfs* ndk = (ndk_vfs*) pVfs;
-	ndk_file *ndkFile = (ndk_file*) pFile;
+	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
+	ndk_file *file = reinterpret_cast<ndk_file*>(pFile);
 
 	// pMethod must be set to NULL, even if xOpen call fails.
 	//
 	// http://www.sqlite.org/c3ref/io_methods.html
 	// "The only way to prevent a call to xClose following a failed sqlite3_vfs.xOpen
 	// is for the sqlite3_vfs.xOpen to set the sqlite3_file.pMethods element to NULL."
-	ndkFile->pMethod = NULL;
+	file->pMethod = NULL;
 
 	// Allow only for opening main database file as read-only.
 	// Opening JOURNAL/TEMP/WAL/etc. files will make call fails.
@@ -144,10 +144,10 @@ static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, in
 		return SQLITE_ERROR;
 	}
 
-	ndkFile->pMethod = ndk->pMethods;
-	ndkFile->asset = asset;
-	ndkFile->buf = buf;
-	ndkFile->len = AAsset_getLength(asset);
+	file->pMethod = ndk->pMethods;
+	file->asset = asset;
+	file->buf = buf;
+	file->len = AAsset_getLength(asset);
 	if (pOutFlags)
 	{
 		*pOutFlags = flags;
@@ -170,7 +170,7 @@ static int ndkDelete(sqlite3_vfs *, const char *, int)
  */
 static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags, int *pResOut)
 {
-	const ndk_vfs* ndk = (ndk_vfs*) pVfs;
+	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
 
 	*pResOut = 0;
 
@@ -205,7 +205,7 @@ static int ndkFullPathname(sqlite3_vfs *pVfs, const char *zPath, int nOut, char 
 	}
 
 	int pos = 0;
-	while (zPath[pos] && (pos < nOut))
+	while ((pos < nOut) && zPath[pos])
 	{
 		zOut[pos] = zPath[pos];
 		++pos;
@@ -225,7 +225,7 @@ static int ndkFullPathname(sqlite3_vfs *pVfs, const char *zPath, int nOut, char 
  */
 static int ndkRandomness(sqlite3_vfs *pVfs, int nBuf, char *zBuf)
 {
-	const ndk_vfs* ndk = (ndk_vfs*) pVfs;
+	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
 
 	return ndk->vfsDefault->xRandomness(ndk->vfsDefault, nBuf, zBuf);
 }
@@ -236,7 +236,7 @@ static int ndkRandomness(sqlite3_vfs *pVfs, int nBuf, char *zBuf)
  */
 static int ndkSleep(sqlite3_vfs *pVfs, int microseconds)
 {
-	const ndk_vfs* ndk = (ndk_vfs*) pVfs;
+	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
 
 	return ndk->vfsDefault->xSleep(ndk->vfsDefault, microseconds);
 }
@@ -247,7 +247,7 @@ static int ndkSleep(sqlite3_vfs *pVfs, int microseconds)
  */
 static int ndkCurrentTime(sqlite3_vfs *pVfs, double *prNow)
 {
-	const ndk_vfs* ndk = (ndk_vfs*) pVfs;
+	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
 
 	return ndk->vfsDefault->xCurrentTime(ndk->vfsDefault, prNow);
 }
@@ -266,7 +266,7 @@ static int ndkGetLastError(sqlite3_vfs *, int, char *)
  */
 static int ndkCurrentTimeInt64(sqlite3_vfs *pVfs, sqlite3_int64 *piNow)
 {
-	const ndk_vfs* ndk = (ndk_vfs*) pVfs;
+	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
 
 	return ndk->vfsDefault->xCurrentTimeInt64(ndk->vfsDefault, piNow);
 }
@@ -277,7 +277,7 @@ static int ndkCurrentTimeInt64(sqlite3_vfs *pVfs, sqlite3_int64 *piNow)
  */
 static int ndkFileClose(sqlite3_file *pFile)
 {
-	ndk_file* file = (ndk_file*) pFile;
+	ndk_file *file = reinterpret_cast<ndk_file*>(pFile);
 
 	if (file->asset)
 	{
@@ -296,7 +296,7 @@ static int ndkFileClose(sqlite3_file *pFile)
  */
 static int ndkFileRead(sqlite3_file *pFile, void *pBuf, int amt, sqlite3_int64 offset)
 {
-	const ndk_file* file = (ndk_file*) pFile;
+	const ndk_file *file = reinterpret_cast<ndk_file*>(pFile);
 	int got, off;
 	int rc;
 
@@ -374,7 +374,7 @@ static int ndkFileSync(sqlite3_file *, int)
  */
 static int ndkFileSize(sqlite3_file *pFile, sqlite3_int64 *pSize)
 {
-	ndk_file* file = (ndk_file*) pFile;
+	ndk_file *file = reinterpret_cast<ndk_file*>(pFile);
 	*pSize = file->len;
 
 	return SQLITE_OK;
