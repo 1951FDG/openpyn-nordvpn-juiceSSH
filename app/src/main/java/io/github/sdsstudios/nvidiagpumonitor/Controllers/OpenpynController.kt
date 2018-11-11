@@ -1,18 +1,47 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import android.content.Context
-import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
+import com.google.android.gms.maps.model.LatLng
 import com.sonelli.juicessh.pluginlibrary.PluginClient
+import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
+import io.github.sdsstudios.nvidiagpumonitor.OnCommandExecuteListener
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import org.jetbrains.anko.longToast
 
-class OpenpynController(ctx: Context, liveData: MutableLiveData<Int>) : BaseController(ctx, liveData), AnkoLogger {
+class OpenpynController(
+        ctx: Context,
+        liveData: MutableLiveData<Int>,
+        private val mActivitySessionExecuteListener: OnSessionExecuteListener?,
+        private val mActivityExecuteCommandListener: OnCommandExecuteListener?
+) : BaseController(ctx, liveData), AnkoLogger {
     override val regex: Regex = Regex("""\d+""")
 
+    override fun onCompleted(exitCode: Int) {
+        super.onCompleted(exitCode)
+
+        mActivitySessionExecuteListener?.onCompleted(exitCode)
+    }
+
+    override fun onOutputLine(line: String) {
+        info(line)
+
+        mActivitySessionExecuteListener?.onOutputLine(line)
+    }
+
+    override fun onError(error: Int, reason: String) {
+        super.onError(error, reason)
+
+        mActivitySessionExecuteListener?.onError(error, reason)
+    }
+
     override fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
+        var pair: Pair<LatLng?, String?> = Pair(null, null)
+        if (mActivityExecuteCommandListener != null) {
+            pair = mActivityExecuteCommandListener.positionAndFlagForSelectedMarker()
+        }
+        val (location, flag) = pair
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
         val server = preferences.getString("pref_server", null)
         val country = preferences.getString("pref_country", "gb")
@@ -34,7 +63,6 @@ class OpenpynController(ctx: Context, liveData: MutableLiveData<Int>) : BaseCont
         val nvram = preferences.getBoolean("pref_nvram", false)
         //val openvpn_options = args.openvpn_options
         val openvpn = "--syslog openpyn"
-        val (location, flag) = mainActivity.positionAndFlagForSelectedMarker()
         val options = StringBuilder()
 
         if (server != null && !server.isEmpty())
@@ -101,16 +129,5 @@ class OpenpynController(ctx: Context, liveData: MutableLiveData<Int>) : BaseCont
 
     override fun convertDataToInt(data: String): Int {
         return data.toInt()
-    }
-
-    @Suppress("MagicNumber")
-    override fun onOutputLine(line: String) {
-        info(line)
-        mCtx.longToast(line)
-        if (line.startsWith("CONNECTING TO SERVER", true)) {
-            Handler().postDelayed({
-                mainActivity.updateMasterMarker(true)
-            }, 10000)
-        }
     }
 }

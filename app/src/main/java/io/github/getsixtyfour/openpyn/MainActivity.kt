@@ -58,6 +58,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mayurrokade.minibar.UserMessage
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
+import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.squareup.moshi.FromJson
@@ -79,6 +80,7 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
+import io.github.sdsstudios.nvidiagpumonitor.OnCommandExecuteListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.jetbrains.anko.*
@@ -127,7 +129,9 @@ class MainActivity : AppCompatActivity(),
         GoogleMap.OnCameraIdleListener,
         AnkoLogger,
         OnLevelChangeCallback,
-        SubmitCallbackListener {
+        SubmitCallbackListener,
+        OnSessionExecuteListener,
+        OnCommandExecuteListener {
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
@@ -159,7 +163,7 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
+        val core = CrashlyticsCore.Builder().disabled(false).build()
         Fabric.with(this, Crashlytics.Builder().core(core).build())
 
         setContentView(R.layout.activity_main)
@@ -202,7 +206,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (isJuiceSSHInstalled()) {
-            mConnectionManager = ConnectionManager(this, this, this)
+            mConnectionManager = ConnectionManager(this, this, this, this, this)
 //            mConnectionManager.powerUsage.observe(this, Observer {
 //                textViewPower.setData(it, "W")
 //            })
@@ -475,6 +479,29 @@ class MainActivity : AppCompatActivity(),
 
     override fun onLoaderFinished(newCursor: Cursor?) {
         mConnectionListAdapter.swapCursor(newCursor)
+    }
+
+    @Suppress("MagicNumber")
+    override fun onOutputLine(line: String) {
+        longToast(line)
+        if (line.startsWith("CONNECTING TO SERVER", true)) {
+            Handler().postDelayed({
+                updateMasterMarker(true)
+            }, 10000)
+        }
+    }
+
+    override fun onError(error: Int, reason: String) {
+        longToast(reason)
+    }
+
+    override fun onCompleted(exitCode: Int) {
+        longToast(exitCode.toString())
+        when (exitCode) {
+            0 -> {
+                error("Success")
+            }
+        }
     }
 
     @MainThread
@@ -1305,7 +1332,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     @MainThread
-    fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
+    override fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
         if (mMap != null && items.size != 0) {
             items.forEach { (key, value) ->
                 if (value.zIndex == 1.0f) {

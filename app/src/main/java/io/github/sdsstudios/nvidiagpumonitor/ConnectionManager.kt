@@ -5,9 +5,11 @@ import android.content.Intent
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.model.LatLng
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
+import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.getsixtyfour.openpyn.R
@@ -15,17 +17,24 @@ import io.github.sdsstudios.nvidiagpumonitor.controllers.OpenpynController
 import org.jetbrains.anko.longToast
 import java.util.UUID
 
+interface OnCommandExecuteListener {
+    fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?>
+}
+
 /**
  * Created by Seth on 04/03/18.
  */
 @MainThread
 class ConnectionManager(ctx: Context,
                         private val mActivitySessionStartedListener: OnSessionStartedListener,
-                        private val mActivitySessionFinishedListener: OnSessionFinishedListener
+                        private val mActivitySessionFinishedListener: OnSessionFinishedListener,
+                        mActivitySessionExecuteListener: OnSessionExecuteListener?,
+                        mActivityCommandExecuteListener: OnCommandExecuteListener?
 ) : OnSessionStartedListener, OnSessionFinishedListener {
     companion object {
         const val JUICESSH_REQUEST_CODE: Int = 345
     }
+
 //    val powerUsage = MutableLiveData<Int>()
 //    val temperature = MutableLiveData<Int>()
 //    val fanSpeed = MutableLiveData<Int>()
@@ -47,7 +56,7 @@ class ConnectionManager(ctx: Context,
 //    private val mGraphicsClockController = GraphicsClockController(mCtx, graphicsClock)
 //    private val mVideoClockController = VideoClockController(mCtx, videoClock)
 //    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
-    private val mOpenpynController = OpenpynController(ctx, openpyn)
+    private val mOpenpynController = OpenpynController(ctx, openpyn, mActivitySessionExecuteListener, mActivityCommandExecuteListener)
     private val mControllers = listOf(
 //            mPowerController,
 //            mTempController,
