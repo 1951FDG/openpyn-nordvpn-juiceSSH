@@ -11,10 +11,10 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
 class OpenpynController(
-        ctx: Context,
-        liveData: MutableLiveData<Int>,
-        private val mActivitySessionExecuteListener: OnSessionExecuteListener?,
-        private val mActivityExecuteCommandListener: OnCommandExecuteListener?
+    ctx: Context,
+    liveData: MutableLiveData<Int>,
+    private val mActivitySessionExecuteListener: OnSessionExecuteListener?,
+    private val mActivityExecuteCommandListener: OnCommandExecuteListener?
 ) : BaseController(ctx, liveData), AnkoLogger {
     override val regex: Regex = Regex("""\d+""")
 

@@ -25,7 +25,8 @@ import android.os.Looper
 import androidx.annotation.MainThread
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
-import org.jetbrains.anko.*
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.debug
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket

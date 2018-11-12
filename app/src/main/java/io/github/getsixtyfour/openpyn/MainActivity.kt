@@ -276,7 +276,10 @@ class MainActivity : AppCompatActivity(),
         map?.onResume()
 
         if (!isJuiceSSHInstalled()) {
-            findViewById<View>(android.R.id.content).indefiniteSnackbar(getString(R.string.error_must_install_juicessh), getString(android.R.string.ok)) {
+            findViewById<View>(android.R.id.content).indefiniteSnackbar(
+                    getString(R.string.error_must_install_juicessh),
+                    getString(android.R.string.ok)
+            ) {
                 juiceSSHInstall()
             }
         }
@@ -310,9 +313,7 @@ class MainActivity : AppCompatActivity(),
         return true
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         fun isGranted(resultIndex: Int): Boolean {
             return grantResults.isNotEmpty() && grantResults[resultIndex] ==
                     PackageManager.PERMISSION_GRANTED
@@ -329,7 +330,10 @@ class MainActivity : AppCompatActivity(),
             if (mPermissionsGranted) {
                 onPermissionsGranted()
             } else {
-                findViewById<View>(android.R.id.content).indefiniteSnackbar(getString(R.string.error_must_enable_permissions), getString(android.R.string.ok)) {
+                findViewById<View>(android.R.id.content).indefiniteSnackbar(
+                        getString(R.string.error_must_enable_permissions),
+                        getString(android.R.string.ok)
+                ) {
                     requestPermissions()
                 }
             }
@@ -549,6 +553,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    @Suppress("MagicNumber")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         cameraUpdateAnimator = CameraUpdateAnimator(googleMap, this)

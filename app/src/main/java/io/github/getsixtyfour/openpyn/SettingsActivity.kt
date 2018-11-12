@@ -129,31 +129,32 @@ class SettingsActivity : AppCompatPreferenceActivity() {
          * to reflect its new value.
          */
         @Suppress("WeakerAccess")
-        val sBindPreferenceSummaryToValueListener: Preference.OnPreferenceChangeListener = Preference.OnPreferenceChangeListener { preference, value ->
-            val stringValue = value.toString()
+        val sBindPreferenceSummaryToValueListener: Preference.OnPreferenceChangeListener
+            get() = Preference.OnPreferenceChangeListener { preference, value ->
+                val stringValue = value.toString()
 
-            if (preference is ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                val index = preference.findIndexOfValue(stringValue)
-                // Set the summary to reflect the new value.
-                preference.summary = if (index >= 0) preference.entries[index] else null
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                when {
-                    stringValue.isEmpty() -> preference.summary = "N/A"
-                    preference.key.equals("pref_api_ipdata", true) -> preference.summary = "Available (SSL)"
-                    preference.key.equals("pref_api_ipinfo", true) -> preference.summary = "Available (SSL)"
-                    preference.key.startsWith("pref_api", true) -> preference.summary = "Available"
-                    preference.key.equals("pref_server", true) && !validate(stringValue) -> {
-                        return@OnPreferenceChangeListener false
+                if (preference is ListPreference) {
+                    // For list preferences, look up the correct display value in
+                    // the preference's 'entries' list.
+                    val index = preference.findIndexOfValue(stringValue)
+                    // Set the summary to reflect the new value.
+                    preference.summary = if (index >= 0) preference.entries[index] else null
+                } else {
+                    // For all other preferences, set the summary to the value's
+                    // simple string representation.
+                    when {
+                        stringValue.isEmpty() -> preference.summary = "N/A"
+                        preference.key.equals("pref_api_ipdata", true) -> preference.summary = "Available (SSL)"
+                        preference.key.equals("pref_api_ipinfo", true) -> preference.summary = "Available (SSL)"
+                        preference.key.startsWith("pref_api", true) -> preference.summary = "Available"
+                        preference.key.equals("pref_server", true) && !validate(stringValue) -> {
+                            return@OnPreferenceChangeListener false
+                        }
+                        else -> preference.summary = stringValue
                     }
-                    else -> preference.summary = stringValue
                 }
+                true
             }
-            true
-        }
 
         /**
          * Helper method to determine if the device has an extra-large screen. For

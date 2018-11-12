@@ -15,8 +15,9 @@ import org.jetbrains.anko.error
  */
 @MainThread
 abstract class BaseController(
-        ctx: Context,
-        private val mLiveData: MutableLiveData<Int>) : OnSessionExecuteListener, AnkoLogger {
+    ctx: Context,
+    private val mLiveData: MutableLiveData<Int>
+) : OnSessionExecuteListener, AnkoLogger {
     val mCtx: Context = ctx.applicationContext
     private var isRunning = false
     abstract val regex: Regex

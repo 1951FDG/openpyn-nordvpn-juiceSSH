@@ -25,11 +25,12 @@ interface OnCommandExecuteListener {
  * Created by Seth on 04/03/18.
  */
 @MainThread
-class ConnectionManager(ctx: Context,
-                        private val mActivitySessionStartedListener: OnSessionStartedListener,
-                        private val mActivitySessionFinishedListener: OnSessionFinishedListener,
-                        mActivitySessionExecuteListener: OnSessionExecuteListener?,
-                        mActivityCommandExecuteListener: OnCommandExecuteListener?
+class ConnectionManager(
+    ctx: Context,
+    private val mActivitySessionStartedListener: OnSessionStartedListener,
+    private val mActivitySessionFinishedListener: OnSessionFinishedListener,
+    mActivitySessionExecuteListener: OnSessionExecuteListener?,
+    mActivityCommandExecuteListener: OnCommandExecuteListener?
 ) : OnSessionStartedListener, OnSessionFinishedListener {
     companion object {
         const val JUICESSH_REQUEST_CODE: Int = 345
