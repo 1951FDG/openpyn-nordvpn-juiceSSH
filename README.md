@@ -41,13 +41,21 @@ The idea all started when I wanted to connect to OpenVPN servers hosted by NordV
 ## Features
 
 -   Supports most arguments available in Openpyn with easy to use preferences
+
 -   Allows to use location based filtering in Openpyn
+
 -   Map view displays markers for every country supported by NordVPN
+
 -   Allows to hide countries in the map view
+
 -   Allows to star a country in the map view
+
 -   API keys stored in shared preferences are encrypted ("AES/GCM/NoPadding")
+
 -   On app start, it will use a smart location, to determine the closest country
+
 -   A floating action button (FAB), to determine current location based on the current public IP address
+
 -   Uses Geolocation APIs to determine the current location based on the current public IP address
     -   <http://ip-api.com/>, <https://ipdata.co/>, <https://ipinfo.io/>, <https://ipstack.com/>
 
