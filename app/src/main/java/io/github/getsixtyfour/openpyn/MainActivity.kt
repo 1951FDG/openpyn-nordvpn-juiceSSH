@@ -1,8 +1,7 @@
 package io.github.getsixtyfour.openpyn
 
-import android.Manifest
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -188,11 +187,11 @@ class MainActivity : AppCompatActivity(),
             else -> longToast(api.getErrorString(errorCode))
         }
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
         }
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             fusedLocationClient.lastLocation
                     .addOnSuccessListener { location: Location? ->
@@ -375,7 +374,8 @@ class MainActivity : AppCompatActivity(),
                         val text = json1.toString()
 
                         try {
-                            val file = File(getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+                            val child = resources.getResourceEntryName(R.raw.nordvpn) + ".json"
+                            val file = File(getExternalFilesDir(null), child)
                             file.writeText(text)
                             thrown = false
                         } catch (e: Resources.NotFoundException) {
@@ -405,7 +405,9 @@ class MainActivity : AppCompatActivity(),
                 true
             }
             R.id.action_github -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/1951FDG/openpyn-nordvpn-juiceSSH")))
+                val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -703,7 +705,8 @@ class MainActivity : AppCompatActivity(),
             var jsonArr: JSONArray? = null
 
             try {
-                val file = File(getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+                val child = resources.getResourceEntryName(R.raw.nordvpn) + ".json"
+                val file = File(getExternalFilesDir(null), child)
                 val json = file.bufferedReader().use {
                     it.readText()
                 }
@@ -996,7 +999,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     @MainThread
-    private fun executeAnimation(it: Context, json1: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
+    private fun executeAnimation(json1: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
         when {
             json1 != null -> {
                 val lat = json1.getDouble("latitude")
@@ -1010,8 +1013,8 @@ class MainActivity : AppCompatActivity(),
 
                 animateCamera(latLng, animator, closest, true)
             }
-            ActivityCompat.checkSelfPermission(it, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
-                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(it)
+            ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
+                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
                 fusedLocationClient.lastLocation
                         .addOnSuccessListener { location: Location? ->
                             var latLng = getDefaultLatLng()
@@ -1363,7 +1366,8 @@ class MainActivity : AppCompatActivity(),
             var var2: JSONArray? = null
 
             try {
-                val file = File(getExternalFilesDir(null), resources.getResourceEntryName(R.raw.nordvpn) + ".json")
+                val child = resources.getResourceEntryName(R.raw.nordvpn) + ".json"
+                val file = File(getExternalFilesDir(null), child)
                 val json = file.bufferedReader().use {
                     it.readText()
                 }
@@ -1381,7 +1385,7 @@ class MainActivity : AppCompatActivity(),
             uiThread {
                 toolbar.hideProgress(true)
                 //var1?.let { jsonObject -> showThreats(jsonObject) }
-                executeAnimation(it, var1, var2, cameraUpdateAnimator, false)
+                executeAnimation(var1, var2, cameraUpdateAnimator, false)
 
                 if (show && var1 != null) {
                     val flag = var1.getString("flag").toUpperCase()
