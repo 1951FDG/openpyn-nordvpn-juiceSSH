@@ -36,7 +36,7 @@ captures/
 *.iml
 .idea/assetWizardSettings.xml
 .idea/caches
-.idea/codeStyles/Project.xml
+#.idea/codeStyles/Project.xml
 .idea/dictionaries
 .idea/gradle.xml
 .idea/kotlinc.xml
