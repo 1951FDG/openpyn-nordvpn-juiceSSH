@@ -65,6 +65,8 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.Types
+import com.tingyik90.snackprogressbar.SnackProgressBar
+import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.fabric.sdk.android.Fabric
@@ -83,7 +85,6 @@ import io.github.sdsstudios.nvidiagpumonitor.OnCommandExecuteListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.design.indefiniteSnackbar
 import org.jetbrains.anko.sdk27.listeners.onClick
 import org.json.JSONArray
 import org.json.JSONException
@@ -158,6 +159,7 @@ class MainActivity : AppCompatActivity(),
     private var networkInfo: NetworkInfo? = null
     private var tileProvider: MapBoxOfflineTileProvider? = null
     private var lastLocation: Location? = null
+    private var snackProgressBarManager: SnackProgressBarManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -178,6 +180,7 @@ class MainActivity : AppCompatActivity(),
         PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
 
         networkInfo = NetworkInfo.getInstance(application)
+        snackProgressBarManager = SnackProgressBarManager(maplayout).setViewsToMove(arrayOf(fab0, fab1))
         val api = GoogleApiAvailability.getInstance()
         val errorCode = api.isGooglePlayServicesAvailable(this)
 
@@ -275,12 +278,16 @@ class MainActivity : AppCompatActivity(),
         map?.onResume()
 
         if (!isJuiceSSHInstalled()) {
-            findViewById<View>(android.R.id.content).indefiniteSnackbar(
-                    getString(R.string.error_must_install_juicessh),
-                    getString(android.R.string.ok)
-            ) {
-                juiceSSHInstall()
-            }
+            val snackProgressBar = SnackProgressBar(SnackProgressBar.TYPE_NORMAL, getString(R.string.error_must_install_juicessh))
+            snackProgressBar.setAction(
+                    getString(android.R.string.ok),
+                    object : SnackProgressBar.OnActionClickListener {
+                        override fun onActionClick() {
+                            juiceSSHInstall()
+                        }
+                    }
+            )
+            snackProgressBarManager?.show(snackProgressBar, SnackProgressBarManager.LENGTH_INDEFINITE)
         }
     }
 
@@ -329,12 +336,16 @@ class MainActivity : AppCompatActivity(),
             if (mPermissionsGranted) {
                 onPermissionsGranted()
             } else {
-                findViewById<View>(android.R.id.content).indefiniteSnackbar(
-                        getString(R.string.error_must_enable_permissions),
-                        getString(android.R.string.ok)
-                ) {
-                    requestPermissions()
-                }
+                val snackProgressBar = SnackProgressBar(SnackProgressBar.TYPE_NORMAL, getString(R.string.error_must_enable_permissions))
+                snackProgressBar.setAction(
+                        getString(android.R.string.ok),
+                        object : SnackProgressBar.OnActionClickListener {
+                            override fun onActionClick() {
+                                requestPermissions()
+                            }
+                        }
+                )
+                snackProgressBarManager?.show(snackProgressBar, SnackProgressBarManager.LENGTH_INDEFINITE)
             }
         }
     }
