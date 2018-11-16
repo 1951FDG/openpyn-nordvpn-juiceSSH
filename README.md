@@ -33,7 +33,13 @@ An Android app written in C/C++, [Java](https://www.oracle.com/java/), and [Kotl
 
 ## Introduction
 
-The idea all started when I wanted to connect to OpenVPN servers hosted by NordVPN on a [Asus RT-AC86U](https://www.asus.com/Networking/RT-AC86U/). By default this is possible, but the default firmware including third party firmware [Asuswrt-merlin](https://asuswrt.lostrealm.ca/) only allow for a maximum of 5 OpenVPN Clients to be saved. I then stumbled on [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), quickly learned Python, and made a pull request, enabling support for Asuswrt-merlin. Openpyn is a python3 script which can be run on [Entware-ng-3x on Asuswrt-merlin](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md). The main feature of Openpyn, is that it automatically connects to the least busy, lowest latency OpenVPN server. NVRAM write support for Asuswrt-merlin in Openpyn is then able to save the least busy, lowest latency OpenVPN server to the NVRAM of a Entware-ng-3x enabled ASUS router. Now, I had achieved more or less what I desired, but this left me with one last struggle, having to resort to open a SSH connection to the ASUS router and supplying Openpyn with the desired arguments e.g., country, load threshold, server type, and number of pings to be sent to each server to determine quality. I thought that having the ability to do that on my phone instead of my computer would make this a lot easier, and that led me to discovering [JuiceSSH](https://juicessh.com/). JuiceSSH supports the use of plugins, which allowed me to create this fantastic app. This app runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to send a Openpyn command to the remote device.
+The idea all started when I wanted to connect to OpenVPN servers hosted by NordVPN on a [Asus RT-AC86U](https://www.asus.com/Networking/RT-AC86U/). By default this is possible, but the default firmware including third party firmware [Asuswrt-merlin](https://asuswrt.lostrealm.ca/) only allow for a maximum of 5 OpenVPN Clients to be saved.
+
+I then stumbled on [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), quickly learned Python, and made a pull request, enabling support for Asuswrt-merlin. Openpyn is a python3 script which can be run on [Entware-ng-3x on Asuswrt-merlin](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md). The main feature of Openpyn, is that it automatically connects to the least busy, lowest latency OpenVPN server. NVRAM write support for Asuswrt-merlin in Openpyn is then able to save the least busy, lowest latency OpenVPN server to the NVRAM of a Entware-ng-3x enabled ASUS router.
+
+Now, I had achieved more or less what I desired, but this left me with one last struggle, having to resort to open a SSH connection to the ASUS router and supplying Openpyn with the desired arguments e.g., country, load threshold, server type, and number of pings to be sent to each server to determine quality. I thought that having the ability to do that on my phone instead of my computer would make this a lot easier, and that led me to discovering [JuiceSSH](https://juicessh.com/).
+
+JuiceSSH supports the use of plugins, which allowed me to create this fantastic app. This app runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to send a Openpyn command to the remote device.
 
 > **Note**:
 > This project is my very first Android project, and as such, it may not follow all the best coding practices yet, regardless of this, I'm committed to make this app a source of inspiration for other developers working on similar based Android apps, especially Google Maps based Android apps.
@@ -133,6 +139,7 @@ To compile and run the project you'll need:
 -   [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
 -   [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
 -   [Result](https://github.com/kittinunf/Result)
+-   [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
 -   [SQLite](https://sqlite.org/android/doc/trunk/www/install.wiki)
 -   [StaticLog](https://github.com/jupf/staticlog)
 
