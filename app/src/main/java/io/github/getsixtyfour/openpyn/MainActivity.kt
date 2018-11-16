@@ -359,7 +359,7 @@ class MainActivity : AppCompatActivity(),
                     putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
                     putExtra(EXTRA_NO_HEADERS, true)
                 }
-                ActivityCompat.startActivity(this, intent, options.toBundle())
+                startActivity(intent, options.toBundle())
                 /*
                 startActivity<SettingsActivity>(
                         EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name,
@@ -418,7 +418,7 @@ class MainActivity : AppCompatActivity(),
             R.id.action_github -> {
                 val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-                startActivity(intent)
+                startActivity(intent, null)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -562,7 +562,14 @@ class MainActivity : AppCompatActivity(),
         if (launchIntent != null) {
             launchIntent.component = ComponentName(pkg, cls)
             launchIntent.data = Uri.parse("market://details?id=$JUICE_SSH_PACKAGE_NAME")
-            startActivity(launchIntent)
+            try {
+                startActivity(launchIntent, null)
+            } catch (e: android.content.ActivityNotFoundException) {
+                Crashlytics.logException(e)
+                val uriString = "https://play.google.com/store/apps/details?id=$JUICE_SSH_PACKAGE_NAME"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
+                startActivity(intent, null)
+            }
         }
     }
 
