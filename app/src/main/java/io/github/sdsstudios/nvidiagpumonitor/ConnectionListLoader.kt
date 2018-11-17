@@ -22,7 +22,8 @@ class ConnectionListLoader(
                 mCtx,
                 PluginContract.Connections.CONTENT_URI,
                 PluginContract.Connections.PROJECTION,
-                null, null,
+                null,
+                null,
                 PluginContract.Connections.SORT_ORDER_DEFAULT
         )
     }

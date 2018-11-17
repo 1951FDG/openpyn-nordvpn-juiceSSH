@@ -25,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
 import androidx.preference.PreferenceManager
@@ -41,7 +40,7 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.CancelableCallback
@@ -137,7 +136,6 @@ class MainActivity : AppCompatActivity(),
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
         private const val PERMISSION_REQUEST_CODE = 23
         private const val JUICE_SSH_PACKAGE_NAME = "com.sonelli.juicessh"
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 0
         private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
         private const val favorites = "pref_favorites"
     }
@@ -146,10 +144,6 @@ class MainActivity : AppCompatActivity(),
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
     }
     private var mConnectionManager: ConnectionManager? = null
-    private var mReadConnectionsPerm = false
-    private var mOpenSessionsPerm = false
-    private val mPermissionsGranted
-        get() = mReadConnectionsPerm && mOpenSessionsPerm
     val items: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
     private val storage by lazy { LazyMarkerStorage(favorites) }
     private val countryList by lazy { ArrayList<String>() }
@@ -190,23 +184,6 @@ class MainActivity : AppCompatActivity(),
             else -> longToast(api.getErrorString(errorCode))
         }
 
-        if (ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-        }
-
-        if (ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location: Location? ->
-                        if (location != null) {
-                            lastLocation = location
-                        }
-                    }
-                    .addOnFailureListener { e: Exception ->
-                        error(e)
-                    }
-        }
-
         if (isJuiceSSHInstalled()) {
             mConnectionManager = ConnectionManager(this, this, this, this, this)
 //            mConnectionManager.powerUsage.observe(this, Observer {
@@ -240,11 +217,8 @@ class MainActivity : AppCompatActivity(),
 //            mConnectionManager.memoryClock.observe(this, Observer {
 //                textViewClockMemory.setData(it, "MHz")
 //            })
-            requestPermissions()
-
-            if (mPermissionsGranted) {
-                onPermissionsGranted()
-            }
+            val permissions = arrayOf(READ_CONNECTIONS, OPEN_SESSIONS, ACCESS_COARSE_LOCATION)
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE)
 
             fab0?.onClick {
                 if (mConnectionListAdapter.count == 0 && it is FloatingActionButton) {
@@ -256,13 +230,9 @@ class MainActivity : AppCompatActivity(),
                     return@onClick
                 }
 
-                if (mPermissionsGranted) {
-                    val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
-                    mConnectionManager?.toggleConnection(uuid!!, this)
-                    it?.isClickable = false
-                } else {
-                    requestPermissions()
-                }
+                it?.isClickable = false
+                val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
+                mConnectionManager?.toggleConnection(uuid!!, this)
             }
         }
         //if (NetworkInfo.getConnectivity(applicationContext).status == NetworkInfo.NetworkStatus.INTERNET) generateXML()
@@ -320,20 +290,45 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        fun isGranted(resultIndex: Int): Boolean {
-            return grantResults.isNotEmpty() && grantResults[resultIndex] ==
-                    PackageManager.PERMISSION_GRANTED
+        fun isGranted(index: Int): Boolean {
+            return (index >= 0 && index <= grantResults.lastIndex) && (grantResults[index] == PackageManager.PERMISSION_GRANTED)
         }
 
-        when (requestCode) {
-            PERMISSION_REQUEST_CODE -> {
-                mReadConnectionsPerm = isGranted(0)
-                mOpenSessionsPerm = isGranted(1)
+        fun hasPermission(permission: String): Boolean {
+            return ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        }
+
+        fun requestPermissions() {
+            if (!hasPermission(READ_CONNECTIONS) || !hasPermission(OPEN_SESSIONS)) {
+                ActivityCompat.requestPermissions(this, arrayOf(READ_CONNECTIONS, OPEN_SESSIONS), PERMISSION_REQUEST_CODE)
             }
         }
 
+        fun onPermissionsGranted() {
+            mConnectionManager?.startClient(this)
+
+            spinnerConnectionList.adapter = mConnectionListAdapter
+            LoaderManager.getInstance<FragmentActivity>(this).initLoader(0, null, ConnectionListLoader(this, this))
+        }
+
+        fun getLastLocation() {
+            FusedLocationProviderClient(this).lastLocation
+                    .addOnSuccessListener { location: Location? ->
+                        if (location != null) {
+                            lastLocation = location
+                        }
+                    }
+                    .addOnFailureListener { e: Exception ->
+                        error(e)
+                    }
+        }
+
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (mPermissionsGranted) {
+            if (isGranted(2)) {
+                getLastLocation()
+            }
+
+            if (isGranted(1) && isGranted(0)) {
                 onPermissionsGranted()
             } else {
                 val snackProgressBar = SnackProgressBar(SnackProgressBar.TYPE_NORMAL, getString(R.string.error_must_enable_permissions))
@@ -519,31 +514,6 @@ class MainActivity : AppCompatActivity(),
                 info("Success")
             }
         }
-    }
-
-    @MainThread
-    private fun onPermissionsGranted() {
-        mConnectionManager?.startClient(onClientStartedListener = this)
-
-        spinnerConnectionList.adapter = mConnectionListAdapter
-
-        LoaderManager.getInstance<FragmentActivity>(this).initLoader(0, null, ConnectionListLoader(
-                mCtx = this,
-                mLoaderFinishCallback = this
-        ))
-    }
-
-    private fun requestPermissions() {
-        mReadConnectionsPerm = hasPermission(READ_CONNECTIONS)
-        mOpenSessionsPerm = hasPermission(OPEN_SESSIONS)
-
-        if (!mReadConnectionsPerm || !mOpenSessionsPerm) {
-            ActivityCompat.requestPermissions(this, arrayOf(READ_CONNECTIONS, OPEN_SESSIONS), PERMISSION_REQUEST_CODE)
-        }
-    }
-
-    private fun hasPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun isJuiceSSHInstalled(): Boolean {
@@ -1032,8 +1002,7 @@ class MainActivity : AppCompatActivity(),
                 animateCamera(latLng, animator, closest, true)
             }
             ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
-                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-                fusedLocationClient.lastLocation
+                FusedLocationProviderClient(this).lastLocation
                         .addOnSuccessListener { location: Location? ->
                             var latLng = getDefaultLatLng()
                             if (location != null) {
@@ -1223,8 +1192,8 @@ class MainActivity : AppCompatActivity(),
             val abuser = threats.getBoolean("is_known_abuser")
             val threat = threats.getBoolean("is_threat")
             val bogon = threats.getBoolean("is_bogon")
-            val color1 = ContextCompat.getColor(this, R.color.colorConnect)
-            val color2 = ContextCompat.getColor(this, R.color.colorDisconnect)
+            val color1 = ActivityCompat.getColor(this, R.color.colorConnect)
+            val color2 = ActivityCompat.getColor(this, R.color.colorDisconnect)
             val fl = 22f
             val weight = 1.0f
             alert {
@@ -1413,7 +1382,7 @@ class MainActivity : AppCompatActivity(),
                     //val lon = var1.getDouble("longitude")
                     val ip = var1.getString("ip")
                     val userMessage = UserMessage.Builder()
-                            .with(this@MainActivity)
+                            .with(it)
                             .setBackgroundColor(R.color.accent_material_indigo_200)
                             .setTextColor(android.R.color.white)
                             .setMessage("Connected to $city, $flag ($ip)")
