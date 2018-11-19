@@ -50,6 +50,11 @@
         <activity
             android:name="com.adityaanand.morphdialog.MorphDialogActivity"
             android:theme="@style/MorphDialog.Custom.Light" />
+        <activity android:name=".AboutActivity"
+            android:theme="@style/AppTheme.About"/>
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:theme="@style/AppTheme.Settings" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

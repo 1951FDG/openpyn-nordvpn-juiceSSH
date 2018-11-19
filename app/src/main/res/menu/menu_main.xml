@@ -6,9 +6,14 @@
     <item
         android:id="@+id/action_github"
         android:icon="@drawable/ic_github_black_24dp"
-        android:orderInCategory="98"
+        android:orderInCategory="97"
         android:title="@string/menu_github"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="98"
+        android:title="@string/menu_about"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_refresh"
         android:orderInCategory="99"

@@ -410,6 +410,10 @@ class MainActivity : AppCompatActivity(),
                 }
                 true
             }
+            R.id.action_about -> {
+                AboutActivity.launch(this)
+                true
+            }
             R.id.action_github -> {
                 val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))

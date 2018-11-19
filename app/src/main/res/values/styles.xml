@@ -47,6 +47,16 @@
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
+    <style name="Base.V21.Theme.AppTheme.About" parent="Theme.Mal.Light" />
+
+    <style name="Base.Theme.AppTheme.About" parent="Base.V21.Theme.AppTheme.About" />
+
+    <style name="AppTheme.About" parent="Base.Theme.AppTheme.About">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">
         <item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>
     </style>

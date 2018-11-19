@@ -1,6 +1,9 @@
 package io.github.getsixtyfour.openpyn
 
 import android.app.Application
+import com.crashlytics.android.Crashlytics
+import com.eggheadgames.aboutbox.AboutConfig
+import com.eggheadgames.aboutbox.IAnalytic
 import com.squareup.leakcanary.LeakCanary
 
 open class ExampleApplication : Application() {
@@ -12,9 +15,45 @@ open class ExampleApplication : Application() {
             return
         }
         installLeakCanary()
+        populateAboutConfig()
     }
 
     protected open fun installLeakCanary() {
         // no-op, LeakCanary is disabled in production.
+    }
+
+    private fun populateAboutConfig() {
+        val versionName = BuildConfig.VERSION_NAME
+        val versionCode = BuildConfig.VERSION_CODE
+        val buildType = BuildConfig.BUILD_TYPE.capitalize()
+        val aboutConfig = AboutConfig.getInstance()
+        // general info
+        aboutConfig.appName = "openpyn-nordvpn-juiceSSH"
+        aboutConfig.appIcon = R.mipmap.ic_launcher
+        aboutConfig.version = "$buildType $versionName ($versionCode)"
+        aboutConfig.author = "1951FDG"
+        aboutConfig.companyHtmlPath = "https://github.com/" + aboutConfig.author
+        aboutConfig.webHomePage = aboutConfig.companyHtmlPath + '/' + aboutConfig.appName
+        aboutConfig.buildType = AboutConfig.BuildType.GOOGLE
+        aboutConfig.packageName = BuildConfig.APPLICATION_ID
+        // custom analytics, dialog and share
+        aboutConfig.analytics = object : IAnalytic {
+            override fun logUiEvent(s: String, s1: String) {
+                // handle log events.
+            }
+
+            override fun logException(e: Exception, b: Boolean) {
+                // handle exception events.
+                Crashlytics.logException(e)
+            }
+        }
+        // email
+        aboutConfig.emailAddress = "support@1951fdg.com"
+        aboutConfig.emailSubject = ""
+        aboutConfig.emailBody = ""
+        aboutConfig.emailBodyPrompt = ""
+        // share
+        aboutConfig.shareMessage = ""
+        aboutConfig.sharingTitle = "Share"
     }
 }
