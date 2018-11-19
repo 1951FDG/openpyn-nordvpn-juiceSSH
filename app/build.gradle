@@ -17,7 +17,6 @@ detekt {
 
 android {
     compileSdkVersion 28
-
     defaultConfig {
         applicationId "io.github.getsixtyfour.openpyn"
         minSdkVersion 21
@@ -32,7 +31,6 @@ android {
             }
         }
     }
-
     buildTypes {
         release {
             ndk {
@@ -46,17 +44,14 @@ android {
             }
         }
     }
-
     aaptOptions {
         noCompress 'mbtiles'
     }
-
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
         }
     }
-
     lintOptions {
         disable 'GoogleAppIndexingWarning', 'MissingRegistered', 'UnusedIds', 'UnusedResources'
         checkAllWarnings true
@@ -64,16 +59,13 @@ android {
         abortOnError false
         baseline file("lint-baseline.xml")
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     dataBinding {
         enabled = true
     }
-
     testOptions {
         animationsDisabled = true
     }
@@ -81,50 +73,38 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'src/main/libs')
-
     // Android
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
-    implementation "androidx.preference:preference:1.0.0"
-    implementation "com.google.android.material:material:1.0.0"
-
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'androidx.preference:preference:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
     // Anko
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation "org.jetbrains.anko:anko-design:$anko_version"
     implementation "org.jetbrains.anko:anko-sdk27-listeners:$anko_version"
-
     // Anko Layouts
     implementation "org.jetbrains.anko:anko-sdk27:$anko_version"
-
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0'
-
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1'
     // Emoji
     implementation('com.vdurmont:emoji-java:4.0.0') {
         exclude group: 'org.json', module: 'json'
     }
-
     // Geocoder
     implementation 'de.westnordost:countryboundaries:1.4'
-
     // JSON
-    implementation 'com.squareup.moshi:moshi:1.7.0'
-
+    implementation 'com.squareup.moshi:moshi:1.8.0'
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-
     // Logger
     implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
-
     // Maps
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
-
     // Networking
     implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.14'
     implementation 'com.github.kittinunf.fuel:fuel-android:1.13.0'
     implementation 'com.github.kittinunf.result:result:1.4.0'
-
     // UI
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:v2.2'
@@ -139,11 +119,9 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.6'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
-
     androidTestImplementation('com.schibsted.spain:barista:2.7.0') {
         exclude group: 'com.android.support'
         exclude group: 'org.jetbrains.kotlin'
     }
-
     androidTestImplementation 'tools.fastlane:screengrab:1.2.0'
 }
