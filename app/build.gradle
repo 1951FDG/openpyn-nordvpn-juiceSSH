@@ -132,7 +132,8 @@ dependencies {
     implementation 'com.github.AdityaAnand1:Morphing-Material-Dialogs:0.0.4'
     implementation 'com.github.mayuroks:minibar:0.2.0'
     implementation 'com.github.tingyik90:snackprogressbar:5.0'
-
+    implementation 'com.github.daniel-stoneuk:material-about-library:2.4.2'
+    implementation 'com.github.armcha:ElasticView:0.2.0'
     // Other
     implementation 'com.google.android.gms:play-services-oss-licenses:16.0.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.6'
