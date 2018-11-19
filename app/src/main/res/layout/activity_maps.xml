@@ -24,7 +24,8 @@
         map:uiScrollGestures="false"
         map:uiTiltGestures="false"
         map:uiZoomControls="false"
-        map:uiZoomGestures="false" />
+        map:uiZoomGestures="false"
+        tools:visibility="visible" />
 
     <com.mayurrokade.minibar.MinibarView
         android:id="@+id/minibarView"
@@ -46,7 +47,8 @@
         app:layout_constraintRight_toRightOf="@+id/fab0"
         app:layout_constraintTop_toTopOf="@+id/map"
         app:srcCompat="@drawable/ic_list_black_24dp"
-        app:useCompatPadding="false" />
+        app:useCompatPadding="false"
+        tools:visibility="visible" />
 
     <io.errorlab.widget.CheckableFloatingActionButton
         android:id="@+id/fab3"
@@ -62,7 +64,8 @@
         app:layout_constraintRight_toRightOf="@+id/fab0"
         app:layout_constraintTop_toBottomOf="@+id/fab2"
         app:srcCompat="@drawable/fab_switch"
-        app:useCompatPadding="false" />
+        app:useCompatPadding="false"
+        tools:visibility="visible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab1"
@@ -76,7 +79,8 @@
         app:layout_constraintBottom_toTopOf="@+id/fab0"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_my_location_black_24dp"
-        app:useCompatPadding="false" />
+        app:useCompatPadding="false"
+        tools:visibility="visible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab0"
