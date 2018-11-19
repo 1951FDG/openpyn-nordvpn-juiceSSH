@@ -57,9 +57,11 @@ google-services.json
 google_maps_api.xml
 fabric.properties
 
+app/release/output.json
 app/src/main/obj
 fastlane/metadata/android/screenshots.html
 fastlane/README.md
 fastlane/report.xml
 tiles/
 world/.thumb.png
+zip/
