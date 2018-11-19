@@ -7,7 +7,8 @@
     android:transitionGroup="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="io.github.getsixtyfour.openpyn.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_main"
+    android:id="@+id/maplayout">
 
     <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map"
