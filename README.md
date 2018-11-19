@@ -127,12 +127,14 @@ To compile and run the project you'll need:
 -   [Anko](https://github.com/Kotlin/anko)
 -   [Barista](https://github.com/SchibstedSpain/Barista)
 -   [countryboundaries](https://github.com/westnordost/countryboundaries)
+-   [ElasticView](https://github.com/armcha/ElasticView)
 -   [emoji-java](https://github.com/vdurmont/emoji-java)
 -   [Fuel](https://github.com/kittinunf/Fuel)
 -   [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 -   [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 -   [Kotlin](https://github.com/JetBrains/kotlin)
 -   [LeakCanary](https://github.com/square/leakcanary)
+-   [material-about-library](https://github.com/daniel-stoneuk/material-about-library)
 -   [Minibar](https://github.com/mayuroks/minibar)
 -   [Morphing Material Dialogs](https://github.com/AdityaAnand1/Morphing-Material-Dialogs)
 -   [Moshi](https://github.com/square/moshi)
@@ -160,6 +162,8 @@ Tiles
 ## Credits
 
 This app uses (modified) code from several open source projects.
+
+-   [About Box](https://github.com/eggheadgames/android-about-box)
 
 -   [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk)
     -   Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
