@@ -225,6 +225,7 @@ Pull requests are welcome. For major changes, please submit an issue first to di
 
 ## Built with
 
+-   [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 -   [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
 -   [Android Studio](https://developer.android.com/studio/)
 -   [Atom](https://atom.io/)
@@ -234,6 +235,7 @@ Pull requests are welcome. For major changes, please submit an issue first to di
 -   [DB Browser for SQLite](http://sqlitebrowser.org/)
 -   [Detekt](https://github.com/arturbosch/detekt)
 -   [Fastlane](https://fastlane.tools/)
+-   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
 -   [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 -   [MBUtil](https://github.com/mapbox/mbutil) - Importer and Exporter of MBTiles
 -   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
