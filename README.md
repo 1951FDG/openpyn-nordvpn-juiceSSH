@@ -10,7 +10,12 @@
 An Android app written in C/C++, [Java](https://www.oracle.com/java/), and [Kotlin](https://kotlinlang.org/) to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely through JuiceSSH. Special thanks to [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor), a JuiceSSH plugin written in Kotlin by [sds100](https://github.com/sds100) which served as a base for this JuiceSSH plugin.
 
 > **Note**:
-> This project is still in development, some UI changes and API changes will be made before first public release.
+> The first public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) has been released.
+
+## Todo
+
+-   [ ] add Telnet functionality for connecting to OpenVPN management interface
+-   [ ] apply clean(er) app architecture
 
 ## Table of Contents
 
@@ -102,7 +107,7 @@ After the map is done loading, the NordVPN API is invoked to query all the suppo
 
 ## Download
 
-No download available yet, [watch](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/subscription) this repository in the meanwhile...
+[Beta Release](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn)
 
 ## Requirements
 
