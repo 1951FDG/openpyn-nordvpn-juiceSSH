@@ -59,6 +59,7 @@ fabric.properties
 
 app/release/output.json
 app/src/main/obj
+.env
 fastlane/metadata/android/screenshots.html
 fastlane/README.md
 fastlane/report.xml
