@@ -91,6 +91,7 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.Locale
 
 operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
@@ -715,7 +716,7 @@ class MainActivity : AppCompatActivity(),
 
             if (jsonArr != null) {
                 for (res in jsonArr) {
-                    var flag = res.getString("flag").toLowerCase()
+                    var flag = res.getString("flag")
 
                     var pass = when {
                         p2p -> false
@@ -912,7 +913,7 @@ class MainActivity : AppCompatActivity(),
             var match = false
 
             loop@ for (res in jsonArr) {
-                val pass = flag == res.getString("flag").toLowerCase()
+                val pass = flag == res.getString("flag")
 
                 if (pass) {
                     val location = res.getJSONObject("location")
@@ -948,7 +949,7 @@ class MainActivity : AppCompatActivity(),
     private fun getFlag(longitude: Double, latitude: Double): String {
         val ids = countryBoundaries?.getIds(longitude, latitude)
         if (ids != null && !ids.isEmpty()) {
-            return ids[0]
+            return ids[0].toLowerCase(Locale.ROOT)
         }
         return ""
     }
@@ -958,7 +959,7 @@ class MainActivity : AppCompatActivity(),
             json1 != null -> {
                 val lat = json1.getDouble("latitude")
                 val lon = json1.getDouble("longitude")
-                val flag = json1.getString("flag").toLowerCase()
+                val flag = json1.getString("flag")
                 val latLng = if (closest && countryList.contains(flag)) {
                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                 } else {
@@ -970,7 +971,7 @@ class MainActivity : AppCompatActivity(),
             lastLocation != null -> {
                 val lat = lastLocation!!.latitude
                 val lon = lastLocation!!.longitude
-                val flag = getFlag(lon, lat).toLowerCase()
+                val flag = getFlag(lon, lat)
                 val latLng = if (closest && countryList.contains(flag)) {
                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                 } else {
@@ -991,7 +992,7 @@ class MainActivity : AppCompatActivity(),
             json1 != null -> {
                 val lat = json1.getDouble("latitude")
                 val lon = json1.getDouble("longitude")
-                val flag = json1.getString("flag").toLowerCase()
+                val flag = json1.getString("flag")
                 val latLng = if (closest && countryList.contains(flag)) {
                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                 } else {
@@ -1029,7 +1030,7 @@ class MainActivity : AppCompatActivity(),
                                 */
                                 val lat = location.latitude
                                 val lon = location.longitude
-                                val flag = getFlag(lon, lat).toLowerCase()
+                                val flag = getFlag(lon, lat)
 
                                 latLng = if (closest && countryList.contains(flag)) {
                                     getLatLng(flag, LatLng(lat, lon), jsonArr)

@@ -13,6 +13,7 @@ import org.json.JSONObject
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.StringWriter
+import java.util.Locale
 
 operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
@@ -30,7 +31,7 @@ fun generateXML() {
                 val jsonArray = result.get().array()
                 for (res in jsonArray) {
                     if (res.getString("country") !in mutableMap) {
-                        mutableMap[res.getString("country")] = res.getString("domain").take(2)
+                        mutableMap[res.getString("country")] = res.getString("flag").toLowerCase(Locale.ROOT)
                     }
                 }
                 val sortedMap = mutableMap.toSortedMap(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
@@ -151,7 +152,7 @@ fun createJson2(value: String?, token: String?): JSONObject? {
 
             if (flag.isNotEmpty() && city.isNotEmpty() && lat != 0.0 && lon != 0.0 && ip.isNotEmpty()) {
                 return JSONObject().apply {
-                    put("flag", flag)
+                    put("flag", flag.toLowerCase(Locale.ROOT))
                     put("country", country)
                     put("city", city)
                     put("latitude", lat)
@@ -187,7 +188,7 @@ fun createJson(): JSONArray? {
                 var json1: JSONObject? = jsonObj.optJSONObject(location.toString())
                 if (json1 == null) {
                     json1 = JSONObject().apply {
-                        put("flag", res.getString("flag"))
+                        put("flag", res.getString("flag").toLowerCase(Locale.ROOT))
                         put("country", res.getString("country"))
                         put("location", res.getJSONObject("location"))
                     }
