@@ -39,6 +39,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            // Comment next two lines to run "fastlane beta"
             ext.alwaysUpdateBuildId = false
             ext.enableCrashlytics = false
             ndk {
