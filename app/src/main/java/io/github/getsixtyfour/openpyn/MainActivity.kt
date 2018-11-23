@@ -235,7 +235,6 @@ class MainActivity : AppCompatActivity(),
                 mConnectionManager?.toggleConnection(uuid!!, this)
             }
         }
-        //if (NetworkInfo.getConnectivity(applicationContext).status == NetworkInfo.NetworkStatus.INTERNET) generateXML()
     }
 
     override fun onStart() {
@@ -373,6 +372,7 @@ class MainActivity : AppCompatActivity(),
 
                     if (networkInfo!!.isOnline()) {
                         json1 = createJson()
+                        //generateXML()
                     }
                     var thrown = true
 
