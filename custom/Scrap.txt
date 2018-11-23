@@ -98,4 +98,54 @@ package io.github.sdsstudios.nvidiagpumonitor
             }
         }
     }
+
+    @WorkerThread
+    @Suppress("MagicNumber")
+    fun createJson1(): JSONObject? {
+        val json1 = JSONObject()
+
+        for (server in listOf("https://api.ipdata.co", "http://ip-api.com/json")) {
+            val timeout = 500
+            val timeoutRead = 500
+            // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
+            val (_, _, result) = server.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
+            when (result) {
+                is Result.Failure -> {
+                    Log.error(result.getException().toString())
+                }
+                is Result.Success -> {
+                    val content = result.get().obj()
+                    //Log.info(content.toString())
+                    var flag = content.optString("country_code")
+                    var country = content.optString("country_name")
+                    val city = content.optString("city")
+                    var lat = content.optDouble("latitude", 0.0)
+                    var lon = content.optDouble("longitude", 0.0)
+                    val emoji = content.optString("emoji_flag")
+                    var ip = content.optString("ip")
+                    val threat = content.optJSONObject("threat")
+
+                    if (flag.isEmpty()) flag = content.optString("countryCode")
+                    if (country.isEmpty()) country = content.optString("country")
+                    //if (city.isEmpty()) city = content.optString("city")
+                    if (lat == 0.0) lat = content.optDouble("lat", 0.0)
+                    if (lon == 0.0) lon = content.optDouble("lon", 0.0)
+                    //if (emoji.isEmpty()) emoji = content.optString("emoji_flag")
+                    if (ip.isEmpty()) ip = content.optString("query")
+                    //if (threat == null) threat = content.optJSONObject("threat")
+                    if (json1.optString("flag").isEmpty()) json1.put("flag", flag)
+                    if (json1.optString("country").isEmpty()) json1.put("country", country)
+                    if (json1.optString("city").isEmpty()) json1.put("city", city)
+                    if (json1.optDouble("latitude", 0.0) == 0.0) json1.put("latitude", lat)
+                    if (json1.optDouble("longitude", 0.0) == 0.0) json1.put("longitude", lon)
+                    if (json1.optString("emoji_flag").isEmpty()) json1.put("emoji_flag", emoji)
+                    if (json1.optString("ip").isEmpty()) json1.put("ip", ip)
+                    if (json1.optJSONObject("threat") == null) json1.putOpt("threat", threat)
+                    //break
+                }
+            }
+        }
+
+        return if (json1.length() > 0) json1 else null
+    }
 */
