@@ -70,9 +70,9 @@ class OpenpynController(
         if (server != null && !server.isEmpty())
             options.append(" --server $server")
         else if (flag != null)
-            options.append(" $flag")
+            if (flag == "gb") options.append(" uk") else options.append(" $flag")
         else if (country != null)
-            options.append(" $country")
+            if (country == "gb") options.append(" uk") else options.append(" $country")
         //if area:
         //openpyn_options += " --area " + area
         if (tcp)

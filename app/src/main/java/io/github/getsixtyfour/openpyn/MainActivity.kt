@@ -717,11 +717,6 @@ class MainActivity : AppCompatActivity(),
                 for (res in jsonArr) {
                     var flag = res.getString("flag").toLowerCase()
 
-                    if (flag == "uk") {
-                        flag = "gb"
-                        Crashlytics.logException(Exception(flag))
-                        error(flag)
-                    }
                     var pass = when {
                         p2p -> false
                         dedicated -> false
