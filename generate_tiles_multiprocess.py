@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#pylint: disable=C0111,C0301
+# pylint: disable=C0111,C0301
 
 import json
 import logging
@@ -200,7 +200,7 @@ def render_tiles(bbox, map_file, min_zoom, max_zoom, threads, name, tile_dir, ti
 
 if __name__ == "__main__":
     parser = ArgumentParser(
-        usage="%(prog)s [options] input output 1..18 1..18")
+        usage="%(prog)s [options] input output 1..18 1..18", allow_abbrev=False)
     # Positional arguments
     parser.add_argument("input", help="mapnik XML file")
     parser.add_argument("output", help="a MBTiles file", default=None)
