@@ -732,9 +732,11 @@ class MainActivity : AppCompatActivity(),
                         pass = when (flag) {
                             "us" -> true
                             "ca" -> true
-                            "fr" -> true
                             "nl" -> true
                             "jp" -> true
+                            "gb" -> true
+                            "gr" -> true
+                            "mx" -> true
                             else -> false
                         }
                     }
