@@ -176,7 +176,7 @@
     </string-array>
 
     <string name="pref_tcp">TCP</string>
-    <string name="pref_description_tcp">Use port 443 (TCP) instead of port 1194 (UDP)</string>
+    <string name="pref_description_tcp">Use port 443 instead of port 1194 (UDP)</string>
 
     <string name="pref_max_load">Max Load</string>
 
@@ -233,22 +233,22 @@
     <string name="pref_category_advanced">Advanced</string>
 
     <string name="pref_p2p">P2P</string>
-    <string name="pref_description_p2p">Only look for servers with \“Peer To Peer\” support</string>
+    <string name="pref_description_p2p">Only look for \“Peer To Peer\” servers</string>
 
     <string name="pref_dedicated">Dedicated IP</string>
-    <string name="pref_description_dedicated">Only look for servers with \“Dedicated IP\” support</string>
+    <string name="pref_description_dedicated">Only look for \“Dedicated IP\” servers</string>
 
     <string name="pref_double">Double VPN</string>
-    <string name="pref_description_double">Only look for servers with \“Double VPN\” support</string>
+    <string name="pref_description_double">Only look for \“Double VPN\” servers</string>
 
     <string name="pref_tor">Onion Over VPN</string>
-    <string name="pref_description_tor">Only look for servers with \“Tor Over VPN\” support</string>
+    <string name="pref_description_tor">Only look for \“Onion Over VPN\” servers</string>
 
     <string name="pref_anti_ddos">Obfuscated</string>
-    <string name="pref_description_anti_ddos">Only look for servers with \“Obfuscated Servers\” support</string>
+    <string name="pref_description_anti_ddos">Only look for \“Obfuscated\” servers</string>
 
     <string name="pref_netflix">Netflix</string>
-    <string name="pref_description_netflix">Only look for servers that are optimised for \“Netflix\”</string>
+    <string name="pref_description_netflix">Only look for \“Netflix\” servers</string>
 
     <string name="pref_category_expert">Expert</string>
 
