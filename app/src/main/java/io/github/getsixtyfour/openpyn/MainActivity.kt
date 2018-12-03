@@ -442,7 +442,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
         fab0.isClickable = true
-
         fab0.setImageResource(R.drawable.ic_flash_off_white_24dp)
 
         fab1.hide()
@@ -453,10 +452,10 @@ class MainActivity : AppCompatActivity(),
 
         spinnerConnectionList.isEnabled = false
 
-        mMap!!.setOnMapClickListener(null)
-        mMap!!.setOnMarkerClickListener { true }
-        mMap!!.uiSettings.isScrollGesturesEnabled = false
-        mMap!!.uiSettings.isZoomGesturesEnabled = false
+        mMap?.setOnMapClickListener(null)
+        mMap?.setOnMarkerClickListener { true }
+        mMap?.uiSettings?.isScrollGesturesEnabled = false
+        mMap?.uiSettings?.isZoomGesturesEnabled = false
         //cardViewLayout.visibility = View.VISIBLE
     }
 
@@ -467,24 +466,24 @@ class MainActivity : AppCompatActivity(),
     @Suppress("MagicNumber")
     override fun onSessionFinished() {
         fab0.isClickable = true
-
         fab0.setImageResource(R.drawable.ic_flash_on_white_24dp)
 
-        fab1.show()
-        fab2.show()
+        mMap?.let { fab1.show() }
+        mMap?.let { fab2.show() }
         items.forEach { (_, value) ->
             if (value.zIndex == 1.0f) fab3.show()
         }
 
         spinnerConnectionList.isEnabled = true
 
-        mMap!!.setOnMapClickListener(this)
-        mMap!!.setOnMarkerClickListener(this)
-        mMap!!.uiSettings.isScrollGesturesEnabled = true
-        mMap!!.uiSettings.isZoomGesturesEnabled = true
+        mMap?.setOnMapClickListener(this)
+        mMap?.setOnMarkerClickListener(this)
+        mMap?.uiSettings?.isScrollGesturesEnabled = true
+        mMap?.uiSettings?.isZoomGesturesEnabled = true
         //cardViewLayout.visibility = View.GONE
+        // TODO: 03/12/18 Do only if not test? What if session is ended otherwise?
         Handler().postDelayed({
-            updateMasterMarker()
+            mMap?.let { updateMasterMarker() }
         }, 10000)
     }
 
@@ -517,6 +516,9 @@ class MainActivity : AppCompatActivity(),
         when (exitCode) {
             0 -> {
                 info("Success")
+            }
+            143 -> {
+                info("Terminated")
             }
         }
     }
@@ -717,7 +719,6 @@ class MainActivity : AppCompatActivity(),
             if (jsonArr != null) {
                 for (res in jsonArr) {
                     var flag = res.getString("flag")
-
                     var pass = when {
                         p2p -> false
                         dedicated -> false
