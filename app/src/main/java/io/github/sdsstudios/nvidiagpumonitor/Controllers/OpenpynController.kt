@@ -17,6 +17,8 @@ class OpenpynController(
     private val mActivityExecuteCommandListener: OnCommandExecuteListener?
 ) : BaseController(ctx, liveData), AnkoLogger {
     override val regex: Regex = Regex("""\d+""")
+    private var test = false
+    private var nvram = false
 
     override fun onCompleted(exitCode: Int) {
         super.onCompleted(exitCode)
@@ -58,11 +60,11 @@ class OpenpynController(
         val onion = preferences.getBoolean("pref_tor", false)
         val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
         val netflix = preferences.getBoolean("pref_netflix", false)
-        val test = preferences.getBoolean("pref_test", false)
+        test = preferences.getBoolean("pref_test", false)
         //val internally_allowed = args.internally_allowed
         val patch = preferences.getBoolean("pref_skip_dns_patch", false)
         val silent = preferences.getBoolean("pref_silent", false)
-        val nvram = preferences.getBoolean("pref_nvram", false)
+        nvram = preferences.getBoolean("pref_nvram", false)
         //val openvpn_options = args.openvpn_options
         val openvpn = "--syslog openpyn"
         val options = StringBuilder("openpyn")
@@ -125,7 +127,10 @@ class OpenpynController(
     }
 
     override fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
-        stopcommand = "sudo openpyn --kill"
+        stopcommand = when {
+            test || nvram -> ""
+            else -> "sudo openpyn --kill"
+        }
         info(stopcommand)
 
         super.kill(pluginClient, sessionId, sessionKey)

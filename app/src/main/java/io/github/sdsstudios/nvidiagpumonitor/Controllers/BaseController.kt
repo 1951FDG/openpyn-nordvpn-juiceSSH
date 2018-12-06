@@ -53,12 +53,14 @@ abstract class BaseController(
         isRunning = true
 
         try {
-            pluginClient.executeCommandOnSession(
-                    sessionId,
-                    sessionKey,
-                    command,
-                    this@BaseController
-            )
+            if (command.isNotEmpty()) {
+                pluginClient.executeCommandOnSession(
+                        sessionId,
+                        sessionKey,
+                        command,
+                        this@BaseController
+                )
+            }
         } catch (e: ServiceNotConnectedException) {
             error("Tried to execute a command but could not connect to JuiceSSH plugin service")
         }
@@ -71,12 +73,14 @@ abstract class BaseController(
     @CallSuper
     open fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
         try {
-            pluginClient.executeCommandOnSession(
-                    sessionId,
-                    sessionKey,
-                    stopcommand,
-                    this@BaseController
-            )
+            if (stopcommand.isNotEmpty()) {
+                pluginClient.executeCommandOnSession(
+                        sessionId,
+                        sessionKey,
+                        stopcommand,
+                        this@BaseController
+                )
+            }
         } catch (e: ServiceNotConnectedException) {
             error("Tried to execute a command but could not connect to JuiceSSH plugin service")
         }
