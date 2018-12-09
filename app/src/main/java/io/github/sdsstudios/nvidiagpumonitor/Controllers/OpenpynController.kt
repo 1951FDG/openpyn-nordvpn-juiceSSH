@@ -6,9 +6,16 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.model.LatLng
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
-import io.github.sdsstudios.nvidiagpumonitor.OnCommandExecuteListener
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
+
+interface OnCommandExecuteListener {
+    fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?>
+
+    fun onConnect()
+
+    fun onDisconnect()
+}
 
 class OpenpynController(
     ctx: Context,
@@ -25,6 +32,13 @@ class OpenpynController(
 
         info(exitCode.toString())
 
+        when (exitCode) {
+            143 -> {
+                info("Terminated")
+                return
+            }
+        }
+
         mActivitySessionExecuteListener?.onCompleted(exitCode)
     }
 
@@ -40,7 +54,7 @@ class OpenpynController(
         mActivitySessionExecuteListener?.onError(error, reason)
     }
 
-    override fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
+    override fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         var pair: Pair<LatLng?, String?> = Pair(null, null)
         if (mActivityExecuteCommandListener != null) {
             pair = mActivityExecuteCommandListener.positionAndFlagForSelectedMarker()
@@ -123,17 +137,25 @@ class OpenpynController(
         command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; $openpyn"
         info(command)
 
-        super.start(pluginClient, sessionId, sessionKey)
+        if (super.start(pluginClient, sessionId, sessionKey)) {
+            mActivityExecuteCommandListener?.onConnect()
+            return true
+        }
+        return false
     }
 
-    override fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
+    override fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         stopcommand = when {
             test || nvram -> ""
             else -> "sudo openpyn --kill"
         }
         info(stopcommand)
 
-        super.kill(pluginClient, sessionId, sessionKey)
+        if (super.kill(pluginClient, sessionId, sessionKey)) {
+            mActivityExecuteCommandListener?.onDisconnect()
+            return true
+        }
+        return false
     }
 
     override fun convertDataToInt(data: String): Int {

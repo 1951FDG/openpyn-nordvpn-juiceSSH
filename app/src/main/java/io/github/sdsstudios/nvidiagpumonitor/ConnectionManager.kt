@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.maps.model.LatLng
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
@@ -13,13 +12,10 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.getsixtyfour.openpyn.R
+import io.github.sdsstudios.nvidiagpumonitor.controllers.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.controllers.OpenpynController
 import org.jetbrains.anko.longToast
 import java.util.UUID
-
-interface OnCommandExecuteListener {
-    fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?>
-}
 
 /**
  * Created by Seth on 04/03/18.
@@ -118,9 +114,10 @@ class ConnectionManager(
 
     @Suppress("MagicNumber")
     private fun disconnect() {
+        mControllers.forEach { it.kill(mClient, mSessionId, mSessionKey) }
+
         Thread(Runnable {
             try {
-                mControllers.forEach { it.kill(mClient, mSessionId, mSessionKey) }
                 Thread.sleep(5000)
                 mClient.disconnect(mSessionId, mSessionKey)
             } catch (e: ServiceNotConnectedException) {

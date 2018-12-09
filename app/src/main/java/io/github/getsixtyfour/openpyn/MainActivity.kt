@@ -80,7 +80,7 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
-import io.github.sdsstudios.nvidiagpumonitor.OnCommandExecuteListener
+import io.github.sdsstudios.nvidiagpumonitor.controllers.OnCommandExecuteListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.jetbrains.anko.*
@@ -465,6 +465,8 @@ class MainActivity : AppCompatActivity(),
 
     @Suppress("MagicNumber")
     override fun onSessionFinished() {
+        toolbar.hideProgress(true)
+
         fab0.isClickable = true
         fab0.setImageResource(R.drawable.ic_flash_on_white_24dp)
 
@@ -481,10 +483,6 @@ class MainActivity : AppCompatActivity(),
         mMap?.uiSettings?.isScrollGesturesEnabled = true
         mMap?.uiSettings?.isZoomGesturesEnabled = true
         //cardViewLayout.visibility = View.GONE
-        // TODO: 03/12/18 Do only if not test? What if session is ended otherwise?
-        Handler().postDelayed({
-            mMap?.let { updateMasterMarker() }
-        }, 10000)
     }
 
     override fun onClientStarted() {
@@ -501,6 +499,8 @@ class MainActivity : AppCompatActivity(),
     override fun onOutputLine(line: String) {
         longToast(line)
         if (line.startsWith("CONNECTING TO SERVER", true)) {
+            toolbar.hideProgress(true)
+
             Handler().postDelayed({
                 updateMasterMarker(true)
             }, 10000)
@@ -512,15 +512,29 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onCompleted(exitCode: Int) {
+        toolbar.hideProgress(true)
+
         longToast(exitCode.toString())
         when (exitCode) {
             0 -> {
                 info("Success")
             }
-            143 -> {
-                info("Terminated")
+            1 -> {
+                info("Failure")
             }
         }
+    }
+
+    override fun onConnect() {
+        toolbar.showProgress(true)
+    }
+
+    override fun onDisconnect() {
+        toolbar.showProgress(true)
+
+        Handler().postDelayed({
+            updateMasterMarker()
+        }, 10000)
     }
 
     private fun isJuiceSSHInstalled(): Boolean {
@@ -1375,7 +1389,7 @@ class MainActivity : AppCompatActivity(),
             uiThread {
                 toolbar.hideProgress(true)
                 //var1?.let { jsonObject -> showThreats(jsonObject) }
-                executeAnimation(var1, var2, cameraUpdateAnimator, false)
+                mMap?.let { executeAnimation(var1, var2, cameraUpdateAnimator, false) }
 
                 if (show && var1 != null) {
                     val flag = var1.getString("flag").toUpperCase()

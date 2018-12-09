@@ -9,6 +9,7 @@ import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedExceptio
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
+import org.jetbrains.anko.longToast
 
 /**
  * Created by Seth on 05/03/18.
@@ -49,7 +50,7 @@ abstract class BaseController(
     }
 
     @CallSuper
-    open fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
+    open fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         isRunning = true
 
         try {
@@ -60,10 +61,12 @@ abstract class BaseController(
                         command,
                         this@BaseController
                 )
+                return true
             }
         } catch (e: ServiceNotConnectedException) {
-            error("Tried to execute a command but could not connect to JuiceSSH plugin service")
+            mCtx.longToast("Tried to execute a command but could not connect to JuiceSSH plugin service")
         }
+        return false
     }
 
     fun stop() {
@@ -71,7 +74,9 @@ abstract class BaseController(
     }
 
     @CallSuper
-    open fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String) {
+    open fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
+        isRunning = true
+
         try {
             if (stopcommand.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(
@@ -80,10 +85,12 @@ abstract class BaseController(
                         stopcommand,
                         this@BaseController
                 )
+                return true
             }
         } catch (e: ServiceNotConnectedException) {
-            error("Tried to execute a command but could not connect to JuiceSSH plugin service")
+            mCtx.longToast("Tried to execute a command but could not connect to JuiceSSH plugin service")
         }
+        return false
     }
 
     abstract fun convertDataToInt(data: String): Int
