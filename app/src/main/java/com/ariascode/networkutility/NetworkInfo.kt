@@ -12,6 +12,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.NetworkCapabilities.TRANSPORT_BLUETOOTH
 import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
 import android.net.NetworkCapabilities.TRANSPORT_ETHERNET
@@ -65,32 +66,34 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             // receive network changes
             @Suppress("MagicNumber")
-            override fun onAvailable(network: Network) {
+            override fun onAvailable(network: Network?) {
                 // network available
                 debug("Network available")
                 // get network type
-                val netCap = connectivityManager.getNetworkCapabilities(network)
-                when {
-                    netCap.hasTransport(TRANSPORT_CELLULAR) -> {
-                        debug("Connectivity: CELLULAR")
-                    }
-                    netCap.hasTransport(TRANSPORT_WIFI) -> {
-                        debug("Connectivity: WIFI")
-                    }
-                    netCap.hasTransport(TRANSPORT_BLUETOOTH) -> {
-                        debug("Connectivity: BLUETOOTH")
-                    }
-                    netCap.hasTransport(TRANSPORT_ETHERNET) -> {
-                        debug("Connectivity: ETHERNET")
-                    }
-                    netCap.hasTransport(TRANSPORT_VPN) -> {
-                        debug("Connectivity: VPN")
-                    }
-                    netCap.hasTransport(TRANSPORT_WIFI_AWARE) -> {
-                        debug("Connectivity: WIFI_AWARE")
-                    }
-                    netCap.hasTransport(TRANSPORT_LOWPAN) -> {
-                        debug("Connectivity: LOWPAN")
+                val netCap: NetworkCapabilities? = connectivityManager.getNetworkCapabilities(network)
+                netCap?.let {
+                    when {
+                        it.hasTransport(TRANSPORT_CELLULAR) -> {
+                            debug("Connectivity: CELLULAR")
+                        }
+                        it.hasTransport(TRANSPORT_WIFI) -> {
+                            debug("Connectivity: WIFI")
+                        }
+                        it.hasTransport(TRANSPORT_BLUETOOTH) -> {
+                            debug("Connectivity: BLUETOOTH")
+                        }
+                        it.hasTransport(TRANSPORT_ETHERNET) -> {
+                            debug("Connectivity: ETHERNET")
+                        }
+                        it.hasTransport(TRANSPORT_VPN) -> {
+                            debug("Connectivity: VPN")
+                        }
+                        it.hasTransport(TRANSPORT_WIFI_AWARE) -> {
+                            debug("Connectivity: WIFI_AWARE")
+                        }
+                        it.hasTransport(TRANSPORT_LOWPAN) -> {
+                            debug("Connectivity: LOWPAN")
+                        }
                     }
                 }
                 // verify internet access
@@ -107,7 +110,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
                 notifyNetworkChangeToAll(network)
             }
 
-            override fun onLost(network: Network) {
+            override fun onLost(network: Network?) {
                 // no network available
                 debug("Network not available")
                 postValue(false)
