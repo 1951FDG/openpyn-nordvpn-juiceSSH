@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceActivity.EXTRA_NO_HEADERS
 import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT
+import android.text.SpannableString
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -564,7 +565,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    @Suppress("MagicNumber")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         cameraUpdateAnimator = CameraUpdateAnimator(googleMap, this)
@@ -609,9 +609,8 @@ class MainActivity : AppCompatActivity(),
             } catch (e: IOException) {
                 Crashlytics.logException(e)
             }
-            /*
             val array = resources.getTextArray(R.array.pref_country_entries)
-
+            /*
             if (preferences.getString("pref_country_values", "") == "") {
                 val list = Array(size = array.size) { false }.toCollection(ArrayList())
                 val editor = PrintArray.putListBoolean("pref_country_values", list, preferences)
@@ -622,77 +621,14 @@ class MainActivity : AppCompatActivity(),
 
             PrintArray.show( "pref_country_values", array, checkedItems, it, preferences)
             */
-            // List of Countries with Name and ID
-            val listOfCountries = arrayListOf(
-                    MultiSelectModel(0, "Albania", R.drawable.flag_al),
-                    MultiSelectModel(1, "Argentina", R.drawable.flag_ar),
-                    MultiSelectModel(2, "Australia", R.drawable.flag_au),
-                    MultiSelectModel(3, "Austria", R.drawable.flag_at),
-                    MultiSelectModel(4, "Azerbaijan", R.drawable.flag_az),
-                    MultiSelectModel(5, "Belgium", R.drawable.flag_be),
-                    MultiSelectModel(6, "Bosnia and Herzegovina", R.drawable.flag_ba),
-                    MultiSelectModel(7, "Brazil", R.drawable.flag_br),
-                    MultiSelectModel(8, "Bulgaria", R.drawable.flag_bg),
-                    MultiSelectModel(9, "Canada", R.drawable.flag_ca),
-                    MultiSelectModel(10, "Chile", R.drawable.flag_cl),
-                    MultiSelectModel(11, "Costa Rica", R.drawable.flag_cr),
-                    MultiSelectModel(12, "Croatia", R.drawable.flag_hr),
-                    MultiSelectModel(13, "Cyprus", R.drawable.flag_cy),
-                    MultiSelectModel(14, "Czech Republic", R.drawable.flag_cz),
-                    MultiSelectModel(15, "Denmark", R.drawable.flag_dk),
-                    MultiSelectModel(16, "Egypt", R.drawable.flag_eg),
-                    MultiSelectModel(17, "Estonia", R.drawable.flag_ee),
-                    MultiSelectModel(18, "Finland", R.drawable.flag_fi),
-                    MultiSelectModel(19, "France", R.drawable.flag_fr),
-                    MultiSelectModel(20, "Georgia", R.drawable.flag_ge),
-                    MultiSelectModel(21, "Germany", R.drawable.flag_de),
-                    MultiSelectModel(22, "Greece", R.drawable.flag_gr),
-                    MultiSelectModel(23, "Hong Kong", R.drawable.flag_hk),
-                    MultiSelectModel(24, "Hungary", R.drawable.flag_hu),
-                    MultiSelectModel(25, "Iceland", R.drawable.flag_is),
-                    MultiSelectModel(26, "India", R.drawable.flag_in),
-                    MultiSelectModel(27, "Indonesia", R.drawable.flag_id),
-                    MultiSelectModel(28, "Ireland", R.drawable.flag_ie),
-                    MultiSelectModel(29, "Israel", R.drawable.flag_il),
-                    MultiSelectModel(30, "Italy", R.drawable.flag_it),
-                    MultiSelectModel(31, "Japan", R.drawable.flag_jp),
-                    MultiSelectModel(32, "Latvia", R.drawable.flag_lv),
-                    MultiSelectModel(33, "Luxembourg", R.drawable.flag_lu),
-                    MultiSelectModel(34, "Macedonia", R.drawable.flag_mk),
-                    MultiSelectModel(35, "Malaysia", R.drawable.flag_my),
-                    MultiSelectModel(36, "Mexico", R.drawable.flag_mx),
-                    MultiSelectModel(37, "Moldova", R.drawable.flag_md),
-                    MultiSelectModel(38, "Netherlands", R.drawable.flag_nl),
-                    MultiSelectModel(39, "New Zealand", R.drawable.flag_nz),
-                    MultiSelectModel(40, "Norway", R.drawable.flag_no),
-                    MultiSelectModel(41, "Poland", R.drawable.flag_pl),
-                    MultiSelectModel(42, "Portugal", R.drawable.flag_pt),
-                    MultiSelectModel(43, "Romania", R.drawable.flag_ro),
-                    MultiSelectModel(44, "Russia", R.drawable.flag_ru),
-                    MultiSelectModel(45, "Serbia", R.drawable.flag_rs),
-                    MultiSelectModel(46, "Singapore", R.drawable.flag_sg),
-                    MultiSelectModel(47, "Slovakia", R.drawable.flag_sk),
-                    MultiSelectModel(48, "Slovenia", R.drawable.flag_si),
-                    MultiSelectModel(49, "South Africa", R.drawable.flag_za),
-                    MultiSelectModel(50, "South Korea", R.drawable.flag_kr),
-                    MultiSelectModel(51, "Spain", R.drawable.flag_es),
-                    MultiSelectModel(52, "Sweden", R.drawable.flag_se),
-                    MultiSelectModel(53, "Switzerland", R.drawable.flag_ch),
-                    MultiSelectModel(54, "Taiwan", R.drawable.flag_tw),
-                    MultiSelectModel(55, "Thailand", R.drawable.flag_th),
-                    MultiSelectModel(56, "Turkey", R.drawable.flag_tr),
-                    MultiSelectModel(57, "Ukraine", R.drawable.flag_ua),
-                    MultiSelectModel(58, "United Arab Emirates", R.drawable.flag_ae),
-                    MultiSelectModel(59, "United Kingdom", R.drawable.flag_gb),
-                    MultiSelectModel(60, "United States", R.drawable.flag_us),
-                    MultiSelectModel(61, "Vietnam", R.drawable.flag_vn)
-            )
+            // Country List
+            val countries = countryList(array)
             // Preselected IDs of Country List
-            val array = ArrayList<Int>()
-            for (i in listOfCountries.indices) {
-                array.add(i)
+            val preSelectedIdsList = ArrayList<Int>()
+            for (i in countries.indices) {
+                preSelectedIdsList.add(i)
             }
-            val defValue = array.joinToString(separator = PrintArray.delimiter)
+            val defValue = preSelectedIdsList.joinToString(separator = PrintArray.delimiter)
             val selectedCountries = PrintArray.getListInt("pref_country_values", defValue, preferences)
             val strings = resources.getStringArray(R.array.pref_country_values)
             selectedCountries.forEach { index ->
@@ -702,7 +638,7 @@ class MainActivity : AppCompatActivity(),
             PrintArray.apply {
                 setHint(R.string.empty)
                 setTitle(R.string.empty)
-                setItems(listOfCountries)
+                setItems(countries)
                 setCheckedItems(selectedCountries)
             }
             val p2p = preferences.getBoolean("pref_p2p", false)
@@ -877,6 +813,74 @@ class MainActivity : AppCompatActivity(),
                 map.visibility = View.VISIBLE
             }
         }
+    }
+
+    @Suppress("MagicNumber")
+    private fun countryList(array: Array<CharSequence>): ArrayList<MultiSelectModel> {
+        return arrayListOf(
+                MultiSelectModel(0, SpannableString(array[0]), R.drawable.flag_al),
+                MultiSelectModel(1, SpannableString(array[1]), R.drawable.flag_ar),
+                MultiSelectModel(2, SpannableString(array[2]), R.drawable.flag_au),
+                MultiSelectModel(3, SpannableString(array[3]), R.drawable.flag_at),
+                MultiSelectModel(4, SpannableString(array[4]), R.drawable.flag_az),
+                MultiSelectModel(5, SpannableString(array[5]), R.drawable.flag_be),
+                MultiSelectModel(6, SpannableString(array[6]), R.drawable.flag_ba),
+                MultiSelectModel(7, SpannableString(array[7]), R.drawable.flag_br),
+                MultiSelectModel(8, SpannableString(array[8]), R.drawable.flag_bg),
+                MultiSelectModel(9, SpannableString(array[9]), R.drawable.flag_ca),
+                MultiSelectModel(10, SpannableString(array[10]), R.drawable.flag_cl),
+                MultiSelectModel(11, SpannableString(array[11]), R.drawable.flag_cr),
+                MultiSelectModel(12, SpannableString(array[12]), R.drawable.flag_hr),
+                MultiSelectModel(13, SpannableString(array[13]), R.drawable.flag_cy),
+                MultiSelectModel(14, SpannableString(array[14]), R.drawable.flag_cz),
+                MultiSelectModel(15, SpannableString(array[15]), R.drawable.flag_dk),
+                MultiSelectModel(16, SpannableString(array[16]), R.drawable.flag_eg),
+                MultiSelectModel(17, SpannableString(array[17]), R.drawable.flag_ee),
+                MultiSelectModel(18, SpannableString(array[18]), R.drawable.flag_fi),
+                MultiSelectModel(19, SpannableString(array[19]), R.drawable.flag_fr),
+                MultiSelectModel(20, SpannableString(array[20]), R.drawable.flag_ge),
+                MultiSelectModel(21, SpannableString(array[21]), R.drawable.flag_de),
+                MultiSelectModel(22, SpannableString(array[22]), R.drawable.flag_gr),
+                MultiSelectModel(23, SpannableString(array[23]), R.drawable.flag_hk),
+                MultiSelectModel(24, SpannableString(array[24]), R.drawable.flag_hu),
+                MultiSelectModel(25, SpannableString(array[25]), R.drawable.flag_is),
+                MultiSelectModel(26, SpannableString(array[26]), R.drawable.flag_in),
+                MultiSelectModel(27, SpannableString(array[27]), R.drawable.flag_id),
+                MultiSelectModel(28, SpannableString(array[28]), R.drawable.flag_ie),
+                MultiSelectModel(29, SpannableString(array[29]), R.drawable.flag_il),
+                MultiSelectModel(30, SpannableString(array[30]), R.drawable.flag_it),
+                MultiSelectModel(31, SpannableString(array[31]), R.drawable.flag_jp),
+                MultiSelectModel(32, SpannableString(array[32]), R.drawable.flag_lv),
+                MultiSelectModel(33, SpannableString(array[33]), R.drawable.flag_lu),
+                MultiSelectModel(34, SpannableString(array[34]), R.drawable.flag_mk),
+                MultiSelectModel(35, SpannableString(array[35]), R.drawable.flag_my),
+                MultiSelectModel(36, SpannableString(array[36]), R.drawable.flag_mx),
+                MultiSelectModel(37, SpannableString(array[37]), R.drawable.flag_md),
+                MultiSelectModel(38, SpannableString(array[38]), R.drawable.flag_nl),
+                MultiSelectModel(39, SpannableString(array[39]), R.drawable.flag_nz),
+                MultiSelectModel(40, SpannableString(array[40]), R.drawable.flag_no),
+                MultiSelectModel(41, SpannableString(array[41]), R.drawable.flag_pl),
+                MultiSelectModel(42, SpannableString(array[42]), R.drawable.flag_pt),
+                MultiSelectModel(43, SpannableString(array[43]), R.drawable.flag_ro),
+                MultiSelectModel(44, SpannableString(array[44]), R.drawable.flag_ru),
+                MultiSelectModel(45, SpannableString(array[45]), R.drawable.flag_rs),
+                MultiSelectModel(46, SpannableString(array[46]), R.drawable.flag_sg),
+                MultiSelectModel(47, SpannableString(array[47]), R.drawable.flag_sk),
+                MultiSelectModel(48, SpannableString(array[48]), R.drawable.flag_si),
+                MultiSelectModel(49, SpannableString(array[49]), R.drawable.flag_za),
+                MultiSelectModel(50, SpannableString(array[50]), R.drawable.flag_kr),
+                MultiSelectModel(51, SpannableString(array[51]), R.drawable.flag_es),
+                MultiSelectModel(52, SpannableString(array[52]), R.drawable.flag_se),
+                MultiSelectModel(53, SpannableString(array[53]), R.drawable.flag_ch),
+                MultiSelectModel(54, SpannableString(array[54]), R.drawable.flag_tw),
+                MultiSelectModel(55, SpannableString(array[55]), R.drawable.flag_th),
+                MultiSelectModel(56, SpannableString(array[56]), R.drawable.flag_tr),
+                MultiSelectModel(57, SpannableString(array[57]), R.drawable.flag_ua),
+                MultiSelectModel(58, SpannableString(array[58]), R.drawable.flag_ae),
+                MultiSelectModel(59, SpannableString(array[59]), R.drawable.flag_gb),
+                MultiSelectModel(60, SpannableString(array[60]), R.drawable.flag_us),
+                MultiSelectModel(61, SpannableString(array[61]), R.drawable.flag_vn)
+        )
     }
 
     override fun onMapLoaded() {
