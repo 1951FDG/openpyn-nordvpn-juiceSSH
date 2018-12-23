@@ -176,7 +176,8 @@
     </string-array>
 
     <string name="pref_tcp">TCP</string>
-    <string name="pref_description_tcp">Use port 443 instead of port 1194 (UDP)</string>
+    <string name="pref_description_tcp">Port 443</string>
+    <string name="pref_description_udp">Port 1194 (UDP)</string>
 
     <string name="pref_max_load">Max Load</string>
 
