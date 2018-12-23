@@ -149,3 +149,25 @@ package io.github.sdsstudios.nvidiagpumonitor
         return if (json1.length() > 0) json1 else null
     }
 */
+
+            /*
+            if (preferences.getString("pref_country_values", "") == "") {
+                val list = Array(size = array.size) { false }.toCollection(ArrayList())
+                val editor = PrintArray.putListBoolean("pref_country_values", list, preferences)
+                editor.commit()
+            }
+
+            val checkedItems = PrintArray.getListBoolean("pref_country_values", preferences).toBooleanArray()
+
+            PrintArray.show( "pref_country_values", array, checkedItems, it, preferences)
+            */
+
+ try {
+                                    val gcd =  Geocoder(it, Locale.getDefault())
+                                    val addresses = gcd.getFromLocation(location.latitude, location.longitude, 1)
+                                    if (addresses != null && !addresses.isEmpty()) {
+                                        country = addresses[0].countryCode
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }

@@ -139,16 +139,16 @@ class MainActivity : AppCompatActivity(),
         private const val PERMISSION_REQUEST_CODE = 23
         private const val JUICE_SSH_PACKAGE_NAME = "com.sonelli.juicessh"
         private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
-        private const val favorites = "pref_favorites"
+        private const val FAVORITE_KEY = "pref_favorites"
     }
 
     private val mConnectionListAdapter by lazy {
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
     }
     private var mConnectionManager: ConnectionManager? = null
-    val items: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
-    private val storage by lazy { LazyMarkerStorage(favorites) }
-    private val countryList by lazy { ArrayList<String>() }
+    private val markers: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
+    private val storage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
+    private val flags by lazy { ArrayList<String>() }
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
     private var mMap: GoogleMap? = null
@@ -350,80 +350,97 @@ class MainActivity : AppCompatActivity(),
         val id = item.itemId
         return when (id) {
             R.id.action_settings -> {
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
-                val intent = Intent(this, SettingsActivity::class.java).apply {
-                    putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
-                    putExtra(EXTRA_NO_HEADERS, true)
-                }
-                startActivity(intent, options.toBundle())
-                /*
-                startActivity<SettingsActivity>(
-                        EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name,
-                        EXTRA_NO_HEADERS to true
-                )
-                */
+                onSettingsItemSelected(item)
                 true
             }
             R.id.action_refresh -> {
-                //val drawable = item.icon as? Animatable
-                //drawable?.start()
-                toolbar.showProgress(true)
-
-                doAsync {
-                    var json1: JSONArray? = null
-
-                    if (networkInfo!!.isOnline()) {
-                        json1 = createJson()
-                        //generateXML()
-                    }
-                    var thrown = true
-
-                    if (json1 != null) {
-                        val text = json1.toString()
-
-                        try {
-                            val child = resources.getResourceEntryName(R.raw.nordvpn) + ".json"
-                            val file = File(getExternalFilesDir(null), child)
-                            file.writeText(text)
-                            thrown = false
-                        } catch (e: Resources.NotFoundException) {
-                            Crashlytics.logException(e)
-                        } catch (e: FileNotFoundException) {
-                            Crashlytics.logException(e)
-                        } catch (e: IOException) {
-                            Crashlytics.logException(e)
-                        }
-                    }
-
-                    uiThread {
-                        toolbar.hideProgress(true)
-                        //drawable?.stop()
-                        if (!thrown) {
-                            MaterialDialog.Builder(it)
-                                    .title("Warning")
-                                    .content(R.string.warning_must_restart_app)
-                                    .positiveText(android.R.string.ok)
-                                    .show()
-                        }
-                    }
-
-                    onComplete {
-                    }
-                }
+                onRefreshItemSelected(item)
                 true
             }
             R.id.action_about -> {
-                AboutActivity.launch(this)
+                onAboutItemSelected(item)
                 true
             }
             R.id.action_github -> {
-                val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-                startActivity(intent, null)
+                onGitHubItemSelected(item)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun onGitHubItemSelected(item: MenuItem) {
+        val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
+        startActivity(intent, null)
+    }
+
+    private fun onAboutItemSelected(item: MenuItem) {
+        AboutActivity.launch(this)
+    }
+
+    private fun onRefreshItemSelected(item: MenuItem) {
+        //val drawable = item.icon as? Animatable
+        //drawable?.start()
+        toolbar.showProgress(true)
+
+        doAsync {
+            var jsonArray: JSONArray? = null
+
+            if (networkInfo!!.isOnline()) {
+                jsonArray = createJson()
+                //generateXML()
+            }
+            var thrown = true
+
+            if (jsonArray != null) {
+                val json = jsonArray.toString()
+
+                try {
+                    val child = resources.getResourceEntryName(R.raw.nordvpn) + ".json"
+                    val file = File(getExternalFilesDir(null), child)
+                    file.writeText(json)
+                    thrown = false
+                } catch (e: Resources.NotFoundException) {
+                    Crashlytics.logException(e)
+                } catch (e: FileNotFoundException) {
+                    Crashlytics.logException(e)
+                } catch (e: IOException) {
+                    Crashlytics.logException(e)
+                }
+            }
+
+            uiThread {
+                toolbar.hideProgress(true)
+                //drawable?.stop()
+                if (!thrown) {
+                    MaterialDialog.Builder(it)
+                            .title("Warning")
+                            .content(R.string.warning_must_restart_app)
+                            .positiveText(android.R.string.ok)
+                            .show()
+                }
+            }
+
+            onComplete {
+            }
+        }
+    }
+
+    private fun onSettingsItemSelected(item: MenuItem) {
+        item.itemId
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
+        val intent = Intent(this, SettingsActivity::class.java).apply {
+            putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
+            putExtra(EXTRA_NO_HEADERS, true)
+        }
+        startActivity(intent, options.toBundle())
+        /*
+        startActivity<SettingsActivity>(
+                EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name,
+                EXTRA_NO_HEADERS to true
+        )
+        */
     }
 
     @Suppress("MagicNumber")
@@ -447,7 +464,7 @@ class MainActivity : AppCompatActivity(),
 
         fab1.hide()
         fab2.hide()
-        items.forEach { (_, value) ->
+        markers.forEach { (_, value) ->
             if (value.zIndex == 1.0f) fab3.hide()
         }
 
@@ -473,7 +490,7 @@ class MainActivity : AppCompatActivity(),
 
         mMap?.let { fab1.show() }
         mMap?.let { fab2.show() }
-        items.forEach { (_, value) ->
+        markers.forEach { (_, value) ->
             if (value.zIndex == 1.0f) fab3.show()
         }
 
@@ -569,127 +586,120 @@ class MainActivity : AppCompatActivity(),
         mMap = googleMap
         cameraUpdateAnimator = CameraUpdateAnimator(googleMap, this)
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val arrayList = storage.loadFavorites(this)
+        val favorites = storage.loadFavorites(this)
         val iconDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1)
         val securityManager = SecurityManager.getInstance(this)
 
         toolbar.showProgress(true)
 
-        doAsync {
-            tileProvider = MapBoxOfflineTileProvider(null, "file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-            //tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-            info(tileProvider!!.toString())
-            val list = listOf(
-                    Pair(R.raw.nordvpn, ".json")
-            )
-
-            for ((id, ext) in list) {
-                try {
-                    val file = File(getExternalFilesDir(null), resources.getResourceEntryName(id) + ext)
-                    if (!file.exists()) {
-                        resources.openRawResource(id).use { input ->
-                            file.outputStream().buffered().use { output ->
-                                input.copyTo(output)
-                            }
-                        }
-                    }
-                } catch (e: Resources.NotFoundException) {
-                    Crashlytics.logException(e)
-                } catch (e: FileNotFoundException) {
-                    Crashlytics.logException(e)
-                } catch (e: IOException) {
-                    Crashlytics.logException(e)
-                }
+        fun selectedCountries(list: ArrayList<MultiSelectModel>): ArrayList<Int> {
+            val preSelectedIdsList = ArrayList<Int>()
+            for (i in list.indices) {
+                preSelectedIdsList.add(i)
             }
+            val defValue = preSelectedIdsList.joinToString(separator = PrintArray.delimiter)
+            return PrintArray.getListInt("pref_country_values", defValue, preferences)
+        }
 
+        fun printArray(items: ArrayList<MultiSelectModel>, checkedItems: ArrayList<Int>) {
+            PrintArray.apply {
+                setHint(R.string.empty)
+                setTitle(R.string.empty)
+                setItems(items)
+                setCheckedItems(checkedItems)
+            }
+        }
+
+        fun countryBoundaries(): CountryBoundaries? {
             try {
-                countryBoundaries = CountryBoundaries.load(assets.open("boundaries.ser"))
+                return CountryBoundaries.load(assets.open("boundaries.ser"))
             } catch (e: FileNotFoundException) {
                 Crashlytics.logException(e)
             } catch (e: IOException) {
                 Crashlytics.logException(e)
             }
-            val array = resources.getTextArray(R.array.pref_country_entries)
-            /*
-            if (preferences.getString("pref_country_values", "") == "") {
-                val list = Array(size = array.size) { false }.toCollection(ArrayList())
-                val editor = PrintArray.putListBoolean("pref_country_values", list, preferences)
-                editor.commit()
-            }
 
-            val checkedItems = PrintArray.getListBoolean("pref_country_values", preferences).toBooleanArray()
+            return null
+        }
 
-            PrintArray.show( "pref_country_values", array, checkedItems, it, preferences)
-            */
-            // Country List
-            val countries = countryList(array)
-            // Preselected IDs of Country List
-            val preSelectedIdsList = ArrayList<Int>()
-            for (i in countries.indices) {
-                preSelectedIdsList.add(i)
-            }
-            val defValue = preSelectedIdsList.joinToString(separator = PrintArray.delimiter)
-            val selectedCountries = PrintArray.getListInt("pref_country_values", defValue, preferences)
-            val strings = resources.getStringArray(R.array.pref_country_values)
-            selectedCountries.forEach { index ->
-                countryList.add(strings[index])
-            }
+        fun tileProvider(): MapBoxOfflineTileProvider {
+            // Use a memory backed SQLite database
+            val tileProvider = MapBoxOfflineTileProvider(null, "file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
+            //val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
+            info(tileProvider.toString())
+            return tileProvider
+        }
 
-            PrintArray.apply {
-                setHint(R.string.empty)
-                setTitle(R.string.empty)
-                setItems(countries)
-                setCheckedItems(selectedCountries)
-            }
+        doAsync {
+            val jsonArray = jsonArray(R.raw.nordvpn, ".json")
+            val stringArray = resources.getStringArray(R.array.pref_country_values)
+            val textArray = resources.getTextArray(R.array.pref_country_entries)
+            val countries = countryList(textArray)
+            val selectedCountries = selectedCountries(countries)
             val p2p = preferences.getBoolean("pref_p2p", false)
             val dedicated = preferences.getBoolean("pref_dedicated", false)
             val double = preferences.getBoolean("pref_double", false)
             val onion = preferences.getBoolean("pref_tor", false)
             val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
             val netflix = preferences.getBoolean("pref_netflix", false)
-            var jsonArr: JSONArray? = null
 
-            try {
-                val child = resources.getResourceEntryName(R.raw.nordvpn) + ".json"
-                val file = File(getExternalFilesDir(null), child)
-                val json = file.bufferedReader().use {
-                    it.readText()
-                }
-                jsonArr = JSONArray(json)
-            } catch (e: Resources.NotFoundException) {
-                Crashlytics.logException(e)
-            } catch (e: FileNotFoundException) {
-                Crashlytics.logException(e)
-            } catch (e: IOException) {
-                Crashlytics.logException(e)
-            } catch (e: JSONException) {
-                Crashlytics.logException(e)
+            tileProvider = tileProvider()
+
+            countryBoundaries = countryBoundaries()
+
+            printArray(countries, selectedCountries)
+
+            selectedCountries.forEach { index ->
+                flags.add(stringArray[index])
             }
 
-            if (jsonArr != null) {
-                for (res in jsonArr) {
-                    var flag = res.getString("flag")
+            if (jsonArray != null) {
+                fun netflix(flag: String?): Boolean = when (flag) {
+                    "us" -> true
+                    "ca" -> true
+                    "nl" -> true
+                    "jp" -> true
+                    "gb" -> true
+                    "gr" -> true
+                    "mx" -> true
+                    else -> false
+                }
+
+                fun parseToUnicode(input: String): String {
+                    // Replace the aliases by their unicode
+                    var result = input
+                    val emoji = EmojiFlagManager.getForAlias(input)
+                    if (emoji != null) {
+                        result = emoji.unicode
+                    }
+
+                    return result
+                }
+
+                fun lazyMarker(options: MarkerOptions, flag: String?): LazyMarker {
+                    val marker = LazyMarker(googleMap, options, flag, null)
+                    val index = favorites.indexOf(marker)
+                    if (index >= 0) {
+                        val any = favorites[index]
+                        if (any is LazyMarker) {
+                            val level = any.level
+                            marker.setLevel(level, null)
+                            onLevelChange(marker, level)
+                        }
+                    }
+                    return marker
+                }
+
+                for (res in jsonArray) {
+                    val flag = res.getString("flag")
                     var pass = when {
                         p2p -> false
                         dedicated -> false
                         double -> false
                         onion -> false
                         obfuscated -> false
-                        netflix -> false
+                        netflix -> netflix(flag)
                         else -> true
-                    }
-
-                    if (!pass && netflix) {
-                        pass = when (flag) {
-                            "us" -> true
-                            "ca" -> true
-                            "nl" -> true
-                            "jp" -> true
-                            "gb" -> true
-                            "gr" -> true
-                            "mx" -> true
-                            else -> false
-                        }
                     }
 
                     if (!pass) {
@@ -698,20 +708,16 @@ class MainActivity : AppCompatActivity(),
                         for (category in categories) {
                             val name = category.getString("name")
 
-                            if (p2p and (name == "P2P")) {
-                                pass = true
-                                break
-                            } else if (dedicated and (name == "Dedicated IP")) {
-                                pass = true
-                                break
-                            } else if (double and (name == "Double VPN")) {
-                                pass = true
-                                break
-                            } else if (onion and (name == "Onion Over VPN")) {
-                                pass = true
-                                break
-                            } else if (obfuscated and (name == "Obfuscated Servers")) {
-                                pass = true
+                            pass = when {
+                                p2p and (name == "P2P") -> true
+                                dedicated and (name == "Dedicated IP") -> true
+                                double and (name == "Double VPN") -> true
+                                onion and (name == "Onion Over VPN") -> true
+                                obfuscated and (name == "Obfuscated Servers") -> true
+                                else -> false
+                            }
+
+                            if (pass) {
                                 break
                             }
                         }
@@ -720,51 +726,30 @@ class MainActivity : AppCompatActivity(),
                     if (!pass) {
                         continue
                     }
-
-                    fun parseToUnicode(input: String): String {
-                        // Replace the aliases by their unicode
-                        var result = input
-                        val emoji = EmojiFlagManager.getForAlias(input)
-                        if (emoji != null) {
-                            result = emoji.unicode
-                        }
-
-                        return result
-                    }
-
                     val country = res.getString("country")
                     val emoji = parseToUnicode(flag)
                     val location = res.getJSONObject("location")
                     val latLng = LatLng(location.getDouble("lat"), location.getDouble("long"))
-                    val var1 = MarkerOptions().apply {
+                    val options = MarkerOptions().apply {
                         flat(true)
                         position(latLng)
                         title("$emoji $country")
                         visible(false)
                         icon(iconDescriptor)
                     }
-                    val marker = LazyMarker(googleMap, var1, flag, null)
-                    val index = arrayList.indexOf(marker)
-                    if (index >= 0) {
-                        val any = arrayList[index]
-                        if (any is LazyMarker) {
-                            val level = any.level
-                            marker.setLevel(level, null)
-                            onLevelChange(marker, level)
-                        }
-                    }
 
-                    items[latLng] = marker
+                    markers[latLng] = lazyMarker(options, flag)
                 }
             }
-
-            items.forEach { (_, value) ->
+            // Log new countries, if any
+            markers.forEach { (_, value) ->
                 val element = value.tag
-                if (element is String && !strings.contains(element)) {
+                if (element is String && !stringArray.contains(element)) {
                     Crashlytics.logException(Exception(element))
                     error(element)
                 }
             }
+            // Load all map tiles
             val z = 3
             //val z = tileProvider!!.minimumZoom.toInt()
             val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
@@ -777,8 +762,8 @@ class MainActivity : AppCompatActivity(),
                     cameraUpdateAnimator?.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
                 }
             }
-            val json1 = createGeoJson(networkInfo!!, preferences, securityManager)
-            addAnimation(json1, jsonArr, cameraUpdateAnimator, true)
+            val jsonObj = createGeoJson(networkInfo!!, preferences, securityManager)
+            addAnimation(jsonObj, jsonArray, cameraUpdateAnimator, true)
 
             uiThread {
                 toolbar.hideProgress(true)
@@ -813,6 +798,53 @@ class MainActivity : AppCompatActivity(),
                 map.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun copyToExternalFilesDir(list: List<Pair<Int, String>>) {
+        for ((id, ext) in list) {
+            try {
+                val file = File(getExternalFilesDir(null), resources.getResourceEntryName(id) + ext)
+                if (!file.exists()) {
+                    resources.openRawResource(id).use { input ->
+                        file.outputStream().buffered().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                }
+            } catch (e: Resources.NotFoundException) {
+                Crashlytics.logException(e)
+            } catch (e: FileNotFoundException) {
+                Crashlytics.logException(e)
+            } catch (e: IOException) {
+                Crashlytics.logException(e)
+            }
+        }
+    }
+
+    private fun jsonArray(id: Int, ext: String): JSONArray? {
+        try {
+            val file = File(getExternalFilesDir(null), resources.getResourceEntryName(id) + ext)
+            if (!file.exists()) {
+                resources.openRawResource(id).use { input ->
+                    file.outputStream().buffered().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+            }
+            val json = file.bufferedReader().use {
+                it.readText()
+            }
+            return JSONArray(json)
+        } catch (e: Resources.NotFoundException) {
+            Crashlytics.logException(e)
+        } catch (e: FileNotFoundException) {
+            Crashlytics.logException(e)
+        } catch (e: IOException) {
+            Crashlytics.logException(e)
+        } catch (e: JSONException) {
+            Crashlytics.logException(e)
+        }
+        return null
     }
 
     @Suppress("MagicNumber")
@@ -898,8 +930,8 @@ class MainActivity : AppCompatActivity(),
         }
 
         fab3?.onClick {
-            if (mMap != null && items.size != 0) {
-                items.forEach { (_, value) ->
+            if (mMap != null && markers.size != 0) {
+                markers.forEach { (_, value) ->
                     if (value.zIndex == 1.0f) {
                         val level = value.level
                         when (level) {
@@ -968,20 +1000,30 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun getFlag(longitude: Double, latitude: Double): String {
+        fun getToastString(ids: List<String>?): String {
+            return when {
+                ids == null || ids.isEmpty() -> "is nowhere"
+                else -> "is in " + ids.joinToString()
+            }
+        }
+
+        var t = System.nanoTime()
         val ids = countryBoundaries?.getIds(longitude, latitude)
+        t = System.nanoTime() - t
+        info(getToastString(ids) + " (in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
         if (ids != null && !ids.isEmpty()) {
             return ids[0].toLowerCase(Locale.ROOT)
         }
         return ""
     }
 
-    private fun addAnimation(json1: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
+    private fun addAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
         when {
-            json1 != null -> {
-                val lat = json1.getDouble("latitude")
-                val lon = json1.getDouble("longitude")
-                val flag = json1.getString("flag")
-                val latLng = if (closest && countryList.contains(flag)) {
+            jsonObj != null -> {
+                val lat = jsonObj.getDouble("latitude")
+                val lon = jsonObj.getDouble("longitude")
+                val flag = jsonObj.getString("flag")
+                val latLng = if (closest && flags.contains(flag)) {
                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                 } else {
                     LatLng(lat, lon)
@@ -993,7 +1035,7 @@ class MainActivity : AppCompatActivity(),
                 val lat = lastLocation!!.latitude
                 val lon = lastLocation!!.longitude
                 val flag = getFlag(lon, lat)
-                val latLng = if (closest && countryList.contains(flag)) {
+                val latLng = if (closest && flags.contains(flag)) {
                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                 } else {
                     LatLng(lat, lon)
@@ -1002,19 +1044,20 @@ class MainActivity : AppCompatActivity(),
                 animateCamera(latLng, animator, closest, false)
             }
             else -> {
-                animateCamera(getDefaultLatLng(), animator, false, false)
+                val latLng = getDefaultLatLng()
+                animateCamera(latLng, animator, false, false)
             }
         }
     }
 
     @MainThread
-    private fun executeAnimation(json1: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
+    private fun executeAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
         when {
-            json1 != null -> {
-                val lat = json1.getDouble("latitude")
-                val lon = json1.getDouble("longitude")
-                val flag = json1.getString("flag")
-                val latLng = if (closest && countryList.contains(flag)) {
+            jsonObj != null -> {
+                val lat = jsonObj.getDouble("latitude")
+                val lon = jsonObj.getDouble("longitude")
+                val flag = jsonObj.getString("flag")
+                val latLng = if (closest && flags.contains(flag)) {
                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                 } else {
                     LatLng(lat, lon)
@@ -1027,33 +1070,11 @@ class MainActivity : AppCompatActivity(),
                         .addOnSuccessListener { location: Location? ->
                             var latLng = getDefaultLatLng()
                             if (location != null) {
-                                /*
-                                try {
-                                    val gcd =  Geocoder(it, Locale.getDefault())
-                                    val addresses = gcd.getFromLocation(location.latitude, location.longitude, 1)
-                                    if (addresses != null && !addresses.isEmpty()) {
-                                        country = addresses[0].countryCode
-                                    }
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-
-                                fun getToastString(ids: List<String>?): String {
-                                    return when {
-                                        ids == null || ids.isEmpty() -> "is nowhere"
-                                        else -> "is in " + ids.joinToString()
-                                    }
-                                }
-
-                                var t = System.nanoTime()
-                                t = System.nanoTime() - t
-                                info(getToastString(ids) + "\n(in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
-                                */
                                 val lat = location.latitude
                                 val lon = location.longitude
                                 val flag = getFlag(lon, lat)
 
-                                latLng = if (closest && countryList.contains(flag)) {
+                                latLng = if (closest && flags.contains(flag)) {
                                     getLatLng(flag, LatLng(lat, lon), jsonArr)
                                 } else {
                                     LatLng(lat, lon)
@@ -1088,34 +1109,47 @@ class MainActivity : AppCompatActivity(),
             fab2.isClickable = true
         }
 
+        fun onFinish() {
+            markers.forEach { (key, value) ->
+                if (key == latLng) {
+                    if (!value.isVisible) value.isVisible = true
+                    if (!value.isInfoWindowShown) value.showInfoWindow()
+
+                    value.zIndex = 1.0f
+                    value.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+
+                    fab3.isChecked = (value.level == 1)
+                    fab3.refreshDrawableState()
+
+                    fab3.show()
+                } else {
+                    if (value.zIndex == 1.0f) {
+                        //if (value.isInfoWindowShown) value.hideInfoWindow()
+                        value.setLevel(value.level, null)
+                        onLevelChange(value, value.level)
+                    }
+                }
+            }
+
+            fab1.show()
+            fab2.show()
+        }
+
+        fun onCancel() {
+            markers.forEach { (key, value) ->
+                if (key == latLng) {
+                    info("Animation to $value canceled")
+                    return@onCancel
+                }
+            }
+        }
+
         onStart()
 
         animator?.add(CameraUpdateFactory.newLatLng(latLng), true, 0, object : CancelableCallback {
             override fun onFinish() {
                 if (closest) {
-                    items.forEach { (key, value) ->
-                        if (key == latLng) {
-                            if (!value.isVisible) value.isVisible = true
-                            if (!value.isInfoWindowShown) value.showInfoWindow()
-
-                            value.zIndex = 1.0f
-                            value.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
-
-                            fab3.isChecked = (value.level == 1)
-                            fab3.refreshDrawableState()
-
-                            fab3.show()
-                        } else {
-                            if (value.zIndex == 1.0f) {
-                                //if (value.isInfoWindowShown) value.hideInfoWindow()
-                                value.setLevel(value.level, null)
-                                onLevelChange(value, value.level)
-                            }
-                        }
-                    }
-
-                    fab1.show()
-                    fab2.show()
+                    onFinish()
                 }
 
                 onEnd()
@@ -1123,12 +1157,7 @@ class MainActivity : AppCompatActivity(),
 
             override fun onCancel() {
                 if (closest) {
-                    items.forEach { (key, value) ->
-                        if (key == latLng) {
-                            info("Animation to $value canceled")
-                            return@onCancel
-                        }
-                    }
+                    onCancel()
                 }
 
                 onEnd()
@@ -1141,8 +1170,8 @@ class MainActivity : AppCompatActivity(),
     override fun onCameraIdle() {
         val bounds = mMap!!.projection.visibleRegion.latLngBounds
 
-        items.forEach { (key, value) ->
-            if (bounds.contains(key) && countryList.contains(value.tag)) {
+        markers.forEach { (key, value) ->
+            if (bounds.contains(key) && flags.contains(value.tag)) {
                 if (!value.isVisible) value.isVisible = true
             } else {
                 if (value.isVisible) value.isVisible = false
@@ -1157,7 +1186,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onMapClick(p0: LatLng?) {
-        items.forEach { (_, value) ->
+        markers.forEach { (_, value) ->
             if (value.zIndex == 1.0f) {
                 value.setLevel(value.level, this)
 
@@ -1169,7 +1198,7 @@ class MainActivity : AppCompatActivity(),
     override fun onMarkerClick(p0: Marker?): Boolean {
         if (p0 != null && p0.zIndex != 1.0f) {
             //info(p0.tag)
-            items.forEach { (_, value) ->
+            markers.forEach { (_, value) ->
                 if (value.zIndex == 1.0f) {
                     value.setLevel(value.level, this)
                 }
@@ -1177,7 +1206,7 @@ class MainActivity : AppCompatActivity(),
             p0.zIndex = 1.0f
             p0.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
-            fab3.isChecked = (items[p0.position]?.level == 1)
+            fab3.isChecked = (markers[p0.position]?.level == 1)
             fab3.refreshDrawableState()
         }
 
@@ -1334,11 +1363,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
-        // Preselected IDs of Country List
-        countryList.clear()
-        val strings: Array<String> = resources.getStringArray(R.array.pref_country_values)
+        flags.clear()
+        val strings = resources.getStringArray(R.array.pref_country_values)
         selectedIds.forEach { index ->
-            countryList.add(strings[index])
+            flags.add(strings[index])
         }
 
         onCameraIdle()
@@ -1349,8 +1377,8 @@ class MainActivity : AppCompatActivity(),
 
     @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
-        if (mMap != null && items.size != 0) {
-            items.forEach { (key, value) ->
+        if (mMap != null && markers.size != 0) {
+            markers.forEach { (key, value) ->
                 if (value.zIndex == 1.0f) {
                     return Pair(key, value.tag.toString())
                 }
@@ -1370,38 +1398,20 @@ class MainActivity : AppCompatActivity(),
         toolbar.showProgress(true)
 
         doAsync {
-            val var1 = createGeoJson(networkInfo!!, preferences, securityManager)
-            var var2: JSONArray? = null
-
-            try {
-                val child = resources.getResourceEntryName(R.raw.nordvpn) + ".json"
-                val file = File(getExternalFilesDir(null), child)
-                val json = file.bufferedReader().use {
-                    it.readText()
-                }
-                var2 = JSONArray(json)
-            } catch (e: Resources.NotFoundException) {
-                Crashlytics.logException(e)
-            } catch (e: FileNotFoundException) {
-                Crashlytics.logException(e)
-            } catch (e: IOException) {
-                Crashlytics.logException(e)
-            } catch (e: JSONException) {
-                Crashlytics.logException(e)
-            }
+            val jsonObj = createGeoJson(networkInfo!!, preferences, securityManager)
+            val jsonArr = jsonArray(R.raw.nordvpn, ".json")
 
             uiThread {
                 toolbar.hideProgress(true)
-                //var1?.let { jsonObject -> showThreats(jsonObject) }
-                mMap?.let { executeAnimation(var1, var2, cameraUpdateAnimator, false) }
+                mMap?.let { executeAnimation(jsonObj, jsonArr, cameraUpdateAnimator, false) }
 
-                if (show && var1 != null) {
-                    val flag = var1.getString("flag").toUpperCase()
-                    //val country = var1.getString("country")
-                    val city = var1.getString("city")
-                    //val lat = var1.getDouble("latitude")
-                    //val lon = var1.getDouble("longitude")
-                    val ip = var1.getString("ip")
+                if (show && jsonObj != null) {
+                    val flag = jsonObj.getString("flag").toUpperCase(Locale.ROOT)
+                    //val country = jsonObj.getString("country")
+                    val city = jsonObj.getString("city")
+                    //val lat = jsonObj.getDouble("latitude")
+                    //val lon = jsonObj.getDouble("longitude")
+                    val ip = jsonObj.getString("ip")
                     val userMessage = UserMessage.Builder()
                             .with(it)
                             .setBackgroundColor(R.color.accent_material_indigo_200)
@@ -1414,6 +1424,7 @@ class MainActivity : AppCompatActivity(),
 
                     minibarView.translationZ = 0.0f
                     minibarView.show(userMessage)
+                    //jsonObj?.let { jsonObject -> showThreats(jsonObject) }
                 }
             }
         }
