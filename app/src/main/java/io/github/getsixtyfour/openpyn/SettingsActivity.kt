@@ -12,7 +12,6 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragment
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import androidx.preference.PreferenceScreen
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -25,11 +24,6 @@ import androidx.preference.PreferenceScreen
  * for more information on developing a Settings UI.
  */
 class SettingsActivity : AppCompatPreferenceActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupActionBar()
-    }
-
     /**
      * Set up the [android.app.ActionBar], if the API is available.
      */
@@ -75,8 +69,22 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     /**
      * This fragment shows settings preferences only.
      */
-    class SettingsSyncPreferenceFragment : PreferenceFragment(),
-            PreferenceFragment.OnPreferenceStartScreenCallback {
+    class SettingsSyncPreferenceFragment : PreferenceFragment(), PreferenceFragment.OnPreferenceStartFragmentCallback {
+        override fun onPreferenceStartFragment(caller: PreferenceFragment?, pref: Preference?): Boolean {
+            // Instantiate the new Fragment
+            val args = pref?.extras
+            val fragment = ApiSyncPreferenceFragment()
+            fragment.arguments = args
+            fragment.setTargetFragment(caller, 0)
+
+            fragmentManager.beginTransaction()
+                    .replace(AndroidResources.ANDROID_R_LIST_CONTAINER, fragment)
+                    .addToBackStack(null)
+                    .commit()
+
+            return true
+        }
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setHasOptionsMenu(false)
@@ -87,11 +95,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             findPreference("pref_top_servers")?.let { bindPreferenceSummaryToValue(it) }
             findPreference("pref_pings")?.let { bindPreferenceSummaryToValue(it) }
             findPreference("pref_nvram_client")?.let { bindPreferenceSummaryToValue(it) }
-
-            findPreference("pref_geo_client")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_api_ipdata")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_api_ipinfo")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_api_ipstack")?.let { bindPreferenceSummaryToValue(it) }
         }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -101,26 +104,48 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             view.fitsSystemWindows = true
-            super.onViewCreated(view, savedInstanceState)
             setDivider(null)
-        }
-
-        override fun onPreferenceStartScreen(caller: PreferenceFragment?, pref: PreferenceScreen?): Boolean {
-            val ft = fragmentManager.beginTransaction()
-            val fragment = SettingsSyncPreferenceFragment()
-            val args = Bundle()
-            args.putString(PreferenceFragment.ARG_PREFERENCE_ROOT, pref?.key)
-            fragment.arguments = args
-
-            ft.add(AndroidResources.ANDROID_R_LIST_CONTAINER, fragment, pref?.key)
-            ft.addToBackStack(null)
-            ft.commit()
-            return true
+            super.onViewCreated(view, savedInstanceState)
         }
 
         override fun getCallbackFragment(): PreferenceFragment {
             return this
         }
+    }
+
+    /**
+     * This fragment shows API settings preferences only.
+     */
+    class ApiSyncPreferenceFragment : PreferenceFragment() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setHasOptionsMenu(false)
+
+            findPreference("pref_geo_client")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_api_ipdata")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_api_ipinfo")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_api_ipstack")?.let { bindPreferenceSummaryToValue(it) }
+        }
+
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            // Load the preferences from an XML resource
+            setPreferencesFromResource(R.xml.pref_api, rootKey)
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            view.fitsSystemWindows = true
+            setDivider(null)
+            super.onViewCreated(view, savedInstanceState)
+        }
+
+        override fun getCallbackFragment(): PreferenceFragment {
+            return this
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupActionBar()
     }
 
     companion object {
