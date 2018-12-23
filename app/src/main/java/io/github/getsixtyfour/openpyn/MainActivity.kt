@@ -705,7 +705,7 @@ class MainActivity : AppCompatActivity(),
                     if (!pass) {
                         val categories = res.getJSONArray("categories")
 
-                        for (category in categories) {
+                        loop@ for (category in categories) {
                             val name = category.getString("name")
 
                             pass = when {
@@ -718,7 +718,7 @@ class MainActivity : AppCompatActivity(),
                             }
 
                             if (pass) {
-                                break
+                                break@loop
                             }
                         }
                     }
@@ -763,7 +763,7 @@ class MainActivity : AppCompatActivity(),
                 }
             }
             val jsonObj = createGeoJson(networkInfo!!, preferences, securityManager)
-            addAnimation(jsonObj, jsonArray, cameraUpdateAnimator, true)
+            addAnimation(jsonObj, jsonArray, true)
 
             uiThread {
                 toolbar.hideProgress(true)
@@ -1017,84 +1017,80 @@ class MainActivity : AppCompatActivity(),
         return ""
     }
 
-    private fun addAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
-        when {
-            jsonObj != null -> {
-                val lat = jsonObj.getDouble("latitude")
-                val lon = jsonObj.getDouble("longitude")
-                val flag = jsonObj.getString("flag")
-                val latLng = if (closest && flags.contains(flag)) {
-                    getLatLng(flag, LatLng(lat, lon), jsonArr)
-                } else {
-                    LatLng(lat, lon)
-                }
+    private fun addAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean) = when {
+        jsonObj != null -> {
+            val lat = jsonObj.getDouble("latitude")
+            val lon = jsonObj.getDouble("longitude")
+            val flag = jsonObj.getString("flag")
+            val latLng = if (closest && flags.contains(flag)) {
+                getLatLng(flag, LatLng(lat, lon), jsonArr)
+            } else {
+                LatLng(lat, lon)
+            }
 
-                animateCamera(latLng, animator, closest, false)
+            animateCamera(latLng, closest, false)
+        }
+        lastLocation != null -> {
+            val lat = lastLocation!!.latitude
+            val lon = lastLocation!!.longitude
+            val flag = getFlag(lon, lat)
+            val latLng = if (closest && flags.contains(flag)) {
+                getLatLng(flag, LatLng(lat, lon), jsonArr)
+            } else {
+                LatLng(lat, lon)
             }
-            lastLocation != null -> {
-                val lat = lastLocation!!.latitude
-                val lon = lastLocation!!.longitude
-                val flag = getFlag(lon, lat)
-                val latLng = if (closest && flags.contains(flag)) {
-                    getLatLng(flag, LatLng(lat, lon), jsonArr)
-                } else {
-                    LatLng(lat, lon)
-                }
 
-                animateCamera(latLng, animator, closest, false)
-            }
-            else -> {
-                val latLng = getDefaultLatLng()
-                animateCamera(latLng, animator, false, false)
-            }
+            animateCamera(latLng, closest, false)
+        }
+        else -> {
+            val latLng = getDefaultLatLng()
+            animateCamera(latLng, false, false)
         }
     }
 
     @MainThread
-    private fun executeAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, animator: CameraUpdateAnimator?, closest: Boolean) {
-        when {
-            jsonObj != null -> {
-                val lat = jsonObj.getDouble("latitude")
-                val lon = jsonObj.getDouble("longitude")
-                val flag = jsonObj.getString("flag")
-                val latLng = if (closest && flags.contains(flag)) {
-                    getLatLng(flag, LatLng(lat, lon), jsonArr)
-                } else {
-                    LatLng(lat, lon)
-                }
-
-                animateCamera(latLng, animator, closest, true)
+    private fun executeAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean) = when {
+        jsonObj != null -> {
+            val lat = jsonObj.getDouble("latitude")
+            val lon = jsonObj.getDouble("longitude")
+            val flag = jsonObj.getString("flag")
+            val latLng = if (closest && flags.contains(flag)) {
+                getLatLng(flag, LatLng(lat, lon), jsonArr)
+            } else {
+                LatLng(lat, lon)
             }
-            ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
-                FusedLocationProviderClient(this).lastLocation
-                        .addOnSuccessListener { location: Location? ->
-                            var latLng = getDefaultLatLng()
-                            if (location != null) {
-                                val lat = location.latitude
-                                val lon = location.longitude
-                                val flag = getFlag(lon, lat)
 
-                                latLng = if (closest && flags.contains(flag)) {
-                                    getLatLng(flag, LatLng(lat, lon), jsonArr)
-                                } else {
-                                    LatLng(lat, lon)
-                                }
+            animateCamera(latLng, closest, true)
+        }
+        ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
+            val task = FusedLocationProviderClient(this).lastLocation
+                    .addOnSuccessListener { location: Location? ->
+                        var latLng = getDefaultLatLng()
+                        if (location != null) {
+                            val lat = location.latitude
+                            val lon = location.longitude
+                            val flag = getFlag(lon, lat)
+
+                            latLng = if (closest && flags.contains(flag)) {
+                                getLatLng(flag, LatLng(lat, lon), jsonArr)
+                            } else {
+                                LatLng(lat, lon)
                             }
+                        }
 
-                            animateCamera(latLng, animator, closest, true)
-                        }
-                        .addOnFailureListener { e: Exception ->
-                            error(e)
-                            animateCamera(getDefaultLatLng(), animator, closest, true)
-                        }
-            }
-            else -> {
-                animateCamera(getDefaultLatLng(), animator, closest, true)
-            }
+                        animateCamera(latLng, closest, true)
+                    }
+                    .addOnFailureListener { e: Exception ->
+                        error(e)
+                        animateCamera(getDefaultLatLng(), closest, true)
+                    }
+        }
+        else -> {
+            animateCamera(getDefaultLatLng(), closest, true)
         }
     }
 
-    private fun animateCamera(latLng: LatLng, animator: CameraUpdateAnimator?, closest: Boolean, animate: Boolean) {
+    private fun animateCamera(latLng: LatLng, closest: Boolean, animate: Boolean) {
         info(latLng.toString())
 
         fun onStart() {
@@ -1146,7 +1142,7 @@ class MainActivity : AppCompatActivity(),
 
         onStart()
 
-        animator?.add(CameraUpdateFactory.newLatLng(latLng), true, 0, object : CancelableCallback {
+        cameraUpdateAnimator?.add(CameraUpdateFactory.newLatLng(latLng), true, 0, object : CancelableCallback {
             override fun onFinish() {
                 if (closest) {
                     onFinish()
@@ -1164,7 +1160,7 @@ class MainActivity : AppCompatActivity(),
             }
         })
         // Execute the animation and set the final OnCameraIdleListener
-        if (animate) animator?.execute()
+        if (animate) cameraUpdateAnimator?.execute()
     }
 
     override fun onCameraIdle() {
@@ -1403,7 +1399,7 @@ class MainActivity : AppCompatActivity(),
 
             uiThread {
                 toolbar.hideProgress(true)
-                mMap?.let { executeAnimation(jsonObj, jsonArr, cameraUpdateAnimator, false) }
+                mMap?.let { executeAnimation(jsonObj, jsonArr, false) }
 
                 if (show && jsonObj != null) {
                     val flag = jsonObj.getString("flag").toUpperCase(Locale.ROOT)
