@@ -53,31 +53,37 @@
             android:title="@string/pref_silent" />
         <SwitchPreference
             android:defaultValue="false"
+            android:dependency="pref_netflix"
             android:key="pref_p2p"
             android:summary="@string/pref_description_p2p"
             android:title="@string/pref_p2p" />
         <SwitchPreference
             android:defaultValue="false"
+            android:dependency="pref_netflix"
             android:key="pref_dedicated"
             android:summary="@string/pref_description_dedicated"
             android:title="@string/pref_dedicated" />
         <SwitchPreference
             android:defaultValue="false"
+            android:dependency="pref_netflix"
             android:key="pref_double"
             android:summary="@string/pref_description_double"
             android:title="@string/pref_double" />
         <SwitchPreference
             android:defaultValue="false"
+            android:dependency="pref_netflix"
             android:key="pref_tor"
             android:summary="@string/pref_description_tor"
             android:title="@string/pref_tor" />
         <SwitchPreference
             android:defaultValue="false"
+            android:dependency="pref_netflix"
             android:key="pref_anti_ddos"
             android:summary="@string/pref_description_anti_ddos"
             android:title="@string/pref_anti_ddos" />
         <SwitchPreference
             android:defaultValue="false"
+            android:disableDependentsState="true"
             android:key="pref_netflix"
             android:summary="@string/pref_description_netflix"
             android:title="@string/pref_netflix" />

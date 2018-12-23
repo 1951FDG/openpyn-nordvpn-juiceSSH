@@ -693,16 +693,16 @@ class MainActivity : AppCompatActivity(),
                 for (res in jsonArray) {
                     val flag = res.getString("flag")
                     var pass = when {
+                        netflix -> netflix(flag)
                         p2p -> false
                         dedicated -> false
                         double -> false
                         onion -> false
                         obfuscated -> false
-                        netflix -> netflix(flag)
                         else -> true
                     }
 
-                    if (!pass) {
+                    if (!pass && !netflix) {
                         val categories = res.getJSONArray("categories")
 
                         loop@ for (category in categories) {
