@@ -367,6 +367,10 @@ class MainActivity : AppCompatActivity(),
                 onGitHubItemSelected(item)
                 true
             }
+            R.id.action_generate -> {
+                generateXML()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -391,7 +395,6 @@ class MainActivity : AppCompatActivity(),
 
             if (networkInfo!!.isOnline()) {
                 jsonArray = createJson()
-                //generateXML()
             }
             var thrown = true
 

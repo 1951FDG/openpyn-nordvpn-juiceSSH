@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="io.github.getsixtyfour.openpyn.MainActivity">
+    <item
+        android:id="@+id/action_generate"
+        android:orderInCategory="96"
+        android:title="Generate XML"
+        app:showAsAction="ifRoom"
+        tools:ignore="HardcodedText" />
+    <item
+        android:id="@+id/action_github"
+        android:icon="@drawable/ic_github_black_24dp"
+        android:orderInCategory="97"
+        android:title="@string/menu_github"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="98"
+        android:title="@string/menu_about"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="99"
+        android:title="@string/menu_refresh"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+</menu>
