@@ -7,5 +7,5 @@
     android:gravity="center_vertical"
     android:singleLine="true"
     android:textAppearance="@style/AppTheme.Title"
-    tools:text="192.168.1.1"
-    tools:ignore="SelectableText" />
+    tools:ignore="SelectableText"
+    tools:text="192.168.1.1" />
