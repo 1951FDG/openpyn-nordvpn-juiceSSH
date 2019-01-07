@@ -122,9 +122,7 @@ dependencies {
     implementation('com.afollestad.material-dialogs:core:0.9.6.0') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
-    implementation('com.github.1951FDG:Android-Multi-Select-Dialog:v3.0') {
-        exclude group: 'androidx.multidex'
-    }
+    implementation('com.github.1951FDG:Android-Multi-Select-Dialog:v3.3')
     implementation('com.github.1951FDG:ProgressToolbar:1.0.5') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }

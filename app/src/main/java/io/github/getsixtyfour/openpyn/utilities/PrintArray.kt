@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.app.AppCompatActivity
 import com.abdeveloper.library.MultiSelectDialog
 import com.abdeveloper.library.MultiSelectModel
+import com.abdeveloper.library.MultiSelectable
 
 interface SubmitCallbackListener {
     fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String)
@@ -20,7 +21,7 @@ object PrintArray {
     private var positiveTitle = android.R.string.ok
     private var negativeTitle = android.R.string.cancel
     private var neutralTitle = android.R.string.selectAll
-    private var itemsList: ArrayList<MultiSelectModel>? = null
+    private var itemsList: ArrayList<MultiSelectable>? = null
     var checkedItemsList: ArrayList<Int>? = null
     const val delimiter: String = "‚‗‚"
 
@@ -53,7 +54,7 @@ object PrintArray {
     }
 
     @Suppress("unused")
-    fun setItems(items: ArrayList<MultiSelectModel>): PrintArray {
+    fun setItems(items: ArrayList<MultiSelectable>): PrintArray {
         itemsList = items
         return this
     }
@@ -146,7 +147,7 @@ object PrintArray {
     // MultiSelectDialog
     fun show(
         @Size(min = 1) key: String,
-        items: ArrayList<MultiSelectModel>,
+        items: ArrayList<MultiSelectable>,
         checkedItems: ArrayList<Int>,
         context: AppCompatActivity,
         prefs: SharedPreferences?

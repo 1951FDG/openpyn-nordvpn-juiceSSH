@@ -27,6 +27,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModel
+import com.abdeveloper.library.MultiSelectable
 import com.adityaanand.morphdialog.MorphDialog
 import com.afollestad.materialdialogs.MaterialDialog
 import com.androidmapsextensions.lazy.LazyMarker
@@ -584,7 +585,7 @@ class MainActivity : AppCompatActivity(),
 
         toolbar.showProgress(true)
 
-        fun selectedCountries(list: ArrayList<MultiSelectModel>): ArrayList<Int> {
+        fun selectedCountries(list: ArrayList<MultiSelectable>): ArrayList<Int> {
             val preSelectedIdsList = ArrayList<Int>()
             for (i in list.indices) {
                 preSelectedIdsList.add(i)
@@ -593,9 +594,9 @@ class MainActivity : AppCompatActivity(),
             return PrintArray.getListInt("pref_country_values", defValue, preferences)
         }
 
-        fun printArray(items: ArrayList<MultiSelectModel>, checkedItems: ArrayList<Int>) {
+        fun printArray(items: ArrayList<MultiSelectable>, checkedItems: ArrayList<Int>) {
             PrintArray.apply {
-                setHint(R.string.empty)
+                setHint(R.string.multi_select_dialog_hint)
                 setTitle(R.string.empty)
                 setItems(items)
                 setCheckedItems(checkedItems)
@@ -840,7 +841,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     @Suppress("MagicNumber")
-    private fun countryList(array: Array<CharSequence>): ArrayList<MultiSelectModel> {
+    private fun countryList(array: Array<CharSequence>): ArrayList<MultiSelectable> {
         return arrayListOf(
                 MultiSelectModel(0, SpannableString(array[0]), R.drawable.flag_al),
                 MultiSelectModel(1, SpannableString(array[1]), R.drawable.flag_ar),

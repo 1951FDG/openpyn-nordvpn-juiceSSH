@@ -19,6 +19,8 @@
     <string name="error_couldnt_connect_to_service">Could not connect to JuiceSSH Plugin Service</string>
     <!-- Error -->
 
+    <string name="multi_select_dialog_hint">Search</string>
+
     <!-- Card Titles -->
     <string name="title_temp" tools:keep="@string/title_temp">Temperature</string>
     <string name="title_fan_speed" tools:keep="@string/title_fan_speed">Fan Speed</string>
