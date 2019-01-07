@@ -21,7 +21,6 @@ import android.widget.ImageView
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
@@ -753,9 +752,9 @@ class MainActivity : AppCompatActivity(),
 
             uiThread {
                 toolbar.hideProgress(true)
-                val params = fab1.layoutParams as ConstraintLayout.LayoutParams
 
                 googleMap.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider).fadeIn(false))
+
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(it, R.raw.style_json))
                 googleMap.mapType = MAP_TYPE_NORMAL
                 googleMap.setMaxZoomPreference(tileProvider!!.maximumZoom)
@@ -763,7 +762,8 @@ class MainActivity : AppCompatActivity(),
                 googleMap.setOnMapClickListener(it)
                 googleMap.setOnMapLoadedCallback(it)
                 googleMap.setOnMarkerClickListener(it)
-                googleMap.setPadding(0, 0, 0, params.height + params.bottomMargin)
+                //val params = fab1.layoutParams as ConstraintLayout.LayoutParams
+                //googleMap.setPadding(0, 0, 0, params.height + params.bottomMargin)
                 googleMap.uiSettings.isScrollGesturesEnabled = true
                 googleMap.uiSettings.isZoomGesturesEnabled = true
                 val watermark = map?.findViewWithTag<ImageView>("GoogleWatermark")
