@@ -14,8 +14,13 @@ open class ExampleApplication : Application() {
             // You should not init your app in this process.
             return
         }
+        installBlockCanary()
         installLeakCanary()
         populateAboutConfig()
+    }
+
+    protected open fun installBlockCanary() {
+        // no-op, BlockCanary is disabled in production.
     }
 
     protected open fun installLeakCanary() {
