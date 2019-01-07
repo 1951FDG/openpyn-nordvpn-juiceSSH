@@ -1006,7 +1006,7 @@ class MainActivity : AppCompatActivity(),
         }
         else -> {
             val latLng = getDefaultLatLng()
-            animateCamera(latLng, false, false)
+            animateCamera(latLng, closest, false)
         }
     }
 
