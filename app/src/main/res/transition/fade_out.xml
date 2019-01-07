@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fade xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@android:integer/config_shortAnimTime"
+    android:fromAlpha="1.0"
+    android:interpolator="@android:interpolator/decelerate_quad"
+    android:toAlpha="0.0">
+    <targets>
+        <target android:excludeId="@android:id/navigationBarBackground" />
+        <target android:excludeId="@android:id/statusBarBackground" />
+        <target android:excludeId="@id/appBar" />
+    </targets>
+</fade>

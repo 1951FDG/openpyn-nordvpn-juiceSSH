@@ -1,12 +1,16 @@
 package io.github.getsixtyfour.openpyn
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK
 import android.content.res.Configuration.SCREENLAYOUT_SIZE_XLARGE
 import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.view.MenuItem
 import android.view.View
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
 import androidx.preference.AndroidResources
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -149,6 +153,15 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     }
 
     companion object {
+        fun launch(activity: Activity) {
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+            val intent = Intent(activity, SettingsActivity::class.java).apply {
+                putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
+                putExtra(EXTRA_NO_HEADERS, true)
+            }
+            ActivityCompat.startActivity(activity, intent, options.toBundle())
+        }
+
         /**
          * A preference value change listener that updates the preference's summary
          * to reflect its new value.

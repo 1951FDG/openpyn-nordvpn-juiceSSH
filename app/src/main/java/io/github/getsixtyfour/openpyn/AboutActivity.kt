@@ -3,147 +3,264 @@ package io.github.getsixtyfour.openpyn
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import com.danielstone.materialaboutlibrary.MaterialAboutActivity
-import com.danielstone.materialaboutlibrary.items.MaterialAboutActionItem
-import com.danielstone.materialaboutlibrary.items.MaterialAboutItemOnClickAction
-import com.danielstone.materialaboutlibrary.items.MaterialAboutTitleItem
-import com.danielstone.materialaboutlibrary.model.MaterialAboutCard
-import com.danielstone.materialaboutlibrary.model.MaterialAboutCard.Builder
-import com.danielstone.materialaboutlibrary.model.MaterialAboutList
-import com.eggheadgames.aboutbox.AboutBoxUtils.openApp
+import android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK
+import android.content.res.Configuration.SCREENLAYOUT_SIZE_XLARGE
+import android.os.Bundle
+import android.preference.PreferenceActivity
+import android.util.TypedValue
+import android.view.ContextThemeWrapper
+import android.view.MenuItem
+import android.view.View
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
+import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceFragment
+import androidx.preference.PreferenceScreen
+import com.eggheadgames.aboutbox.AboutBoxUtils
 import com.eggheadgames.aboutbox.AboutBoxUtils.openHTMLPage
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 
-class AboutActivity : MaterialAboutActivity() {
-    override fun getMaterialAboutList(context: Context): MaterialAboutList {
-        val config = AboutConfig.getInstance()
-
-        return MaterialAboutList.Builder()
-                .addCard(buildGeneralInfoCard(config))
-                .addCard(buildReleaseCard(config))
-                .addCard(buildReportCard(config))
-                .addCard(buildSupportCard(config))
-                .addCard(buildShareCard(config))
-                .addCard(buildLicenseCard(config))
-                .build()
+/**
+ * A [PreferenceActivity] that presents a set of application settings. On
+ * handset devices, settings are presented as a single list. On tablets,
+ * settings are split by category, with category headers shown to the left of
+ * the list of settings.
+ *
+ * See [Android Design: Settings](http://developer.android.com/design/patterns/settings.html)
+ * for design guidelines and the [Settings API Guide](http://developer.android.com/guide/topics/ui/settings.html)
+ * for more information on developing a Settings UI.
+ */
+class AboutActivity : AppCompatPreferenceActivity() {
+    /**
+     * Set up the [android.app.ActionBar], if the API is available.
+     */
+    private fun setupActionBar() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    private fun buildGeneralInfoCard(config: AboutConfig): MaterialAboutCard {
-        val card = Builder()
-
-        card.addItem(MaterialAboutTitleItem.Builder()
-                .text(config.appName)
-                .icon(config.appIcon)
-                .setOnClickAction { openHTMLPage(this, config.webHomePage) }
-                .build())
-
-        card.addItem(MaterialAboutActionItem.Builder()
-                .text(R.string.egab_author)
-                .subText(config.author)
-                .icon(R.drawable.ic_person_black_24dp)
-                .setOnClickAction { openHTMLPage(this, config.companyHtmlPath) }
-                .build())
-
-        card.addItem(MaterialAboutActionItem.Builder()
-                .text(R.string.egab_version)
-                .subText(config.version)
-                .icon(R.drawable.ic_info_outline_black_24dp)
-                .build())
-
-        return card.build()
+    /**
+     * {@inheritDoc}
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == android.R.id.home) {
+            // Override home navigation button to call onBackPressed (b/35152749).
+            onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
-    private fun buildReleaseCard(config: AboutConfig): MaterialAboutCard {
-        val card = Builder()
-
-        card.addItem(itemHelper(
-                R.string.egab_changelog,
-                R.drawable.ic_history_black_24dp,
-                MaterialAboutItemOnClickAction { openHTMLPage(this, config.webHomePage + "/releases") }
-        ))
-
-        return card.build()
+    /**
+     * {@inheritDoc}
+     */
+    override fun onIsMultiPane(): Boolean {
+        return isXLargeTablet(this)
     }
 
-    private fun buildReportCard(config: AboutConfig): MaterialAboutCard {
-        val card = Builder()
-
-        card.addItem(itemHelper(
-                R.string.egab_submit_issue,
-                R.drawable.ic_bug_report_black_24dp,
-                MaterialAboutItemOnClickAction { openHTMLPage(this, config.webHomePage + "/issues/new") }
-        ))
-
-        return card.build()
+    /**
+     * {@inheritDoc}
+     */
+    override fun onBuildHeaders(target: List<PreferenceActivity.Header>) {
+        loadHeadersFromResource(R.xml.pref_headers, target)
     }
 
-    private fun buildSupportCard(config: AboutConfig): MaterialAboutCard {
-        val card = Builder()
-
-        card.addItem(itemHelper(
-                R.string.egab_contact_support,
-                R.drawable.ic_email_black_24dp,
-                MaterialAboutItemOnClickAction { EmailUtil.contactUs(this) }
-        ))
-
-        return card.build()
+    /**
+     * This method stops fragment injection in malicious applications.
+     * Make sure to deny any unknown fragments here.
+     */
+    override fun isValidFragment(fragmentName: String): Boolean {
+        return AboutSyncPreferenceFragment::class.java.name == fragmentName
     }
 
-    private fun buildShareCard(config: AboutConfig): MaterialAboutCard {
-        val card = Builder()
+    /**
+     * This fragment shows settings preferences only.
+     */
+    class AboutSyncPreferenceFragment : PreferenceFragment() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setHasOptionsMenu(false)
+        }
 
-        card.addItem(itemHelper(
-                R.string.egab_leave_review,
-                R.drawable.ic_star_black_24dp,
-                MaterialAboutItemOnClickAction { openApp(this, config.buildType, config.packageName) }
-        ))
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            val tv = TypedValue()
+            activity.theme.resolveAttribute(androidx.preference.R.attr.preferenceTheme, tv, true)
+            var theme = tv.resourceId
+            if (theme == 0) {
+                // Fallback to default theme.
+                theme = androidx.preference.R.style.PreferenceThemeOverlay
+            }
+            val context = ContextThemeWrapper(activity, theme)
+            val root = preferenceManager.createPreferenceScreen(context)
+            val config = AboutConfig.getInstance()
 
-        card.addItem(itemHelper(
-                R.string.egab_share,
-                R.drawable.ic_share_black_24dp,
-                MaterialAboutItemOnClickAction { ShareUtil.share(this) }
-        ))
+            addAboutPreferences(context, root, config)
 
-        return card.build()
-    }
+            addSupportPreferences(context, root, config)
 
-    private fun buildLicenseCard(config: AboutConfig): MaterialAboutCard {
-        val card = Builder()
+            addOtherPreferences(context, root, config)
 
-        card.addItem(MaterialAboutActionItem.Builder()
-                .text(R.string.egab_licenses)
-                .icon(R.drawable.ic_copyleft_green_24dp)
-                .setOnClickAction {
-                    val intent = Intent(this, OssLicensesMenuActivity::class.java)
-                    intent.putExtra("title", getString(R.string.menu_licenses))
-                    startActivity(intent, null)
-                }
-                .setOnLongClickAction { openHTMLPage(this, config.webHomePage + "/blob/master/LICENSE") }
-                .build())
+            preferenceScreen = root
+        }
 
-        return card.build()
-    }
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            view.fitsSystemWindows = true
+            setDivider(null)
+            super.onViewCreated(view, savedInstanceState)
+        }
 
-    private fun itemHelper(name: Int, icon: Int, clickAction: MaterialAboutItemOnClickAction): MaterialAboutActionItem {
-        return MaterialAboutActionItem.Builder()
-                .text(name)
-                .icon(icon)
-                .setOnClickAction(clickAction)
-                .build()
-    }
+        override fun getCallbackFragment(): PreferenceFragment {
+            return this
+        }
 
-    override fun getActivityTitle(): CharSequence? {
-        return getString(R.string.egab_about_screen_title)
+        private fun addOtherPreferences(context: ContextThemeWrapper, root: PreferenceScreen, config: AboutConfig) {
+            val category = PreferenceCategory(context)
+            category.title = context.getString(R.string.pref_category_other)
+
+            root.addPreference(category)
+
+            category.addPreference(getPreference(
+                    context,
+                    R.string.egab_leave_review,
+                    null,
+                    R.drawable.ic_star_black_24dp,
+                    Preference.OnPreferenceClickListener {
+                        AboutBoxUtils.openApp(activity, config.buildType, config.packageName)
+                        true
+                    }
+            ))
+
+            category.addPreference(getPreference(
+                    context,
+                    R.string.egab_share,
+                    null,
+                    R.drawable.ic_share_black_24dp,
+                    Preference.OnPreferenceClickListener {
+                        ShareUtil.share(activity)
+                        true
+                    }
+            ))
+
+            category.addPreference(getPreference(
+                    context,
+                    R.string.egab_licenses,
+                    null,
+                    R.drawable.ic_copyleft_green_24dp,
+                    Preference.OnPreferenceClickListener {
+                        val intent = Intent(activity, OssLicensesMenuActivity::class.java)
+                        intent.putExtra("title", getString(R.string.menu_licenses))
+                        ActivityCompat.startActivity(activity, intent, null)
+                        true
+                    }
+            ))
+        }
+
+        private fun addSupportPreferences(context: ContextThemeWrapper, root: PreferenceScreen, config: AboutConfig) {
+            val category = PreferenceCategory(context)
+            category.title = context.getString(R.string.pref_category_support)
+
+            root.addPreference(category)
+
+            category.addPreference(getPreference(
+                    context,
+                    R.string.egab_submit_issue,
+                    null,
+                    R.drawable.ic_bug_report_black_24dp,
+                    Preference.OnPreferenceClickListener {
+                        openHTMLPage(activity, config.webHomePage + "/issues/new")
+                        true
+                    }
+            ))
+
+            category.addPreference(getPreference(
+                    context,
+                    R.string.egab_contact_support,
+                    null,
+                    R.drawable.ic_email_black_24dp,
+                    Preference.OnPreferenceClickListener {
+                        EmailUtil.contactUs(activity)
+                        true
+                    }
+            ))
+        }
+
+        private fun addAboutPreferences(context: ContextThemeWrapper, root: PreferenceScreen, config: AboutConfig) {
+            val category = PreferenceCategory(context)
+            category.title = context.getString(R.string.pref_category_about)
+
+            root.addPreference(category)
+
+            category.addPreference(getPreference(
+                    context,
+                    R.string.egab_author,
+                    config.author,
+                    R.drawable.ic_person_black_24dp,
+                    Preference.OnPreferenceClickListener {
+                        openHTMLPage(activity, config.companyHtmlPath)
+                        true
+                    }
+            ))
+
+            category.addPreference(getPreference(
+                    context,
+                    R.string.egab_version,
+                    config.version,
+                    R.drawable.ic_info_outline_black_24dp,
+                    Preference.OnPreferenceClickListener {
+                        openHTMLPage(activity, config.webHomePage)
+                        true
+                    }
+            ))
+
+            category.addPreference(getPreference(
+                    context,
+                    R.string.egab_changelog,
+                    null,
+                    R.drawable.ic_history_black_24dp,
+                    Preference.OnPreferenceClickListener {
+                        openHTMLPage(activity, config.webHomePage + "/releases")
+                        true
+                    }
+            ))
+        }
+
+        private fun getPreference(
+            context: Context,
+            titleResId: Int?,
+            summary: String?,
+            iconResId: Int?,
+            listener: Preference.OnPreferenceClickListener?
+        ): Preference {
+            val preference = Preference(context)
+            iconResId?.let { preference.icon = ContextCompat.getDrawable(context, it) }
+            titleResId?.let { preference.title = context.getString(it) }
+            summary?.let { preference.summary = it }
+            listener?.let { preference.onPreferenceClickListener = listener }
+            return preference
+        }
     }
 
     companion object {
         fun launch(activity: Activity) {
-            val intent = Intent(activity, AboutActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            activity.startActivity(intent)
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+            val intent = Intent(activity, AboutActivity::class.java).apply {
+                putExtra(EXTRA_SHOW_FRAGMENT, AboutActivity.AboutSyncPreferenceFragment::class.java.name)
+                putExtra(EXTRA_NO_HEADERS, true)
+            }
+            ActivityCompat.startActivity(activity, intent, options.toBundle())
+        }
+
+        /**
+         * Helper method to determine if the device has an extra-large screen. For
+         * example, 10" tablets are extra-large.
+         */
+        fun isXLargeTablet(context: Context): Boolean {
+            return context.resources.configuration.screenLayout and SCREENLAYOUT_SIZE_MASK >= SCREENLAYOUT_SIZE_XLARGE
         }
     }
 }

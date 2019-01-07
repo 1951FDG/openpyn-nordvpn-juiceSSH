@@ -10,6 +10,7 @@
     <style name="Base.Theme.AppTheme" parent="Base.V21.Theme.AppTheme" />
 
     <style name="AppTheme" parent="Base.Theme.AppTheme">
+        <item name="android:windowExitTransition">@transition/fade_out</item>
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -28,10 +29,10 @@
     <style name="Base.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings" />
 
     <style name="AppTheme.Settings" parent="Base.Theme.AppTheme.Settings">
+        <item name="android:windowEnterTransition">@transition/fade_in</item>
+        <item name="android:windowIsTranslucent">true</item>
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>
-
-        <item name="android:windowEnterTransition">@android:transition/slide_bottom</item>
 
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
@@ -47,15 +48,15 @@
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
-    <style name="Base.V21.Theme.AppTheme.About" parent="Theme.Mal.Light" />
+    <!--<style name="Base.V21.Theme.AppTheme.About" parent="Theme.Mal.Light" />-->
 
-    <style name="Base.Theme.AppTheme.About" parent="Base.V21.Theme.AppTheme.About" />
+    <!--<style name="Base.Theme.AppTheme.About" parent="Base.V21.Theme.AppTheme.About" />-->
 
-    <style name="AppTheme.About" parent="Base.Theme.AppTheme.About">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+    <!--<style name="AppTheme.About" parent="Base.Theme.AppTheme.About">-->
+    <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+    <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+    <!--<item name="colorAccent">@color/colorAccent</item>-->
+    <!--</style>-->
 
     <style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">
         <item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>

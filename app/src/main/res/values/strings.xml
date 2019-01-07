@@ -34,6 +34,7 @@
     <string name="error_must_install_juicessh">Must install the JuiceSSH app!</string>
     <string name="error_must_have_atleast_one_server">Must have at least one server!</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_about">About</string>
 
     <!-- Strings related to Settings -->
 
@@ -349,5 +350,9 @@
     <string name="egab_licenses">Open Source Licenses</string>
     <string name="egab_changelog">Changelog</string>
     <string name="egab_submit_issue">Report a Problem</string>
+
+    <string name="pref_category_about">About</string>
+    <string name="pref_category_support">Support</string>
+    <string name="pref_category_other">Other</string>
 
 </resources>

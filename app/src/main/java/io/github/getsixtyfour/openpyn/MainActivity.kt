@@ -11,8 +11,6 @@ import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceActivity.EXTRA_NO_HEADERS
-import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT
 import android.text.SpannableString
 import android.view.Gravity
 import android.view.Menu
@@ -25,7 +23,6 @@ import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
 import androidx.preference.PreferenceManager
@@ -428,19 +425,14 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun onSettingsItemSelected(item: MenuItem) {
-        item.itemId
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
-        val intent = Intent(this, SettingsActivity::class.java).apply {
-            putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
-            putExtra(EXTRA_NO_HEADERS, true)
-        }
-        startActivity(intent, options.toBundle())
         /*
         startActivity<SettingsActivity>(
                 EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name,
                 EXTRA_NO_HEADERS to true
         )
         */
+
+        SettingsActivity.launch(this)
     }
 
     @Suppress("MagicNumber")

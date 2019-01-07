@@ -29,15 +29,15 @@
         <item name="android:textColor">#ffbebebe</item>
     </style>
 
-    <style name="Base.V27.Theme.AppTheme.About" parent="Base.V21.Theme.AppTheme.About">
-        <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
-        <item name="android:navigationBarColor">#fffafafa</item>
-        <item name="android:statusBarColor">#fffafafa</item>
-        <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
+    <!--<style name="Base.V27.Theme.AppTheme.About" parent="Base.V21.Theme.AppTheme.About">-->
+        <!--<item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>-->
+        <!--<item name="android:navigationBarColor">#fffafafa</item>-->
+        <!--<item name="android:statusBarColor">#fffafafa</item>-->
+        <!--<item name="android:windowLightNavigationBar">true</item>-->
+        <!--<item name="android:windowLightStatusBar">true</item>-->
+    <!--</style>-->
 
-    <style name="Base.Theme.AppTheme.About" parent="Base.V27.Theme.AppTheme.About" />
+    <!--<style name="Base.Theme.AppTheme.About" parent="Base.V27.Theme.AppTheme.About" />-->
 
     <style name="Theme.Mal.Toolbar.Light" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorControlNormal">#ffbebebe</item>
