@@ -365,7 +365,7 @@ class MainActivity : AppCompatActivity(),
     private fun onGitHubItemSelected(item: MenuItem) {
         val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-        startActivity(intent, null)
+        ActivityCompat.startActivity(this, intent, null)
     }
 
     private fun onAboutItemSelected(item: MenuItem) {
@@ -558,12 +558,12 @@ class MainActivity : AppCompatActivity(),
             launchIntent.component = ComponentName(pkg, cls)
             launchIntent.data = Uri.parse("market://details?id=$JUICE_SSH_PACKAGE_NAME")
             try {
-                startActivity(launchIntent, null)
+                ActivityCompat.startActivity(this, launchIntent, null)
             } catch (e: android.content.ActivityNotFoundException) {
                 Crashlytics.logException(e)
                 val uriString = "https://play.google.com/store/apps/details?id=$JUICE_SSH_PACKAGE_NAME"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-                startActivity(intent, null)
+                ActivityCompat.startActivity(this, intent, null)
             }
         }
     }
