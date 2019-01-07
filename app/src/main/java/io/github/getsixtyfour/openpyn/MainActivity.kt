@@ -80,7 +80,6 @@ import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk27.listeners.onClick
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -127,7 +126,8 @@ class MainActivity : AppCompatActivity(),
         OnLevelChangeCallback,
         SubmitCallbackListener,
         OnSessionExecuteListener,
-        OnCommandExecuteListener {
+        OnCommandExecuteListener,
+        View.OnClickListener {
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
@@ -224,20 +224,7 @@ class MainActivity : AppCompatActivity(),
             val permissions = arrayOf(READ_CONNECTIONS, OPEN_SESSIONS, ACCESS_COARSE_LOCATION)
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE)
 
-            fab0?.onClick {
-                if (mConnectionListAdapter.count == 0 && it is FloatingActionButton) {
-                    MorphDialog.Builder(this, it)
-                            .title("Error")
-                            .content(R.string.error_must_have_atleast_one_server)
-                            .positiveText(android.R.string.ok)
-                            .show()
-                    return@onClick
-                }
-
-                it?.isClickable = false
-                val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
-                mConnectionManager?.toggleConnection(uuid!!, this)
-            }
+            fab0?.setOnClickListener(this)
         }
     }
 
@@ -918,35 +905,11 @@ class MainActivity : AppCompatActivity(),
         // Execute the animation and set the final OnCameraIdleListener
         cameraUpdateAnimator?.execute()
 
-        fab1?.onClick {
-            updateMasterMarker()
-        }
+        fab1.setOnClickListener(this)
 
-        fab2?.onClick {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        fab2?.setOnClickListener(this)
 
-            PrintArray.show("pref_country_values", this, preferences)
-        }
-
-        fab3?.onClick {
-            if (mMap != null && markers.size != 0) {
-                markers.forEach { (_, value) ->
-                    if (value.zIndex == 1.0f) {
-                        val level = value.level
-                        when (level) {
-                            0 -> {
-                                value.setLevel(1, null)
-                                storage.addFavorite(this, value)
-                            }
-                            1 -> {
-                                value.setLevel(0, null)
-                                storage.removeFavorite(this, value)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        fab3?.setOnClickListener(this)
 
         debug(mMap!!.minZoomLevel)
         debug(mMap!!.maxZoomLevel)
@@ -1220,6 +1183,48 @@ class MainActivity : AppCompatActivity(),
             1 -> {
                 marker.zIndex = level / 10.toFloat()
                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map2))
+            }
+        }
+    }
+
+    override fun onClick(v: View?) {
+        val id = checkNotNull(v).id
+
+        if (id == R.id.fab0) {
+            if (mConnectionListAdapter.count == 0 && v is FloatingActionButton) {
+                MorphDialog.Builder(this, v)
+                        .title("Error")
+                        .content(R.string.error_must_have_atleast_one_server)
+                        .positiveText(android.R.string.ok)
+                        .show()
+                return
+            }
+
+            v.isClickable = false
+            val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
+            mConnectionManager?.toggleConnection(uuid!!, this)
+        } else if (id == R.id.fab1) {
+            updateMasterMarker()
+        } else if (id == R.id.fab2) {
+            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+            PrintArray.show("pref_country_values", this, preferences)
+        } else if (id == R.id.fab3) {
+            if (mMap != null && markers.size != 0) {
+                markers.forEach { (_, value) ->
+                    if (value.zIndex == 1.0f) {
+                        val level = value.level
+                        when (level) {
+                            0 -> {
+                                value.setLevel(1, null)
+                                storage.addFavorite(this, value)
+                            }
+                            1 -> {
+                                value.setLevel(0, null)
+                                storage.removeFavorite(this, value)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
