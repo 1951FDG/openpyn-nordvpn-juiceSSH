@@ -12,8 +12,9 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.getsixtyfour.openpyn.R
-import io.github.sdsstudios.nvidiagpumonitor.controllers.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.controllers.OpenpynController
+import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
+import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
 import org.jetbrains.anko.longToast
 import java.util.UUID
 
@@ -26,7 +27,8 @@ class ConnectionManager(
     private val mActivitySessionStartedListener: OnSessionStartedListener,
     private val mActivitySessionFinishedListener: OnSessionFinishedListener,
     mActivitySessionExecuteListener: OnSessionExecuteListener?,
-    mActivityCommandExecuteListener: OnCommandExecuteListener?
+    mActivityCommandExecuteListener: OnCommandExecuteListener?,
+    mActivityOnOutputLineListener: OnOutputLineListener?
 ) : OnSessionStartedListener, OnSessionFinishedListener {
     companion object {
         const val JUICESSH_REQUEST_CODE: Int = 345
@@ -53,7 +55,13 @@ class ConnectionManager(
 //    private val mGraphicsClockController = GraphicsClockController(mCtx, graphicsClock)
 //    private val mVideoClockController = VideoClockController(mCtx, videoClock)
 //    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
-    private val mOpenpynController = OpenpynController(ctx, openpyn, mActivitySessionExecuteListener, mActivityCommandExecuteListener)
+    private val mOpenpynController = OpenpynController(
+            mCtx,
+            openpyn,
+            mActivitySessionExecuteListener,
+            mActivityCommandExecuteListener,
+            mActivityOnOutputLineListener
+    )
     private val mControllers = listOf(
 //            mPowerController,
 //            mTempController,

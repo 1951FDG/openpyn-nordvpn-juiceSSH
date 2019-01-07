@@ -98,6 +98,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             findPreference("pref_max_load")?.let { bindPreferenceSummaryToValue(it) }
             findPreference("pref_top_servers")?.let { bindPreferenceSummaryToValue(it) }
             findPreference("pref_pings")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference("pref_log_level")?.let { bindPreferenceSummaryToValue(it) }
             findPreference("pref_nvram_client")?.let { bindPreferenceSummaryToValue(it) }
         }
 

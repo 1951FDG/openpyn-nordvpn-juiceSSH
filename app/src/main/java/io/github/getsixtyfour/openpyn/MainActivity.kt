@@ -69,17 +69,14 @@ import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.security.SecurityManager
-import io.github.getsixtyfour.openpyn.utilities.MyStorage
-import io.github.getsixtyfour.openpyn.utilities.PrintArray
-import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener
-import io.github.getsixtyfour.openpyn.utilities.createJson
-import io.github.getsixtyfour.openpyn.utilities.createJson2
+import io.github.getsixtyfour.openpyn.utilities.*
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
-import io.github.sdsstudios.nvidiagpumonitor.controllers.OnCommandExecuteListener
+import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
+import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.jetbrains.anko.*
@@ -185,7 +182,14 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (isJuiceSSHInstalled()) {
-            mConnectionManager = ConnectionManager(this, this, this, this, this)
+            mConnectionManager = ConnectionManager(
+                    ctx = this,
+                    mActivitySessionStartedListener = this,
+                    mActivitySessionFinishedListener = this,
+                    mActivitySessionExecuteListener = this,
+                    mActivityCommandExecuteListener = this,
+                    mActivityOnOutputLineListener = Toaster(this)
+            )
 //            mConnectionManager.powerUsage.observe(this, Observer {
 //                textViewPower.setData(it, "W")
 //            })
@@ -508,7 +512,6 @@ class MainActivity : AppCompatActivity(),
 
     @Suppress("MagicNumber")
     override fun onOutputLine(line: String) {
-        longToast(line)
         if (line.startsWith("CONNECTING TO SERVER", true)) {
             toolbar.hideProgress(true)
 
@@ -1365,11 +1368,11 @@ class MainActivity : AppCompatActivity(),
     }
 
     @MainThread
-    override fun positionAndFlagForSelectedMarker(): Pair<LatLng?, String?> {
+    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String?> {
         if (mMap != null && markers.size != 0) {
             markers.forEach { (key, value) ->
                 if (value.zIndex == 1.0f) {
-                    return Pair(key, value.tag.toString())
+                    return Pair(Coordinate(key.latitude, key.longitude), value.tag.toString())
                 }
             }
         }

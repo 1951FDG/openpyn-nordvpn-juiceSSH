@@ -37,6 +37,12 @@
             android:entryValues="@array/pref_pings_values"
             android:key="pref_pings"
             android:title="@string/pref_pings" />
+        <ListPreference
+            android:defaultValue="25"
+            android:entries="@array/pref_log_level_entries"
+            android:entryValues="@array/pref_log_level_values"
+            android:key="pref_log_level"
+            android:title="@string/pref_log_level" />
         <Preference
             android:title="APIs"
             app:fragment="io.github.getsixtyfour.openpyn.SettingsActivity.ApiSyncPreferenceFragment" />

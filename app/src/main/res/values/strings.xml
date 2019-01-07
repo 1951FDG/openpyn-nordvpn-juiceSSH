@@ -353,6 +353,32 @@
     <string name="egab_changelog">Changelog</string>
     <string name="egab_submit_issue">Report a Problem</string>
 
+    <string name="pref_log_level">Logging Level</string>
+
+    <string-array name="pref_log_level_entries">
+        <item>Spam</item>
+        <item>Debug</item>
+        <item>Verbose</item>
+        <item>Info</item>
+        <item>Notice</item>
+        <item>Warning</item>
+        <item>Success</item>
+        <item>Error</item>
+        <item>Critical</item>
+    </string-array>
+
+    <string-array name="pref_log_level_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>50</item>
+    </string-array>
+
     <string name="pref_category_about">About</string>
     <string name="pref_category_support">Support</string>
     <string name="pref_category_other">Other</string>

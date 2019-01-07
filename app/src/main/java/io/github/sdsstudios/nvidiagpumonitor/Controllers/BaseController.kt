@@ -16,10 +16,9 @@ import org.jetbrains.anko.longToast
  */
 @MainThread
 abstract class BaseController(
-    ctx: Context,
+    protected val mCtx: Context,
     private val mLiveData: MutableLiveData<Int>
 ) : OnSessionExecuteListener, AnkoLogger {
-    val mCtx: Context = ctx.applicationContext
     private var isRunning = false
     abstract val regex: Regex
     var command: String = ""
