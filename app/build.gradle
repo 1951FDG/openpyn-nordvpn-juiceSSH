@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
+apply plugin: 'com.getkeepsafe.dexcount'
 
 detekt {
     version = "1.0.0.RC8"
@@ -13,6 +14,10 @@ detekt {
         filters = ".*/resources/.*,.*/build/.*"
         output = "$buildDir/reports/detekt"
     }
+}
+
+dexcount {
+    enabled = false
 }
 
 android {
