@@ -42,6 +42,10 @@
         <option name="USE_TAB_CHARACTER" value="true" />
       </indentOptions>
     </codeStyleSettings>
+    <codeStyleSettings language="JAVA">
+      <option name="SPACE_WITHIN_ARRAY_INITIALIZER_BRACES" value="true" />
+      <option name="IF_BRACE_FORCE" value="3" />
+    </codeStyleSettings>
     <codeStyleSettings language="XML">
       <option name="FORCE_REARRANGE_MODE" value="1" />
       <indentOptions>
