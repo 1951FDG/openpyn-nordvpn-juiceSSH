@@ -171,3 +171,29 @@ package io.github.sdsstudios.nvidiagpumonitor
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/select_all_container"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="@dimen/layout_margin"-->
+    <!--android:background="?attr/selectableItemBackground"-->
+    <!--android:orientation="horizontal">-->
+
+    <!--<CheckBox-->
+    <!--android:id="@+id/select_all_checkbox"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:clickable="false" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/select_all_text"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:text="@string/select_all"-->
+    <!--android:textAllCaps="true"-->
+    <!--</LinearLayout>-->
+
+    <string name="select_all">select all</string>
