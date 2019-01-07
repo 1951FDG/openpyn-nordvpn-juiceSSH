@@ -205,17 +205,29 @@
     <string name="pref_top_servers">Top Servers</string>
 
     <string-array name="pref_top_servers_entries">
-        <item>5 servers</item>
-        <item>10 servers</item>
-        <item>15 servers</item>
-        <item>20 servers</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
     </string-array>
 
     <string-array name="pref_top_servers_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
         <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
         <item>10</item>
-        <item>15</item>
-        <item>20</item>
     </string-array>
 
     <string name="pref_pings">Pings</string>
