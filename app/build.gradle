@@ -139,8 +139,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-oss-licenses:16.0.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
     debugImplementation 'com.github.markzhai:blockcanary-android:1.5.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
     // Test
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
