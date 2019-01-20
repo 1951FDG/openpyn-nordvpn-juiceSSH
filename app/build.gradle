@@ -6,6 +6,10 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'com.getkeepsafe.dexcount'
 
+androidGitVersion {
+    format = "%tag%%-count%%-commit%%-branch%"
+}
+
 detekt {
     toolVersion = "1.0.0-RC12"
     input = files("src/main/java")
