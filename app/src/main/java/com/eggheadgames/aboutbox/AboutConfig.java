@@ -1,5 +1,8 @@
 package com.eggheadgames.aboutbox;
 
+import android.annotation.SuppressLint;
+
+@SuppressLint("UnknownNullness")
 public class AboutConfig {
 
     public enum BuildType {AMAZON, GOOGLE}
