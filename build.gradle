@@ -23,7 +23,7 @@ buildscript {
 
 plugins {
     id("io.gitlab.arturbosch.detekt").version("1.0.0-RC12")
-    id("com.gladed.androidgitversion").version("0.4.5")
+    id("com.gladed.androidgitversion").version("0.4.9")
 }
 
 allprojects {
