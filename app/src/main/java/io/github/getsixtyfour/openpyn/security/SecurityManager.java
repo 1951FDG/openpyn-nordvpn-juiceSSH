@@ -7,6 +7,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -42,12 +43,12 @@ public final class SecurityManager {
     private SecurityManager(Context context) {
         String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         try {
-            byte[] key = androidId.getBytes("UTF8");
+            byte[] key = androidId.getBytes(StandardCharsets.UTF_8);
             MessageDigest sha = MessageDigest.getInstance("SHA-1");
             key = sha.digest(key);
             key = Arrays.copyOf(key, IV_LENGTH);
             mKey = new SecretKeySpec(key, "AES");
-        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             Log.wtf(getClass().getSimpleName(), e);
         }
     }
@@ -83,7 +84,7 @@ public final class SecurityManager {
     public String encryptString(@NonNull String stringToEncrypt) {
         String output = stringToEncrypt;
         try {
-            byte[] clearText = stringToEncrypt.getBytes("UTF8");
+            byte[] clearText = stringToEncrypt.getBytes(StandardCharsets.UTF_8);
             Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
             byte[] iv = new byte[IV_LENGTH];
             new SecureRandom().nextBytes(iv);
@@ -91,10 +92,9 @@ public final class SecurityManager {
             cipher.init(Cipher.ENCRYPT_MODE, mKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(clearText);
             output = new String(Base64.encode(concat(iv, cipherBytes),
-                    Base64.NO_WRAP), "UTF8");
+                    Base64.NO_WRAP), StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException
-                | InvalidKeyException | UnsupportedEncodingException
-                | IllegalBlockSizeException | BadPaddingException
+                | InvalidKeyException | IllegalBlockSizeException | BadPaddingException
                 | InvalidAlgorithmParameterException e) {
             Log.wtf(getClass().getSimpleName(), e);
         }
@@ -113,10 +113,9 @@ public final class SecurityManager {
 
             byte[] cipherBytes = cipher.doFinal(encryptedBytes, IV_LENGTH, encryptedBytes.length - IV_LENGTH);
 
-            output = new String(cipherBytes, "UTF8");
+            output = new String(cipherBytes, StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException
-                | InvalidKeyException | UnsupportedEncodingException
-                | IllegalBlockSizeException | BadPaddingException
+                | InvalidKeyException | IllegalBlockSizeException | BadPaddingException
                 | InvalidAlgorithmParameterException e) {
             Log.wtf(getClass().getSimpleName(), e);
         }
