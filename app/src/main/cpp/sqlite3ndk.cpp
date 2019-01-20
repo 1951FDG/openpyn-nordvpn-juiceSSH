@@ -39,10 +39,10 @@
 
 #include <android/asset_manager_jni.h>
 #include <android/log.h>
-#include <assert.h>
+#include <cassert>
 #include <dlfcn.h>
 #include <jni.h>
-#include <string.h>
+#include <cstring>
 
 #ifndef SQLITE_DEFAULT_SECTOR_SIZE
 # define SQLITE_DEFAULT_SECTOR_SIZE 512
@@ -97,14 +97,14 @@ struct ndk_file
 static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, int flags, int *pOutFlags)
 {
 	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
-	ndk_file *file = reinterpret_cast<ndk_file*>(pFile);
+	auto *file = reinterpret_cast<ndk_file*>(pFile);
 
 	// pMethod must be set to NULL, even if xOpen call fails.
 	//
 	// http://www.sqlite.org/c3ref/io_methods.html
 	// "The only way to prevent a call to xClose following a failed sqlite3_vfs.xOpen
 	// is for the sqlite3_vfs.xOpen to set the sqlite3_file.pMethods element to NULL."
-	file->pMethod = NULL;
+	file->pMethod = nullptr;
 
 	// Allow only for opening main database file as read-only.
 	// Opening JOURNAL/TEMP/WAL/etc. files will make call fails.
@@ -277,13 +277,13 @@ static int ndkCurrentTimeInt64(sqlite3_vfs *pVfs, sqlite3_int64 *piNow)
  */
 static int ndkFileClose(sqlite3_file *pFile)
 {
-	ndk_file *file = reinterpret_cast<ndk_file*>(pFile);
+	auto *file = reinterpret_cast<ndk_file*>(pFile);
 
 	if (file->asset)
 	{
 		AAsset_close(file->asset);
-		file->asset = NULL;
-		file->buf = NULL;
+		file->asset = nullptr;
+		file->buf = nullptr;
 		file->len = 0;
 	}
 
@@ -303,7 +303,7 @@ static int ndkFileRead(sqlite3_file *pFile, void *pBuf, int amt, sqlite3_int64 o
 	off = (int) offset;
 
 	// Sanity check
-	if (file->asset == NULL)
+	if (file->asset == nullptr)
 	{
 		return SQLITE_IOERR_READ;
 	}
@@ -374,7 +374,7 @@ static int ndkFileSync(sqlite3_file *, int)
  */
 static int ndkFileSize(sqlite3_file *pFile, sqlite3_int64 *pSize)
 {
-	ndk_file *file = reinterpret_cast<ndk_file*>(pFile);
+	auto *file = reinterpret_cast<ndk_file*>(pFile);
 	*pSize = file->len;
 
 	return SQLITE_OK;
@@ -460,7 +460,7 @@ int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName, int makeDflt,
 
 	// Find os VFS. Used to redirect xRandomness, xSleep, xCurrentTime, ndkCurrentTimeInt64 calls
 	ndkVfs.vfsDefault = sqlite3_vfs_find(osVfs);
-	if (ndkVfs.vfsDefault == NULL)
+	if (ndkVfs.vfsDefault == nullptr)
 	{
 		return SQLITE_ERROR;
 	}
@@ -490,7 +490,7 @@ int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName, int makeDflt,
 	ndkVfs.vfs.iVersion = 3;
 	ndkVfs.vfs.szOsFile = sizeof(ndk_file);
 	ndkVfs.vfs.mxPathname = SQLITE_NDK_VFS_MAX_PATH;
-	ndkVfs.vfs.pNext = 0;
+	ndkVfs.vfs.pNext = nullptr;
 	if (vfsName)
 	{
 		ndkVfs.vfs.zName = vfsName;
@@ -499,23 +499,23 @@ int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName, int makeDflt,
 	{
 		ndkVfs.vfs.zName = SQLITE_NDK_VFS_NAME;
 	}
-	ndkVfs.vfs.pAppData = 0;
+	ndkVfs.vfs.pAppData = nullptr;
 	ndkVfs.vfs.xOpen = ndkOpen;
 	ndkVfs.vfs.xDelete = ndkDelete;
 	ndkVfs.vfs.xAccess = ndkAccess;
 	ndkVfs.vfs.xFullPathname = ndkFullPathname;
-	ndkVfs.vfs.xDlOpen = 0;
-	ndkVfs.vfs.xDlError = 0;
-	ndkVfs.vfs.xDlSym = 0;
-	ndkVfs.vfs.xDlClose = 0;
+	ndkVfs.vfs.xDlOpen = nullptr;
+	ndkVfs.vfs.xDlError = nullptr;
+	ndkVfs.vfs.xDlSym = nullptr;
+	ndkVfs.vfs.xDlClose = nullptr;
 	ndkVfs.vfs.xRandomness = ndkRandomness;
 	ndkVfs.vfs.xSleep = ndkSleep;
 	ndkVfs.vfs.xCurrentTime = ndkCurrentTime;
 	ndkVfs.vfs.xGetLastError = ndkGetLastError;
 	ndkVfs.vfs.xCurrentTimeInt64 = ndkCurrentTimeInt64;
-	ndkVfs.vfs.xSetSystemCall = 0;
-	ndkVfs.vfs.xGetSystemCall = 0;
-	ndkVfs.vfs.xNextSystemCall = 0;
+	ndkVfs.vfs.xSetSystemCall = nullptr;
+	ndkVfs.vfs.xGetSystemCall = nullptr;
+	ndkVfs.vfs.xNextSystemCall = nullptr;
 
 	// Asset manager
 	ndkVfs.mgr = assetMgr;
@@ -526,7 +526,7 @@ int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName, int makeDflt,
 	if (rc != SQLITE_OK)
 	{
 		// sqlite3_vfs_register could fails in case of sqlite3_initialize failure
-		ndkVfs.mgr = 0;
+		ndkVfs.mgr = nullptr;
 	}
 
 	return rc;
@@ -580,7 +580,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 
 	jobject assetManager = env->NewGlobalRef(gAssetManager);
 	AAssetManager *assetMgr = AAssetManager_fromJava(env, assetManager);
-	assert(NULL != assetMgr);
+	assert(assetMgr != nullptr);
 
 	DEBUG("enabling sqlite3ndk");
 	if (sqlite3_ndk_init(
