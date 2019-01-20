@@ -140,6 +140,7 @@ To compile and run the project you'll need:
 -   [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
 -   [Anko](https://github.com/Kotlin/anko)
 -   [Barista](https://github.com/SchibstedSpain/Barista)
+-   [BlockCanary](https://github.com/markzhai/AndroidPerformanceMonitor)
 -   [countryboundaries](https://github.com/westnordost/countryboundaries)
 -   [ElasticView](https://github.com/armcha/ElasticView)
 -   [emoji-java](https://github.com/vdurmont/emoji-java)
