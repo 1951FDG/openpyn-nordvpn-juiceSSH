@@ -7,12 +7,19 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 detekt {
-    version = "1.0.0.RC8"
-    defaultProfile {
-        input = file("src/main/java")
-        config = "$rootDir/default-detekt-config.yml"
-        filters = ".*/resources/.*,.*/build/.*"
-        output = "$buildDir/reports/detekt"
+    toolVersion = "1.0.0-RC12"
+    input = files("src/main/java")
+    config = files("$rootDir/default-detekt-config.yml")
+    filters = ".*/resources/.*,.*/build/.*"
+    reports {
+        xml {
+            enabled = false
+            destination = file("$buildDir/reports/detekt/detekt.xml")
+        }
+        html {
+            enabled = true
+            destination = file("$buildDir/reports/detekt/detekt.html")
+        }
     }
 }
 
