@@ -96,9 +96,9 @@ dependencies {
     // Anko
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation "org.jetbrains.anko:anko-design:$anko_version"
-    implementation "org.jetbrains.anko:anko-sdk27-listeners:$anko_version"
+    //implementation "org.jetbrains.anko:anko-sdk21-listeners:$anko_version"
     // Anko Layouts
-    implementation "org.jetbrains.anko:anko-sdk27:$anko_version"
+    implementation "org.jetbrains.anko:anko-sdk21:$anko_version"
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
     // Emoji
