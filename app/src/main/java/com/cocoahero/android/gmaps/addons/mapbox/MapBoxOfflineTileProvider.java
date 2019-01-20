@@ -87,6 +87,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
      *                cursor when query is called
      * @return a SQLiteDatabase object, or null if the database can't be created
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     private static SQLiteDatabase create(@Nullable CursorFactory factory, @NonNull String pathToFile) {
         SQLiteDatabase database = SQLiteDatabase.create(factory);
         database.execSQL("ATTACH DATABASE '" + pathToFile + "' AS db");
@@ -125,7 +126,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
 
     @NonNull
     @Override
-    @SuppressWarnings("unused")
+    @SuppressWarnings({ "unused", "ParameterNameDiffersFromOverriddenParameter" })
     public Tile getTile(int x, int y, int z) {
         //Log.e(TAG, String.format("%d %d", x, y));
 
