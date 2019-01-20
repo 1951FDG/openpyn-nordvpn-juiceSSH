@@ -100,7 +100,7 @@ dependencies {
     // Anko Layouts
     implementation "org.jetbrains.anko:anko-sdk21:$anko_version"
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
     // Emoji
     implementation('com.vdurmont:emoji-java:4.0.0') {
         exclude group: 'org.json', module: 'json'
