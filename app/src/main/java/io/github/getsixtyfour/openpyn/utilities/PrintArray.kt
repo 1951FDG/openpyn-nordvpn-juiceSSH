@@ -6,7 +6,6 @@ import androidx.annotation.Size
 import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.app.AppCompatActivity
 import com.abdeveloper.library.MultiSelectDialog
-import com.abdeveloper.library.MultiSelectModel
 import com.abdeveloper.library.MultiSelectable
 
 interface SubmitCallbackListener {
