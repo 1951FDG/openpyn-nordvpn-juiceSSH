@@ -549,7 +549,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun juiceSSHInstall() {
+    fun juiceSSHInstall() {
         val pkg = "com.android.vending"
         val cls = "com.google.android.finsky.activities.LaunchUrlHandlerActivity"
         val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
