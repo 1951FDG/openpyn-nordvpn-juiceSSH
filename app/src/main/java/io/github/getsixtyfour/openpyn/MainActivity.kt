@@ -353,10 +353,12 @@ class MainActivity : AppCompatActivity(),
                 onGitHubItemSelected(item)
                 true
             }
+            /*
             R.id.action_generate -> {
                 generateXML()
                 true
             }
+            */
             else -> super.onOptionsItemSelected(item)
         }
     }
