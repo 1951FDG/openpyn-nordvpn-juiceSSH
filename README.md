@@ -23,16 +23,14 @@ An Android app written in C/C++, [Java](https://www.oracle.com/java/), and [Kotl
 -   [Introduction](#introduction)
 -   [Features](#features)
 -   [How it works](#how-it-works)
--   [Screenshots](#screenshots)
 -   [How to use](#how-to-use)
+-   [Screenshots](#screenshots)
 -   [Download](#download)
 -   [Requirements](#requirements)
--   [Libraries used](#libraries-used)
--   [Links used](#links-used)
--   [Credits](#credits)
 -   [References](#references)
+-   [Libraries used](#libraries-used)
 -   [Feedback](#feedback)
--   [Contributing](#contributing)
+-   [Credits](#credits)
 -   [Built with](#built-with)
 -   [Attributions](#attributions)
 -   [Acknowledgments](#acknowledgments)
@@ -84,15 +82,6 @@ A lot of components make this app work, I'll cover some of the basics here. Basi
 
 After the map is done loading, the NordVPN API is invoked to query all the supported countries, filtering based on preferences such as server type is done here, markers are generated lazily for all the countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the minimum zoom scale specified by the MBTile file. The closest country is determined (based on the current public IP address), if no connection is available, the last know location to Android is used instead. The map then animates to the marker closest to this specific location. After animation completes, only the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
 
-## Screenshots
-
-<p align="middle">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01_1541723218021.png" width="24%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02_1541723220359.png" width="24%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03_1541723225449.png" width="24%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04_1541723227484.png" width="24%">
-</p>
-
 ## How to use
 
 -   Install [JuiceSSH](https://juicessh.com/)
@@ -106,14 +95,22 @@ After the map is done loading, the NordVPN API is invoked to query all the suppo
 > **Note**:
 > You can use this flow with multiple remote devices, as long as that remote device has a SSH server running on it and is configured in Connections in JuiceSSH and is selected in the app toolbar of this app before the colored floating action button (FAB) is clicked!
 
+## Screenshots
+
+<p align="middle">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01_1541723218021.png" width="24%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02_1541723220359.png" width="24%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03_1541723225449.png" width="24%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04_1541723227484.png" width="24%">
+</p>
+
 ## Download
 
 The public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) is open to anyone. Please use my `test` branch of Openpyn.
 
 ```sh
-git clone git@github.com:1951FDG/openpyn-nordvpn.git
-cd openpyn-nordvpn/
-git checkout test
+git clone --branch test git@github.com:1951FDG/openpyn-nordvpn.git
+cd openpyn-nordvpn
 pip3 install --upgrade .
 ```
 
@@ -124,15 +121,25 @@ To compile and run the project you'll need:
 -   [Android Studio](https://developer.android.com/studio/) `3.x`
 -   [Android SDK](https://developer.android.com/studio/releases/platforms) `9 (API level 28)`
 -   Android SDK Build-Tools
--   CMake
+-   CMake `v3.10.2`
 -   Android SDK Platform-Tools
 -   Android SDK Tools
 -   [Android NDK](https://developer.android.com/ndk/)
--   ConstraintLayout for Android
--   Solver for ConstraintLayout
 -   Android Support Repository
 -   Google repository
 -   Geolocation APIs
+
+## References
+
+-   [MyStorage.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
+
+-   [PrintArray.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
+    ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
+
+-   [SecurityManager.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
+    -   [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
+    -   [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
+    -   [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
 
 ## Libraries used
 
@@ -159,19 +166,12 @@ To compile and run the project you'll need:
 -   [SQLite](https://sqlite.org/android/doc/trunk/www/install.wiki)
 -   [StaticLog](https://github.com/jupf/staticlog)
 
-## Links used
+## Feedback
 
-Mapnik
+Feel free to send us feedback by submitting an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new). Bug reports, feature requests, patches, and well-wishes are always welcome.
 
--   <https://github.com/mapnik/mapnik/wiki/Aspect-Fix-Mode>
--   <https://github.com/mapnik/mapnik/wiki/MapnikRenderers>
--   <https://github.com/mapnik/mapnik/wiki/Image-IO>
-
-Tiles
-
--   <https://wiki.openstreetmap.org/wiki/Zoom_levels>
--   <https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames>
--   <http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection/>
+> **Note**:
+> Pull requests are welcome. For major changes, please submit an issue first to discuss what you would like to change.
 
 ## Credits
 
@@ -201,10 +201,6 @@ This app uses (modified) code from several open source projects.
     -   Modified [MapBoxOfflineTileProvider.java](app/src/main/java/com/cocoahero/android/gmaps/addons/mapbox/MapBoxOfflineTileProvider.java)
 
 
--   [Old XML format Mapnik stylesheets](https://github.com/openstreetmap/mapnik-stylesheets)
-    -   Modified [generate_tiles_multiprocess.py](generate_tiles_multiprocess.py)
-
-
 -   [Google Maps Android API utility library](https://github.com/kiddouk/CheckableFloatingActionButton)
     -   [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
     -   [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
@@ -217,52 +213,30 @@ This app uses (modified) code from several open source projects.
 > **Note**:
 > Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
 
-## References
-
--   [MyStorage.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
-
--   [PrintArray.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
-    ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
-
--   [SecurityManager.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
-    -   [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
-    -   [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
-    -   [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
-
-## Feedback
-
-Feel free to send us feedback by submitting an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new). Bug reports, feature requests, patches, and well-wishes are always welcome.
-
-## Contributing
-
-Pull requests are welcome. For major changes, please submit an issue first to discuss what you would like to change.
-
 ## Built with
 
+-   [AX2J](http://ax2j.sickworm.com/)
 -   [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 -   [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
 -   [Android Studio](https://developer.android.com/studio/)
 -   [Atom](https://atom.io/)
--   [AX2J](http://ax2j.sickworm.com/) - Android XML to Java
 -   [Codacy](https://www.codacy.com/)
 -   [Crashlytics for Android](https://fabric.io/kits/android/crashlytics)
 -   [DB Browser for SQLite](http://sqlitebrowser.org/)
 -   [Detekt](https://github.com/arturbosch/detekt)
 -   [Fastlane](https://fastlane.tools/)
--   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
 -   [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
--   [MBUtil](https://github.com/mapbox/mbutil) - Importer and Exporter of MBTiles
 -   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
--   [Python](https://www.python.org/downloads/)
 -   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 -   [Regex101](https://regex101.com/)
 -   [Snyk](https://snyk.io/)
 -   [Sourcetree](https://www.sourcetreeapp.com/)
--   [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip) - Exporter of Mapnik XML files
+-   [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
+-   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
 
 ## Attributions
 
--   [Natural Earth Map Data](https://www.naturalearthdata.com/downloads/50m-physical-vectors/)
+-   [Natural Earth Map Data](https://www.naturalearthdata.com/downloads/10m-physical-vectors/)
 -   [Country Flags Icons](https://www.flaticon.com/packs/countrys-flags)
 -   [Global Logistics Icons](https://www.flaticon.com/packs/global-logistics-2)
 
