@@ -4,7 +4,6 @@ app/src/main/java/org/sqlite/* linguist-vendored
 app/src/main/jni/Android.mk linguist-vendored
 app/src/main/jni/Application.mk linguist-vendored
 app/src/main/jni/sqlite/* linguist-vendored
-custom/* linguist-vendored
 fastlane/Fastfile linguist-vendored
 Gemfile linguist-vendored
 world/style.mss linguist-vendored
