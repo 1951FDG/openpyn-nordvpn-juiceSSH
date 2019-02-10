@@ -5,10 +5,11 @@ import json
 import logging
 import os
 import sys
+import shutil
 import threading
 from argparse import ArgumentParser
 from math import atan, exp, log, pi, sin
-from Queue import Queue
+from queue import Queue
 
 import mapnik
 from mbutil import disk_to_mbtiles
@@ -20,7 +21,7 @@ def minmax(a, b, c):
     return a
 
 
-class GoogleProjection(object):
+class GoogleProjection:
     def __init__(self, levels, tile_size):
         self.Bc = []
         self.Cc = []
@@ -50,7 +51,7 @@ class GoogleProjection(object):
         return f, h
 
 
-class RenderThread(object):
+class RenderThread:
     def __init__(self, q, map_file, max_zoom, tile_size, tile_format):
         self.q = q
         # Create a Map
@@ -115,12 +116,11 @@ class RenderThread(object):
                     empty = "empty"
 
             logger.debug(self.m.scale_denominator())
-            logger.debug("(%s : %s, %s, %s, %s, %s)", name, z, x, y, exists,
-                         empty)
+            logger.debug("(%s : %s, %s, %s, %s, %s)", name, z, x, y, exists, empty)
             self.q.task_done()
 
 
-def render_tiles(bbox, map_file, min_zoom, max_zoom, threads, name, tile_dir, tile_size, tile_format, mbtiles_path):
+def render_tiles(bbox, map_file, min_zoom, max_zoom, threads, name, tile_dir, tile_size, tile_format, mbtiles_path):  # noqa: C901
     logger.info("render_tiles(%s, %s, %s, %s, %s, %s, %s, %s, %s)", bbox,
                 map_file, tile_dir, min_zoom, max_zoom, threads, name, tile_size,
                 mbtiles_path)
@@ -151,7 +151,7 @@ def render_tiles(bbox, map_file, min_zoom, max_zoom, threads, name, tile_dir, ti
 
         for x in range(int(px0[0] / tile_sizef), int(px1[0] / tile_sizef) + 1):
             # Validate x co-ordinate
-            if (x < 0) or (x >= 2**z):
+            if (x < 0) or (x >= 2 ** z):
                 continue
             # Check if we have directories in place
             str_x = "%s" % x
@@ -162,7 +162,7 @@ def render_tiles(bbox, map_file, min_zoom, max_zoom, threads, name, tile_dir, ti
                     int(px1[1] / tile_sizef),
                     int(px0[1] / tile_sizef) + 1):
                 # Validate y co-ordinate
-                if (y < 0) or (y >= 2**z):
+                if (y < 0) or (y >= 2 ** z):
                     continue
                 # Submit tile to be rendered into the queue
                 str_y = "%s" % y
@@ -200,24 +200,35 @@ def render_tiles(bbox, map_file, min_zoom, max_zoom, threads, name, tile_dir, ti
 
 if __name__ == "__main__":
     parser = ArgumentParser(
-        usage="%(prog)s [options] input output 1..18 1..18", allow_abbrev=False)
+        usage="%(prog)s [options] input output 1..18 1..18",
+        allow_abbrev=False
+    )
     # Positional arguments
-    parser.add_argument("input", help="mapnik XML file")
-    parser.add_argument("output", help="a MBTiles file", default=None)
+    parser.add_argument(
+        "input",
+        help="mapnik XML file"
+    )
+    parser.add_argument(
+        "output",
+        help="a MBTiles file",
+        default=None
+    )
     parser.add_argument(
         "min",
         help="minimum zoom level to render",
         type=int,
         metavar="1..18",
         choices=range(1, 18),
-        default="1")
+        default="1"
+    )
     parser.add_argument(
         "max",
         help="maximum zoom level to render",
         type=int,
         metavar="1..18",
         choices=range(1, 18),
-        default="18")
+        default="18"
+    )
     # Optional arguments
     parser.add_argument(
         "--bbox",
@@ -225,21 +236,27 @@ if __name__ == "__main__":
         nargs=4,
         type=float,
         metavar="f",
-        default=[
-            -20037508.342789244, -20037508.342789244, 20037508.342789244,
-            20037508.342789244
-        ])
+        default=[-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244]
+    )
     parser.add_argument(
-        "--cores", help="# of rendering threads to spawn", type=int, default=4)
+        "--cores",
+        help="# of rendering threads to spawn",
+        type=int,
+        default=4
+    )
     parser.add_argument(
-        "--name", help="name for each renderer", default="unknown")
+        "--name",
+        help="name for each renderer",
+        default="unknown"
+    )
     parser.add_argument(
         "--size",
         help="resolution of the tile image",
         type=int,
         metavar="SIZE",
         choices=[1024, 512, 256],
-        default=512)
+        default=512
+    )
     # MBUtil arguments
     parser.add_argument(
         "--format",
@@ -248,7 +265,8 @@ if __name__ == "__main__":
         type=str,
         metavar="FORMAT",
         choices=["jpg", "png", "webp"],
-        default="png")
+        default="png"
+    )
     parser.add_argument(
         "--scheme",
         help="tiling scheme of the tiles",
@@ -256,15 +274,21 @@ if __name__ == "__main__":
         type=str,
         metavar="SCHEME",
         choices=["xyz"],
-        default="xyz")
+        default="xyz"
+    )
     parser.add_argument(
         "--no_compression",
         help="disable MBTiles compression",
         dest="compression",
         action="store_false",
-        default=True)
+        default=True
+    )
     parser.add_argument(
-        "--verbose", dest="silent", action="store_false", default=True)
+        "--verbose",
+        dest="silent",
+        action="store_false",
+        default=True
+    )
 
     args = parser.parse_args()
     if not args.silent:
@@ -273,5 +297,19 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     base_dir = os.path.dirname(args.input)
     tiles_dir = os.path.join(base_dir, "tiles")
-    render_tiles(args.bbox, args.input, args.min, args.max, args.cores,
-                 args.name, tiles_dir, args.size, args.format, args.output)
+
+    if os.path.exists(tiles_dir) and os.path.isdir(tiles_dir):
+        shutil.rmtree(tiles_dir)
+
+    render_tiles(
+        args.bbox,
+        args.input,
+        args.min,
+        args.max,
+        args.cores,
+        args.name,
+        tiles_dir,
+        args.size,
+        args.format,
+        args.output
+    )
