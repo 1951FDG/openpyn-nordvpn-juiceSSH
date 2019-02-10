@@ -8,7 +8,6 @@
 [![](https://img.shields.io/codacy/grade/0b6672c6a62a4efc92a51f029ae310e4.svg)](https://www.codacy.com/app/1951FDG/openpyn-nordvpn-juiceSSH?utm_source=github.com&utm_medium=referral&utm_content=1951FDG/openpyn-nordvpn-juiceSSH&utm_campaign=Badge_Grade)
 [![](https://img.shields.io/github/downloads/1951fdg/openpyn-nordvpn-juicessh/latest/total.svg)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/releases)
 
-
 An Android app written in C/C++, [Java](https://www.oracle.com/java/), and [Kotlin](https://kotlinlang.org/) to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely through JuiceSSH. Special thanks to [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor), a JuiceSSH plugin written in Kotlin by [sds100](https://github.com/sds100) which served as a base for this JuiceSSH plugin.
 
 > **Note**:
@@ -81,7 +80,7 @@ _Am I missing some essential feature?_
 A lot of components make this app work, I'll cover some of the basics here. Basically on app startup, the map is loaded asynchronously, an MBTile file (SQLite database) located in the assets resource folder within the APK is loaded and then stored and read in memory. The [world.mbtiles](app/src/main/assets/world.mbtiles) was generated using a custom python script, [generate_tiles_multiprocess.py](generate_tiles_multiprocess.py).
 
     rm ./app/src/main/assets/world.mbtiles
-    ./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/world.mbtiles 1 4 --format webp
+    python3 ./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/world.mbtiles 4 4 --format webp
 
 After the map is done loading, the NordVPN API is invoked to query all the supported countries, filtering based on preferences such as server type is done here, markers are generated lazily for all the countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the minimum zoom scale specified by the MBTile file. The closest country is determined (based on the current public IP address), if no connection is available, the last know location to Android is used instead. The map then animates to the marker closest to this specific location. After animation completes, only the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
 
