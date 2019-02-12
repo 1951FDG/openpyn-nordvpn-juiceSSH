@@ -5,13 +5,13 @@
     android:viewportHeight="512">
   <path
       android:pathData="M0,0h512v512h-512z"
-      android:fillColor="#FFFFFF"/>
+      android:fillColor="#ffffff"/>
   <path
       android:pathData="M350.445,256c0,23.611 -42.285,82.639 -94.445,82.639S161.555,279.611 161.555,256c0,-52.161 42.285,-94.445 94.445,-94.445S350.445,203.839 350.445,256z"
-      android:fillColor="#D80027"/>
+      android:fillColor="#d80027"/>
   <path
       android:pathData="M350.445,256c0,52.161 -42.285,94.445 -94.445,94.445S161.555,308.161 161.555,256"
-      android:fillColor="#0052B4"/>
+      android:fillColor="#0052b4"/>
   <path
       android:fillColor="#FF000000"
       android:pathData="M356.182,339.491l25.043,-25.043l16.693,16.693l-25.043,25.043z"/>
