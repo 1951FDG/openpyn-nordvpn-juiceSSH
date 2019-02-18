@@ -64,6 +64,7 @@ google_maps_api.xml
 fabric.properties
 
 # Fastlane
+fastlane/.env.local
 fastlane/metadata/android/screenshots.html
 fastlane/README.md
 fastlane/report.xml
