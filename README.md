@@ -106,7 +106,9 @@ After the map is done loading, the NordVPN API is invoked to query all the suppo
 
 ## Download
 
-The public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) is open to anyone. Please use my `test` branch of Openpyn.
+The public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) is open to anyone.
+
+Please use my `test` branch of Openpyn.
 
 ```sh
 git clone --branch test git@github.com:1951FDG/openpyn-nordvpn.git
@@ -127,7 +129,6 @@ To compile and run the project you'll need:
 -   [Android NDK](https://developer.android.com/ndk/)
 -   Android Support Repository
 -   Google repository
--   Geolocation APIs
 
 ## References
 
