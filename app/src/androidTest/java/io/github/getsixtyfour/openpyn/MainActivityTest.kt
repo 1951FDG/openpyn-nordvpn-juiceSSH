@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
@@ -93,6 +94,9 @@ class MainActivityTest {
 
     @Test
     fun testTakeScreenshot() {
+        val appContext = getInstrumentation().targetContext.applicationContext
+        val screenshotStrategy = UiAutomatorScreenshotStrategy()
+
         BaristaSleepInteractions.sleep(7, TimeUnit.SECONDS)
         val checkableFloatingActionButton = onView(allOf(
                 withId(R.id.fab3),
@@ -102,7 +106,7 @@ class MainActivityTest {
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
 
-        Screengrab.screenshot("screenshot_01")
+        Screengrab.screenshot("screenshot_01", screenshotStrategy, FileWritingScreenshotCustomCallback(appContext))
         val floatingActionButton = onView(allOf(
                 withId(R.id.fab2),
                 isDisplayed()
@@ -111,7 +115,7 @@ class MainActivityTest {
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
 
-        Screengrab.screenshot("screenshot_02")
+        Screengrab.screenshot("screenshot_02", screenshotStrategy, FileWritingScreenshotCustomCallback(appContext))
         val appCompatTextView = onView(allOf(
                 withId(R.id.cancel),
                 withText("Cancel"),
@@ -122,7 +126,7 @@ class MainActivityTest {
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
         val overflowMenuButton = onView(allOf(
                 withContentDescription("More options"),
-                childAtPosition(childAtPosition(withId(R.id.toolbar), 1), 1),
+                childAtPosition(childAtPosition(withId(R.id.toolbar), 1), 2),
                 isDisplayed()
         ))
         overflowMenuButton.perform(click())
@@ -138,19 +142,19 @@ class MainActivityTest {
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
 
-        Screengrab.screenshot("screenshot_03")
+        Screengrab.screenshot("screenshot_03", screenshotStrategy, FileWritingScreenshotCustomCallback(appContext))
         val linearLayout = onView(allOf(
                 childAtPosition(allOf(
                         withId(R.id.recycler_view),
                         childAtPosition(withClassName(`is`("android.widget.FrameLayout")), 0)
-                ), 7),
+                ), 8),
                 isDisplayed()
         ))
         linearLayout.perform(click())
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
 
-        Screengrab.screenshot("screenshot_04")
+        Screengrab.screenshot("screenshot_04", screenshotStrategy, FileWritingScreenshotCustomCallback(appContext))
         val appCompatImageButton = onView(allOf(
                 withContentDescription("Navigate up"),
                 childAtPosition(allOf(
