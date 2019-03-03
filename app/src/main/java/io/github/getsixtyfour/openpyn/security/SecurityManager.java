@@ -5,8 +5,7 @@ import android.content.Context;
 import android.provider.Settings.Secure;
 import android.util.Base64;
 import android.util.Log;
-
-import java.io.UnsupportedEncodingException;
+import androidx.annotation.NonNull;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -14,7 +13,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -23,14 +21,27 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import androidx.annotation.NonNull;
-
 public final class SecurityManager {
 
     private static final int IV_LENGTH = 16;
+
     private static final String AES_GCM_NO_PADDING = "AES/GCM/NoPadding";
+
     private static volatile SecurityManager sInstance = null;
+
     private SecretKey mKey;
+
+    @NonNull
+    public static SecurityManager getInstance(@NonNull Context context) {
+        if (sInstance == null) {
+            synchronized (SecurityManager.class) {
+                if (sInstance == null) {
+                    sInstance = new SecurityManager(context);
+                }
+            }
+        }
+        return sInstance;
+    }
 
     @SuppressWarnings("unused")
     private SecurityManager() {
@@ -54,29 +65,20 @@ public final class SecurityManager {
     }
 
     @NonNull
-    public static SecurityManager getInstance(@NonNull Context context) {
-        if (sInstance == null) {
-            synchronized (SecurityManager.class) {
-                if (sInstance == null) {
-                    sInstance = new SecurityManager(context);
-                }
-            }
+    @SuppressWarnings("WeakerAccess")
+    public String decryptString(@NonNull String stringToDecrypt) {
+        String output = stringToDecrypt;
+        try {
+            byte[] encryptedBytes = Base64.decode(stringToDecrypt, Base64.DEFAULT);
+            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
+            IvParameterSpec ivSpec = new IvParameterSpec(encryptedBytes, 0, IV_LENGTH);
+            cipher.init(Cipher.DECRYPT_MODE, mKey, ivSpec);
+            byte[] cipherBytes = cipher.doFinal(encryptedBytes, IV_LENGTH, encryptedBytes.length - IV_LENGTH);
+            output = new String(cipherBytes, StandardCharsets.UTF_8);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+            Log.wtf(getClass().getSimpleName(), e);
         }
-        return sInstance;
-    }
-
-    private static byte[] concat(byte[]... arrays) {
-        int length = 0;
-        for (byte[] array : arrays) {
-            length += array.length;
-        }
-        byte[] result = new byte[length];
-        int pos = 0;
-        for (byte[] array : arrays) {
-            System.arraycopy(array, 0, result, pos, array.length);
-            pos += array.length;
-        }
-        return result;
+        return output;
     }
 
     @NonNull
@@ -91,34 +93,24 @@ public final class SecurityManager {
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.ENCRYPT_MODE, mKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(clearText);
-            output = new String(Base64.encode(concat(iv, cipherBytes),
-                    Base64.NO_WRAP), StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException
-                | InvalidKeyException | IllegalBlockSizeException | BadPaddingException
-                | InvalidAlgorithmParameterException e) {
+            output = new String(Base64.encode(concat(iv, cipherBytes), Base64.NO_WRAP), StandardCharsets.UTF_8);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             Log.wtf(getClass().getSimpleName(), e);
         }
         return output;
     }
 
-    @NonNull
-    @SuppressWarnings("WeakerAccess")
-    public String decryptString(@NonNull String stringToDecrypt) {
-        String output = stringToDecrypt;
-        try {
-            byte[] encryptedBytes = Base64.decode(stringToDecrypt, Base64.DEFAULT);
-            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
-            IvParameterSpec ivSpec = new IvParameterSpec(encryptedBytes, 0, IV_LENGTH);
-            cipher.init(Cipher.DECRYPT_MODE, mKey, ivSpec);
-
-            byte[] cipherBytes = cipher.doFinal(encryptedBytes, IV_LENGTH, encryptedBytes.length - IV_LENGTH);
-
-            output = new String(cipherBytes, StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException
-                | InvalidKeyException | IllegalBlockSizeException | BadPaddingException
-                | InvalidAlgorithmParameterException e) {
-            Log.wtf(getClass().getSimpleName(), e);
+    private static byte[] concat(byte[]... arrays) {
+        int length = 0;
+        for (byte[] array : arrays) {
+            length += array.length;
         }
-        return output;
+        byte[] result = new byte[length];
+        int pos = 0;
+        for (byte[] array : arrays) {
+            System.arraycopy(array, 0, result, pos, array.length);
+            pos += array.length;
+        }
+        return result;
     }
 }

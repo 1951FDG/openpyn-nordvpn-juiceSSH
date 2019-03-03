@@ -18,6 +18,7 @@ class OpenpynController(
     private val mActivityExecuteCommandListener: OnCommandExecuteListener?,
     private val mActivityOnOutputLineListener: OnOutputLineListener?
 ) : BaseController(ctx, liveData), AnkoLogger {
+
     companion object {
         private const val SPAM = "SPAM"
         private const val DEBUG = "DEBUG"
@@ -56,17 +57,16 @@ class OpenpynController(
         mActivitySessionExecuteListener?.onOutputLine(line)
 
         buffer.append(line)
-
         val logging = listOf(
-                SPAM,
-                DEBUG,
-                VERBOSE,
-                INFO,
-                NOTICE,
-                WARNING,
-                SUCCESS,
-                ERROR,
-                CRITICAL
+            SPAM,
+            DEBUG,
+            VERBOSE,
+            INFO,
+            NOTICE,
+            WARNING,
+            SUCCESS,
+            ERROR,
+            CRITICAL
         )
 
         logging.forEach {

@@ -86,8 +86,8 @@
  *   {
  *     ...
  */
-int sqlite3_ndk_init(AAssetManager* assetMgr,
-					 const char* vfsName = SQLITE_NDK_VFS_NAME,
+int sqlite3_ndk_init(AAssetManager *assetMgr,
+					 const char *vfsName = SQLITE_NDK_VFS_NAME,
 					 int makeDflt = SQLITE_NDK_VFS_MAKE_DEFAULT,
 					 const char *osVfs = SQLITE_NDK_VFS_PARENT_VFS);
 

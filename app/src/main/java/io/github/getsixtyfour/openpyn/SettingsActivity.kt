@@ -28,6 +28,7 @@ import androidx.preference.PreferenceManager.getDefaultSharedPreferences
  * for more information on developing a Settings UI.
  */
 class SettingsActivity : AppCompatPreferenceActivity() {
+
     /**
      * Set up the [android.app.ActionBar], if the API is available.
      */
@@ -74,6 +75,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * This fragment shows settings preferences only.
      */
     class SettingsSyncPreferenceFragment : PreferenceFragment(), PreferenceFragment.OnPreferenceStartFragmentCallback {
+
         override fun onPreferenceStartFragment(caller: PreferenceFragment?, pref: Preference?): Boolean {
             // Instantiate the new Fragment
             val args = pref?.extras
@@ -82,9 +84,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             fragment.setTargetFragment(caller, 0)
 
             fragmentManager.beginTransaction()
-                    .replace(AndroidResources.ANDROID_R_LIST_CONTAINER, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                .replace(AndroidResources.ANDROID_R_LIST_CONTAINER, fragment)
+                .addToBackStack(null)
+                .commit()
 
             return true
         }
@@ -122,6 +124,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * This fragment shows API settings preferences only.
      */
     class ApiSyncPreferenceFragment : PreferenceFragment() {
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setHasOptionsMenu(false)
@@ -226,12 +229,13 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             val regex = Regex("""^[a-z]{2}\d{1,4}$""")
             if (regex.matches(str)) {
                 return hashSetOf(
-                        "al", "ar", "au", "at", "az", "be", "ba", "br", "bg", "ca", "cl",
-                        "cr", "hr", "cy", "cz", "dk", "eg", "ee", "fi", "fr", "ge", "de",
-                        "gr", "hk", "hu", "is", "in", "id", "ie", "il", "it", "jp", "lv",
-                        "lu", "mk", "my", "mx", "md", "nl", "nz", "no", "pl", "pt", "ro",
-                        "ru", "rs", "sg", "sk", "si", "za", "kr", "es", "se", "ch", "tw",
-                        "th", "tr", "ua", "ae", "gb", "us", "vn").contains(str.take(2))
+                    "al", "ar", "au", "at", "az", "be", "ba", "br", "bg", "ca", "cl",
+                    "cr", "hr", "cy", "cz", "dk", "eg", "ee", "fi", "fr", "ge", "de",
+                    "gr", "hk", "hu", "is", "in", "id", "ie", "il", "it", "jp", "lv",
+                    "lu", "mk", "my", "mx", "md", "nl", "nz", "no", "pl", "pt", "ro",
+                    "ru", "rs", "sg", "sk", "si", "za", "kr", "es", "se", "ch", "tw",
+                    "th", "tr", "ua", "ae", "gb", "us", "vn"
+                ).contains(str.take(2))
             }
 
             return false

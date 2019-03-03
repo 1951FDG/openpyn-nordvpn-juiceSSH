@@ -2,7 +2,6 @@ package io.github.getsixtyfour.openpyn.security;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.EditTextPreference;
@@ -23,14 +22,8 @@ public final class SecuredEditTextPreference extends EditTextPreference {
         super(context, attrs, defStyleAttr);
     }
 
-    public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
-                                     int defStyleRes) {
+    public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    @Override
-    protected void onSetInitialValue(@Nullable Object defaultValue) {
-        super.setText(getPersistedString(null));
     }
 
     @Nullable
@@ -47,5 +40,10 @@ public final class SecuredEditTextPreference extends EditTextPreference {
         } else {
             super.setText(securityManager.encryptString(text));
         }
+    }
+
+    @Override
+    protected void onSetInitialValue(@Nullable Object defaultValue) {
+        super.setText(getPersistedString(null));
     }
 }

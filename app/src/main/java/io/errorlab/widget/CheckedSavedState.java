@@ -2,10 +2,10 @@ package io.errorlab.widget;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import androidx.customview.view.AbsSavedState;
 
 class CheckedSavedState extends AbsSavedState {
+
     public static final Creator<CheckedSavedState> CREATOR = new ClassLoaderCreator<CheckedSavedState>() {
         public CheckedSavedState createFromParcel(Parcel source, ClassLoader loader) {
             return new CheckedSavedState(source, loader);
@@ -19,6 +19,7 @@ class CheckedSavedState extends AbsSavedState {
             return new CheckedSavedState[size];
         }
     };
+
     protected boolean checked;
 
     protected CheckedSavedState(Parcelable superState) {

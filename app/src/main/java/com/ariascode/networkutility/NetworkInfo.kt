@@ -187,6 +187,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
 
     // static content
     companion object {
+
         var ns: NetworkInfo? = null
 
         // get a singleton
@@ -201,6 +202,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
 
     // interface that represent the [NetworkStatusListener]
     interface NetworkInfoListener {
+
         fun networkStatusChange(network: Network?)
     }
 }

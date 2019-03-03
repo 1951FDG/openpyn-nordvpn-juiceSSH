@@ -17,6 +17,7 @@ import java.util.UUID
  */
 @MainThread
 class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
+
     private val mInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun newView(context: Context?, cursor: Cursor?, parent: ViewGroup?): View {

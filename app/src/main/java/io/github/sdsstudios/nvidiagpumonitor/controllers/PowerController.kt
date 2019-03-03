@@ -11,6 +11,7 @@ class PowerController(
     ctx: Context,
     liveData: MutableLiveData<Int>
 ) : BaseController(ctx, liveData) {
+
     override val regex = Regex("""\d+((.)\d+)?""")
     //override val command = "nvidia-smi --query-gpu=power.draw --format=csv"
     override fun convertDataToInt(data: String): Int {

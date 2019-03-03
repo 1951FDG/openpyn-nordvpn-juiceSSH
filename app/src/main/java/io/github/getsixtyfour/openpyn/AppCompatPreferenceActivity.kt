@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar
  * to be used with AppCompat.
  */
 abstract class AppCompatPreferenceActivity : PreferenceActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         delegate.installViewFactory()
         delegate.onCreate(savedInstanceState)

@@ -65,10 +65,10 @@ typedef struct ndk_vfs ndk_vfs;
 struct ndk_vfs
 {
 	sqlite3_vfs vfs; /*** Must be first ***/
-	sqlite3_vfs* vfsDefault;
+	sqlite3_vfs *vfsDefault;
 	const struct sqlite3_io_methods *pMethods;
 
-	AAssetManager* mgr;
+	AAssetManager *mgr;
 };
 
 /**
@@ -81,10 +81,10 @@ struct ndk_file
 	const sqlite3_io_methods *pMethod; /*** Must be first ***/
 
 	// Pointer to AAsset obtained by AAssetManager_open
-	AAsset* asset;
+	AAsset *asset;
 
 	// Pointer to database content (AAsset_getBuffer)
-	const void* buf;
+	const void *buf;
 
 	// Total length of database file (AAsset_getLength)
 	off_t len;
@@ -96,8 +96,8 @@ struct ndk_file
  */
 static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, int flags, int *pOutFlags)
 {
-	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
-	auto *file = reinterpret_cast<ndk_file*>(pFile);
+	const ndk_vfs *ndk = reinterpret_cast<ndk_vfs *>(pVfs);
+	auto *file = reinterpret_cast<ndk_file *>(pFile);
 
 	// pMethod must be set to NULL, even if xOpen call fails.
 	//
@@ -122,7 +122,7 @@ static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, in
 	}
 
 	// Try top open database file
-	AAsset* asset = AAssetManager_open(ndk->mgr, zPath, AASSET_MODE_RANDOM);
+	AAsset *asset = AAssetManager_open(ndk->mgr, zPath, AASSET_MODE_RANDOM);
 	if (!asset)
 	{
 		return SQLITE_CANTOPEN;
@@ -137,7 +137,7 @@ static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, in
 	// As for today there is no simple way to set if specific file
 	// must be compressed or not. You can control it only by file extension.
 	// Google for: android kNoCompressExt
-	const void* buf = AAsset_getBuffer(asset);
+	const void *buf = AAsset_getBuffer(asset);
 	if (!buf)
 	{
 		AAsset_close(asset);
@@ -170,7 +170,7 @@ static int ndkDelete(sqlite3_vfs *, const char *, int)
  */
 static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags, int *pResOut)
 {
-	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
+	const ndk_vfs *ndk = reinterpret_cast<ndk_vfs *>(pVfs);
 
 	*pResOut = 0;
 
@@ -180,7 +180,8 @@ static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags, int *pResO
 		case SQLITE_ACCESS_READ:
 		{
 			AAsset *asset = AAssetManager_open(ndk->mgr, zPath, AASSET_MODE_RANDOM);
-			if (asset) {
+			if (asset)
+			{
 				AAsset_close(asset);
 				*pResOut = 1;
 			}
@@ -225,7 +226,7 @@ static int ndkFullPathname(sqlite3_vfs *pVfs, const char *zPath, int nOut, char 
  */
 static int ndkRandomness(sqlite3_vfs *pVfs, int nBuf, char *zBuf)
 {
-	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
+	const ndk_vfs *ndk = reinterpret_cast<ndk_vfs *>(pVfs);
 
 	return ndk->vfsDefault->xRandomness(ndk->vfsDefault, nBuf, zBuf);
 }
@@ -236,7 +237,7 @@ static int ndkRandomness(sqlite3_vfs *pVfs, int nBuf, char *zBuf)
  */
 static int ndkSleep(sqlite3_vfs *pVfs, int microseconds)
 {
-	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
+	const ndk_vfs *ndk = reinterpret_cast<ndk_vfs *>(pVfs);
 
 	return ndk->vfsDefault->xSleep(ndk->vfsDefault, microseconds);
 }
@@ -247,7 +248,7 @@ static int ndkSleep(sqlite3_vfs *pVfs, int microseconds)
  */
 static int ndkCurrentTime(sqlite3_vfs *pVfs, double *prNow)
 {
-	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
+	const ndk_vfs *ndk = reinterpret_cast<ndk_vfs *>(pVfs);
 
 	return ndk->vfsDefault->xCurrentTime(ndk->vfsDefault, prNow);
 }
@@ -266,7 +267,7 @@ static int ndkGetLastError(sqlite3_vfs *, int, char *)
  */
 static int ndkCurrentTimeInt64(sqlite3_vfs *pVfs, sqlite3_int64 *piNow)
 {
-	const ndk_vfs* ndk = reinterpret_cast<ndk_vfs*>(pVfs);
+	const ndk_vfs *ndk = reinterpret_cast<ndk_vfs *>(pVfs);
 
 	return ndk->vfsDefault->xCurrentTimeInt64(ndk->vfsDefault, piNow);
 }
@@ -277,7 +278,7 @@ static int ndkCurrentTimeInt64(sqlite3_vfs *pVfs, sqlite3_int64 *piNow)
  */
 static int ndkFileClose(sqlite3_file *pFile)
 {
-	auto *file = reinterpret_cast<ndk_file*>(pFile);
+	auto *file = reinterpret_cast<ndk_file *>(pFile);
 
 	if (file->asset)
 	{
@@ -296,7 +297,7 @@ static int ndkFileClose(sqlite3_file *pFile)
  */
 static int ndkFileRead(sqlite3_file *pFile, void *pBuf, int amt, sqlite3_int64 offset)
 {
-	const ndk_file *file = reinterpret_cast<ndk_file*>(pFile);
+	const ndk_file *file = reinterpret_cast<ndk_file *>(pFile);
 	int got, off;
 	int rc;
 
@@ -332,13 +333,13 @@ static int ndkFileRead(sqlite3_file *pFile, void *pBuf, int amt, sqlite3_int64 o
 			// It might be not a problem in read-only databases,
 			// but do it as documentation says
 			rc = SQLITE_IOERR_SHORT_READ;
-			memset(&((char*) pBuf)[got], 0, amt - got);
+			memset(&((char *) pBuf)[got], 0, amt - got);
 		}
 	}
 
 	if (got > 0)
 	{
-		memcpy(pBuf, (char*) file->buf + off, got);
+		memcpy(pBuf, (char *) file->buf + off, got);
 	}
 
 	return rc;
@@ -374,7 +375,7 @@ static int ndkFileSync(sqlite3_file *, int)
  */
 static int ndkFileSize(sqlite3_file *pFile, sqlite3_int64 *pSize)
 {
-	auto *file = reinterpret_cast<ndk_file*>(pFile);
+	auto *file = reinterpret_cast<ndk_file *>(pFile);
 	*pSize = file->len;
 
 	return SQLITE_OK;
@@ -433,7 +434,7 @@ static int ndkFileDeviceCharacteristics(sqlite3_file *)
 /*
  * Register into SQLite. For more information see sqlite3ndk.h
  */
-int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName, int makeDflt, const char *osVfs)
+int sqlite3_ndk_init(AAssetManager *assetMgr, const char *vfsName, int makeDflt, const char *osVfs)
 {
 	static ndk_vfs ndkVfs;
 	int rc;
@@ -532,9 +533,11 @@ int sqlite3_ndk_init(AAssetManager* assetMgr, const char* vfsName, int makeDflt,
 	return rc;
 }
 
-JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
+{
 	JNIEnv *env;
-	if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
+	if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK)
+	{
 		return -1;
 	}
 
@@ -587,7 +590,8 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 		assetMgr,
 		SQLITE_NDK_VFS_NAME,
 		SQLITE_NDK_VFS_MAKE_DEFAULT,
-		SQLITE_NDK_VFS_PARENT_VFS) != SQLITE_OK) {
+		SQLITE_NDK_VFS_PARENT_VFS) != SQLITE_OK)
+	{
 		ERROR("sqlite3_ndk_init failed!");
 		return JNI_ERR;
 	}

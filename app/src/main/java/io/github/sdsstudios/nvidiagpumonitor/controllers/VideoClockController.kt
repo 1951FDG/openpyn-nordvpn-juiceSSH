@@ -10,6 +10,7 @@ class VideoClockController(
     ctx: Context,
     liveData: MutableLiveData<Int>
 ) : BaseController(ctx, liveData) {
+
     override val regex = Regex("""\d+""")
     //override val command = "nvidia-smi --query-gpu=clocks.video --format=csv"
     override fun convertDataToInt(data: String): Int {

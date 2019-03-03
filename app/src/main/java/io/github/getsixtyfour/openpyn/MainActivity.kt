@@ -68,7 +68,12 @@ import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.security.SecurityManager
-import io.github.getsixtyfour.openpyn.utilities.*
+import io.github.getsixtyfour.openpyn.utilities.MyStorage
+import io.github.getsixtyfour.openpyn.utilities.PrintArray
+import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener
+import io.github.getsixtyfour.openpyn.utilities.Toaster
+import io.github.getsixtyfour.openpyn.utilities.createJson
+import io.github.getsixtyfour.openpyn.utilities.createJson2
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
@@ -76,9 +81,32 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_maps.*
-import org.jetbrains.anko.*
+import kotlinx.android.synthetic.main.activity_main.spinnerConnectionList
+import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.android.synthetic.main.activity_maps.fab0
+import kotlinx.android.synthetic.main.activity_maps.fab1
+import kotlinx.android.synthetic.main.activity_maps.fab2
+import kotlinx.android.synthetic.main.activity_maps.fab3
+import kotlinx.android.synthetic.main.activity_maps.map
+import kotlinx.android.synthetic.main.activity_maps.maplayout
+import kotlinx.android.synthetic.main.activity_maps.minibarView
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.customView
+import org.jetbrains.anko.debug
+import org.jetbrains.anko.dip
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.error
+import org.jetbrains.anko.info
+import org.jetbrains.anko.linearLayout
+import org.jetbrains.anko.longToast
+import org.jetbrains.anko.onComplete
+import org.jetbrains.anko.padding
+import org.jetbrains.anko.textColor
+import org.jetbrains.anko.textView
+import org.jetbrains.anko.uiThread
+import org.jetbrains.anko.verticalLayout
+import org.jetbrains.anko.wrapContent
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -92,41 +120,42 @@ operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asS
 class LazyMarkerStorage(key: String) : MyStorage(key) {
     override fun jsonAdapter(): JsonAdapter<List<Any>> {
         val moshi = Moshi.Builder()
-                .add(object {
-                    @ToJson
-                    @Suppress("unused")
-                    fun toJson(value: LatLng): Map<String, Double> {
-                        return mapOf("lat" to value.latitude, "long" to value.longitude)
-                    }
+            .add(object {
+                @ToJson
+                @Suppress("unused")
+                fun toJson(value: LatLng): Map<String, Double> {
+                    return mapOf("lat" to value.latitude, "long" to value.longitude)
+                }
 
-                    @FromJson
-                    @Suppress("unused")
-                    fun fromJson(value: Map<String, Double>): LatLng {
-                        return LatLng(value["lat"]!!, value["long"]!!)
-                    }
-                })
-                .build()
+                @FromJson
+                @Suppress("unused")
+                fun fromJson(value: Map<String, Double>): LatLng {
+                    return LatLng(value["lat"]!!, value["long"]!!)
+                }
+            })
+            .build()
         val type = Types.newParameterizedType(List::class.java, LazyMarker::class.java)
         return moshi.adapter(type)
     }
 }
 
 class MainActivity : AppCompatActivity(),
-        OnSessionStartedListener,
-        OnSessionFinishedListener,
-        OnClientStartedListener,
-        ConnectionListLoaderFinishedCallback,
-        OnMapReadyCallback,
-        GoogleMap.OnMapClickListener,
-        GoogleMap.OnMapLoadedCallback,
-        GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnCameraIdleListener,
-        AnkoLogger,
-        OnLevelChangeCallback,
-        SubmitCallbackListener,
-        OnSessionExecuteListener,
-        OnCommandExecuteListener,
-        View.OnClickListener {
+    OnSessionStartedListener,
+    OnSessionFinishedListener,
+    OnClientStartedListener,
+    ConnectionListLoaderFinishedCallback,
+    OnMapReadyCallback,
+    GoogleMap.OnMapClickListener,
+    GoogleMap.OnMapLoadedCallback,
+    GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnCameraIdleListener,
+    AnkoLogger,
+    OnLevelChangeCallback,
+    SubmitCallbackListener,
+    OnSessionExecuteListener,
+    OnCommandExecuteListener,
+    View.OnClickListener {
+
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
@@ -182,12 +211,12 @@ class MainActivity : AppCompatActivity(),
 
         if (isJuiceSSHInstalled()) {
             mConnectionManager = ConnectionManager(
-                    ctx = this,
-                    mActivitySessionStartedListener = this,
-                    mActivitySessionFinishedListener = this,
-                    mActivitySessionExecuteListener = this,
-                    mActivityCommandExecuteListener = this,
-                    mActivityOnOutputLineListener = Toaster(this)
+                ctx = this,
+                mActivitySessionStartedListener = this,
+                mActivitySessionFinishedListener = this,
+                mActivitySessionExecuteListener = this,
+                mActivityCommandExecuteListener = this,
+                mActivityOnOutputLineListener = Toaster(this)
             )
 //            mConnectionManager.powerUsage.observe(this, Observer {
 //                textViewPower.setData(it, "W")
@@ -239,12 +268,12 @@ class MainActivity : AppCompatActivity(),
         if (!isJuiceSSHInstalled()) {
             val snackProgressBar = SnackProgressBar(SnackProgressBar.TYPE_NORMAL, getString(R.string.error_must_install_juicessh))
             snackProgressBar.setAction(
-                    getString(android.R.string.ok),
-                    object : SnackProgressBar.OnActionClickListener {
-                        override fun onActionClick() {
-                            juiceSSHInstall()
-                        }
+                getString(android.R.string.ok),
+                object : SnackProgressBar.OnActionClickListener {
+                    override fun onActionClick() {
+                        juiceSSHInstall()
                     }
+                }
             )
             snackProgressBarManager?.show(snackProgressBar, SnackProgressBarManager.LENGTH_INDEFINITE)
         }
@@ -302,14 +331,14 @@ class MainActivity : AppCompatActivity(),
 
         fun getLastLocation() {
             FusedLocationProviderClient(this).lastLocation
-                    .addOnSuccessListener { location: Location? ->
-                        if (location != null) {
-                            lastLocation = location
-                        }
+                .addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        lastLocation = location
                     }
-                    .addOnFailureListener { e: Exception ->
-                        error(e)
-                    }
+                }
+                .addOnFailureListener { e: Exception ->
+                    error(e)
+                }
         }
 
         if (requestCode == PERMISSION_REQUEST_CODE) {
@@ -322,12 +351,12 @@ class MainActivity : AppCompatActivity(),
             } else {
                 val snackProgressBar = SnackProgressBar(SnackProgressBar.TYPE_NORMAL, getString(R.string.error_must_enable_permissions))
                 snackProgressBar.setAction(
-                        getString(android.R.string.ok),
-                        object : SnackProgressBar.OnActionClickListener {
-                            override fun onActionClick() {
-                                requestPermissions()
-                            }
+                    getString(android.R.string.ok),
+                    object : SnackProgressBar.OnActionClickListener {
+                        override fun onActionClick() {
+                            requestPermissions()
                         }
+                    }
                 )
                 snackProgressBarManager?.show(snackProgressBar, SnackProgressBarManager.LENGTH_INDEFINITE)
             }
@@ -408,10 +437,10 @@ class MainActivity : AppCompatActivity(),
                 //drawable?.stop()
                 if (!thrown) {
                     MaterialDialog.Builder(it)
-                            .title("Warning")
-                            .content(R.string.warning_must_restart_app)
-                            .positiveText(android.R.string.ok)
-                            .show()
+                        .title("Warning")
+                        .content(R.string.warning_must_restart_app)
+                        .positiveText(android.R.string.ok)
+                        .show()
                 }
             }
 
@@ -838,68 +867,68 @@ class MainActivity : AppCompatActivity(),
     @Suppress("MagicNumber")
     private fun countryList(array: Array<CharSequence>): ArrayList<MultiSelectable> {
         return arrayListOf(
-                MultiSelectModel(0, SpannableString(array[0]), R.drawable.ic_albania_40dp),
-                MultiSelectModel(1, SpannableString(array[1]), R.drawable.ic_argentina_40dp),
-                MultiSelectModel(2, SpannableString(array[2]), R.drawable.ic_australia_40dp),
-                MultiSelectModel(3, SpannableString(array[3]), R.drawable.ic_austria_40dp),
-                MultiSelectModel(4, SpannableString(array[4]), R.drawable.ic_azerbaijan_40dp),
-                MultiSelectModel(5, SpannableString(array[5]), R.drawable.ic_belgium_40dp),
-                MultiSelectModel(6, SpannableString(array[6]), R.drawable.ic_bosnia_and_herzegovina_40dp),
-                MultiSelectModel(7, SpannableString(array[7]), R.drawable.ic_brazil_40dp),
-                MultiSelectModel(8, SpannableString(array[8]), R.drawable.ic_bulgaria_40dp),
-                MultiSelectModel(9, SpannableString(array[9]), R.drawable.ic_canada_40dp),
-                MultiSelectModel(10, SpannableString(array[10]), R.drawable.ic_chile_40dp),
-                MultiSelectModel(11, SpannableString(array[11]), R.drawable.ic_costa_rica_40dp),
-                MultiSelectModel(12, SpannableString(array[12]), R.drawable.ic_croatia_40dp),
-                MultiSelectModel(13, SpannableString(array[13]), R.drawable.ic_cyprus_40dp),
-                MultiSelectModel(14, SpannableString(array[14]), R.drawable.ic_czech_republic_40dp),
-                MultiSelectModel(15, SpannableString(array[15]), R.drawable.ic_denmark_40dp),
-                MultiSelectModel(16, SpannableString(array[16]), R.drawable.ic_egypt_40dp),
-                MultiSelectModel(17, SpannableString(array[17]), R.drawable.ic_estonia_40dp),
-                MultiSelectModel(18, SpannableString(array[18]), R.drawable.ic_finland_40dp),
-                MultiSelectModel(19, SpannableString(array[19]), R.drawable.ic_france_40dp),
-                MultiSelectModel(20, SpannableString(array[20]), R.drawable.ic_georgia_40dp),
-                MultiSelectModel(21, SpannableString(array[21]), R.drawable.ic_germany_40dp),
-                MultiSelectModel(22, SpannableString(array[22]), R.drawable.ic_greece_40dp),
-                MultiSelectModel(23, SpannableString(array[23]), R.drawable.ic_hong_kong_40dp),
-                MultiSelectModel(24, SpannableString(array[24]), R.drawable.ic_hungary_40dp),
-                MultiSelectModel(25, SpannableString(array[25]), R.drawable.ic_iceland_40dp),
-                MultiSelectModel(26, SpannableString(array[26]), R.drawable.ic_india_40dp),
-                MultiSelectModel(27, SpannableString(array[27]), R.drawable.ic_indonesia_40dp),
-                MultiSelectModel(28, SpannableString(array[28]), R.drawable.ic_ireland_40dp),
-                MultiSelectModel(29, SpannableString(array[29]), R.drawable.ic_israel_40dp),
-                MultiSelectModel(30, SpannableString(array[30]), R.drawable.ic_italy_40dp),
-                MultiSelectModel(31, SpannableString(array[31]), R.drawable.ic_japan_40dp),
-                MultiSelectModel(32, SpannableString(array[32]), R.drawable.ic_latvia_40dp),
-                MultiSelectModel(33, SpannableString(array[33]), R.drawable.ic_luxembourg_40dp),
-                MultiSelectModel(34, SpannableString(array[34]), R.drawable.ic_republic_of_macedonia_40dp),
-                MultiSelectModel(35, SpannableString(array[35]), R.drawable.ic_malaysia_40dp),
-                MultiSelectModel(36, SpannableString(array[36]), R.drawable.ic_mexico_40dp),
-                MultiSelectModel(37, SpannableString(array[37]), R.drawable.ic_moldova_40dp),
-                MultiSelectModel(38, SpannableString(array[38]), R.drawable.ic_netherlands_40dp),
-                MultiSelectModel(39, SpannableString(array[39]), R.drawable.ic_new_zealand_40dp),
-                MultiSelectModel(40, SpannableString(array[40]), R.drawable.ic_norway_40dp),
-                MultiSelectModel(41, SpannableString(array[41]), R.drawable.ic_poland_40dp),
-                MultiSelectModel(42, SpannableString(array[42]), R.drawable.ic_portugal_40dp),
-                MultiSelectModel(43, SpannableString(array[43]), R.drawable.ic_romania_40dp),
-                MultiSelectModel(44, SpannableString(array[44]), R.drawable.ic_russia_40dp),
-                MultiSelectModel(45, SpannableString(array[45]), R.drawable.ic_serbia_40dp),
-                MultiSelectModel(46, SpannableString(array[46]), R.drawable.ic_singapore_40dp),
-                MultiSelectModel(47, SpannableString(array[47]), R.drawable.ic_slovakia_40dp),
-                MultiSelectModel(48, SpannableString(array[48]), R.drawable.ic_slovenia_40dp),
-                MultiSelectModel(49, SpannableString(array[49]), R.drawable.ic_south_africa_40dp),
-                MultiSelectModel(50, SpannableString(array[50]), R.drawable.ic_south_korea_40dp),
-                MultiSelectModel(51, SpannableString(array[51]), R.drawable.ic_spain_40dp),
-                MultiSelectModel(52, SpannableString(array[52]), R.drawable.ic_sweden_40dp),
-                MultiSelectModel(53, SpannableString(array[53]), R.drawable.ic_switzerland_40dp),
-                MultiSelectModel(54, SpannableString(array[54]), R.drawable.ic_taiwan_40dp),
-                MultiSelectModel(55, SpannableString(array[55]), R.drawable.ic_thailand_40dp),
-                MultiSelectModel(56, SpannableString(array[56]), R.drawable.ic_turkey_40dp),
-                MultiSelectModel(57, SpannableString(array[57]), R.drawable.ic_ukraine_40dp),
-                MultiSelectModel(58, SpannableString(array[58]), R.drawable.ic_united_arab_emirates_40dp),
-                MultiSelectModel(59, SpannableString(array[59]), R.drawable.ic_united_kingdom_40dp),
-                MultiSelectModel(60, SpannableString(array[60]), R.drawable.ic_united_states_of_america_40dp),
-                MultiSelectModel(61, SpannableString(array[61]), R.drawable.ic_vietnam_40dp)
+            MultiSelectModel(0, SpannableString(array[0]), R.drawable.ic_albania_40dp),
+            MultiSelectModel(1, SpannableString(array[1]), R.drawable.ic_argentina_40dp),
+            MultiSelectModel(2, SpannableString(array[2]), R.drawable.ic_australia_40dp),
+            MultiSelectModel(3, SpannableString(array[3]), R.drawable.ic_austria_40dp),
+            MultiSelectModel(4, SpannableString(array[4]), R.drawable.ic_azerbaijan_40dp),
+            MultiSelectModel(5, SpannableString(array[5]), R.drawable.ic_belgium_40dp),
+            MultiSelectModel(6, SpannableString(array[6]), R.drawable.ic_bosnia_and_herzegovina_40dp),
+            MultiSelectModel(7, SpannableString(array[7]), R.drawable.ic_brazil_40dp),
+            MultiSelectModel(8, SpannableString(array[8]), R.drawable.ic_bulgaria_40dp),
+            MultiSelectModel(9, SpannableString(array[9]), R.drawable.ic_canada_40dp),
+            MultiSelectModel(10, SpannableString(array[10]), R.drawable.ic_chile_40dp),
+            MultiSelectModel(11, SpannableString(array[11]), R.drawable.ic_costa_rica_40dp),
+            MultiSelectModel(12, SpannableString(array[12]), R.drawable.ic_croatia_40dp),
+            MultiSelectModel(13, SpannableString(array[13]), R.drawable.ic_cyprus_40dp),
+            MultiSelectModel(14, SpannableString(array[14]), R.drawable.ic_czech_republic_40dp),
+            MultiSelectModel(15, SpannableString(array[15]), R.drawable.ic_denmark_40dp),
+            MultiSelectModel(16, SpannableString(array[16]), R.drawable.ic_egypt_40dp),
+            MultiSelectModel(17, SpannableString(array[17]), R.drawable.ic_estonia_40dp),
+            MultiSelectModel(18, SpannableString(array[18]), R.drawable.ic_finland_40dp),
+            MultiSelectModel(19, SpannableString(array[19]), R.drawable.ic_france_40dp),
+            MultiSelectModel(20, SpannableString(array[20]), R.drawable.ic_georgia_40dp),
+            MultiSelectModel(21, SpannableString(array[21]), R.drawable.ic_germany_40dp),
+            MultiSelectModel(22, SpannableString(array[22]), R.drawable.ic_greece_40dp),
+            MultiSelectModel(23, SpannableString(array[23]), R.drawable.ic_hong_kong_40dp),
+            MultiSelectModel(24, SpannableString(array[24]), R.drawable.ic_hungary_40dp),
+            MultiSelectModel(25, SpannableString(array[25]), R.drawable.ic_iceland_40dp),
+            MultiSelectModel(26, SpannableString(array[26]), R.drawable.ic_india_40dp),
+            MultiSelectModel(27, SpannableString(array[27]), R.drawable.ic_indonesia_40dp),
+            MultiSelectModel(28, SpannableString(array[28]), R.drawable.ic_ireland_40dp),
+            MultiSelectModel(29, SpannableString(array[29]), R.drawable.ic_israel_40dp),
+            MultiSelectModel(30, SpannableString(array[30]), R.drawable.ic_italy_40dp),
+            MultiSelectModel(31, SpannableString(array[31]), R.drawable.ic_japan_40dp),
+            MultiSelectModel(32, SpannableString(array[32]), R.drawable.ic_latvia_40dp),
+            MultiSelectModel(33, SpannableString(array[33]), R.drawable.ic_luxembourg_40dp),
+            MultiSelectModel(34, SpannableString(array[34]), R.drawable.ic_republic_of_macedonia_40dp),
+            MultiSelectModel(35, SpannableString(array[35]), R.drawable.ic_malaysia_40dp),
+            MultiSelectModel(36, SpannableString(array[36]), R.drawable.ic_mexico_40dp),
+            MultiSelectModel(37, SpannableString(array[37]), R.drawable.ic_moldova_40dp),
+            MultiSelectModel(38, SpannableString(array[38]), R.drawable.ic_netherlands_40dp),
+            MultiSelectModel(39, SpannableString(array[39]), R.drawable.ic_new_zealand_40dp),
+            MultiSelectModel(40, SpannableString(array[40]), R.drawable.ic_norway_40dp),
+            MultiSelectModel(41, SpannableString(array[41]), R.drawable.ic_poland_40dp),
+            MultiSelectModel(42, SpannableString(array[42]), R.drawable.ic_portugal_40dp),
+            MultiSelectModel(43, SpannableString(array[43]), R.drawable.ic_romania_40dp),
+            MultiSelectModel(44, SpannableString(array[44]), R.drawable.ic_russia_40dp),
+            MultiSelectModel(45, SpannableString(array[45]), R.drawable.ic_serbia_40dp),
+            MultiSelectModel(46, SpannableString(array[46]), R.drawable.ic_singapore_40dp),
+            MultiSelectModel(47, SpannableString(array[47]), R.drawable.ic_slovakia_40dp),
+            MultiSelectModel(48, SpannableString(array[48]), R.drawable.ic_slovenia_40dp),
+            MultiSelectModel(49, SpannableString(array[49]), R.drawable.ic_south_africa_40dp),
+            MultiSelectModel(50, SpannableString(array[50]), R.drawable.ic_south_korea_40dp),
+            MultiSelectModel(51, SpannableString(array[51]), R.drawable.ic_spain_40dp),
+            MultiSelectModel(52, SpannableString(array[52]), R.drawable.ic_sweden_40dp),
+            MultiSelectModel(53, SpannableString(array[53]), R.drawable.ic_switzerland_40dp),
+            MultiSelectModel(54, SpannableString(array[54]), R.drawable.ic_taiwan_40dp),
+            MultiSelectModel(55, SpannableString(array[55]), R.drawable.ic_thailand_40dp),
+            MultiSelectModel(56, SpannableString(array[56]), R.drawable.ic_turkey_40dp),
+            MultiSelectModel(57, SpannableString(array[57]), R.drawable.ic_ukraine_40dp),
+            MultiSelectModel(58, SpannableString(array[58]), R.drawable.ic_united_arab_emirates_40dp),
+            MultiSelectModel(59, SpannableString(array[59]), R.drawable.ic_united_kingdom_40dp),
+            MultiSelectModel(60, SpannableString(array[60]), R.drawable.ic_united_states_of_america_40dp),
+            MultiSelectModel(61, SpannableString(array[61]), R.drawable.ic_vietnam_40dp)
         )
     }
 
@@ -1028,26 +1057,26 @@ class MainActivity : AppCompatActivity(),
         }
         ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
             val task = FusedLocationProviderClient(this).lastLocation
-                    .addOnSuccessListener { location: Location? ->
-                        var latLng = getDefaultLatLng()
-                        if (location != null) {
-                            val lat = location.latitude
-                            val lon = location.longitude
-                            val flag = getFlag(lon, lat)
+                .addOnSuccessListener { location: Location? ->
+                    var latLng = getDefaultLatLng()
+                    if (location != null) {
+                        val lat = location.latitude
+                        val lon = location.longitude
+                        val flag = getFlag(lon, lat)
 
-                            latLng = if (closest && flags.contains(flag)) {
-                                getLatLng(flag, LatLng(lat, lon), jsonArr)
-                            } else {
-                                LatLng(lat, lon)
-                            }
+                        latLng = if (closest && flags.contains(flag)) {
+                            getLatLng(flag, LatLng(lat, lon), jsonArr)
+                        } else {
+                            LatLng(lat, lon)
                         }
+                    }
 
-                        animateCamera(latLng, closest, true)
-                    }
-                    .addOnFailureListener { e: Exception ->
-                        error(e)
-                        animateCamera(getDefaultLatLng(), closest, true)
-                    }
+                    animateCamera(latLng, closest, true)
+                }
+                .addOnFailureListener { e: Exception ->
+                    error(e)
+                    animateCamera(getDefaultLatLng(), closest, true)
+                }
         }
         else -> {
             animateCamera(getDefaultLatLng(), closest, true)
@@ -1195,10 +1224,10 @@ class MainActivity : AppCompatActivity(),
         if (id == R.id.fab0) {
             if (mConnectionListAdapter.count == 0 && v is FloatingActionButton) {
                 MorphDialog.Builder(this, v)
-                        .title("Error")
-                        .content(R.string.error_must_have_atleast_one_server)
-                        .positiveText(android.R.string.ok)
-                        .show()
+                    .title("Error")
+                    .content(R.string.error_must_have_atleast_one_server)
+                    .positiveText(android.R.string.ok)
+                    .show()
                 return
             }
 
@@ -1415,14 +1444,14 @@ class MainActivity : AppCompatActivity(),
                     //val lon = jsonObj.getDouble("longitude")
                     val ip = jsonObj.getString("ip")
                     val userMessage = UserMessage.Builder()
-                            .with(it)
-                            .setBackgroundColor(R.color.accent_material_indigo_200)
-                            .setTextColor(android.R.color.white)
-                            .setMessage("Connected to $city, $flag ($ip)")
-                            .setDuration(5000)
-                            .setShowInterpolator(AccelerateInterpolator())
-                            .setDismissInterpolator(AccelerateInterpolator())
-                            .build()
+                        .with(it)
+                        .setBackgroundColor(R.color.accent_material_indigo_200)
+                        .setTextColor(android.R.color.white)
+                        .setMessage("Connected to $city, $flag ($ip)")
+                        .setDuration(5000)
+                        .setShowInterpolator(AccelerateInterpolator())
+                        .setDismissInterpolator(AccelerateInterpolator())
+                        .build()
 
                     minibarView.translationZ = 0.0f
                     minibarView.show(userMessage)

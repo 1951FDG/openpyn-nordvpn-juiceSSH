@@ -2,11 +2,11 @@ package io.github.getsixtyfour.openpyn;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import java.io.File;
 import tools.fastlane.screengrab.FileWritingScreenshotCallback;
 
-import java.io.File;
-
 public class FileWritingScreenshotCustomCallback extends FileWritingScreenshotCallback {
+
     public FileWritingScreenshotCustomCallback(Context appContext) {
         super(appContext);
     }

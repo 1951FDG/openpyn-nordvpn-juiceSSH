@@ -17,14 +17,15 @@ class ConnectionListLoader(
     private val mCtx: Context,
     private val mLoaderFinishCallback: ConnectionListLoaderFinishedCallback
 ) : LoaderManager.LoaderCallbacks<Cursor> {
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         return CursorLoader(
-                mCtx,
-                PluginContract.Connections.CONTENT_URI,
-                PluginContract.Connections.PROJECTION,
-                null,
-                null,
-                PluginContract.Connections.SORT_ORDER_DEFAULT
+            mCtx,
+            PluginContract.Connections.CONTENT_URI,
+            PluginContract.Connections.PROJECTION,
+            null,
+            null,
+            PluginContract.Connections.SORT_ORDER_DEFAULT
         )
     }
 

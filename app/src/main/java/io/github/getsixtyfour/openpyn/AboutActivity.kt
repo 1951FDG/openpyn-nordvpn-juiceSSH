@@ -36,6 +36,7 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
  * for more information on developing a Settings UI.
  */
 class AboutActivity : AppCompatPreferenceActivity() {
+
     /**
      * Set up the [android.app.ActionBar], if the API is available.
      */
@@ -82,6 +83,7 @@ class AboutActivity : AppCompatPreferenceActivity() {
      * This fragment shows settings preferences only.
      */
     class AboutSyncPreferenceFragment : PreferenceFragment() {
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setHasOptionsMenu(false)
@@ -125,38 +127,38 @@ class AboutActivity : AppCompatPreferenceActivity() {
             root.addPreference(category)
 
             category.addPreference(getPreference(
-                    context,
-                    R.string.egab_leave_review,
-                    null,
-                    R.drawable.ic_star_black_24dp,
-                    Preference.OnPreferenceClickListener {
-                        AboutBoxUtils.openApp(activity, config.buildType, config.packageName)
-                        true
-                    }
+                context,
+                R.string.egab_leave_review,
+                null,
+                R.drawable.ic_star_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    AboutBoxUtils.openApp(activity, config.buildType, config.packageName)
+                    true
+                }
             ))
 
             category.addPreference(getPreference(
-                    context,
-                    R.string.egab_share,
-                    null,
-                    R.drawable.ic_share_black_24dp,
-                    Preference.OnPreferenceClickListener {
-                        ShareUtil.share(activity)
-                        true
-                    }
+                context,
+                R.string.egab_share,
+                null,
+                R.drawable.ic_share_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    ShareUtil.share(activity)
+                    true
+                }
             ))
 
             category.addPreference(getPreference(
-                    context,
-                    R.string.egab_licenses,
-                    null,
-                    R.drawable.ic_copyleft_green_24dp,
-                    Preference.OnPreferenceClickListener {
-                        val intent = Intent(activity, OssLicensesMenuActivity::class.java)
-                        intent.putExtra("title", getString(R.string.menu_licenses))
-                        ActivityCompat.startActivity(activity, intent, null)
-                        true
-                    }
+                context,
+                R.string.egab_licenses,
+                null,
+                R.drawable.ic_copyleft_green_24dp,
+                Preference.OnPreferenceClickListener {
+                    val intent = Intent(activity, OssLicensesMenuActivity::class.java)
+                    intent.putExtra("title", getString(R.string.menu_licenses))
+                    ActivityCompat.startActivity(activity, intent, null)
+                    true
+                }
             ))
         }
 
@@ -167,25 +169,25 @@ class AboutActivity : AppCompatPreferenceActivity() {
             root.addPreference(category)
 
             category.addPreference(getPreference(
-                    context,
-                    R.string.egab_submit_issue,
-                    null,
-                    R.drawable.ic_bug_report_black_24dp,
-                    Preference.OnPreferenceClickListener {
-                        openHTMLPage(activity, config.webHomePage + "/issues/new")
-                        true
-                    }
+                context,
+                R.string.egab_submit_issue,
+                null,
+                R.drawable.ic_bug_report_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    openHTMLPage(activity, config.webHomePage + "/issues/new")
+                    true
+                }
             ))
 
             category.addPreference(getPreference(
-                    context,
-                    R.string.egab_contact_support,
-                    null,
-                    R.drawable.ic_email_black_24dp,
-                    Preference.OnPreferenceClickListener {
-                        EmailUtil.contactUs(activity)
-                        true
-                    }
+                context,
+                R.string.egab_contact_support,
+                null,
+                R.drawable.ic_email_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    EmailUtil.contactUs(activity)
+                    true
+                }
             ))
         }
 
@@ -196,36 +198,36 @@ class AboutActivity : AppCompatPreferenceActivity() {
             root.addPreference(category)
 
             category.addPreference(getPreference(
-                    context,
-                    R.string.egab_author,
-                    config.author,
-                    R.drawable.ic_person_black_24dp,
-                    Preference.OnPreferenceClickListener {
-                        openHTMLPage(activity, config.companyHtmlPath)
-                        true
-                    }
+                context,
+                R.string.egab_author,
+                config.author,
+                R.drawable.ic_person_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    openHTMLPage(activity, config.companyHtmlPath)
+                    true
+                }
             ))
 
             category.addPreference(getPreference(
-                    context,
-                    R.string.egab_version,
-                    config.version,
-                    R.drawable.ic_info_outline_black_24dp,
-                    Preference.OnPreferenceClickListener {
-                        openHTMLPage(activity, config.webHomePage)
-                        true
-                    }
+                context,
+                R.string.egab_version,
+                config.version,
+                R.drawable.ic_info_outline_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    openHTMLPage(activity, config.webHomePage)
+                    true
+                }
             ))
 
             category.addPreference(getPreference(
-                    context,
-                    R.string.egab_changelog,
-                    null,
-                    R.drawable.ic_history_black_24dp,
-                    Preference.OnPreferenceClickListener {
-                        openHTMLPage(activity, config.webHomePage + "/releases")
-                        true
-                    }
+                context,
+                R.string.egab_changelog,
+                null,
+                R.drawable.ic_history_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    openHTMLPage(activity, config.webHomePage + "/releases")
+                    true
+                }
             ))
         }
 

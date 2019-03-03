@@ -30,6 +30,7 @@ class ConnectionManager(
     mActivityCommandExecuteListener: OnCommandExecuteListener?,
     mActivityOnOutputLineListener: OnOutputLineListener?
 ) : OnSessionStartedListener, OnSessionFinishedListener {
+
     companion object {
         const val JUICESSH_REQUEST_CODE: Int = 345
     }
@@ -56,11 +57,11 @@ class ConnectionManager(
 //    private val mVideoClockController = VideoClockController(mCtx, videoClock)
 //    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
     private val mOpenpynController = OpenpynController(
-            mCtx,
-            openpyn,
-            mActivitySessionExecuteListener,
-            mActivityCommandExecuteListener,
-            mActivityOnOutputLineListener
+        mCtx,
+        openpyn,
+        mActivitySessionExecuteListener,
+        mActivityCommandExecuteListener,
+        mActivityOnOutputLineListener
     )
     private val mControllers = listOf(
 //            mPowerController,
@@ -71,7 +72,7 @@ class ConnectionManager(
 //            mGraphicsClockController,
 //            mVideoClockController,
 //            mMemoryClockController,
-            mOpenpynController
+        mOpenpynController
     )
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {

@@ -19,7 +19,9 @@ package com.google.maps.android.geometry;
 import androidx.annotation.NonNull;
 
 public class Point {
+
     public final double x;
+
     public final double y;
 
     public Point(double x, double y) {
@@ -30,9 +32,6 @@ public class Point {
     @NonNull
     @Override
     public String toString() {
-        return "Point{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return "Point{" + "x=" + x + ", y=" + y + '}';
     }
 }

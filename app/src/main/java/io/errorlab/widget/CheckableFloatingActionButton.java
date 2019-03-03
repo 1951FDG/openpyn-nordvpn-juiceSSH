@@ -4,16 +4,13 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.widget.Checkable;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class CheckableFloatingActionButton extends FloatingActionButton implements Checkable {
-    private static final int[] CheckedStateSet = {
-            android.R.attr.state_checked,
-    };
+
+    private static final int[] CheckedStateSet = { android.R.attr.state_checked, };
 
     private boolean checked;
 
@@ -29,14 +26,23 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
         super(ctx, attrs, defStyle);
     }
 
+    @Override
+    protected void onRestoreInstanceState(@Nullable Parcelable state) {
+        if (!(state instanceof CheckedSavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+        CheckedSavedState ss = (CheckedSavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+        setChecked(ss.checked);
+    }
+
     @NonNull
     @Override
-    public int[] onCreateDrawableState(int extraSpace) {
-        int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
-        if (checked) {
-            mergeDrawableStates(drawableState, CheckedStateSet);
-        }
-        return drawableState;
+    protected Parcelable onSaveInstanceState() {
+        CheckedSavedState result = new CheckedSavedState(super.onSaveInstanceState());
+        result.checked = checked;
+        return result;
     }
 
     @Override
@@ -51,9 +57,14 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
         }
     }
 
+    @NonNull
     @Override
-    public void toggle() {
-        setChecked(!checked);
+    public int[] onCreateDrawableState(int extraSpace) {
+        int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        if (checked) {
+            mergeDrawableStates(drawableState, CheckedStateSet);
+        }
+        return drawableState;
     }
 
     @Override
@@ -62,22 +73,8 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
         return super.performClick();
     }
 
-    @NonNull
     @Override
-    protected Parcelable onSaveInstanceState() {
-        CheckedSavedState result = new CheckedSavedState(super.onSaveInstanceState());
-        result.checked = checked;
-        return result;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@Nullable Parcelable state) {
-        if (!(state instanceof CheckedSavedState)) {
-            super.onRestoreInstanceState(state);
-            return;
-        }
-        CheckedSavedState ss = (CheckedSavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-        setChecked(ss.checked);
+    public void toggle() {
+        setChecked(!checked);
     }
 }

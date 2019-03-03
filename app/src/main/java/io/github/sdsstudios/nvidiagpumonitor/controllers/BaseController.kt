@@ -19,6 +19,7 @@ abstract class BaseController(
     protected val mCtx: Context,
     private val mLiveData: MutableLiveData<Int>
 ) : OnSessionExecuteListener, AnkoLogger {
+
     private var isRunning = false
     abstract val regex: Regex
     var command: String = ""
@@ -55,10 +56,10 @@ abstract class BaseController(
         try {
             if (command.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(
-                        sessionId,
-                        sessionKey,
-                        command,
-                        this@BaseController
+                    sessionId,
+                    sessionKey,
+                    command,
+                    this@BaseController
                 )
                 return true
             }
@@ -79,10 +80,10 @@ abstract class BaseController(
         try {
             if (stopcommand.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(
-                        sessionId,
-                        sessionKey,
-                        stopcommand,
-                        this@BaseController
+                    sessionId,
+                    sessionKey,
+                    stopcommand,
+                    this@BaseController
                 )
                 return true
             }

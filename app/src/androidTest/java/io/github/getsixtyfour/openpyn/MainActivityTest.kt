@@ -41,18 +41,20 @@ import java.util.concurrent.TimeUnit
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
+
     @Rule
     @JvmField
     var mActivityTestRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
     @Rule
     @JvmField
     var mGrantPermissionRule: GrantPermissionRule =
-            GrantPermissionRule.grant(
-                    "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS",
-                    "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS",
-                    "android.permission.ACCESS_COARSE_LOCATION",
-                    "android.permission.WRITE_EXTERNAL_STORAGE",
-                    "android.permission.CHANGE_CONFIGURATION")
+        GrantPermissionRule.grant(
+            "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS",
+            "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS",
+            "android.permission.ACCESS_COARSE_LOCATION",
+            "android.permission.WRITE_EXTERNAL_STORAGE",
+            "android.permission.CHANGE_CONFIGURATION"
+        )
     // Clear all app's SharedPreferences
     @Rule
     @JvmField
@@ -98,71 +100,89 @@ class MainActivityTest {
         val screenshotStrategy = UiAutomatorScreenshotStrategy()
 
         BaristaSleepInteractions.sleep(7, TimeUnit.SECONDS)
-        val checkableFloatingActionButton = onView(allOf(
+        val checkableFloatingActionButton = onView(
+            allOf(
                 withId(R.id.fab3),
                 isDisplayed()
-        ))
+            )
+        )
         checkableFloatingActionButton.perform(click())
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
 
         Screengrab.screenshot("screenshot_01", screenshotStrategy, FileWritingScreenshotCustomCallback(appContext))
-        val floatingActionButton = onView(allOf(
+        val floatingActionButton = onView(
+            allOf(
                 withId(R.id.fab2),
                 isDisplayed()
-        ))
+            )
+        )
         floatingActionButton.perform(click())
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
 
         Screengrab.screenshot("screenshot_02", screenshotStrategy, FileWritingScreenshotCustomCallback(appContext))
-        val appCompatTextView = onView(allOf(
+        val appCompatTextView = onView(
+            allOf(
                 withId(R.id.cancel),
                 withText("Cancel"),
                 isDisplayed()
-        ))
+            )
+        )
         appCompatTextView.perform(click())
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
-        val overflowMenuButton = onView(allOf(
+        val overflowMenuButton = onView(
+            allOf(
                 withContentDescription("More options"),
                 childAtPosition(childAtPosition(withId(R.id.toolbar), 1), 2),
                 isDisplayed()
-        ))
+            )
+        )
         overflowMenuButton.perform(click())
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
-        val appCompatTextView2 = onView(allOf(
+        val appCompatTextView2 = onView(
+            allOf(
                 withId(R.id.title),
                 withText("Settings"),
                 childAtPosition(childAtPosition(withId(R.id.content), 0), 0),
                 isDisplayed()
-        ))
+            )
+        )
         appCompatTextView2.perform(click())
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
 
         Screengrab.screenshot("screenshot_03", screenshotStrategy, FileWritingScreenshotCustomCallback(appContext))
-        val linearLayout = onView(allOf(
-                childAtPosition(allOf(
+        val linearLayout = onView(
+            allOf(
+                childAtPosition(
+                    allOf(
                         withId(R.id.recycler_view),
                         childAtPosition(withClassName(`is`("android.widget.FrameLayout")), 0)
-                ), 8),
+                    ), 8
+                ),
                 isDisplayed()
-        ))
+            )
+        )
         linearLayout.perform(click())
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
 
         Screengrab.screenshot("screenshot_04", screenshotStrategy, FileWritingScreenshotCustomCallback(appContext))
-        val appCompatImageButton = onView(allOf(
+        val appCompatImageButton = onView(
+            allOf(
                 withContentDescription("Navigate up"),
-                childAtPosition(allOf(
+                childAtPosition(
+                    allOf(
                         withId(R.id.action_bar),
                         childAtPosition(withId(R.id.action_bar_container), 0)
-                ), 1),
+                    ), 1
+                ),
                 isDisplayed()
-        ))
+            )
+        )
         appCompatImageButton.perform(click())
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
