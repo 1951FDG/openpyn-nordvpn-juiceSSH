@@ -165,4 +165,7 @@ dependencies {
         exclude group: 'androidx.test'
         exclude group: 'androidx.test.espresso'
     }
+    // Architecture
+    implementation 'com.naver.android.svc:svc:1.0.0-beta23'
+    kapt 'com.naver.android.svc:svc-compiler:1.0.0-beta23'
 }

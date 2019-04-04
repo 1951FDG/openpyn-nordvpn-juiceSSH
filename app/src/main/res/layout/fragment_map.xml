@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/maplayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:transitionGroup="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="io.github.getsixtyfour.openpyn.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        map:cameraTargetLat="85.05112877980659"
+        map:cameraTargetLng="-135.0"
+        map:mapType="none"
+        map:uiCompass="false"
+        map:uiMapToolbar="false"
+        map:uiRotateGestures="false"
+        map:uiScrollGestures="false"
+        map:uiTiltGestures="false"
+        map:uiZoomControls="false"
+        map:uiZoomGestures="false"
+        tools:visibility="visible" />
+
+    <com.mayurrokade.minibar.MinibarView
+        android:id="@+id/minibarView"
+        style="@style/MinibarViewCustom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginTop="25dp"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:elevation="2dp"
+        app:fabCustomSize="40dp"
+        app:layout_constraintLeft_toLeftOf="@+id/fab0"
+        app:layout_constraintRight_toRightOf="@+id/fab0"
+        app:layout_constraintTop_toTopOf="@+id/map"
+        app:srcCompat="@drawable/ic_list_black_24dp"
+        app:useCompatPadding="false"
+        tools:visibility="visible" />
+
+    <io.errorlab.widget.CheckableFloatingActionButton
+        android:id="@+id/fab3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:elevation="2dp"
+        app:fabCustomSize="40dp"
+        app:layout_constraintLeft_toLeftOf="@+id/fab0"
+        app:layout_constraintRight_toRightOf="@+id/fab0"
+        app:layout_constraintTop_toBottomOf="@+id/fab2"
+        app:srcCompat="@drawable/fab_switch"
+        app:useCompatPadding="false"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:elevation="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/fab0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_my_location_black_24dp"
+        app:useCompatPadding="false"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_margin="16dp"
+        app:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_flash_on_white_24dp"
+        app:useCompatPadding="false" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
