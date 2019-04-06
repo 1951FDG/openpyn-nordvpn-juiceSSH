@@ -2,7 +2,6 @@ package io.github.getsixtyfour.openpyn.utilities
 
 import android.util.Xml
 import androidx.annotation.WorkerThread
-import com.crashlytics.android.Crashlytics
 import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
@@ -24,7 +23,7 @@ fun generateXML() {
     server.httpGet().responseJson { _, _, result ->
         when (result) {
             is Result.Failure -> {
-                Crashlytics.logException(result.getException())
+                logException(result.getException())
             }
             is Result.Success -> {
                 val mutableMap = mutableMapOf<String, String>()
@@ -61,11 +60,11 @@ fun generateXML() {
                     serializer.endDocument()
                     println(writer.toString())
                 } catch (e: FileNotFoundException) {
-                    Crashlytics.logException(e)
+                    logException(e)
                 } catch (e: IOException) {
-                    Crashlytics.logException(e)
+                    logException(e)
                 } catch (e: JSONException) {
-                    Crashlytics.logException(e)
+                    logException(e)
                 }
             }
         }
@@ -178,7 +177,7 @@ fun createJson(): JSONArray? {
     val (_, _, result) = server.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
     when (result) {
         is Result.Failure -> {
-            Crashlytics.logException(result.getException())
+            logException(result.getException())
         }
         is Result.Success -> {
             val jsonObj = JSONObject()
@@ -213,7 +212,7 @@ fun createJson(): JSONArray? {
                             name.startsWith("Obfuscated", true) -> features.put("anti_ddos", true)
                             name.startsWith("Standard VPN", true) -> features.put("standard", true)
                             else -> {
-                                Crashlytics.logException(Exception(name))
+                                logException(Exception(name))
                                 Log.error(name)
                             }
                         }
@@ -237,7 +236,7 @@ fun createJson(): JSONArray? {
                             name.startsWith("Obfuscated", true) -> features.put("anti_ddos", true)
                             name.startsWith("Standard VPN", true) -> features.put("standard", true)
                             else -> {
-                                Crashlytics.logException(Exception(name))
+                                logException(Exception(name))
                                 Log.error(name)
                             }
                         }
@@ -287,7 +286,7 @@ fun createJson(): JSONArray? {
                     jsonArray.put(json1)
                 }
             } catch (e: JSONException) {
-                Crashlytics.logException(e)
+                logException(e)
             }
 
             if (jsonArray.length() > 0) {

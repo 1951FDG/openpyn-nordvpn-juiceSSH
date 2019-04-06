@@ -1,10 +1,10 @@
 package io.github.getsixtyfour.openpyn
 
 import android.app.Application
-import com.crashlytics.android.Crashlytics
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
 import com.squareup.leakcanary.LeakCanary
+import io.github.getsixtyfour.openpyn.utilities.logException
 
 open class ExampleApplication : Application() {
     override fun onCreate() {
@@ -49,7 +49,7 @@ open class ExampleApplication : Application() {
 
             override fun logException(e: Exception, b: Boolean) {
                 // handle exception events.
-                Crashlytics.logException(e)
+                logException(e)
             }
         }
         // email

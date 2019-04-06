@@ -19,8 +19,8 @@ import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
 import com.google.android.gms.maps.model.LatLng
 import de.jupf.staticlog.Log
+import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.R.drawable
-import io.github.getsixtyfour.openpyn.iterator
 import io.github.getsixtyfour.openpyn.security.SecurityManager
 import org.json.JSONArray
 import org.json.JSONException
@@ -42,11 +42,11 @@ private fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, String
                 }
             }
         } catch (e: Resources.NotFoundException) {
-            Crashlytics.logException(e)
+            logException(e)
         } catch (e: FileNotFoundException) {
-            Crashlytics.logException(e)
+            logException(e)
         } catch (e: IOException) {
-            Crashlytics.logException(e)
+            logException(e)
         }
     }
 }
@@ -72,7 +72,7 @@ fun juiceSSHInstall(context: Context) {
         try {
             ActivityCompat.startActivity(context, launchIntent, null)
         } catch (e: ActivityNotFoundException) {
-            Crashlytics.logException(e)
+            logException(e)
             val uriString = "https://play.google.com/store/apps/details?id=$JUICE_SSH_PACKAGE_NAME"
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
             ActivityCompat.startActivity(context, intent, null)
@@ -163,13 +163,13 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray? {
         }
         return JSONArray(json)
     } catch (e: NotFoundException) {
-        Crashlytics.logException(e)
+        logException(e)
     } catch (e: FileNotFoundException) {
-        Crashlytics.logException(e)
+        logException(e)
     } catch (e: IOException) {
-        Crashlytics.logException(e)
+        logException(e)
     } catch (e: JSONException) {
-        Crashlytics.logException(e)
+        logException(e)
     }
     return null
 }
@@ -267,4 +267,10 @@ fun getFlag(list: MutableList<String>?): String {
         return list[0].toLowerCase(Locale.ROOT)
     }
     return ""
+}
+
+fun logException(throwable: Throwable) {
+    if (Fabric.isInitialized()) {
+        Crashlytics.logException(throwable)
+    }
 }

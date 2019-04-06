@@ -32,10 +32,12 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
+import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.utilities.Toaster
 import io.github.getsixtyfour.openpyn.utilities.createJson
 import io.github.getsixtyfour.openpyn.utilities.isJuiceSSHInstalled
 import io.github.getsixtyfour.openpyn.utilities.juiceSSHInstall
+import io.github.getsixtyfour.openpyn.utilities.logException
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
@@ -54,12 +56,9 @@ import org.jetbrains.anko.longToast
 import org.jetbrains.anko.onComplete
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-
-operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
 class MainActivity : AppCompatActivity(),
     OnSessionStartedListener,
@@ -92,10 +91,12 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
-//        if(!isDebuggable()) {
-//            Fabric.with(this, Crashlytics.Builder().core(core).build())
-//        }
+        val debug = BuildConfig.DEBUG
+        if (!debug) {
+            val core = CrashlyticsCore.Builder().disabled(debug).build()
+            Fabric.with(this, Crashlytics.Builder().core(core).build())
+        }
+
         setContentView(R.layout.activity_main)
 
         toolbar.hideProgress()
@@ -109,7 +110,6 @@ class MainActivity : AppCompatActivity(),
         PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
 
         networkInfo = NetworkInfo.getInstance(application)
-
         val api = GoogleApiAvailability.getInstance()
         val errorCode = api.isGooglePlayServicesAvailable(this)
 
@@ -295,11 +295,11 @@ class MainActivity : AppCompatActivity(),
                     file.writeText(json)
                     thrown = false
                 } catch (e: Resources.NotFoundException) {
-                    Crashlytics.logException(e)
+                    logException(e)
                 } catch (e: FileNotFoundException) {
-                    Crashlytics.logException(e)
+                    logException(e)
                 } catch (e: IOException) {
-                    Crashlytics.logException(e)
+                    logException(e)
                 }
             }
 

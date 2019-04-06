@@ -21,7 +21,6 @@ import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
 import com.antoniocarlon.map.CameraUpdateAnimator
 import com.ariascode.networkutility.NetworkInfo
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
-import com.crashlytics.android.Crashlytics
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -52,6 +51,7 @@ import io.github.getsixtyfour.openpyn.utilities.getDefaultLatLng
 import io.github.getsixtyfour.openpyn.utilities.getFlag
 import io.github.getsixtyfour.openpyn.utilities.getLatLng
 import io.github.getsixtyfour.openpyn.utilities.jsonArray
+import io.github.getsixtyfour.openpyn.utilities.logException
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.fab0
 import kotlinx.android.synthetic.main.fragment_map.fab1
@@ -265,9 +265,9 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
             try {
                 return CountryBoundaries.load(requireContext().assets.open("boundaries.ser"))
             } catch (e: FileNotFoundException) {
-                Crashlytics.logException(e)
+                logException(e)
             } catch (e: IOException) {
-                Crashlytics.logException(e)
+                logException(e)
             }
 
             return null
@@ -341,6 +341,9 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
                     return marker
                 }
 
+                operator fun JSONArray.iterator(): Iterator<JSONObject> =
+                    (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
+
                 for (res in jsonArray) {
                     val flag = res.getString("flag")
                     var pass = when {
@@ -396,7 +399,7 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
             markers.forEach { (_, value) ->
                 val element = value.tag
                 if (element is String && !stringArray.contains(element)) {
-                    Crashlytics.logException(Exception(element))
+                    logException(Exception(element))
                     error(element)
                 }
             }
