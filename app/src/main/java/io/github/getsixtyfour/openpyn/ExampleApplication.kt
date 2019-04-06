@@ -3,6 +3,7 @@ package io.github.getsixtyfour.openpyn
 import android.app.Application
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
+import com.michaelflisar.gdprdialog.GDPR
 import com.squareup.leakcanary.LeakCanary
 import io.github.getsixtyfour.openpyn.utilities.logException
 
@@ -14,9 +15,11 @@ open class ExampleApplication : Application() {
             // You should not init your app in this process.
             return
         }
+
         installBlockCanary()
         installLeakCanary()
         populateAboutConfig()
+        GDPR.getInstance().init(this)
     }
 
     protected open fun installBlockCanary() {

@@ -26,6 +26,11 @@ import com.crashlytics.android.core.CrashlyticsCore
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.michaelflisar.gdprdialog.GDPR
+import com.michaelflisar.gdprdialog.GDPRConsentState
+import com.michaelflisar.gdprdialog.GDPRDefinitions
+import com.michaelflisar.gdprdialog.GDPRSetup
+import com.michaelflisar.gdprdialog.helper.GDPRPreperationData
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
@@ -68,7 +73,8 @@ class MainActivity : AppCompatActivity(),
     AnkoLogger,
     OnSessionExecuteListener,
     OnCommandExecuteListener,
-    OnClickListener {
+    OnClickListener,
+    GDPR.IGDPRCallback {
 
     companion object {
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
@@ -83,19 +89,26 @@ class MainActivity : AppCompatActivity(),
     private var mConnectionManager: ConnectionManager? = null
     private var networkInfo: NetworkInfo? = null
     private var snackProgressBarManager: SnackProgressBarManager? = null
+    private val mSetup by lazy {
+        GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS)
+            .withExplicitAgeConfirmation(true)
+            .withForceSelection(true)
+            .withShowPaidOrFreeInfoText(false)
+    }
 
     fun getSnackProgressBarManager(): SnackProgressBarManager? {
         return snackProgressBarManager
     }
 
+    fun showGDPRIfNecessary() {
+        GDPR.getInstance().checkIfNeedsToBeShown(this, mSetup)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        val debug = BuildConfig.DEBUG
-        if (!debug) {
-            val core = CrashlyticsCore.Builder().disabled(debug).build()
-            Fabric.with(this, Crashlytics.Builder().core(core).build())
-        }
+
+        showGDPRIfNecessary()
 
         setContentView(R.layout.activity_main)
 
@@ -450,5 +463,23 @@ class MainActivity : AppCompatActivity(),
             val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
             mConnectionManager?.toggleConnection(uuid!!, this)
         }
+    }
+
+    override fun onConsentInfoUpdate(consentState: GDPRConsentState, isNewState: Boolean) {
+        // consent is known, handle this
+        info("ConsentState: ${consentState.logString()}")
+
+        if (consentState.consent.isPersonalConsent) {
+            val debug = BuildConfig.DEBUG
+            if (!debug) {
+                val core = CrashlyticsCore.Builder().disabled(debug).build()
+                Fabric.with(this, Crashlytics.Builder().core(core).build())
+            }
+        }
+    }
+
+    override fun onConsentNeedsToBeRequested(data: GDPRPreperationData?) {
+        // forward the result and show the dialog
+        GDPR.getInstance().showDialog(this, mSetup, data?.location)
     }
 }
