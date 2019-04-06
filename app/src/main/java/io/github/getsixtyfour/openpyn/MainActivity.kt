@@ -438,7 +438,7 @@ class MainActivity : AppCompatActivity(),
 
             Handler().postDelayed({
                 val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
-                fragment?.updateMasterMarker(true)
+                fragment?.controlTower?.updateMasterMarker(true)
             }, 10000)
         }
     }
@@ -464,8 +464,7 @@ class MainActivity : AppCompatActivity(),
     @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String?> {
         val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
-
-        return fragment?.positionAndFlagForSelectedMarker() ?: Pair(null, null)
+        return fragment?.controlTower?.positionAndFlagForSelectedMarker() ?: Pair(null, null)
     }
 
     override fun onConnect() {
@@ -477,7 +476,7 @@ class MainActivity : AppCompatActivity(),
 
         Handler().postDelayed({
             val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
-            fragment?.updateMasterMarker(true)
+            fragment?.controlTower?.updateMasterMarker(true)
         }, 10000)
     }
 
