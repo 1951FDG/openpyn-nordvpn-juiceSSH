@@ -120,15 +120,19 @@ pip3 install --upgrade .
 
 To compile and run the project you'll need:
 
--   [Android Studio](https://developer.android.com/studio/) `3.x`
--   [Android SDK](https://developer.android.com/studio/releases/platforms) `9 (API level 28)`
--   Android SDK Build-Tools
--   CMake `v3.10.2`
--   Android SDK Platform-Tools
--   Android SDK Tools
--   [Android NDK](https://developer.android.com/ndk/)
--   Android Support Repository
--   Google repository
+-   [Android Studio 3.3 or higher](https://developer.android.com/studio/)
+    -   Android `9 (API level 28)`
+    -   Android SDK Build-Tools `28.0.3`
+    -   CMake `v3.10.2`
+    -   Android SDK Platform-Tools
+    -   Android SDK Tools
+    -   NDK
+    -   Android Support Repository
+    -   Google repository
+
+
+-   Maps SDK for Android
+    -   [Get API Key](https://developers.google.com/maps/documentation/android-sdk/signup)
 
 ## References
 
