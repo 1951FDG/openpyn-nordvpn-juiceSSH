@@ -1,12 +1,8 @@
 package io.github.getsixtyfour.openpyn
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
 import android.database.Cursor
 import android.net.Uri
@@ -36,9 +32,10 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.utilities.Toaster
 import io.github.getsixtyfour.openpyn.utilities.createJson
+import io.github.getsixtyfour.openpyn.utilities.isJuiceSSHInstalled
+import io.github.getsixtyfour.openpyn.utilities.juiceSSHInstall
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
@@ -46,19 +43,16 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
+import kotlinx.android.synthetic.main.activity_main.mainlayout
 import kotlinx.android.synthetic.main.activity_main.spinnerConnectionList
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import org.jetbrains.anko.AnkoLogger
-
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
-
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.onComplete
-
 import org.jetbrains.anko.uiThread
-
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -81,50 +75,27 @@ class MainActivity : AppCompatActivity(),
         private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
         private const val PERMISSION_REQUEST_CODE = 23
-        private const val JUICE_SSH_PACKAGE_NAME = "com.sonelli.juicessh"
         private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
-        private fun isJuiceSSHInstalled(context: Context): Boolean {
-            return try {
-                context.packageManager.getPackageInfo(JUICE_SSH_PACKAGE_NAME, 0)
-                true
-            } catch (e: NameNotFoundException) {
-                false
-            }
-        }
-
-        fun juiceSSHInstall(context: Context) {
-            val pkg = "com.android.vending"
-            val cls = "com.google.android.finsky.activities.LaunchUrlHandlerActivity"
-            val launchIntent = context.packageManager.getLaunchIntentForPackage(pkg)
-            if (launchIntent != null) {
-                launchIntent.component = ComponentName(pkg, cls)
-                launchIntent.data = Uri.parse("market://details?id=$JUICE_SSH_PACKAGE_NAME")
-                try {
-                    ActivityCompat.startActivity(context, launchIntent, null)
-                } catch (e: ActivityNotFoundException) {
-                    Crashlytics.logException(e)
-                    val uriString = "https://play.google.com/store/apps/details?id=$JUICE_SSH_PACKAGE_NAME"
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-                    ActivityCompat.startActivity(context, intent, null)
-                }
-            }
-        }
     }
 
     private val mConnectionListAdapter by lazy {
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
     }
     private var mConnectionManager: ConnectionManager? = null
-
     private var networkInfo: NetworkInfo? = null
+    private var snackProgressBarManager: SnackProgressBarManager? = null
 
+    fun getSnackProgressBarManager(): SnackProgressBarManager? {
+        return snackProgressBarManager
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
-        Fabric.with(this, Crashlytics.Builder().core(core).build())
-
+//        if(!isDebuggable()) {
+//            Fabric.with(this, Crashlytics.Builder().core(core).build())
+//        }
         setContentView(R.layout.activity_main)
 
         toolbar.hideProgress()
@@ -132,6 +103,8 @@ class MainActivity : AppCompatActivity(),
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        snackProgressBarManager = SnackProgressBarManager(mainlayout)
 
         PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
 
@@ -146,7 +119,7 @@ class MainActivity : AppCompatActivity(),
             else -> error(api.getErrorString(errorCode))
         }
 
-        if (Companion.isJuiceSSHInstalled(this)) {
+        if (isJuiceSSHInstalled(this)) {
             mConnectionManager = ConnectionManager(
                 ctx = this,
                 mActivitySessionStartedListener = this,
@@ -191,43 +164,28 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onResume() {
         super.onResume()
 
-        if (!Companion.isJuiceSSHInstalled(this)) {
+        if (!isJuiceSSHInstalled(this)) {
             val snackProgressBar = SnackProgressBar(SnackProgressBar.TYPE_NORMAL, getString(R.string.error_must_install_juicessh))
             snackProgressBar.setAction(
                 getString(android.R.string.ok),
                 object : SnackProgressBar.OnActionClickListener {
                     override fun onActionClick() {
-                        Companion.juiceSSHInstall(this@MainActivity)
+                        juiceSSHInstall(this@MainActivity)
                     }
                 }
             )
+
             snackProgressBarManager?.show(snackProgressBar, SnackProgressBarManager.LENGTH_INDEFINITE)
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         mConnectionManager?.onDestroy()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -270,6 +228,7 @@ class MainActivity : AppCompatActivity(),
                         }
                     }
                 )
+
                 snackProgressBarManager?.show(snackProgressBar, SnackProgressBarManager.LENGTH_INDEFINITE)
             }
         }
@@ -304,17 +263,17 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun onGitHubItemSelected(item: MenuItem) {
+    private fun onGitHubItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
         val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
         ActivityCompat.startActivity(this, intent, null)
     }
 
-    private fun onAboutItemSelected(item: MenuItem) {
+    private fun onAboutItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
         AboutActivity.launch(this)
     }
 
-    private fun onRefreshItemSelected(item: MenuItem) {
+    private fun onRefreshItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
         //val drawable = item.icon as? Animatable
         //drawable?.start()
         toolbar.showProgress(true)
@@ -345,8 +304,9 @@ class MainActivity : AppCompatActivity(),
             }
 
             uiThread {
-                toolbar.hideProgress(true)
                 //drawable?.stop()
+                toolbar.hideProgress(true)
+
                 if (!thrown) {
                     MaterialDialog.Builder(it)
                         .title("Warning")
@@ -361,7 +321,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun onSettingsItemSelected(item: MenuItem) {
+    private fun onSettingsItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
         /*
         startActivity<SettingsActivity>(
                 EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name,
@@ -382,43 +342,34 @@ class MainActivity : AppCompatActivity(),
 
         if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
             if (resultCode == AppCompatActivity.RESULT_OK) {
-                //TODO
+                // TODO
             }
         }
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
-        val fragment = supportFragmentManager.findFragmentById(R.id.maplayout)
+        val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? OnSessionStartedListener
 
-        if (fragment is OnSessionStartedListener) {
-            fragment.onSessionStarted(sessionId, sessionKey)
-        }
+        fragment?.onSessionStarted(sessionId, sessionKey)
 
         spinnerConnectionList.isEnabled = false
-
         //cardViewLayout.visibility = View.VISIBLE
     }
 
     override fun onSessionCancelled() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.maplayout)
+        val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? OnSessionStartedListener
 
-        if (fragment is OnSessionStartedListener) {
-            fragment.onSessionCancelled()
-        }
+        fragment?.onSessionCancelled()
     }
 
     @Suppress("MagicNumber")
     override fun onSessionFinished() {
         toolbar.hideProgress(true)
+        val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? OnSessionFinishedListener
 
-        val fragment = supportFragmentManager.findFragmentById(R.id.maplayout)
-
-        if (fragment is OnSessionFinishedListener) {
-            fragment.onSessionFinished()
-        }
+        fragment?.onSessionFinished()
 
         spinnerConnectionList.isEnabled = true
-
         //cardViewLayout.visibility = View.GONE
     }
 
@@ -438,7 +389,7 @@ class MainActivity : AppCompatActivity(),
             toolbar.hideProgress(true)
 
             Handler().postDelayed({
-                val fragment = supportFragmentManager.findFragmentById(R.id.maplayout) as? MapFragment
+                val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
                 fragment?.updateMasterMarker(true)
             }, 10000)
         }
@@ -464,17 +415,9 @@ class MainActivity : AppCompatActivity(),
 
     @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String?> {
+        val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
 
-//todo
-        val fragment = supportFragmentManager.findFragmentById(R.id.maplayout) as? MapFragment
-
-        if (fragment != null) {
-            return fragment.positionAndFlagForSelectedMarker()
-        }
-        else
-        {
-            return Pair(null, null)
-        }
+        return fragment?.positionAndFlagForSelectedMarker() ?: Pair(null, null)
     }
 
     override fun onConnect() {
@@ -485,30 +428,9 @@ class MainActivity : AppCompatActivity(),
         toolbar.showProgress(true)
 
         Handler().postDelayed({
-            val fragment = supportFragmentManager.findFragmentById(R.id.maplayout) as? MapFragment
+            val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
             fragment?.updateMasterMarker(true)
         }, 10000)
-    }
-
-    private fun copyToExternalFilesDir(list: List<Pair<Int, String>>) {
-        for ((id, ext) in list) {
-            try {
-                val file = File(getExternalFilesDir(null), resources.getResourceEntryName(id) + ext)
-                if (!file.exists()) {
-                    resources.openRawResource(id).use { input ->
-                        file.outputStream().buffered().use { output ->
-                            input.copyTo(output)
-                        }
-                    }
-                }
-            } catch (e: Resources.NotFoundException) {
-                Crashlytics.logException(e)
-            } catch (e: FileNotFoundException) {
-                Crashlytics.logException(e)
-            } catch (e: IOException) {
-                Crashlytics.logException(e)
-            }
-        }
     }
 
     override fun onClick(v: View?) {
@@ -529,8 +451,4 @@ class MainActivity : AppCompatActivity(),
             mConnectionManager?.toggleConnection(uuid!!, this)
         }
     }
-
-
-
-
 }

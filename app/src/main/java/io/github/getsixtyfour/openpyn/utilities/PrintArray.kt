@@ -139,8 +139,11 @@ object PrintArray {
     }
 
     // MultiSelectDialog
-    fun show(@Size(min = 1) key: String, context: AppCompatActivity, prefs: SharedPreferences?) {
-        show(key, checkNotNull(itemsList), checkNotNull(checkedItemsList), context, prefs)
+    fun show(
+        @Size(min = 1) key: String, context: AppCompatActivity, prefs: SharedPreferences?,
+        listener: SubmitCallbackListener
+    ) {
+        show(key, checkNotNull(itemsList), checkNotNull(checkedItemsList), context, prefs, listener)
     }
 
     // MultiSelectDialog
@@ -149,7 +152,8 @@ object PrintArray {
         items: ArrayList<MultiSelectable>,
         checkedItems: ArrayList<Int>,
         context: AppCompatActivity,
-        prefs: SharedPreferences?
+        prefs: SharedPreferences?,
+        listener: SubmitCallbackListener
     ) {
         fun save(selectedItems: ArrayList<Int>): Boolean {
             return when {
@@ -168,25 +172,11 @@ object PrintArray {
             onSubmit(object : MultiSelectDialog.SubmitCallbackListener {
                 override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
                     if (save(selectedIds)) checkedItemsList = selectedIds
-                    // This makes sure that the container activity has implemented
-                    // the callback interface. If not, it throws an exception
-                    try {
-                        val mCallback = context as SubmitCallbackListener
-                        mCallback.onSelected(selectedIds, selectedNames, dataString)
-                    } catch (e: ClassCastException) {
-                        //throw ClassCastException(context.toString() + " must implement SubmitCallbackListener")
-                    }
+                    listener.onSelected(selectedIds, selectedNames, dataString)
                 }
 
                 override fun onCancel() {
-                    // This makes sure that the container activity has implemented
-                    // the callback interface. If not, it throws an exception
-                    try {
-                        val mCallback = context as SubmitCallbackListener
-                        mCallback.onCancel()
-                    } catch (e: ClassCastException) {
-                        //throw ClassCastException(context.toString() + " must implement SubmitCallbackListener")
-                    }
+                    listener.onCancel()
                 }
             })
 

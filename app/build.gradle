@@ -168,4 +168,7 @@ dependencies {
     // Architecture
     implementation 'com.naver.android.svc:svc:1.0.0-beta23'
     kapt 'com.naver.android.svc:svc-compiler:1.0.0-beta23'
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.1.0-alpha02"
+    implementation "androidx.navigation:navigation-ui-ktx:2.1.0-alpha02"
 }

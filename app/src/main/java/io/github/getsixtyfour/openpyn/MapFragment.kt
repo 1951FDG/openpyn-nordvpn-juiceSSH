@@ -2,23 +2,19 @@ package io.github.getsixtyfour.openpyn
 
 import android.Manifest
 import android.Manifest.permission
-import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.content.res.Resources.NotFoundException
 import android.location.Location
 import android.os.Bundle
-import android.text.SpannableString
 import android.view.Gravity
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.animation.AccelerateInterpolator
 import android.widget.ImageView
 import androidx.annotation.MainThread
-import androidx.annotation.WorkerThread
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
-import com.abdeveloper.library.MultiSelectModel
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
@@ -44,34 +40,42 @@ import com.naver.android.svc.annotation.RequireViews
 import com.naver.android.svc.annotation.SvcFragment
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
-import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
-import io.github.getsixtyfour.openpyn.R.drawable
 import io.github.getsixtyfour.openpyn.R.string
 import io.github.getsixtyfour.openpyn.security.SecurityManager
 import io.github.getsixtyfour.openpyn.utilities.PrintArray
-import io.github.getsixtyfour.openpyn.utilities.createJson2
+import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener
+import io.github.getsixtyfour.openpyn.utilities.countryList
+import io.github.getsixtyfour.openpyn.utilities.createGeoJson
+import io.github.getsixtyfour.openpyn.utilities.getDefaultLatLng
+import io.github.getsixtyfour.openpyn.utilities.getFlag
+import io.github.getsixtyfour.openpyn.utilities.getLatLng
+import io.github.getsixtyfour.openpyn.utilities.jsonArray
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.fragment_map.fab0
 import kotlinx.android.synthetic.main.fragment_map.fab1
 import kotlinx.android.synthetic.main.fragment_map.fab2
 import kotlinx.android.synthetic.main.fragment_map.fab3
 import kotlinx.android.synthetic.main.fragment_map.map
-import kotlinx.android.synthetic.main.fragment_map.maplayout
 import kotlinx.android.synthetic.main.fragment_map.minibarView
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.debug
+import org.jetbrains.anko.dip
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
+import org.jetbrains.anko.linearLayout
+import org.jetbrains.anko.padding
+import org.jetbrains.anko.textColor
+import org.jetbrains.anko.textView
 import org.jetbrains.anko.uiThread
+import org.jetbrains.anko.verticalLayout
 import org.jetbrains.anko.wrapContent
 import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
+import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Locale
@@ -89,9 +93,14 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
     GoogleMap.OnCameraIdleListener,
     AnkoLogger,
     OnLevelChangeCallback,
+    SubmitCallbackListener,
     OnSessionStartedListener,
     OnSessionFinishedListener, OnClickListener {
 
+    val supportActionBar: ActionBar?
+        get() = (requireActivity() as AppCompatActivity).supportActionBar
+    val toolBar: ProgressToolbar?
+        get() = requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
     private val markers: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
     private val storage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
     private val flags by lazy { ArrayList<String>() }
@@ -99,161 +108,32 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
     private var countryBoundaries: CountryBoundaries? = null
     private var mMap: GoogleMap? = null
     private var tileProvider: MapBoxOfflineTileProvider? = null
-
-    private var snackProgressBarManager: SnackProgressBarManager? = null
-
     private var lastLocation: Location? = null
-
     private var networkInfo: NetworkInfo? = null
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 23
         private const val FAVORITE_KEY = "pref_favorites"
-        @Suppress("MagicNumber")
-        private fun countryList(array: Array<CharSequence>): ArrayList<MultiSelectable> {
-            return arrayListOf(
-                MultiSelectModel(0, SpannableString(array[0]), drawable.ic_albania_40dp),
-                MultiSelectModel(1, SpannableString(array[1]), drawable.ic_argentina_40dp),
-                MultiSelectModel(2, SpannableString(array[2]), drawable.ic_australia_40dp),
-                MultiSelectModel(3, SpannableString(array[3]), drawable.ic_austria_40dp),
-                MultiSelectModel(4, SpannableString(array[4]), drawable.ic_azerbaijan_40dp),
-                MultiSelectModel(5, SpannableString(array[5]), drawable.ic_belgium_40dp),
-                MultiSelectModel(6, SpannableString(array[6]), drawable.ic_bosnia_and_herzegovina_40dp),
-                MultiSelectModel(7, SpannableString(array[7]), drawable.ic_brazil_40dp),
-                MultiSelectModel(8, SpannableString(array[8]), drawable.ic_bulgaria_40dp),
-                MultiSelectModel(9, SpannableString(array[9]), drawable.ic_canada_40dp),
-                MultiSelectModel(10, SpannableString(array[10]), drawable.ic_chile_40dp),
-                MultiSelectModel(11, SpannableString(array[11]), drawable.ic_costa_rica_40dp),
-                MultiSelectModel(12, SpannableString(array[12]), drawable.ic_croatia_40dp),
-                MultiSelectModel(13, SpannableString(array[13]), drawable.ic_cyprus_40dp),
-                MultiSelectModel(14, SpannableString(array[14]), drawable.ic_czech_republic_40dp),
-                MultiSelectModel(15, SpannableString(array[15]), drawable.ic_denmark_40dp),
-                MultiSelectModel(16, SpannableString(array[16]), drawable.ic_egypt_40dp),
-                MultiSelectModel(17, SpannableString(array[17]), drawable.ic_estonia_40dp),
-                MultiSelectModel(18, SpannableString(array[18]), drawable.ic_finland_40dp),
-                MultiSelectModel(19, SpannableString(array[19]), drawable.ic_france_40dp),
-                MultiSelectModel(20, SpannableString(array[20]), drawable.ic_georgia_40dp),
-                MultiSelectModel(21, SpannableString(array[21]), drawable.ic_germany_40dp),
-                MultiSelectModel(22, SpannableString(array[22]), drawable.ic_greece_40dp),
-                MultiSelectModel(23, SpannableString(array[23]), drawable.ic_hong_kong_40dp),
-                MultiSelectModel(24, SpannableString(array[24]), drawable.ic_hungary_40dp),
-                MultiSelectModel(25, SpannableString(array[25]), drawable.ic_iceland_40dp),
-                MultiSelectModel(26, SpannableString(array[26]), drawable.ic_india_40dp),
-                MultiSelectModel(27, SpannableString(array[27]), drawable.ic_indonesia_40dp),
-                MultiSelectModel(28, SpannableString(array[28]), drawable.ic_ireland_40dp),
-                MultiSelectModel(29, SpannableString(array[29]), drawable.ic_israel_40dp),
-                MultiSelectModel(30, SpannableString(array[30]), drawable.ic_italy_40dp),
-                MultiSelectModel(31, SpannableString(array[31]), drawable.ic_japan_40dp),
-                MultiSelectModel(32, SpannableString(array[32]), drawable.ic_latvia_40dp),
-                MultiSelectModel(33, SpannableString(array[33]), drawable.ic_luxembourg_40dp),
-                MultiSelectModel(34, SpannableString(array[34]), drawable.ic_republic_of_macedonia_40dp),
-                MultiSelectModel(35, SpannableString(array[35]), drawable.ic_malaysia_40dp),
-                MultiSelectModel(36, SpannableString(array[36]), drawable.ic_mexico_40dp),
-                MultiSelectModel(37, SpannableString(array[37]), drawable.ic_moldova_40dp),
-                MultiSelectModel(38, SpannableString(array[38]), drawable.ic_netherlands_40dp),
-                MultiSelectModel(39, SpannableString(array[39]), drawable.ic_new_zealand_40dp),
-                MultiSelectModel(40, SpannableString(array[40]), drawable.ic_norway_40dp),
-                MultiSelectModel(41, SpannableString(array[41]), drawable.ic_poland_40dp),
-                MultiSelectModel(42, SpannableString(array[42]), drawable.ic_portugal_40dp),
-                MultiSelectModel(43, SpannableString(array[43]), drawable.ic_romania_40dp),
-                MultiSelectModel(44, SpannableString(array[44]), drawable.ic_russia_40dp),
-                MultiSelectModel(45, SpannableString(array[45]), drawable.ic_serbia_40dp),
-                MultiSelectModel(46, SpannableString(array[46]), drawable.ic_singapore_40dp),
-                MultiSelectModel(47, SpannableString(array[47]), drawable.ic_slovakia_40dp),
-                MultiSelectModel(48, SpannableString(array[48]), drawable.ic_slovenia_40dp),
-                MultiSelectModel(49, SpannableString(array[49]), drawable.ic_south_africa_40dp),
-                MultiSelectModel(50, SpannableString(array[50]), drawable.ic_south_korea_40dp),
-                MultiSelectModel(51, SpannableString(array[51]), drawable.ic_spain_40dp),
-                MultiSelectModel(52, SpannableString(array[52]), drawable.ic_sweden_40dp),
-                MultiSelectModel(53, SpannableString(array[53]), drawable.ic_switzerland_40dp),
-                MultiSelectModel(54, SpannableString(array[54]), drawable.ic_taiwan_40dp),
-                MultiSelectModel(55, SpannableString(array[55]), drawable.ic_thailand_40dp),
-                MultiSelectModel(56, SpannableString(array[56]), drawable.ic_turkey_40dp),
-                MultiSelectModel(57, SpannableString(array[57]), drawable.ic_ukraine_40dp),
-                MultiSelectModel(58, SpannableString(array[58]), drawable.ic_united_arab_emirates_40dp),
-                MultiSelectModel(59, SpannableString(array[59]), drawable.ic_united_kingdom_40dp),
-                MultiSelectModel(60, SpannableString(array[60]), drawable.ic_united_states_of_america_40dp),
-                MultiSelectModel(61, SpannableString(array[61]), drawable.ic_vietnam_40dp)
-            )
-        }
-
-        private fun jsonArray(context: Context, id: Int, ext: String): JSONArray? {
-            try {
-                val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
-                if (!file.exists()) {
-                    context.resources.openRawResource(id).use { input ->
-                        file.outputStream().buffered().use { output ->
-                            input.copyTo(output)
-                        }
-                    }
-                }
-                val json = file.bufferedReader().use {
-                    it.readText()
-                }
-                return JSONArray(json)
-            } catch (e: NotFoundException) {
-                Crashlytics.logException(e)
-            } catch (e: FileNotFoundException) {
-                Crashlytics.logException(e)
-            } catch (e: IOException) {
-                Crashlytics.logException(e)
-            } catch (e: JSONException) {
-                Crashlytics.logException(e)
-            }
-            return null
-        }
-
-        @WorkerThread
-        fun createGeoJson(value: NetworkInfo, preferences: SharedPreferences, securityManager: SecurityManager): JSONObject? {
-            if (value.isOnline()) {
-                val geo = preferences.getBoolean("pref_geo", false)
-                val api = preferences.getString("pref_geo_client", "")
-                val ipdata = preferences.getString("pref_api_ipdata", "")
-                val ipinfo = preferences.getString("pref_api_ipinfo", "")
-                val ipstack = preferences.getString("pref_api_ipstack", "")
-
-                if (geo) {
-                    var key: String? = null
-                    when (api) {
-                        "ipdata" -> {
-                            key = ipdata
-                        }
-                        "ipinfo" -> {
-                            key = ipinfo
-                        }
-                        "ipstack" -> {
-                            key = ipstack
-                        }
-                    }
-
-                    if (key != null && key.isNotEmpty()) key = securityManager.decryptString(key)
-
-                    return createJson2(api, key)
-                }
-            }
-
-            return null
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        map?.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
 
         networkInfo = NetworkInfo.getInstance(requireActivity().application)
-
-        snackProgressBarManager = SnackProgressBarManager(maplayout).setViewsToMove(arrayOf(fab0, fab1))
-
-        fab0?.setOnClickListener(this)
-
-        map?.getMapAsync(this)
-
         val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-        requestPermissions(permissions,
+        requestPermissions(
+            permissions,
             PERMISSION_REQUEST_CODE
         )
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        super.onCreate(savedInstanceState)
+        (activity as? MainActivity)?.getSnackProgressBarManager()?.setViewsToMove(arrayOf(fab0, fab1))
+
+        map?.onCreate(savedInstanceState)
+        map?.getMapAsync(this)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -279,7 +159,7 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
 
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (isGranted(0)) {
-                    getLastLocation()
+                getLastLocation()
             }
         }
     }
@@ -338,13 +218,11 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
 
     @Suppress("MagicNumber")
     override fun onSessionFinished() {
-        toolbar.hideProgress(true)
-
         fab0.isClickable = true
         fab0.setImageResource(R.drawable.ic_flash_on_white_24dp)
 
-        mMap?.let { fab1.show() }
-        mMap?.let { fab2.show() }
+        fab1.show()
+        fab2.show()
         markers.forEach { (_, value) ->
             if (value.zIndex == 1.0f) fab3.show()
         }
@@ -356,14 +234,14 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        toolBar?.showProgress(true)
+
         mMap = googleMap
         cameraUpdateAnimator = CameraUpdateAnimator(googleMap, this)
         val preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val favorites = storage.loadFavorites(requireContext())
         val iconDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1)
         val securityManager = SecurityManager.getInstance(requireContext())
-
-        toolbar.showProgress(true)
 
         fun selectedCountries(list: ArrayList<MultiSelectable>): ArrayList<Int> {
             val preSelectedIdsList = ArrayList<Int>()
@@ -404,10 +282,10 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
         }
 
         doAsync {
-            val jsonArray = Companion.jsonArray(requireContext(), R.raw.nordvpn, ".json")
+            val jsonArray = jsonArray(requireContext(), R.raw.nordvpn, ".json")
             val stringArray = resources.getStringArray(R.array.pref_country_values)
             val textArray = resources.getTextArray(R.array.pref_country_entries)
-            val countries = Companion.countryList(textArray)
+            val countries = countryList(textArray)
             val selectedCountries = selectedCountries(countries)
             val p2p = preferences.getBoolean("pref_p2p", false)
             val dedicated = preferences.getBoolean("pref_dedicated", false)
@@ -535,11 +413,11 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
                     cameraUpdateAnimator?.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
                 }
             }
-            val jsonObj = Companion.createGeoJson(networkInfo!!, preferences, securityManager)
+            val jsonObj = createGeoJson(networkInfo!!, preferences, securityManager)
             addAnimation(jsonObj, jsonArray, true)
 
             uiThread {
-                toolbar.hideProgress(true)
+                toolBar?.hideProgress(true)
 
                 googleMap.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider).fadeIn(false))
 
@@ -578,78 +456,16 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
         // Execute the animation and set the final OnCameraIdleListener
         cameraUpdateAnimator?.execute()
 
+        fab0.setOnClickListener(this)
+
         fab1.setOnClickListener(this)
 
-        fab2?.setOnClickListener(this)
+        fab2.setOnClickListener(this)
 
-        fab3?.setOnClickListener(this)
+        fab3.setOnClickListener(this)
 
         debug(mMap!!.minZoomLevel)
         debug(mMap!!.maxZoomLevel)
-    }
-
-    @Suppress("MagicNumber")
-    private fun getDefaultLatLng(): LatLng {
-        return LatLng(51.514125, -0.093689)
-    }
-
-    private fun getLatLng(flag: String, latLng: LatLng, jsonArr: JSONArray?): LatLng {
-        info(latLng.toString())
-
-        if (jsonArr != null) {
-            val latLngList = arrayListOf<LatLng>()
-            var match = false
-
-            loop@ for (res in jsonArr) {
-                val pass = flag == res.getString("flag")
-
-                if (pass) {
-                    val location = res.getJSONObject("location")
-                    val element = LatLng(location.getDouble("lat"), location.getDouble("long"))
-
-                    match = element == latLng
-                    when {
-                        match -> break@loop
-                        else -> latLngList.add(element)
-                    }
-                }
-            }
-
-            if (!latLngList.isEmpty() && !match) {
-                val results = FloatArray(latLngList.size)
-
-                latLngList.withIndex().forEach { (index, it) ->
-                    val result = FloatArray(1)
-                    Location.distanceBetween(latLng.latitude, latLng.longitude, it.latitude, it.longitude, result)
-                    results[index] = result[0]
-                }
-                val result = results.min()
-                if (result != null) {
-                    val index = results.indexOf(result)
-                    return latLngList[index]
-                }
-            }
-        }
-
-        return latLng
-    }
-
-    private fun getFlag(longitude: Double, latitude: Double): String {
-        fun getToastString(ids: List<String>?): String {
-            return when {
-                ids == null || ids.isEmpty() -> "is nowhere"
-                else -> "is in " + ids.joinToString()
-            }
-        }
-
-        var t = System.nanoTime()
-        val ids = countryBoundaries?.getIds(longitude, latitude)
-        t = System.nanoTime() - t
-        info(getToastString(ids) + " (in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
-        if (ids != null && !ids.isEmpty()) {
-            return ids[0].toLowerCase(Locale.ROOT)
-        }
-        return ""
     }
 
     private fun addAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean) = when {
@@ -668,7 +484,7 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
         lastLocation != null -> {
             val lat = lastLocation!!.latitude
             val lon = lastLocation!!.longitude
-            val flag = getFlag(lon, lat)
+            val flag = getFlag(countryBoundaries?.getIds(lon, lat))
             val latLng = if (closest && flags.contains(flag)) {
                 getLatLng(flag, LatLng(lat, lon), jsonArr)
             } else {
@@ -704,7 +520,7 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
                     if (location != null) {
                         val lat = location.latitude
                         val lon = location.longitude
-                        val flag = getFlag(lon, lat)
+                        val flag = getFlag(countryBoundaries?.getIds(lon, lat))
 
                         latLng = if (closest && flags.contains(flag)) {
                             getLatLng(flag, LatLng(lat, lon), jsonArr)
@@ -762,6 +578,7 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
                 }
             }
 
+            fab0.show()
             fab1.show()
             fab2.show()
         }
@@ -866,15 +683,12 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
         if (id == R.id.fab0) {
             val listener = requireActivity() as? OnClickListener
 
-            if (listener != null) {
-                return listener.onClick(v)
-            }
+            listener?.onClick(v)
         } else if (id == R.id.fab1) {
             updateMasterMarker()
         } else if (id == R.id.fab2) {
             val preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-            //todo
-            // PrintArray.show("pref_country_values", requireContext(), preferences)
+            PrintArray.show("pref_country_values", (requireActivity() as AppCompatActivity), preferences, this)
         } else if (id == R.id.fab3) {
             if (mMap != null && markers.size != 0) {
                 markers.forEach { (_, value) ->
@@ -913,119 +727,120 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
             val color2 = ActivityCompat.getColor(requireContext(), R.color.colorDisconnect)
             val fl = 22f
             val weight = 1.0f
-            alert {
-                customView {
-                    verticalLayout {
-                        linearLayout {
-                            textView {
-                                text = getString(R.string.is_tor)
-                                textSize = fl
-                                gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+            with(requireContext()) {
+                alert {
+                    customView =
+                        verticalLayout {
+                            linearLayout {
+                                textView {
+                                    text = getString(R.string.is_tor)
+                                    textSize = fl
+                                    gravity = Gravity.START
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                                textView {
+                                    text = if (tor) "YES" else "NO"
+                                    textColor = if (tor) color2 else color1
+                                    textSize = fl
+                                    gravity = Gravity.END
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
                             }
-                            textView {
-                                text = if (tor) "YES" else "NO"
-                                textColor = if (tor) color2 else color1
-                                textSize = fl
-                                gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                            linearLayout {
+                                textView {
+                                    text = getString(R.string.is_proxy)
+                                    textSize = fl
+                                    gravity = Gravity.START
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                                textView {
+                                    text = if (proxy) "YES" else "NO"
+                                    textColor = if (proxy) color2 else color1
+                                    textSize = fl
+                                    gravity = Gravity.END
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
                             }
+                            linearLayout {
+                                textView {
+                                    text = getString(R.string.is_anonymous)
+                                    textSize = fl
+                                    gravity = Gravity.START
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                                textView {
+                                    text = if (anonymous) "YES" else "NO"
+                                    textColor = if (anonymous) color2 else color1
+                                    textSize = fl
+                                    gravity = Gravity.END
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                            }
+                            linearLayout {
+                                textView {
+                                    text = getString(R.string.is_known_attacker)
+                                    textSize = fl
+                                    gravity = Gravity.START
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                                textView {
+                                    text = if (attacker) "YES" else "NO"
+                                    textColor = if (attacker) color2 else color1
+                                    textSize = fl
+                                    gravity = Gravity.END
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                            }
+                            linearLayout {
+                                textView {
+                                    text = getString(R.string.is_known_abuser)
+                                    textSize = fl
+                                    gravity = Gravity.START
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                                textView {
+                                    text = if (abuser) "YES" else "NO"
+                                    textColor = if (abuser) color2 else color1
+                                    textSize = fl
+                                    gravity = Gravity.END
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                            }
+                            linearLayout {
+                                textView {
+                                    text = getString(R.string.is_threat)
+                                    textSize = fl
+                                    gravity = Gravity.START
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                                textView {
+                                    text = if (threat) "YES" else "NO"
+                                    textColor = if (threat) color2 else color1
+                                    textSize = fl
+                                    gravity = Gravity.END
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                            }
+                            linearLayout {
+                                textView {
+                                    text = getString(R.string.is_bogon)
+                                    textSize = fl
+                                    gravity = Gravity.START
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                                textView {
+                                    text = if (bogon) "YES" else "NO"
+                                    textColor = if (bogon) color2 else color1
+                                    textSize = fl
+                                    gravity = Gravity.END
+                                }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
+                                }
+                            }
+                            gravity = Gravity.CENTER
+                            padding = dip(40)
                         }
-                        linearLayout {
-                            textView {
-                                text = getString(R.string.is_proxy)
-                                textSize = fl
-                                gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                            textView {
-                                text = if (proxy) "YES" else "NO"
-                                textColor = if (proxy) color2 else color1
-                                textSize = fl
-                                gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                        }
-                        linearLayout {
-                            textView {
-                                text = getString(R.string.is_anonymous)
-                                textSize = fl
-                                gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                            textView {
-                                text = if (anonymous) "YES" else "NO"
-                                textColor = if (anonymous) color2 else color1
-                                textSize = fl
-                                gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                        }
-                        linearLayout {
-                            textView {
-                                text = getString(R.string.is_known_attacker)
-                                textSize = fl
-                                gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                            textView {
-                                text = if (attacker) "YES" else "NO"
-                                textColor = if (attacker) color2 else color1
-                                textSize = fl
-                                gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                        }
-                        linearLayout {
-                            textView {
-                                text = getString(R.string.is_known_abuser)
-                                textSize = fl
-                                gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                            textView {
-                                text = if (abuser) "YES" else "NO"
-                                textColor = if (abuser) color2 else color1
-                                textSize = fl
-                                gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                        }
-                        linearLayout {
-                            textView {
-                                text = getString(R.string.is_threat)
-                                textSize = fl
-                                gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                            textView {
-                                text = if (threat) "YES" else "NO"
-                                textColor = if (threat) color2 else color1
-                                textSize = fl
-                                gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                        }
-                        linearLayout {
-                            textView {
-                                text = getString(R.string.is_bogon)
-                                textSize = fl
-                                gravity = Gravity.START
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                            textView {
-                                text = if (bogon) "YES" else "NO"
-                                textColor = if (bogon) color2 else color1
-                                textSize = fl
-                                gravity = Gravity.END
-                            }.lparams(width = wrapContent, height = wrapContent, weight = weight) {
-                            }
-                        }
-                        gravity = Gravity.CENTER
-                        padding = dip(40)
-                    }
-                }
-            }.show()
+                }.show()
+            }
         }
     }
 
@@ -1062,14 +877,14 @@ class MapFragment : SVC_MapFragment(), OnMapReadyCallback,
         val preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val securityManager = SecurityManager.getInstance(requireContext())
 
-        toolbar.showProgress(true)
+        toolBar?.showProgress(true)
 
         doAsync {
-            val jsonObj = Companion.createGeoJson(networkInfo!!, preferences, securityManager)
-            val jsonArr = Companion.jsonArray(requireContext(), R.raw.nordvpn, ".json")
+            val jsonObj = createGeoJson(networkInfo!!, preferences, securityManager)
+            val jsonArr = jsonArray(requireContext(), R.raw.nordvpn, ".json")
 
             uiThread {
-                toolbar.hideProgress(true)
+                toolBar?.hideProgress(true)
                 mMap?.let { executeAnimation(jsonObj, jsonArr, false) }
 
                 if (show && jsonObj != null) {
