@@ -1,6 +1,6 @@
 package io.github.getsixtyfour.openpyn
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.R.string
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -36,6 +36,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBar
+import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.utilities.Toaster
@@ -61,6 +62,7 @@ import org.jetbrains.anko.longToast
 import org.jetbrains.anko.onComplete
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
+import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -81,6 +83,8 @@ class MainActivity : AppCompatActivity(),
         private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
         private const val PERMISSION_REQUEST_CODE = 23
         private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
+        private const val SNACK_BAR_JUICESSH = 1
+        private const val SNACK_BAR_PERMISSIONS = 0
     }
 
     private val mConnectionListAdapter by lazy {
@@ -112,13 +116,9 @@ class MainActivity : AppCompatActivity(),
 
         setContentView(R.layout.activity_main)
 
-        toolbar.hideProgress()
-        toolbar.isIndeterminate = true
+        setProgressToolBar(toolbar)
 
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
-        snackProgressBarManager = SnackProgressBarManager(mainlayout)
+        setSnackBarManager()
 
         PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
 
@@ -131,67 +131,73 @@ class MainActivity : AppCompatActivity(),
             //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
             else -> error(api.getErrorString(errorCode))
         }
+    }
 
-        if (isJuiceSSHInstalled(this)) {
-            mConnectionManager = ConnectionManager(
-                ctx = this,
-                mActivitySessionStartedListener = this,
-                mActivitySessionFinishedListener = this,
-                mActivitySessionExecuteListener = this,
-                mActivityCommandExecuteListener = this,
-                mActivityOnOutputLineListener = Toaster(this)
-            )
-//            mConnectionManager.powerUsage.observe(this, Observer {
-//                textViewPower.setData(it, "W")
-//            })
-//
-//            mConnectionManager.temperature.observe(this, Observer {
-//                textViewTemp.setData(it, "C")
-//            })
-//
-//            mConnectionManager.fanSpeed.observe(this, Observer {
-//                textViewFanSpeed.setData(it, "%")
-//            })
-//
-//            mConnectionManager.freeMemory.observe(this, Observer {
-//                textViewFreeMemory.setData(it, "MB")
-//            })
-//
-//            mConnectionManager.usedMemory.observe(this, Observer {
-//                textViewUsedMemory.setData(it, "MB")
-//            })
-//
-//            mConnectionManager.graphicsClock.observe(this, Observer {
-//                textViewClockGraphics.setData(it, "MHz")
-//            })
-//
-//            mConnectionManager.videoClock.observe(this, Observer {
-//                textViewClockVideo.setData(it, "MHz")
-//            })
-//
-//            mConnectionManager.memoryClock.observe(this, Observer {
-//                textViewClockMemory.setData(it, "MHz")
-//            })
-            val permissions = arrayOf(READ_CONNECTIONS, OPEN_SESSIONS, ACCESS_COARSE_LOCATION)
-            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE)
+    private fun setProgressToolBar(toolbar: ProgressToolbar) {
+        toolbar.hideProgress()
+        toolbar.isIndeterminate = true
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+    }
+
+    private fun setSnackBarManager() {
+        fun snackProgressBar(
+            type: Int,
+            message: String,
+            action: String,
+            onActionClickListener: OnActionClickListener
+        ): SnackProgressBar {
+            return SnackProgressBar(type, message).setAction(action, onActionClickListener)
         }
+
+        snackProgressBarManager = SnackProgressBarManager(mainlayout)
+        val type = SnackProgressBar.TYPE_NORMAL
+        val action = getString(string.ok)
+
+        snackProgressBarManager?.put(
+            snackProgressBar(
+                type,
+                getString(R.string.error_must_enable_permissions),
+                action,
+                object : OnActionClickListener {
+                    override fun onActionClick() {
+                        requestPermissions()
+                    }
+                }),
+            SNACK_BAR_PERMISSIONS
+        )
+
+        snackProgressBarManager?.put(
+            snackProgressBar(
+                type,
+                getString(R.string.error_must_install_juicessh),
+                action,
+                object : OnActionClickListener {
+                    override fun onActionClick() {
+                        juiceSSHInstall(this@MainActivity)
+                    }
+                }),
+            SNACK_BAR_JUICESSH
+        )
     }
 
     override fun onResume() {
         super.onResume()
+        val snackProgressBar = snackProgressBarManager?.getLastShown()
 
-        if (!isJuiceSSHInstalled(this)) {
-            val snackProgressBar = SnackProgressBar(SnackProgressBar.TYPE_NORMAL, getString(R.string.error_must_install_juicessh))
-            snackProgressBar.setAction(
-                getString(android.R.string.ok),
-                object : SnackProgressBar.OnActionClickListener {
-                    override fun onActionClick() {
-                        juiceSSHInstall(this@MainActivity)
-                    }
-                }
-            )
+        if (isJuiceSSHInstalled(this)) {
+            if (hasPermission(READ_CONNECTIONS) && hasPermission(OPEN_SESSIONS)) return
 
-            snackProgressBarManager?.show(snackProgressBar, SnackProgressBarManager.LENGTH_INDEFINITE)
+            when (snackProgressBar) {
+                null -> snackProgressBarManager?.show(SNACK_BAR_PERMISSIONS, SnackProgressBarManager.LENGTH_INDEFINITE)
+                else -> snackProgressBarManager?.getSnackProgressBar(SNACK_BAR_PERMISSIONS)?.let { snackProgressBarManager?.updateTo(it) }
+            }
+        } else {
+            when (snackProgressBar) {
+                null -> snackProgressBarManager?.show(SNACK_BAR_JUICESSH, SnackProgressBarManager.LENGTH_INDEFINITE)
+                else -> snackProgressBarManager?.getSnackProgressBar(SNACK_BAR_JUICESSH)?.let { snackProgressBarManager?.updateTo(it) }
+            }
         }
     }
 
@@ -206,22 +212,63 @@ class MainActivity : AppCompatActivity(),
         return true
     }
 
+    fun hasPermission(permission: String): Boolean {
+        return ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun requestPermissions() {
+        if (!hasPermission(READ_CONNECTIONS) || !hasPermission(OPEN_SESSIONS)) {
+            ActivityCompat.requestPermissions(this, arrayOf(READ_CONNECTIONS, OPEN_SESSIONS), PERMISSION_REQUEST_CODE)
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         fun isGranted(index: Int): Boolean {
             return (index >= 0 && index <= grantResults.lastIndex) && (grantResults[index] == PackageManager.PERMISSION_GRANTED)
         }
 
-        fun hasPermission(permission: String): Boolean {
-            return ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
-        }
-
-        fun requestPermissions() {
-            if (!hasPermission(READ_CONNECTIONS) || !hasPermission(OPEN_SESSIONS)) {
-                ActivityCompat.requestPermissions(this, arrayOf(READ_CONNECTIONS, OPEN_SESSIONS), PERMISSION_REQUEST_CODE)
-            }
-        }
-
         fun onPermissionsGranted() {
+            mConnectionManager = ConnectionManager(
+                ctx = this,
+                mActivitySessionStartedListener = this,
+                mActivitySessionFinishedListener = this,
+                mActivitySessionExecuteListener = this,
+                mActivityCommandExecuteListener = this,
+                mActivityOnOutputLineListener = Toaster(this)
+            )
+            /*
+            mConnectionManager.powerUsage.observe(this, Observer {
+                textViewPower.setData(it, "W")
+            })
+
+            mConnectionManager.temperature.observe(this, Observer {
+                textViewTemp.setData(it, "C")
+            })
+
+            mConnectionManager.fanSpeed.observe(this, Observer {
+                textViewFanSpeed.setData(it, "%")
+            })
+
+            mConnectionManager.freeMemory.observe(this, Observer {
+                textViewFreeMemory.setData(it, "MB")
+            })
+
+            mConnectionManager.usedMemory.observe(this, Observer {
+                textViewUsedMemory.setData(it, "MB")
+            })
+
+            mConnectionManager.graphicsClock.observe(this, Observer {
+                textViewClockGraphics.setData(it, "MHz")
+            })
+
+            mConnectionManager.videoClock.observe(this, Observer {
+                textViewClockVideo.setData(it, "MHz")
+            })
+
+            mConnectionManager.memoryClock.observe(this, Observer {
+                textViewClockMemory.setData(it, "MHz")
+            })
+            */
             mConnectionManager?.startClient(this)
 
             spinnerConnectionList.adapter = mConnectionListAdapter
@@ -231,18 +278,6 @@ class MainActivity : AppCompatActivity(),
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (isGranted(1) && isGranted(0)) {
                 onPermissionsGranted()
-            } else {
-                val snackProgressBar = SnackProgressBar(SnackProgressBar.TYPE_NORMAL, getString(R.string.error_must_enable_permissions))
-                snackProgressBar.setAction(
-                    getString(android.R.string.ok),
-                    object : SnackProgressBar.OnActionClickListener {
-                        override fun onActionClick() {
-                            requestPermissions()
-                        }
-                    }
-                )
-
-                snackProgressBarManager?.show(snackProgressBar, SnackProgressBarManager.LENGTH_INDEFINITE)
             }
         }
     }
