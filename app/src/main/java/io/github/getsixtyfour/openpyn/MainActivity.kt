@@ -385,7 +385,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     fun showGDPRIfNecessary() {
-        GDPR.getInstance().checkIfNeedsToBeShown(this, mSetup)
+        val debug = BuildConfig.DEBUG
+        if (!debug) {
+            GDPR.getInstance().checkIfNeedsToBeShown(this, mSetup)
+        }
     }
 
     private fun onAboutItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
