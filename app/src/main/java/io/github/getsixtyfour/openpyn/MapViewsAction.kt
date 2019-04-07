@@ -8,11 +8,8 @@ import com.naver.android.svc.core.views.ViewsAction
  */
 interface MapViewsAction : ViewsAction {
 
-    fun toggleFavoriteMarker()
-
     fun showCountryFilterDialog()
-
     fun toggleCommand(v: View?)
-
+    fun toggleFavoriteMarker()
     fun updateMasterMarker(show: Boolean = false)
 }

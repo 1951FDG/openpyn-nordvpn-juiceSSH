@@ -72,30 +72,26 @@ import java.util.Locale
 @ControlTower
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)
-class MapControlTower : SVC_MapControlTower(), MapViewsAction,
-    OnMapReadyCallback,
-    GoogleMap.OnMapClickListener,
-    GoogleMap.OnMapLoadedCallback,
-    GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnCameraIdleListener,
+class MapControlTower : SVC_MapControlTower(),
     AnkoLogger,
+    OnMapReadyCallback,
+    GoogleMap.OnMapLoadedCallback,
+    GoogleMap.OnCameraIdleListener,
+    GoogleMap.OnMapClickListener,
+    GoogleMap.OnMarkerClickListener,
     OnLevelChangeCallback,
-    SubmitCallbackListener {
+    SubmitCallbackListener,
+    MapViewsAction {
 
-    private val markers: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
-    private val storage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
-    private val flags by lazy { ArrayList<String>() }
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
-    private var mMap: GoogleMap? = null
-    private var tileProvider: MapBoxOfflineTileProvider? = null
-    private var networkInfo: NetworkInfo? = null
+    private val flags by lazy { ArrayList<String>() }
     private val lastLocation: Location? by lazy { screen.lastLocation } // todo
-
-    companion object {
-        private const val FAVORITE_KEY = "pref_favorites"
-    }
-
+    private var mMap: GoogleMap? = null
+    private val markers: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
+    private var networkInfo: NetworkInfo? = null
+    private val storage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
+    private var tileProvider: MapBoxOfflineTileProvider? = null
     override fun onCreated() {
         networkInfo = NetworkInfo.getInstance(screen.requireActivity().application)
     }
@@ -322,6 +318,199 @@ class MapControlTower : SVC_MapControlTower(), MapViewsAction,
         debug(mMap!!.maxZoomLevel)
     }
 
+    override fun onCameraIdle() {
+        val bounds = mMap!!.projection.visibleRegion.latLngBounds
+
+        markers.forEach { (key, value) ->
+            if (bounds.contains(key) && flags.contains(value.tag)) {
+                if (!value.isVisible) value.isVisible = true
+            } else {
+                if (value.isVisible) value.isVisible = false
+
+                if (value.zIndex == 1.0f) {
+                    value.setLevel(value.level, this)
+
+                    views.hideFavoriteFab()
+                }
+            }
+        }
+    }
+
+    override fun onMapClick(p0: LatLng?) {
+        markers.forEach { (_, value) ->
+            if (value.zIndex == 1.0f) {
+                value.setLevel(value.level, this)
+
+                views.hideFavoriteFab()
+            }
+        }
+    }
+
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        if (p0 != null && p0.zIndex != 1.0f) {
+            //info(p0.tag)
+            markers.forEach { (_, value) ->
+                if (value.zIndex == 1.0f) {
+                    value.setLevel(value.level, this)
+                }
+            }
+            p0.zIndex = 1.0f
+            p0.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+
+            views.toggleFavoriteFab((markers[p0.position]?.level == 1))
+        }
+
+        views.showFavoriteFab()
+
+        return false
+    }
+
+    @Suppress("MagicNumber")
+    override fun onLevelChange(marker: LazyMarker, level: Int) {
+        when (level) {
+            0 -> {
+                marker.zIndex = 0f
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map1))
+            }
+            1 -> {
+                marker.zIndex = level / 10.toFloat()
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map2))
+            }
+        }
+    }
+
+    override fun onCancel() {
+    }
+
+    override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
+        flags.clear()
+        val strings = screen.resources.getStringArray(R.array.pref_country_values)
+        selectedIds.forEach { index ->
+            flags.add(strings[index])
+        }
+
+        onCameraIdle()
+    }
+
+    override fun showCountryFilterDialog() {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(screen.requireContext())
+        PrintArray.show("pref_country_values", (screen.requireActivity() as AppCompatActivity), preferences, this)
+    }
+
+    override fun toggleCommand(v: View?) {
+        val listener = screen.requireActivity() as? OnClickListener
+
+        listener?.onClick(v)
+    }
+
+    override fun toggleFavoriteMarker() {
+        if (mMap != null && markers.size != 0) {
+            markers.forEach { (_, value) ->
+                if (value.zIndex == 1.0f) {
+                    val level = value.level
+                    when (level) {
+                        0 -> {
+                            value.setLevel(1, null)
+                            storage.addFavorite(screen.requireContext(), value)
+                        }
+                        1 -> {
+                            value.setLevel(0, null)
+                            storage.removeFavorite(screen.requireContext(), value)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @MainThread
+    @Suppress("MagicNumber")
+    override fun updateMasterMarker(show: Boolean) {
+        views.setClickableLocationFab(false)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(screen.requireContext())
+        val securityManager = SecurityManager.getInstance(screen.requireContext())
+
+        screen.toolBar?.showProgress(true)
+
+        doAsync {
+            val jsonObj = createGeoJson(networkInfo!!, preferences, securityManager)
+            val jsonArr = jsonArray(screen.requireContext(), raw.nordvpn, ".json")
+
+            uiThread {
+                screen.toolBar?.hideProgress(true)
+                mMap?.let { executeAnimation(jsonObj, jsonArr, false) }
+
+                if (show && jsonObj != null) {
+                    val flag = jsonObj.getString("flag").toUpperCase(Locale.ROOT)
+                    //val country = jsonObj.getString("country")
+                    val city = jsonObj.getString("city")
+                    //val lat = jsonObj.getDouble("latitude")
+                    //val lon = jsonObj.getDouble("longitude")
+                    val ip = jsonObj.getString("ip")
+                    val userMessage = UserMessage.Builder()
+                        .with(screen.requireContext())
+                        .setBackgroundColor(R.color.accent_material_indigo_200)
+                        .setTextColor(android.R.color.white)
+                        .setMessage("Connected to $city, $flag ($ip)")
+                        .setDuration(5000)
+                        .setShowInterpolator(AccelerateInterpolator())
+                        .setDismissInterpolator(AccelerateInterpolator())
+                        .build()
+
+                    views.showMiniBar(userMessage)
+                    //jsonObj?.let { jsonObject -> showThreats(jsonObject) }
+                }
+            }
+        }
+    }
+
+    fun onSessionFinished() {
+        views.setClickableConnectFab(true)
+        views.setAppearanceConnectFab(false)
+
+        views.showListAndLocationFab()
+        markers.forEach { (_, value) ->
+            if (value.zIndex == 1.0f) views.showFavoriteFab()
+        }
+
+        mMap?.setOnMapClickListener(this)
+        mMap?.setOnMarkerClickListener(this)
+        mMap?.uiSettings?.isScrollGesturesEnabled = true
+        mMap?.uiSettings?.isZoomGesturesEnabled = true
+    }
+
+    fun onSessionStarted() {
+        views.setClickableConnectFab(true)
+        views.setAppearanceConnectFab(true)
+
+        views.hideListAndLocationFab()
+        markers.forEach { (_, value) ->
+            if (value.zIndex == 1.0f) views.hideFavoriteFab()
+        }
+
+        mMap?.setOnMapClickListener(null)
+        mMap?.setOnMarkerClickListener { true }
+        mMap?.uiSettings?.isScrollGesturesEnabled = false
+        mMap?.uiSettings?.isZoomGesturesEnabled = false
+    }
+
+    fun onSessionCancelled() {
+        views.setClickableConnectFab(true)
+    }
+
+    @MainThread
+    fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String?> {
+        if (mMap != null && markers.size != 0) {
+            markers.forEach { (key, value) ->
+                if (value.zIndex == 1.0f) {
+                    return Pair(Coordinate(key.latitude, key.longitude), value.tag.toString())
+                }
+            }
+        }
+
+        return Pair(null, null)
+    }
+
     private fun addAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean) = when {
         jsonObj != null -> {
             val lat = jsonObj.getDouble("latitude")
@@ -350,51 +539,6 @@ class MapControlTower : SVC_MapControlTower(), MapViewsAction,
         else -> {
             val latLng = getDefaultLatLng()
             animateCamera(latLng, closest, false)
-        }
-    }
-
-    @MainThread
-    private fun executeAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean) = when {
-        jsonObj != null -> {
-            val lat = jsonObj.getDouble("latitude")
-            val lon = jsonObj.getDouble("longitude")
-            val flag = jsonObj.getString("flag")
-            val latLng = if (closest && flags.contains(flag)) {
-                getLatLng(flag, LatLng(lat, lon), jsonArr)
-            } else {
-                LatLng(lat, lon)
-            }
-
-            animateCamera(latLng, closest, true)
-        }
-        ActivityCompat.checkSelfPermission(
-            screen.requireContext(),
-            permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED -> {
-            val task = FusedLocationProviderClient(screen.requireContext()).lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    var latLng = getDefaultLatLng()
-                    if (location != null) {
-                        val lat = location.latitude
-                        val lon = location.longitude
-                        val flag = getFlag(countryBoundaries?.getIds(lon, lat))
-
-                        latLng = if (closest && flags.contains(flag)) {
-                            getLatLng(flag, LatLng(lat, lon), jsonArr)
-                        } else {
-                            LatLng(lat, lon)
-                        }
-                    }
-
-                    animateCamera(latLng, closest, true)
-                }
-                .addOnFailureListener { e: Exception ->
-                    error(e)
-                    animateCamera(getDefaultLatLng(), closest, true)
-                }
-        }
-        else -> {
-            animateCamera(getDefaultLatLng(), closest, true)
         }
     }
 
@@ -465,96 +609,49 @@ class MapControlTower : SVC_MapControlTower(), MapViewsAction,
         if (animate) cameraUpdateAnimator?.execute()
     }
 
-    override fun onCameraIdle() {
-        val bounds = mMap!!.projection.visibleRegion.latLngBounds
-
-        markers.forEach { (key, value) ->
-            if (bounds.contains(key) && flags.contains(value.tag)) {
-                if (!value.isVisible) value.isVisible = true
+    @MainThread
+    private fun executeAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean) = when {
+        jsonObj != null -> {
+            val lat = jsonObj.getDouble("latitude")
+            val lon = jsonObj.getDouble("longitude")
+            val flag = jsonObj.getString("flag")
+            val latLng = if (closest && flags.contains(flag)) {
+                getLatLng(flag, LatLng(lat, lon), jsonArr)
             } else {
-                if (value.isVisible) value.isVisible = false
-
-                if (value.zIndex == 1.0f) {
-                    value.setLevel(value.level, this)
-
-                    views.hideFavoriteFab()
-                }
+                LatLng(lat, lon)
             }
+
+            animateCamera(latLng, closest, true)
         }
-    }
+        ActivityCompat.checkSelfPermission(
+            screen.requireContext(),
+            permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED -> {
+            val task = FusedLocationProviderClient(screen.requireContext()).lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    var latLng = getDefaultLatLng()
+                    if (location != null) {
+                        val lat = location.latitude
+                        val lon = location.longitude
+                        val flag = getFlag(countryBoundaries?.getIds(lon, lat))
 
-    override fun onMapClick(p0: LatLng?) {
-        markers.forEach { (_, value) ->
-            if (value.zIndex == 1.0f) {
-                value.setLevel(value.level, this)
-
-                views.hideFavoriteFab()
-            }
-        }
-    }
-
-    override fun onMarkerClick(p0: Marker?): Boolean {
-        if (p0 != null && p0.zIndex != 1.0f) {
-            //info(p0.tag)
-            markers.forEach { (_, value) ->
-                if (value.zIndex == 1.0f) {
-                    value.setLevel(value.level, this)
-                }
-            }
-            p0.zIndex = 1.0f
-            p0.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
-
-            views.toggleFavoriteFab((markers[p0.position]?.level == 1))
-        }
-
-        views.showFavoriteFab()
-
-        return false
-    }
-
-    @Suppress("MagicNumber")
-    override fun onLevelChange(marker: LazyMarker, level: Int) {
-        when (level) {
-            0 -> {
-                marker.zIndex = 0f
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map1))
-            }
-            1 -> {
-                marker.zIndex = level / 10.toFloat()
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map2))
-            }
-        }
-    }
-
-    override fun toggleFavoriteMarker() {
-        if (mMap != null && markers.size != 0) {
-            markers.forEach { (_, value) ->
-                if (value.zIndex == 1.0f) {
-                    val level = value.level
-                    when (level) {
-                        0 -> {
-                            value.setLevel(1, null)
-                            storage.addFavorite(screen.requireContext(), value)
-                        }
-                        1 -> {
-                            value.setLevel(0, null)
-                            storage.removeFavorite(screen.requireContext(), value)
+                        latLng = if (closest && flags.contains(flag)) {
+                            getLatLng(flag, LatLng(lat, lon), jsonArr)
+                        } else {
+                            LatLng(lat, lon)
                         }
                     }
+
+                    animateCamera(latLng, closest, true)
                 }
-            }
+                .addOnFailureListener { e: Exception ->
+                    error(e)
+                    animateCamera(getDefaultLatLng(), closest, true)
+                }
         }
-    }
-
-    override fun showCountryFilterDialog() {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(screen.requireContext())
-        PrintArray.show("pref_country_values", (screen.requireActivity() as AppCompatActivity), preferences, this)
-    }
-
-    override fun toggleCommand(v: View?) {
-        val listener = screen.requireActivity() as? OnClickListener
-
-        listener?.onClick(v)
+        else -> {
+            animateCamera(getDefaultLatLng(), closest, true)
+        }
     }
 
     @Suppress("MagicNumber", "unused")
@@ -747,104 +844,7 @@ class MapControlTower : SVC_MapControlTower(), MapViewsAction,
         }
     }
 
-    override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
-        flags.clear()
-        val strings = screen.resources.getStringArray(R.array.pref_country_values)
-        selectedIds.forEach { index ->
-            flags.add(strings[index])
-        }
-
-        onCameraIdle()
-    }
-
-    override fun onCancel() {
-    }
-
-    @MainThread
-    fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String?> {
-        if (mMap != null && markers.size != 0) {
-            markers.forEach { (key, value) ->
-                if (value.zIndex == 1.0f) {
-                    return Pair(Coordinate(key.latitude, key.longitude), value.tag.toString())
-                }
-            }
-        }
-
-        return Pair(null, null)
-    }
-
-    @MainThread
-    @Suppress("MagicNumber")
-    override fun updateMasterMarker(show: Boolean) {
-        views.setClickableLocationFab(false)
-        val preferences = PreferenceManager.getDefaultSharedPreferences(screen.requireContext())
-        val securityManager = SecurityManager.getInstance(screen.requireContext())
-
-        screen.toolBar?.showProgress(true)
-
-        doAsync {
-            val jsonObj = createGeoJson(networkInfo!!, preferences, securityManager)
-            val jsonArr = jsonArray(screen.requireContext(), raw.nordvpn, ".json")
-
-            uiThread {
-                screen.toolBar?.hideProgress(true)
-                mMap?.let { executeAnimation(jsonObj, jsonArr, false) }
-
-                if (show && jsonObj != null) {
-                    val flag = jsonObj.getString("flag").toUpperCase(Locale.ROOT)
-                    //val country = jsonObj.getString("country")
-                    val city = jsonObj.getString("city")
-                    //val lat = jsonObj.getDouble("latitude")
-                    //val lon = jsonObj.getDouble("longitude")
-                    val ip = jsonObj.getString("ip")
-                    val userMessage = UserMessage.Builder()
-                        .with(screen.requireContext())
-                        .setBackgroundColor(R.color.accent_material_indigo_200)
-                        .setTextColor(android.R.color.white)
-                        .setMessage("Connected to $city, $flag ($ip)")
-                        .setDuration(5000)
-                        .setShowInterpolator(AccelerateInterpolator())
-                        .setDismissInterpolator(AccelerateInterpolator())
-                        .build()
-
-                    views.showMiniBar(userMessage)
-                    //jsonObj?.let { jsonObject -> showThreats(jsonObject) }
-                }
-            }
-        }
-    }
-
-    fun onSessionStarted() {
-        views.setClickableConnectFab(true)
-        views.setAppearenceConnectFab(true)
-
-        views.hideListAndLocationFab()
-        markers.forEach { (_, value) ->
-            if (value.zIndex == 1.0f) views.hideFavoriteFab()
-        }
-
-        mMap?.setOnMapClickListener(null)
-        mMap?.setOnMarkerClickListener { true }
-        mMap?.uiSettings?.isScrollGesturesEnabled = false
-        mMap?.uiSettings?.isZoomGesturesEnabled = false
-    }
-
-    fun onSessionCancelled() {
-        views.setClickableConnectFab(true)
-    }
-
-    fun onSessionFinished() {
-        views.setClickableConnectFab(true)
-        views.setAppearenceConnectFab(false)
-
-        views.showListAndLocationFab()
-        markers.forEach { (_, value) ->
-            if (value.zIndex == 1.0f) views.showFavoriteFab()
-        }
-
-        mMap?.setOnMapClickListener(this)
-        mMap?.setOnMarkerClickListener(this)
-        mMap?.uiSettings?.isScrollGesturesEnabled = true
-        mMap?.uiSettings?.isZoomGesturesEnabled = true
+    companion object {
+        private const val FAVORITE_KEY = "pref_favorites"
     }
 }

@@ -6,8 +6,6 @@ import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.naver.android.svc.annotation.RequireControlTower
 import com.naver.android.svc.annotation.RequireViews
@@ -30,15 +28,9 @@ class MapFragment : SVC_MapFragment(),
     OnSessionStartedListener,
     OnSessionFinishedListener {
 
-    val supportActionBar: ActionBar?
-        get() = (requireActivity() as AppCompatActivity).supportActionBar
+    var lastLocation: Location? = null
     val toolBar: ProgressToolbar?
         get() = requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
-    var lastLocation: Location? = null
-
-    companion object {
-        private const val PERMISSION_REQUEST_CODE = 23
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,5 +122,9 @@ class MapFragment : SVC_MapFragment(),
 
     override fun onSessionFinished() {
         controlTower.onSessionFinished()
+    }
+
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 23
     }
 }

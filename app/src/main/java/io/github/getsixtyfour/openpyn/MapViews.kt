@@ -19,10 +19,9 @@ class MapViews : ActionViews<MapViewsAction>() {
     private val fab1 by lazy { rootView.fab1 }
     private val fab2 by lazy { rootView.fab2 }
     private val fab3 by lazy { rootView.fab3 }
+    override val layoutResId: Int = R.layout.fragment_map
     private val map by lazy { rootView.map }
     private val minibarView by lazy { rootView.minibarView }
-    override val layoutResId = R.layout.fragment_map
-
     override fun onCreated() {
         (screen.hostActivity as? MainActivity)?.getSnackProgressBarManager()?.setViewsToMove(arrayOf(fab0, fab1))
 
@@ -35,27 +34,24 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab3.setOnClickListener { viewsAction.toggleFavoriteMarker() }
     }
 
-    fun toggleFavoriteFab(checked: Boolean) {
-        fab3.isChecked = checked
-        fab3.refreshDrawableState()
-    }
-
     fun hideFavoriteFab() {
         fab3.hide()
     }
 
-    fun showFavoriteFab() {
-        fab3.show()
+    fun hideListAndLocationFab() {
+        fab1.hide()
+        fab2.hide()
     }
 
-    fun showAllFabs() {
-        fab0.show()
-        fab1.show()
-        fab2.show()
+    fun setAppearanceConnectFab(connected: Boolean) {
+        fab0.setImageResource(
+            if (connected) R.drawable.ic_flash_off_white_24dp
+            else R.drawable.ic_flash_on_white_24dp
+        )
     }
 
-    fun showMap() {
-        map.visibility = View.VISIBLE
+    fun setClickableConnectFab(clickable: Boolean) {
+        fab0.isClickable = clickable
     }
 
     fun setClickableFabs(clickable: Boolean) {
@@ -68,15 +64,23 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab1.isClickable = clickable
     }
 
-    fun setClickableConnectFab(clickable: Boolean) {
-        fab0.isClickable = clickable
+    fun showAllFabs() {
+        fab0.show()
+        fab1.show()
+        fab2.show()
     }
 
-    fun setAppearenceConnectFab(connected: Boolean) {
-        fab0.setImageResource(
-            if (connected) R.drawable.ic_flash_off_white_24dp
-            else R.drawable.ic_flash_on_white_24dp
-        )
+    fun showFavoriteFab() {
+        fab3.show()
+    }
+
+    fun showListAndLocationFab() {
+        fab1.show()
+        fab2.show()
+    }
+
+    fun showMap() {
+        map.visibility = View.VISIBLE
     }
 
     fun showMiniBar(userMessage: UserMessage) {
@@ -84,13 +88,8 @@ class MapViews : ActionViews<MapViewsAction>() {
         minibarView.show(userMessage)
     }
 
-    fun hideListAndLocationFab() {
-        fab1.hide()
-        fab2.hide()
-    }
-
-    fun showListAndLocationFab() {
-        fab1.show()
-        fab2.show()
+    fun toggleFavoriteFab(checked: Boolean) {
+        fab3.isChecked = checked
+        fab3.refreshDrawableState()
     }
 }
