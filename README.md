@@ -156,6 +156,7 @@ To compile and run the project you'll need:
 -   [ElasticView](https://github.com/armcha/ElasticView)
 -   [emoji-java](https://github.com/vdurmont/emoji-java)
 -   [Fuel](https://github.com/kittinunf/Fuel)
+-   [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
 -   [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 -   [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 -   [Kotlin](https://github.com/JetBrains/kotlin)
