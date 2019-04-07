@@ -1,5 +1,6 @@
 package io.github.getsixtyfour.openpyn.utilities
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
@@ -174,9 +175,10 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray? {
     return null
 }
 
+@SuppressLint("WrongThread")
 @WorkerThread
-fun createGeoJson(value: NetworkInfo, preferences: SharedPreferences, securityManager: SecurityManager): JSONObject? {
-    if (value.isOnline()) {
+fun createGeoJson(preferences: SharedPreferences, securityManager: SecurityManager): JSONObject? {
+    if (NetworkInfo.getInstance().isOnline()) {
         val geo = preferences.getBoolean("pref_geo", false)
         val api = preferences.getString("pref_geo_client", "")
         val ipdata = preferences.getString("pref_api_ipdata", "")

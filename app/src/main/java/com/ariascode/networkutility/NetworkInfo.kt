@@ -192,9 +192,9 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
 
         // get a singleton
         @MainThread
-        fun getInstance(application: Application): NetworkInfo {
+        fun getInstance(application: Application? = null): NetworkInfo {
             if (ns == null) {
-                ns = NetworkInfo(application)
+                ns = NetworkInfo(requireNotNull(application))
             }
             return ns as NetworkInfo
         }

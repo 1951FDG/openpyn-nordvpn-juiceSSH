@@ -89,11 +89,9 @@ class MapControlTower : SVC_MapControlTower(),
     private val lastLocation: Location? by lazy { screen.lastLocation } // todo
     private var mMap: GoogleMap? = null
     private val markers: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
-    private var networkInfo: NetworkInfo? = null
     private val storage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
     private var tileProvider: MapBoxOfflineTileProvider? = null
     override fun onCreated() {
-        networkInfo = NetworkInfo.getInstance(screen.requireActivity().application)
     }
 
     override fun onDestroy() {
@@ -285,7 +283,7 @@ class MapControlTower : SVC_MapControlTower(),
                     cameraUpdateAnimator?.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
                 }
             }
-            val jsonObj = createGeoJson(networkInfo!!, preferences, securityManager)
+            val jsonObj = createGeoJson(preferences, securityManager)
             addAnimation(jsonObj, jsonArray, true)
 
             uiThread {
@@ -433,7 +431,7 @@ class MapControlTower : SVC_MapControlTower(),
         screen.toolBar?.showProgress(true)
 
         doAsync {
-            val jsonObj = createGeoJson(networkInfo!!, preferences, securityManager)
+            val jsonObj = createGeoJson(preferences, securityManager)
             val jsonArr = jsonArray(screen.requireContext(), raw.nordvpn, ".json")
 
             uiThread {

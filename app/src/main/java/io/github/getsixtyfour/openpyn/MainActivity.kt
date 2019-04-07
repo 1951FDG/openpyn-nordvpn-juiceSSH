@@ -88,7 +88,6 @@ class MainActivity : AppCompatActivity(),
             .withForceSelection(true)
             .withShowPaidOrFreeInfoText(false)
     }
-    private var networkInfo: NetworkInfo? = null
     private var snackProgressBarManager: SnackProgressBarManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -103,8 +102,6 @@ class MainActivity : AppCompatActivity(),
         setSnackBarManager()
 
         PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
-
-        networkInfo = NetworkInfo.getInstance(application)
         val api = GoogleApiAvailability.getInstance()
         val errorCode = api.isGooglePlayServicesAvailable(this)
 
@@ -409,7 +406,7 @@ class MainActivity : AppCompatActivity(),
         doAsync {
             var jsonArray: JSONArray? = null
 
-            if (networkInfo!!.isOnline()) {
+            if (NetworkInfo.getInstance().isOnline()) {
                 jsonArray = createJson()
             }
             var thrown = true

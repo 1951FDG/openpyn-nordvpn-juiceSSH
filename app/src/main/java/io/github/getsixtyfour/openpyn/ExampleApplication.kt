@@ -1,6 +1,7 @@
 package io.github.getsixtyfour.openpyn
 
 import android.app.Application
+import com.ariascode.networkutility.NetworkInfo
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
 import com.michaelflisar.gdprdialog.GDPR
@@ -15,6 +16,8 @@ open class ExampleApplication : Application() {
             // You should not init your app in this process.
             return
         }
+
+        NetworkInfo.getInstance(this)
 
         installBlockCanary()
         installLeakCanary()
