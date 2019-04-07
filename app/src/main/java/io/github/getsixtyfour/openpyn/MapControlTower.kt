@@ -14,7 +14,6 @@ import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
 import com.antoniocarlon.map.CameraUpdateAnimator
-import com.ariascode.networkutility.NetworkInfo
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory

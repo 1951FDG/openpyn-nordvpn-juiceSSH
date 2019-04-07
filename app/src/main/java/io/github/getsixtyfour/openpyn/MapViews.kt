@@ -15,11 +15,11 @@ import kotlinx.android.synthetic.main.fragment_map.view.minibarView
  */
 class MapViews : ActionViews<MapViewsAction>() {
 
+    override val layoutResId: Int = R.layout.fragment_map
     private val fab0 by lazy { rootView.fab0 }
     private val fab1 by lazy { rootView.fab1 }
     private val fab2 by lazy { rootView.fab2 }
     private val fab3 by lazy { rootView.fab3 }
-    override val layoutResId: Int = R.layout.fragment_map
     private val map by lazy { rootView.map }
     private val minibarView by lazy { rootView.minibarView }
     override fun onCreated() {
