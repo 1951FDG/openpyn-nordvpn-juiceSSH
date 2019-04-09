@@ -104,7 +104,7 @@ fun createJson2(value: String?, token: String?): JSONObject? {
         }
         is Result.Success -> {
             val content = result.get().obj()
-            //Log.info(content.toString())
+            //Log.debug(content.toString())
             var flag = ""
             var country = ""
             var city = ""
@@ -150,6 +150,7 @@ fun createJson2(value: String?, token: String?): JSONObject? {
             }
 
             if (flag.isNotEmpty() && city.isNotEmpty() && lat != 0.0 && lon != 0.0 && ip.isNotEmpty()) {
+                Log.debug("is in $flag")
                 return JSONObject().apply {
                     put("flag", flag.toLowerCase(Locale.ROOT))
                     put("country", country)

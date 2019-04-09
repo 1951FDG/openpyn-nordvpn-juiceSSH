@@ -2,7 +2,6 @@ package io.github.getsixtyfour.openpyn
 
 import android.Manifest.permission
 import android.content.pm.PackageManager
-import android.location.Location
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.animation.AccelerateInterpolator
@@ -27,6 +26,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.TileOverlayOptions
+import com.google.android.gms.tasks.Tasks
 import com.mayurrokade.minibar.UserMessage
 import com.naver.android.svc.annotation.ControlTower
 import com.naver.android.svc.annotation.RequireScreen
@@ -64,6 +64,9 @@ import org.json.JSONObject
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Locale
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 /**
  * @author 1951FDG
@@ -85,7 +88,6 @@ class MapControlTower : SVC_MapControlTower(),
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
     private val flags by lazy { ArrayList<String>() }
-    private val lastLocation: Location? by lazy { screen.lastLocation } // todo
     private var mMap: GoogleMap? = null
     private val markers: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
     private val storage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
@@ -148,6 +150,7 @@ class MapControlTower : SVC_MapControlTower(),
         }
 
         doAsync {
+            // todo benchmarking, coroutines?
             val jsonArray = jsonArray(screen.requireContext(), raw.nordvpn, ".json")
             val stringArray = screen.resources.getStringArray(R.array.pref_country_values)
             val textArray = screen.resources.getTextArray(R.array.pref_country_entries)
@@ -227,7 +230,7 @@ class MapControlTower : SVC_MapControlTower(),
 
                         loop@ for (category in categories) {
                             val name = category.getString("name")
-
+                            //todo check python code again
                             pass = when {
                                 p2p and (name == "P2P") -> true
                                 dedicated and (name == "Dedicated IP") -> true
@@ -283,7 +286,9 @@ class MapControlTower : SVC_MapControlTower(),
                 }
             }
             val jsonObj = createGeoJson(preferences, securityManager)
-            addAnimation(jsonObj, jsonArray, true)
+            val latLng = getCurrentPosition(jsonObj, jsonArray, true)
+
+            animateCamera(latLng, closest = true, animate = false)
 
             uiThread {
                 screen.toolBar?.hideProgress(true)
@@ -301,7 +306,7 @@ class MapControlTower : SVC_MapControlTower(),
                 //googleMap.setPadding(0, 0, 0, params.height + params.bottomMargin)
                 googleMap.uiSettings.isScrollGesturesEnabled = true
                 googleMap.uiSettings.isZoomGesturesEnabled = true
-
+                // Load map
                 views.showMap()
             }
         }
@@ -432,10 +437,12 @@ class MapControlTower : SVC_MapControlTower(),
         doAsync {
             val jsonObj = createGeoJson(preferences, securityManager)
             val jsonArr = jsonArray(screen.requireContext(), raw.nordvpn, ".json")
+            val latLng = getCurrentPosition(jsonObj, jsonArr, false)
 
             uiThread {
                 screen.toolBar?.hideProgress(true)
-                mMap?.let { executeAnimation(jsonObj, jsonArr, false) }
+
+                animateCamera(latLng, closest = false)
 
                 if (show && jsonObj != null) {
                     val flag = jsonObj.getString("flag").toUpperCase(Locale.ROOT)
@@ -508,38 +515,7 @@ class MapControlTower : SVC_MapControlTower(),
         return Pair(null, null)
     }
 
-    private fun addAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean) = when {
-        jsonObj != null -> {
-            val lat = jsonObj.getDouble("latitude")
-            val lon = jsonObj.getDouble("longitude")
-            val flag = jsonObj.getString("flag")
-            val latLng = if (closest && flags.contains(flag)) {
-                getLatLng(flag, LatLng(lat, lon), jsonArr)
-            } else {
-                LatLng(lat, lon)
-            }
-
-            animateCamera(latLng, closest, false)
-        }
-        lastLocation != null -> {
-            val lat = lastLocation!!.latitude
-            val lon = lastLocation!!.longitude
-            val flag = getFlag(countryBoundaries?.getIds(lon, lat))
-            val latLng = if (closest && flags.contains(flag)) {
-                getLatLng(flag, LatLng(lat, lon), jsonArr)
-            } else {
-                LatLng(lat, lon)
-            }
-
-            animateCamera(latLng, closest, false)
-        }
-        else -> {
-            val latLng = getDefaultLatLng()
-            animateCamera(latLng, closest, false)
-        }
-    }
-
-    private fun animateCamera(latLng: LatLng, closest: Boolean, animate: Boolean) {
+    private fun animateCamera(latLng: LatLng, closest: Boolean, animate: Boolean = true) {
         info(latLng.toString())
 
         fun onStart() {
@@ -607,48 +583,53 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     @MainThread
-    private fun executeAnimation(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean) = when {
-        jsonObj != null -> {
-            val lat = jsonObj.getDouble("latitude")
-            val lon = jsonObj.getDouble("longitude")
-            val flag = jsonObj.getString("flag")
-            val latLng = if (closest && flags.contains(flag)) {
-                getLatLng(flag, LatLng(lat, lon), jsonArr)
-            } else {
-                LatLng(lat, lon)
+    private fun getCurrentPosition(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean): LatLng {
+        fun latLng(flag: String, lat: Double, lon: Double): LatLng {
+            return when {
+                closest && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
+                else -> LatLng(lat, lon)
             }
-
-            animateCamera(latLng, closest, true)
         }
-        ActivityCompat.checkSelfPermission(
-            screen.requireContext(),
-            permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED -> {
-            val task = FusedLocationProviderClient(screen.requireContext()).lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    var latLng = getDefaultLatLng()
-                    if (location != null) {
-                        val lat = location.latitude
-                        val lon = location.longitude
-                        val flag = getFlag(countryBoundaries?.getIds(lon, lat))
 
-                        latLng = if (closest && flags.contains(flag)) {
-                            getLatLng(flag, LatLng(lat, lon), jsonArr)
-                        } else {
-                            LatLng(lat, lon)
-                        }
-                    }
+        fun getFLag(lon: Double, lat: Double) = getFlag(countryBoundaries?.getIds(lon, lat))
 
-                    animateCamera(latLng, closest, true)
-                }
-                .addOnFailureListener { e: Exception ->
+        when {
+            jsonObj != null -> {
+                val lat = jsonObj.getDouble("latitude")
+                val lon = jsonObj.getDouble("longitude")
+                val flag = jsonObj.getString("flag")
+                return latLng(flag, lat, lon)
+            }
+            closest -> screen.lastLocation?.let {
+                val lat = it.latitude
+                val lon = it.longitude
+                val flag = getFLag(lon, lat)
+                return latLng(flag, lat, lon)
+            }
+            ActivityCompat.checkSelfPermission(
+                screen.requireContext(),
+                permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+            -> {
+                val task = FusedLocationProviderClient(screen.requireContext()).lastLocation
+                try {
+                    // Block on the task for a maximum of 500 milliseconds, otherwise time out.
+                    val location = Tasks.await(task, 500, TimeUnit.MILLISECONDS)
+                    val lat = location.latitude
+                    val lon = location.longitude
+                    val flag = getFLag(lon, lat)
+                    return latLng(flag, lat, lon)
+                } catch (e: ExecutionException) {
                     error(e)
-                    animateCamera(getDefaultLatLng(), closest, true)
+                } catch (e: InterruptedException) {
+                    logException(e)
+                } catch (e: TimeoutException) {
+                    error(e)
                 }
+            }
         }
-        else -> {
-            animateCamera(getDefaultLatLng(), closest, true)
-        }
+
+        return getDefaultLatLng()
     }
 
     @Suppress("MagicNumber", "unused")

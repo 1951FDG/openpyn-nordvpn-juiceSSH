@@ -264,7 +264,7 @@ fun getFlag(list: MutableList<String>?): String {
 
     var t = System.nanoTime()
     t = System.nanoTime() - t
-    Log.info(getToastString(list) + " (in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
+    Log.debug(getToastString(list) + " (in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
     if (list != null && !list.isEmpty()) {
         return list[0].toLowerCase(Locale.ROOT)
     }

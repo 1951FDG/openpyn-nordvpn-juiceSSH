@@ -65,13 +65,12 @@ class MapFragment : SVC_MapFragment(),
 
         fun getLastLocation() {
             FusedLocationProviderClient(requireActivity()).lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    if (location != null) {
-                        lastLocation = location
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        lastLocation = it.result
+                    } else {
+                        error(it.exception)
                     }
-                }
-                .addOnFailureListener { e: Exception ->
-                    error(e)
                 }
         }
 
