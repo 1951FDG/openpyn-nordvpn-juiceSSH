@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(),
 
         setSnackBarManager()
 
-        PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
+        setDefaultPreferences()
         val api = GoogleApiAvailability.getInstance()
         val errorCode = api.isGooglePlayServicesAvailable(this)
 
@@ -509,6 +509,11 @@ class MainActivity : AppCompatActivity(),
                 }),
             SNACK_BAR_JUICESSH
         )
+    }
+
+    private fun setDefaultPreferences() {
+        PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
+        PreferenceManager.setDefaultValues(this, R.xml.pref_api, true)
     }
 
     companion object {

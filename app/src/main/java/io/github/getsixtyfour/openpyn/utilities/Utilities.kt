@@ -186,7 +186,7 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray? {
 @WorkerThread
 fun createGeoJson(preferences: SharedPreferences, securityManager: SecurityManager): JSONObject? {
     if (NetworkInfo.getInstance().isOnline()) {
-        val geo = preferences.getBoolean("pref_geo", false)
+        val geo = preferences.getBoolean("pref_geo", true)
         val api = preferences.getString("pref_geo_client", "")
         val ipdata = preferences.getString("pref_api_ipdata", "")
         val ipinfo = preferences.getString("pref_api_ipinfo", "")
