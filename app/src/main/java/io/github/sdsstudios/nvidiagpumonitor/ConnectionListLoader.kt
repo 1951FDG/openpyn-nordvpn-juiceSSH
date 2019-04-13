@@ -5,9 +5,9 @@ import android.database.Cursor
 import android.os.Bundle
 import androidx.annotation.MainThread
 import androidx.loader.app.LoaderManager
-import androidx.loader.content.CursorLoader
 import androidx.loader.content.Loader
 import com.sonelli.juicessh.pluginlibrary.PluginContract
+import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.TYPE_SSH
 
 /**
  * Created by Seth on 04/03/18.
@@ -19,12 +19,15 @@ class ConnectionListLoader(
 ) : LoaderManager.LoaderCallbacks<Cursor> {
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-        return CursorLoader(
+        val selection = "type = ?"
+        val selectionArgs = arrayOf(Integer.toString(TYPE_SSH))
+
+        return ConnectionLoader(
             mCtx,
             PluginContract.Connections.CONTENT_URI,
             PluginContract.Connections.PROJECTION,
-            null,
-            null,
+            selection,
+            selectionArgs,
             PluginContract.Connections.SORT_ORDER_DEFAULT
         )
     }
