@@ -22,6 +22,8 @@ import androidx.test.runner.lifecycle.Stage
 import com.schibsted.spain.barista.interaction.BaristaSleepInteractions
 import com.schibsted.spain.barista.rule.cleardata.ClearFilesRule
 import com.schibsted.spain.barista.rule.cleardata.ClearPreferencesRule
+import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
+import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`
@@ -49,8 +51,8 @@ class MainActivityTest {
     @JvmField
     var mGrantPermissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(
-            "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS",
-            "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS",
+            PERMISSION_READ,
+            PERMISSION_OPEN_SESSIONS,
             "android.permission.ACCESS_COARSE_LOCATION",
             "android.permission.WRITE_EXTERNAL_STORAGE",
             "android.permission.CHANGE_CONFIGURATION"

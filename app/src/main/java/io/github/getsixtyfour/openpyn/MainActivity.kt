@@ -15,7 +15,6 @@ import android.view.View.OnClickListener
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.loader.app.LoaderManager
 import androidx.preference.PreferenceManager
 import com.adityaanand.morphdialog.MorphDialog
@@ -31,6 +30,8 @@ import com.michaelflisar.gdprdialog.GDPRConsentState
 import com.michaelflisar.gdprdialog.GDPRDefinitions
 import com.michaelflisar.gdprdialog.GDPRSetup
 import com.michaelflisar.gdprdialog.helper.GDPRPreperationData
+import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
+import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
 import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
@@ -110,6 +111,10 @@ class MainActivity : AppCompatActivity(),
             //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
             else -> error(api.getErrorString(errorCode))
         }
+
+        if (isJuiceSSHInstalled(this)) {
+            if (hasPermission(PERMISSION_READ) && hasPermission(PERMISSION_OPEN_SESSIONS)) onPermissionsGranted()
+        }
     }
 
     override fun onResume() {
@@ -117,7 +122,7 @@ class MainActivity : AppCompatActivity(),
         val snackProgressBar = snackProgressBarManager?.getLastShown()
 
         if (isJuiceSSHInstalled(this)) {
-            if (hasPermission(READ_CONNECTIONS) && hasPermission(OPEN_SESSIONS)) return
+            if (hasPermission(PERMISSION_READ) && hasPermission(PERMISSION_OPEN_SESSIONS)) return
 
             when (snackProgressBar) {
                 null -> snackProgressBarManager?.show(SNACK_BAR_PERMISSIONS, SnackProgressBarManager.LENGTH_INDEFINITE)
@@ -160,54 +165,6 @@ class MainActivity : AppCompatActivity(),
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         fun isGranted(index: Int): Boolean {
             return (index >= 0 && index <= grantResults.lastIndex) && (grantResults[index] == PackageManager.PERMISSION_GRANTED)
-        }
-
-        fun onPermissionsGranted() {
-            mConnectionManager = ConnectionManager(
-                ctx = this,
-                mActivitySessionStartedListener = this,
-                mActivitySessionFinishedListener = this,
-                mActivitySessionExecuteListener = this,
-                mActivityCommandExecuteListener = this,
-                mActivityOnOutputLineListener = Toaster(this)
-            )
-            /*
-            mConnectionManager.powerUsage.observe(this, Observer {
-                textViewPower.setData(it, "W")
-            })
-
-            mConnectionManager.temperature.observe(this, Observer {
-                textViewTemp.setData(it, "C")
-            })
-
-            mConnectionManager.fanSpeed.observe(this, Observer {
-                textViewFanSpeed.setData(it, "%")
-            })
-
-            mConnectionManager.freeMemory.observe(this, Observer {
-                textViewFreeMemory.setData(it, "MB")
-            })
-
-            mConnectionManager.usedMemory.observe(this, Observer {
-                textViewUsedMemory.setData(it, "MB")
-            })
-
-            mConnectionManager.graphicsClock.observe(this, Observer {
-                textViewClockGraphics.setData(it, "MHz")
-            })
-
-            mConnectionManager.videoClock.observe(this, Observer {
-                textViewClockVideo.setData(it, "MHz")
-            })
-
-            mConnectionManager.memoryClock.observe(this, Observer {
-                textViewClockMemory.setData(it, "MHz")
-            })
-            */
-            mConnectionManager?.startClient(this)
-
-            spinnerConnectionList.adapter = mConnectionListAdapter
-            LoaderManager.getInstance<FragmentActivity>(this).initLoader(0, null, ConnectionListLoader(this, this))
         }
 
         if (requestCode == PERMISSION_REQUEST_CODE) {
@@ -372,14 +329,61 @@ class MainActivity : AppCompatActivity(),
         return snackProgressBarManager
     }
 
-    fun hasPermission(permission: String): Boolean {
+    private fun hasPermission(permission: String): Boolean {
         return ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     }
 
+    private fun onPermissionsGranted() {
+        spinnerConnectionList.adapter = mConnectionListAdapter
+        LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
+
+        mConnectionManager = ConnectionManager(
+            ctx = this,
+            mActivitySessionStartedListener = this,
+            mActivitySessionFinishedListener = this,
+            mActivitySessionExecuteListener = this,
+            mActivityCommandExecuteListener = this,
+            mActivityOnOutputLineListener = Toaster(this)
+        )
+        /*
+        mConnectionManager.powerUsage.observe(this, Observer {
+            textViewPower.setData(it, "W")
+        })
+
+        mConnectionManager.temperature.observe(this, Observer {
+            textViewTemp.setData(it, "C")
+        })
+
+        mConnectionManager.fanSpeed.observe(this, Observer {
+            textViewFanSpeed.setData(it, "%")
+        })
+
+        mConnectionManager.freeMemory.observe(this, Observer {
+            textViewFreeMemory.setData(it, "MB")
+        })
+
+        mConnectionManager.usedMemory.observe(this, Observer {
+            textViewUsedMemory.setData(it, "MB")
+        })
+
+        mConnectionManager.graphicsClock.observe(this, Observer {
+            textViewClockGraphics.setData(it, "MHz")
+        })
+
+        mConnectionManager.videoClock.observe(this, Observer {
+            textViewClockVideo.setData(it, "MHz")
+        })
+
+        mConnectionManager.memoryClock.observe(this, Observer {
+            textViewClockMemory.setData(it, "MHz")
+        })
+        */
+
+        mConnectionManager?.startClient(this)
+    }
+
     fun requestPermissions() {
-        if (!hasPermission(READ_CONNECTIONS) || !hasPermission(OPEN_SESSIONS)) {
-            ActivityCompat.requestPermissions(this, arrayOf(READ_CONNECTIONS, OPEN_SESSIONS), PERMISSION_REQUEST_CODE)
-        }
+        ActivityCompat.requestPermissions(this, arrayOf(PERMISSION_READ, PERMISSION_OPEN_SESSIONS), PERMISSION_REQUEST_CODE)
     }
 
     fun showGDPRIfNecessary() {
@@ -508,9 +512,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     companion object {
-        private const val OPEN_SESSIONS = "com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS"
         private const val PERMISSION_REQUEST_CODE = 23
-        private const val READ_CONNECTIONS = "com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS"
         private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
         private const val SNACK_BAR_JUICESSH = 1
         private const val SNACK_BAR_PERMISSIONS = 0
