@@ -77,5 +77,6 @@ fastlane/report.xml
 .env
 app/release/output.json
 app/src/main/obj
+keystore.properties
 tiles/
 world/.thumb.png
