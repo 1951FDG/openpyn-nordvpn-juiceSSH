@@ -86,7 +86,7 @@ After the map is done loading, the NordVPN API is invoked to query all the suppo
 
 -   Install [JuiceSSH](https://juicessh.com/)
 -   Add a new connection to Connections in JuiceSSH
--   Install this app (download not available yet)
+-   Install this app
 -   When prompted, enable/allow the permissions required by this app
 -   Change any app settings as required
 -   Select a Country by selecting a marker on the map
@@ -227,10 +227,10 @@ This app uses (modified) code from several open source projects.
 -   [Android Studio](https://developer.android.com/studio/)
 -   [Atom](https://atom.io/)
 -   [Codacy](https://www.codacy.com/)
--   [Crashlytics for Android](https://fabric.io/kits/android/crashlytics)
 -   [DB Browser for SQLite](http://sqlitebrowser.org/)
 -   [Detekt](https://github.com/arturbosch/detekt)
 -   [Fastlane](https://fastlane.tools/)
+-   [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
 -   [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 -   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 -   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
