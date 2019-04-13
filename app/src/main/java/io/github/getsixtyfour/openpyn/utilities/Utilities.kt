@@ -54,19 +54,22 @@ private fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, String
 
 private const val JUICE_SSH_PACKAGE_NAME = "com.sonelli.juicessh"
 
-fun isJuiceSSHInstalled(context: Context): Boolean {
-    return try {
-        context.packageManager.getPackageInfo(JUICE_SSH_PACKAGE_NAME, 0)
-        true
-    } catch (e: NameNotFoundException) {
-        false
-    }
+fun isJuiceSSHInstalled(context: Context): Boolean = try {
+    context.packageManager.getPackageInfo(JUICE_SSH_PACKAGE_NAME, 0)
+    true
+} catch (e: NameNotFoundException) {
+    false
 }
 
 fun juiceSSHInstall(context: Context) {
     val pkg = "com.android.vending"
     val cls = "com.google.android.finsky.activities.LaunchUrlHandlerActivity"
     val launchIntent = context.packageManager.getLaunchIntentForPackage(pkg)
+    fun openURI(uriString: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
+        ActivityCompat.startActivity(context, intent, null)
+    }
+
     if (launchIntent != null) {
         launchIntent.component = ComponentName(pkg, cls)
         launchIntent.data = Uri.parse("market://details?id=$JUICE_SSH_PACKAGE_NAME")
@@ -75,9 +78,13 @@ fun juiceSSHInstall(context: Context) {
         } catch (e: ActivityNotFoundException) {
             logException(e)
             val uriString = "https://play.google.com/store/apps/details?id=$JUICE_SSH_PACKAGE_NAME"
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-            ActivityCompat.startActivity(context, intent, null)
+            openURI(uriString)
         }
+    }
+    else {
+        val s = "juicessh-2-1-4"
+        val uriString = "https://www.apkmirror.com/apk/sonelli-ltd/juicessh-ssh-client/$s-release/$s-android-apk-download/download/"
+        openURI(uriString)
     }
 }
 
