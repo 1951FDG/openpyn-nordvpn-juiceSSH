@@ -52,6 +52,9 @@ android {
             }
         }
     }
+    packagingOptions {
+        exclude 'META-INF/atomicfu.kotlin_module'
+    }
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
