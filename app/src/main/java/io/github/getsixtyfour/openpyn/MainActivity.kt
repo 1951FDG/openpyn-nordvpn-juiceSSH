@@ -264,10 +264,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     @MainThread
-    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String?> {
+    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
         // todo
         val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
-        return fragment?.controlTower?.positionAndFlagForSelectedMarker() ?: Pair(null, null)
+        return fragment?.controlTower?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
     }
 
     override fun onError(error: Int, reason: String) {

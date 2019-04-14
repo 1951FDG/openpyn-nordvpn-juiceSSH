@@ -501,7 +501,7 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     @MainThread
-    fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String?> {
+    fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
         if (mMap != null && markers.size != 0) {
             markers.forEach { (key, value) ->
                 if (value.zIndex == 1.0f) {
@@ -510,7 +510,7 @@ class MapControlTower : SVC_MapControlTower(),
             }
         }
 
-        return Pair(null, null)
+        return Pair(null, "")
     }
 
     private fun animateCamera(latLng: LatLng, closest: Boolean, animate: Boolean = true) {
