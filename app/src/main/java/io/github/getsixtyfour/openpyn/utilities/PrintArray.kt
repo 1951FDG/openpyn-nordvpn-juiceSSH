@@ -211,13 +211,13 @@ object PrintArray {
     @Suppress("unused")
     fun getListInt(@Size(min = 1) key: String, defValue: String = "", prefs: SharedPreferences): ArrayList<Int> {
         val array = prefs.getString(key, defValue)!!.split(delimiter)
-        return array.mapTo(ArrayList()) { it: String -> it.toInt() }
+        return array.mapTo(ArrayList()) { it.toInt() }
     }
 
     @Suppress("unused")
     fun getListBoolean(@Size(min = 1) key: String, defValue: String = "", prefs: SharedPreferences): ArrayList<Boolean> {
         val array = prefs.getString(key, defValue)!!.split(delimiter)
-        return array.mapTo(ArrayList()) { it: String -> it.toBoolean() }
+        return array.mapTo(ArrayList()) { it.toBoolean() }
     }
 
     @Suppress("unused")

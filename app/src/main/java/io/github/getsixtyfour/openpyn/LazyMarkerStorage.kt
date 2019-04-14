@@ -22,7 +22,7 @@ class LazyMarkerStorage(key: String) : MyStorage(key) {
                 @FromJson
                 @Suppress("unused")
                 fun fromJson(value: Map<String, Double>): LatLng {
-                    return LatLng(value["lat"]!!, value["long"]!!)
+                    return LatLng(value.getValue("lat"), value.getValue("long"))
                 }
             })
             .build()

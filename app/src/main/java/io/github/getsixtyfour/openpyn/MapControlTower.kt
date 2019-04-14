@@ -33,8 +33,6 @@ import com.naver.android.svc.annotation.RequireScreen
 import com.naver.android.svc.annotation.RequireViews
 import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
-import io.github.getsixtyfour.openpyn.R.raw
-import io.github.getsixtyfour.openpyn.R.string
 import io.github.getsixtyfour.openpyn.security.SecurityManager
 import io.github.getsixtyfour.openpyn.utilities.PrintArray
 import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener
@@ -122,8 +120,8 @@ class MapControlTower : SVC_MapControlTower(),
 
         fun printArray(items: ArrayList<MultiSelectable>, checkedItems: ArrayList<Int>) {
             PrintArray.apply {
-                setHint(string.multi_select_dialog_hint)
-                setTitle(string.empty)
+                setHint(R.string.multi_select_dialog_hint)
+                setTitle(R.string.empty)
                 setItems(items)
                 setCheckedItems(checkedItems)
             }
@@ -151,7 +149,7 @@ class MapControlTower : SVC_MapControlTower(),
 
         doAsync {
             // todo benchmarking, coroutines?
-            val jsonArray = jsonArray(screen.requireContext(), raw.nordvpn, ".json")
+            val jsonArray = jsonArray(screen.requireContext(), R.raw.nordvpn, ".json")
             val stringArray = screen.resources.getStringArray(R.array.pref_country_values)
             val textArray = screen.resources.getTextArray(R.array.pref_country_entries)
             val countries = countryList(textArray)
@@ -436,7 +434,7 @@ class MapControlTower : SVC_MapControlTower(),
 
         doAsync {
             val jsonObj = createGeoJson(preferences, securityManager)
-            val jsonArr = jsonArray(screen.requireContext(), raw.nordvpn, ".json")
+            val jsonArr = jsonArray(screen.requireContext(), R.raw.nordvpn, ".json")
             val latLng = getCurrentPosition(jsonObj, jsonArr, false)
 
             uiThread {
@@ -655,7 +653,7 @@ class MapControlTower : SVC_MapControlTower(),
                         verticalLayout {
                             linearLayout {
                                 textView {
-                                    text = getString(io.github.getsixtyfour.openpyn.R.string.is_tor)
+                                    text = getString(R.string.is_tor)
                                     textSize = fl
                                     gravity = android.view.Gravity.START
                                 }.lparams(
@@ -678,7 +676,7 @@ class MapControlTower : SVC_MapControlTower(),
                             }
                             linearLayout {
                                 textView {
-                                    text = getString(io.github.getsixtyfour.openpyn.R.string.is_proxy)
+                                    text = getString(R.string.is_proxy)
                                     textSize = fl
                                     gravity = android.view.Gravity.START
                                 }.lparams(
@@ -701,7 +699,7 @@ class MapControlTower : SVC_MapControlTower(),
                             }
                             linearLayout {
                                 textView {
-                                    text = getString(io.github.getsixtyfour.openpyn.R.string.is_anonymous)
+                                    text = getString(R.string.is_anonymous)
                                     textSize = fl
                                     gravity = android.view.Gravity.START
                                 }.lparams(
@@ -724,7 +722,7 @@ class MapControlTower : SVC_MapControlTower(),
                             }
                             linearLayout {
                                 textView {
-                                    text = getString(io.github.getsixtyfour.openpyn.R.string.is_known_attacker)
+                                    text = getString(R.string.is_known_attacker)
                                     textSize = fl
                                     gravity = android.view.Gravity.START
                                 }.lparams(
@@ -747,7 +745,7 @@ class MapControlTower : SVC_MapControlTower(),
                             }
                             linearLayout {
                                 textView {
-                                    text = getString(io.github.getsixtyfour.openpyn.R.string.is_known_abuser)
+                                    text = getString(R.string.is_known_abuser)
                                     textSize = fl
                                     gravity = android.view.Gravity.START
                                 }.lparams(
@@ -770,7 +768,7 @@ class MapControlTower : SVC_MapControlTower(),
                             }
                             linearLayout {
                                 textView {
-                                    text = getString(io.github.getsixtyfour.openpyn.R.string.is_threat)
+                                    text = getString(R.string.is_threat)
                                     textSize = fl
                                     gravity = android.view.Gravity.START
                                 }.lparams(
@@ -793,7 +791,7 @@ class MapControlTower : SVC_MapControlTower(),
                             }
                             linearLayout {
                                 textView {
-                                    text = getString(io.github.getsixtyfour.openpyn.R.string.is_bogon)
+                                    text = getString(R.string.is_bogon)
                                     textSize = fl
                                     gravity = android.view.Gravity.START
                                 }.lparams(

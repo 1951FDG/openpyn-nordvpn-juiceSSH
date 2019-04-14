@@ -12,6 +12,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -71,7 +72,7 @@ public final class SecurityManager {
         try {
             byte[] encryptedBytes = Base64.decode(stringToDecrypt, Base64.DEFAULT);
             Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
-            IvParameterSpec ivSpec = new IvParameterSpec(encryptedBytes, 0, IV_LENGTH);
+            AlgorithmParameterSpec ivSpec = new IvParameterSpec(encryptedBytes, 0, IV_LENGTH);
             cipher.init(Cipher.DECRYPT_MODE, mKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(encryptedBytes, IV_LENGTH, encryptedBytes.length - IV_LENGTH);
             output = new String(cipherBytes, StandardCharsets.UTF_8);
@@ -90,7 +91,7 @@ public final class SecurityManager {
             Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
             byte[] iv = new byte[IV_LENGTH];
             new SecureRandom().nextBytes(iv);
-            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+            AlgorithmParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.ENCRYPT_MODE, mKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(clearText);
             output = new String(Base64.encode(concat(iv, cipherBytes), Base64.NO_WRAP), StandardCharsets.UTF_8);

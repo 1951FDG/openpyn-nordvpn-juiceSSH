@@ -242,7 +242,7 @@ fun getLatLng(flag: String, latLng: LatLng, jsonArr: JSONArray?): LatLng {
             }
         }
 
-        if (!latLngList.isEmpty() && !match) {
+        if (latLngList.isNotEmpty() && !match) {
             val results = FloatArray(latLngList.size)
 
             latLngList.withIndex().forEach { (index, it) ->
@@ -272,7 +272,7 @@ fun getFlag(list: MutableList<String>?): String {
     var t = System.nanoTime()
     t = System.nanoTime() - t
     Log.debug(getToastString(list) + " (in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
-    if (list != null && !list.isEmpty()) {
+    if (list != null && list.isNotEmpty()) {
         return list[0].toLowerCase(Locale.ROOT)
     }
     return ""
