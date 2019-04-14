@@ -125,13 +125,13 @@ dependencies {
     // Anko Layouts
     implementation "org.jetbrains.anko:anko-sdk21:$anko_version"
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.0'
     // Emoji
     implementation('com.vdurmont:emoji-java:4.0.0') {
         exclude group: 'org.json', module: 'json'
     }
     // Geocoder
-    implementation 'de.westnordost:countryboundaries:1.4'
+    implementation 'de.westnordost:countryboundaries:1.5'
     // JSON
     implementation 'com.squareup.moshi:moshi:1.8.0'
     // Kotlin
@@ -182,8 +182,8 @@ dependencies {
         exclude group: 'androidx.test.espresso'
     }
     // Architecture
-    implementation 'com.naver.android.svc:svc:1.0.0-beta23'
-    kapt 'com.naver.android.svc:svc-compiler:1.0.0-beta23'
+    implementation 'com.naver.android.svc:svc:1.0.0'
+    kapt 'com.naver.android.svc:svc-compiler:1.0.0'
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:2.1.0-alpha02"
     implementation "androidx.navigation:navigation-ui-ktx:2.1.0-alpha02"
