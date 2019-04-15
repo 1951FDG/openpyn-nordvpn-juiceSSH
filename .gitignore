@@ -59,8 +59,10 @@ captures/
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+app/google-services.json
 google_maps_api.xml
 app/src/main/res/values/google_maps_api.xml
+app/src/release/res/values/values.xml
 
 # Crashlytics plugin
 fabric.properties
