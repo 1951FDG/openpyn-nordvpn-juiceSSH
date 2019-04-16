@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn
+package io.github.getsixtyfour.openpyn.map
 
 import android.Manifest.permission
 import android.content.pm.PackageManager
@@ -33,6 +33,8 @@ import com.naver.android.svc.annotation.RequireScreen
 import com.naver.android.svc.annotation.RequireViews
 import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
+import io.github.getsixtyfour.openpyn.LazyMarkerStorage
+import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.security.SecurityManager
 import io.github.getsixtyfour.openpyn.utilities.PrintArray
 import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener

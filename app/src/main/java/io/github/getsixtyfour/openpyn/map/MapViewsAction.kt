@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn
+package io.github.getsixtyfour.openpyn.map
 
 import android.view.View
 import com.naver.android.svc.core.views.ViewsAction

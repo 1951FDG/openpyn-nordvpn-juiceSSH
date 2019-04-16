@@ -41,6 +41,7 @@ import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import io.fabric.sdk.android.Fabric
+import io.github.getsixtyfour.openpyn.map.MapFragment
 import io.github.getsixtyfour.openpyn.utilities.Toaster
 import io.github.getsixtyfour.openpyn.utilities.createJson
 import io.github.getsixtyfour.openpyn.utilities.isJuiceSSHInstalled

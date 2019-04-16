@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn
+package io.github.getsixtyfour.openpyn.map
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -12,6 +12,7 @@ import com.naver.android.svc.annotation.RequireViews
 import com.naver.android.svc.annotation.SvcFragment
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
+import io.github.getsixtyfour.openpyn.R
 import kotlinx.android.synthetic.main.fragment_map.map
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error

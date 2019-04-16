@@ -1,8 +1,10 @@
-package io.github.getsixtyfour.openpyn
+package io.github.getsixtyfour.openpyn.map
 
 import android.view.View
 import com.mayurrokade.minibar.UserMessage
 import com.naver.android.svc.core.views.ActionViews
+import io.github.getsixtyfour.openpyn.MainActivity
+import io.github.getsixtyfour.openpyn.R
 import kotlinx.android.synthetic.main.fragment_map.view.fab0
 import kotlinx.android.synthetic.main.fragment_map.view.fab1
 import kotlinx.android.synthetic.main.fragment_map.view.fab2
@@ -23,6 +25,7 @@ class MapViews : ActionViews<MapViewsAction>() {
     private val map by lazy { rootView.map }
     private val minibarView by lazy { rootView.minibarView }
     override fun onCreated() {
+        // todo decouple
         (screen.hostActivity as? MainActivity)?.getSnackProgressBarManager()?.setViewsToMove(arrayOf(fab0, fab1))
 
         fab0.setOnClickListener { viewsAction.toggleCommand(fab0) }
