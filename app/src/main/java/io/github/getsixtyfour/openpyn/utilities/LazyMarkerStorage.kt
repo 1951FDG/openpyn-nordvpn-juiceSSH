@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn
+package io.github.getsixtyfour.openpyn.utilities
 
 import com.androidmapsextensions.lazy.LazyMarker
 import com.google.android.gms.maps.model.LatLng
@@ -7,7 +7,6 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi.Builder
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.Types
-import io.github.getsixtyfour.openpyn.utilities.MyStorage
 
 class LazyMarkerStorage(key: String) : MyStorage(key) {
     override fun jsonAdapter(): JsonAdapter<List<Any>> {
