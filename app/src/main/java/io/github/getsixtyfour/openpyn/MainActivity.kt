@@ -25,6 +25,7 @@ import com.crashlytics.android.core.CrashlyticsCore
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPRConsentState
 import com.michaelflisar.gdprdialog.GDPRDefinitions
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity(),
     }
     private var mConnectionManager: ConnectionManager? = null
     private val mSetup by lazy {
-        GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS)
+        GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)
             .withExplicitAgeConfirmation(true)
             .withForceSelection(true)
             .withShowPaidOrFreeInfoText(false)
@@ -216,6 +217,8 @@ class MainActivity : AppCompatActivity(),
             if (!debug) {
                 val core = CrashlyticsCore.Builder().disabled(debug).build()
                 Fabric.with(this, Crashlytics.Builder().core(core).build())
+
+                FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(true)
             }
         }
     }
