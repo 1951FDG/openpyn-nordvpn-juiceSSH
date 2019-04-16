@@ -8,7 +8,7 @@ import com.michaelflisar.gdprdialog.GDPR
 import com.squareup.leakcanary.LeakCanary
 import io.github.getsixtyfour.openpyn.utilities.logException
 
-open class ExampleApplication : Application() {
+open class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         if (LeakCanary.isInAnalyzerProcess(this)) {

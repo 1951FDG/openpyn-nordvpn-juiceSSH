@@ -10,6 +10,6 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name=".DebugExampleApplication"
+        android:name=".DebugMainApplication"
         tools:replace="android:name" />
 </manifest>
