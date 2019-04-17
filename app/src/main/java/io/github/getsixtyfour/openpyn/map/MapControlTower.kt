@@ -41,7 +41,6 @@ import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener
 import io.github.getsixtyfour.openpyn.utilities.countryList
 import io.github.getsixtyfour.openpyn.utilities.createGeoJson
 import io.github.getsixtyfour.openpyn.utilities.getDefaultLatLng
-import io.github.getsixtyfour.openpyn.utilities.getFlag
 import io.github.getsixtyfour.openpyn.utilities.getLatLng
 import io.github.getsixtyfour.openpyn.utilities.jsonArray
 import io.github.getsixtyfour.openpyn.utilities.logException
@@ -589,14 +588,28 @@ class MapControlTower : SVC_MapControlTower(),
 
     @MainThread
     private fun getCurrentPosition(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean): LatLng {
-        fun latLng(flag: String, lat: Double, lon: Double): LatLng {
-            return when {
-                closest && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
-                else -> LatLng(lat, lon)
-            }
+        fun latLng(flag: String, lat: Double, lon: Double): LatLng = when {
+            closest && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
+            else -> LatLng(lat, lon)
         }
 
-        fun getFLag(lon: Double, lat: Double) = getFlag(countryBoundaries?.getIds(lon, lat))
+        fun getToastString(ids: List<String>?): String = when {
+            ids.isNullOrEmpty() -> "is nowhere"
+            else -> "is in " + ids.joinToString()
+        }
+
+        fun getFlag(list: List<String>?): String = when {
+            list != null && list.isNotEmpty() -> list[0].toLowerCase(Locale.ROOT)
+            else -> ""
+        }
+
+        fun getFLag(lon: Double, lat: Double): String {
+            var t = System.nanoTime()
+            val ids = countryBoundaries?.getIds(lon, lat)
+            t = System.nanoTime() - t
+            debug(getToastString(ids) + " (in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
+            return getFlag(ids)
+        }
 
         var latLng = getDefaultLatLng()
 

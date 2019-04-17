@@ -259,23 +259,6 @@ fun getLatLng(flag: String, latLng: LatLng, jsonArr: JSONArray?): LatLng {
     return latLng
 }
 
-fun getFlag(list: MutableList<String>?): String {
-    fun getToastString(ids: List<String>?): String {
-        return when {
-            ids == null || ids.isEmpty() -> "is nowhere"
-            else -> "is in " + ids.joinToString()
-        }
-    }
-
-    var t = System.nanoTime()
-    t = System.nanoTime() - t
-    Log.debug(getToastString(list) + " (in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
-    if (list != null && list.isNotEmpty()) {
-        return list[0].toLowerCase(Locale.ROOT)
-    }
-    return ""
-}
-
 fun logException(throwable: Throwable) {
     if (Fabric.isInitialized()) {
         Crashlytics.logException(throwable)
