@@ -28,7 +28,6 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.Locale
 
 private fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, String>>) {
     for ((id, ext) in list) {
@@ -218,41 +217,38 @@ fun getDefaultLatLng(): LatLng {
     return LatLng(51.514125, -0.093689)
 }
 
-fun getLatLng(flag: String, latLng: LatLng, jsonArr: JSONArray?): LatLng {
+fun getLatLng(flag: String, latLng: LatLng, jsonArr: JSONArray): LatLng {
     Log.info(latLng.toString())
+    val latLngList = arrayListOf<LatLng>()
+    var match = false
 
-    if (jsonArr != null) {
-        val latLngList = arrayListOf<LatLng>()
-        var match = false
+    loop@ for (res in jsonArr) {
+        val pass = flag == res.getString("flag")
 
-        loop@ for (res in jsonArr) {
-            val pass = flag == res.getString("flag")
+        if (pass) {
+            val location = res.getJSONObject("location")
+            val element = LatLng(location.getDouble("lat"), location.getDouble("long"))
 
-            if (pass) {
-                val location = res.getJSONObject("location")
-                val element = LatLng(location.getDouble("lat"), location.getDouble("long"))
-
-                match = element == latLng
-                when {
-                    match -> break@loop
-                    else -> latLngList.add(element)
-                }
+            match = element == latLng
+            when {
+                match -> break@loop
+                else -> latLngList.add(element)
             }
         }
+    }
 
-        if (latLngList.isNotEmpty() && !match) {
-            val results = FloatArray(latLngList.size)
+    if (latLngList.isNotEmpty() && !match) {
+        val results = FloatArray(latLngList.size)
 
-            latLngList.withIndex().forEach { (index, it) ->
-                val result = FloatArray(1)
-                Location.distanceBetween(latLng.latitude, latLng.longitude, it.latitude, it.longitude, result)
-                results[index] = result[0]
-            }
-            val result = results.min()
-            if (result != null) {
-                val index = results.indexOf(result)
-                return latLngList[index]
-            }
+        latLngList.withIndex().forEach { (index, it) ->
+            val result = FloatArray(1)
+            Location.distanceBetween(latLng.latitude, latLng.longitude, it.latitude, it.longitude, result)
+            results[index] = result[0]
+        }
+        val result = results.min()
+        if (result != null) {
+            val index = results.indexOf(result)
+            return latLngList[index]
         }
     }
 

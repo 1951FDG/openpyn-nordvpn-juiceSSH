@@ -285,7 +285,7 @@ class MapControlTower : SVC_MapControlTower(),
                 }
             }
             val jsonObj = createGeoJson(preferences, securityManager)
-            val latLng = getCurrentPosition(jsonObj, jsonArray, true)
+            val latLng = getCurrentPosition(jsonObj, jsonArray)
 
             animateCamera(latLng, closest = true, animate = false)
 
@@ -439,8 +439,7 @@ class MapControlTower : SVC_MapControlTower(),
 
         doAsync {
             val jsonObj = createGeoJson(preferences, securityManager)
-            val jsonArr = jsonArray(screen.requireContext(), R.raw.nordvpn, ".json")
-            val latLng = getCurrentPosition(jsonObj, jsonArr, false)
+            val latLng = getCurrentPosition(jsonObj)
 
             uiThread {
                 screen.toolBar?.hideProgress(true)
@@ -587,9 +586,9 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     @MainThread
-    private fun getCurrentPosition(jsonObj: JSONObject?, jsonArr: JSONArray?, closest: Boolean): LatLng {
+    private fun getCurrentPosition(jsonObj: JSONObject?, jsonArr: JSONArray? = null): LatLng {
         fun latLng(flag: String, lat: Double, lon: Double): LatLng = when {
-            closest && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
+            jsonArr != null && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
             else -> LatLng(lat, lon)
         }
 
@@ -620,7 +619,7 @@ class MapControlTower : SVC_MapControlTower(),
                 val flag = jsonObj.getString("flag")
                 latLng = latLng(flag, lat, lon)
             }
-            closest -> screen.lastLocation?.let {
+            jsonArr != null -> screen.lastLocation?.let {
                 val lat = it.latitude
                 val lon = it.longitude
                 val flag = getFLag(lon, lat)
