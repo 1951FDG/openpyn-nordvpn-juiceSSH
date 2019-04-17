@@ -73,6 +73,7 @@ import java.util.concurrent.TimeoutException
 @ControlTower
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)
+@Suppress("LargeClass", "TooManyFunctions")
 class MapControlTower : SVC_MapControlTower(),
     AnkoLogger,
     OnMapReadyCallback,
@@ -100,6 +101,7 @@ class MapControlTower : SVC_MapControlTower(),
         tileProvider?.close()
     }
 
+    @Suppress("ComplexMethod")
     override fun onMapReady(googleMap: GoogleMap) {
         screen.toolBar?.showProgress(true)
 
@@ -272,6 +274,7 @@ class MapControlTower : SVC_MapControlTower(),
                 }
             }
             // Load all map tiles
+            @Suppress("MagicNumber")
             val z = 3
             //val z = tileProvider!!.minimumZoom.toInt()
             val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
@@ -517,6 +520,7 @@ class MapControlTower : SVC_MapControlTower(),
         return Pair(null, "")
     }
 
+    @Suppress("ComplexMethod")
     private fun animateCamera(latLng: LatLng, closest: Boolean, animate: Boolean = true) {
         info(latLng.toString())
 
@@ -586,6 +590,7 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     @MainThread
+    @Suppress("ComplexMethod")
     private fun getCurrentPosition(jsonObj: JSONObject?, jsonArr: JSONArray? = null): LatLng {
         fun latLng(flag: String, lat: Double, lon: Double): LatLng = when {
             jsonArr != null && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
@@ -606,7 +611,9 @@ class MapControlTower : SVC_MapControlTower(),
             var t = System.nanoTime()
             val ids = countryBoundaries?.getIds(lon, lat)
             t = System.nanoTime() - t
-            debug(getToastString(ids) + " (in " + "%.3f".format(t / 1000 / 1000.toFloat()) + "ms)")
+            @Suppress("MagicNumber")
+            val i = 1000
+            debug(getToastString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
             return getFlag(ids)
         }
 
