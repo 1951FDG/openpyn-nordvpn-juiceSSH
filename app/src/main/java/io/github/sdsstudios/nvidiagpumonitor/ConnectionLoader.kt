@@ -11,8 +11,12 @@ class ConnectionLoader : CursorLoader {
     constructor(context: Context) : super(context)
 
     constructor(
-        context: Context, uri: Uri, projection: Array<String>?,
-        selection: String?, selectionArgs: Array<String>?, sortOrder: String?
+        context: Context,
+        uri: Uri,
+        projection: Array<String>?,
+        selection: String?,
+        selectionArgs: Array<String>?,
+        sortOrder: String?
     ) : super(context, uri, projection, selection, selectionArgs, sortOrder)
 
     override fun loadInBackground(): Cursor? {

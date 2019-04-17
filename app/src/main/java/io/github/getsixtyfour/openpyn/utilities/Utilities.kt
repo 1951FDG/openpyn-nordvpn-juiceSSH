@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager.NameNotFoundException
-import android.content.res.Resources
 import android.content.res.Resources.NotFoundException
 import android.location.Location
 import android.net.Uri
@@ -36,13 +35,9 @@ private fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, String
         try {
             val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
             if (!file.exists()) {
-                context.resources.openRawResource(id).use { input ->
-                    file.outputStream().buffered().use { output ->
-                        input.copyTo(output)
-                    }
-                }
+                copyRawResourceToFile(context, id, file)
             }
-        } catch (e: Resources.NotFoundException) {
+        } catch (e: NotFoundException) {
             logException(e)
         } catch (e: FileNotFoundException) {
             logException(e)
@@ -80,8 +75,7 @@ fun juiceSSHInstall(context: Context) {
             val uriString = "https://play.google.com/store/apps/details?id=$JUICE_SSH_PACKAGE_NAME"
             openURI(uriString)
         }
-    }
-    else {
+    } else {
         val s = "juicessh-2-1-4"
         val uriString = "https://www.apkmirror.com/apk/sonelli-ltd/juicessh-ssh-client/$s-release/$s-android-apk-download/download/"
         openURI(uriString)
@@ -160,11 +154,7 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray? {
     try {
         val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
         if (!file.exists()) {
-            context.resources.openRawResource(id).use { input ->
-                file.outputStream().buffered().use { output ->
-                    input.copyTo(output)
-                }
-            }
+            copyRawResourceToFile(context, id, file)
         }
         val json = file.bufferedReader().use {
             it.readText()
@@ -180,6 +170,14 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray? {
         logException(e)
     }
     return null
+}
+
+private fun copyRawResourceToFile(context: Context, id: Int, file: File) {
+    context.resources.openRawResource(id).use { input ->
+        file.outputStream().buffered().use { output ->
+            input.copyTo(output)
+        }
+    }
 }
 
 @SuppressLint("WrongThread")

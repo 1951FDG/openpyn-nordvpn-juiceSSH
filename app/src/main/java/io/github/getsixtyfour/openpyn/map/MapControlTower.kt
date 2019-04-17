@@ -406,20 +406,23 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     override fun toggleFavoriteMarker() {
+        fun toggleLevel(value: LazyMarker) {
+            when (value.level) {
+                0 -> {
+                    value.setLevel(1, null)
+                    storage.addFavorite(screen.requireContext(), value)
+                }
+                1 -> {
+                    value.setLevel(0, null)
+                    storage.removeFavorite(screen.requireContext(), value)
+                }
+            }
+        }
+
         if (mMap != null && markers.size != 0) {
             markers.forEach { (_, value) ->
                 if (value.zIndex == 1.0f) {
-                    val level = value.level
-                    when (level) {
-                        0 -> {
-                            value.setLevel(1, null)
-                            storage.addFavorite(screen.requireContext(), value)
-                        }
-                        1 -> {
-                            value.setLevel(0, null)
-                            storage.removeFavorite(screen.requireContext(), value)
-                        }
-                    }
+                    toggleLevel(value)
                 }
             }
         }
@@ -428,6 +431,7 @@ class MapControlTower : SVC_MapControlTower(),
     @MainThread
     @Suppress("MagicNumber")
     override fun updateMasterMarker(show: Boolean) {
+        //todo check all clickable status
         views.setClickableLocationFab(false)
         val preferences = PreferenceManager.getDefaultSharedPreferences(screen.requireContext())
         val securityManager = SecurityManager.getInstance(screen.requireContext())
@@ -528,6 +532,7 @@ class MapControlTower : SVC_MapControlTower(),
 
         fun onFinish() {
             markers.forEach { (key, value) ->
+                val level = value.level
                 if (key == latLng) {
                     if (!value.isVisible) value.isVisible = true
                     if (!value.isInfoWindowShown) value.showInfoWindow()
@@ -535,14 +540,14 @@ class MapControlTower : SVC_MapControlTower(),
                     value.zIndex = 1.0f
                     value.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
-                    views.toggleFavoriteFab((value.level == 1))
+                    views.toggleFavoriteFab((level == 1))
 
                     views.showFavoriteFab()
                 } else {
                     if (value.zIndex == 1.0f) {
                         //if (value.isInfoWindowShown) value.hideInfoWindow()
-                        value.setLevel(value.level, null)
-                        onLevelChange(value, value.level)
+                        value.setLevel(level, null)
+                        onLevelChange(value, level)
                     }
                 }
             }
@@ -593,18 +598,20 @@ class MapControlTower : SVC_MapControlTower(),
 
         fun getFLag(lon: Double, lat: Double) = getFlag(countryBoundaries?.getIds(lon, lat))
 
+        var latLng = getDefaultLatLng()
+
         when {
             jsonObj != null -> {
                 val lat = jsonObj.getDouble("latitude")
                 val lon = jsonObj.getDouble("longitude")
                 val flag = jsonObj.getString("flag")
-                return latLng(flag, lat, lon)
+                latLng = latLng(flag, lat, lon)
             }
             closest -> screen.lastLocation?.let {
                 val lat = it.latitude
                 val lon = it.longitude
                 val flag = getFLag(lon, lat)
-                return latLng(flag, lat, lon)
+                latLng = latLng(flag, lat, lon)
             }
             ActivityCompat.checkSelfPermission(
                 screen.requireContext(),
@@ -614,11 +621,11 @@ class MapControlTower : SVC_MapControlTower(),
                 val task = FusedLocationProviderClient(screen.requireContext()).lastLocation
                 try {
                     // Block on the task for a maximum of 500 milliseconds, otherwise time out.
-                    val location = Tasks.await(task, 500, TimeUnit.MILLISECONDS)
+                    val location = Tasks.await(task, TASK_TIMEOUT, TimeUnit.MILLISECONDS)
                     val lat = location.latitude
                     val lon = location.longitude
                     val flag = getFLag(lon, lat)
-                    return latLng(flag, lat, lon)
+                    latLng = latLng(flag, lat, lon)
                 } catch (e: ExecutionException) {
                     error(e)
                 } catch (e: InterruptedException) {
@@ -629,10 +636,10 @@ class MapControlTower : SVC_MapControlTower(),
             }
         }
 
-        return getDefaultLatLng()
+        return latLng
     }
 
-    @Suppress("MagicNumber", "unused")
+    @Suppress("ComplexMethod", "MagicNumber", "unused")
     private fun showThreats(jsonObj: JSONObject) {
         val threats: JSONObject? = jsonObj.optJSONObject("threat")
         info(threats)
@@ -824,5 +831,6 @@ class MapControlTower : SVC_MapControlTower(),
 
     companion object {
         private const val FAVORITE_KEY = "pref_favorites"
+        private const val TASK_TIMEOUT: Long = 500
     }
 }

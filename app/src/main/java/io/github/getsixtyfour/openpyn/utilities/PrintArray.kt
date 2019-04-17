@@ -140,7 +140,9 @@ object PrintArray {
 
     // MultiSelectDialog
     fun show(
-        @Size(min = 1) key: String, context: AppCompatActivity, prefs: SharedPreferences?,
+        @Size(min = 1) key: String,
+        context: AppCompatActivity,
+        prefs: SharedPreferences?,
         listener: SubmitCallbackListener
     ) {
         show(key, checkNotNull(itemsList), checkNotNull(checkedItemsList), context, prefs, listener)
