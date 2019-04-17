@@ -86,7 +86,7 @@ After the map is done loading, the NordVPN API is invoked to query all the suppo
 
 -   Install [JuiceSSH](https://juicessh.com/)
 -   Add a new connection to Connections in JuiceSSH
--   Install this app (download not available yet)
+-   Install this app
 -   When prompted, enable/allow the permissions required by this app
 -   Change any app settings as required
 -   Select a Country by selecting a marker on the map
@@ -120,15 +120,19 @@ pip3 install --upgrade .
 
 To compile and run the project you'll need:
 
--   [Android Studio](https://developer.android.com/studio/) `3.x`
--   [Android SDK](https://developer.android.com/studio/releases/platforms) `9 (API level 28)`
--   Android SDK Build-Tools
--   CMake `v3.10.2`
--   Android SDK Platform-Tools
--   Android SDK Tools
--   [Android NDK](https://developer.android.com/ndk/)
--   Android Support Repository
--   Google repository
+-   [Android Studio 3.3 or higher](https://developer.android.com/studio/)
+    -   Android `9 (API level 28)`
+    -   Android SDK Build-Tools `28.0.3`
+    -   CMake `v3.10.2`
+    -   Android SDK Platform-Tools
+    -   Android SDK Tools
+    -   NDK
+    -   Android Support Repository
+    -   Google repository
+
+
+-   Maps SDK for Android
+    -   [Get API Key](https://developers.google.com/maps/documentation/android-sdk/signup)
 
 ## References
 
@@ -152,6 +156,7 @@ To compile and run the project you'll need:
 -   [ElasticView](https://github.com/armcha/ElasticView)
 -   [emoji-java](https://github.com/vdurmont/emoji-java)
 -   [Fuel](https://github.com/kittinunf/Fuel)
+-   [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
 -   [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 -   [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 -   [Kotlin](https://github.com/JetBrains/kotlin)
@@ -222,10 +227,10 @@ This app uses (modified) code from several open source projects.
 -   [Android Studio](https://developer.android.com/studio/)
 -   [Atom](https://atom.io/)
 -   [Codacy](https://www.codacy.com/)
--   [Crashlytics for Android](https://fabric.io/kits/android/crashlytics)
 -   [DB Browser for SQLite](http://sqlitebrowser.org/)
 -   [Detekt](https://github.com/arturbosch/detekt)
 -   [Fastlane](https://fastlane.tools/)
+-   [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
 -   [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 -   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 -   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)

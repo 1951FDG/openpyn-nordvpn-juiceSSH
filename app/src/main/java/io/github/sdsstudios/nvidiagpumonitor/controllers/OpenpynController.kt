@@ -100,18 +100,23 @@ class OpenpynController(
     }
 
     override fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
-        var pair: Pair<Coordinate?, String?> = Pair(null, null)
+        fun code(iso: String): String = when (iso) {
+            "gb" -> "uk" // "domain":"uk1000.nordvpn.com", res["domain"][:2]
+            else -> iso
+        }
+
+        var pair: Pair<Coordinate?, String> = Pair(null, "")
         if (mActivityExecuteCommandListener != null) {
             pair = mActivityExecuteCommandListener.positionAndFlagForSelectedMarker()
         }
         val (location, flag) = pair
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
-        val server = preferences.getString("pref_server", null)
-        val country = preferences.getString("pref_country", "gb")
+        val server: String = preferences.getString("pref_server", "")!!
+        val country: String = preferences.getString("pref_country", "")!!
         val tcp = preferences.getBoolean("pref_tcp", false)
-        val load = preferences.getString("pref_max_load", "70")
-        val top = preferences.getString("pref_top_servers", "10")
-        val pings = preferences.getString("pref_pings", "3")
+        val load: String = preferences.getString("pref_max_load", "")!!
+        val top: String = preferences.getString("pref_top_servers", "")!!
+        val pings: String = preferences.getString("pref_pings", "")!!
         val rules = preferences.getBoolean("pref_force_fw", false)
         val p2p = preferences.getBoolean("pref_p2p", false)
         val dedicated = preferences.getBoolean("pref_dedicated", false)
@@ -128,21 +133,20 @@ class OpenpynController(
         val openvpn = "--syslog openpyn"
         val options = StringBuilder("openpyn")
 
-        if (server != null && !server.isEmpty())
-            options.append(" --server $server")
-        else if (flag != null)
-            if (flag == "gb") options.append(" uk") else options.append(" $flag")
-        else if (country != null)
-            if (country == "gb") options.append(" uk") else options.append(" $country")
+        when {
+            flag.isNotEmpty() -> options.append(" ${code(flag)}")
+            server.isNotEmpty() -> options.append(" --server $server")
+            country.isNotEmpty() -> options.append(" ${code(country)}")
+        }
         //if area:
         //openpyn_options += " --area " + area
         if (tcp)
             options.append(" --tcp")
-        if (load != null)
+        if (load.isNotEmpty())
             options.append(" --max-load $load")
-        if (top != null)
+        if (top.isNotEmpty())
             options.append(" --top-servers $top")
-        if (pings != null)
+        if (pings.isNotEmpty())
             options.append(" --pings $pings")
         if (rules)
             options.append(" --force-fw-rules")
@@ -171,7 +175,7 @@ class OpenpynController(
             options.append(" --silent")
         if (nvram)
             options.append(" --nvram " + preferences.getString("pref_nvram_client", "5"))
-        if (!openvpn.isEmpty())
+        if (openvpn.isNotEmpty())
             options.append(" --openvpn-options '$openvpn'")
         if (location != null)
             options.append(" --location " + location.latitude.toString() + " " + location.longitude.toString())

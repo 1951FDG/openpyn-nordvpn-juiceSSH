@@ -1,12 +1,14 @@
 package io.github.getsixtyfour.openpyn
 
 import android.app.Application
-import com.crashlytics.android.Crashlytics
+import com.ariascode.networkutility.NetworkInfo
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
+import com.michaelflisar.gdprdialog.GDPR
 import com.squareup.leakcanary.LeakCanary
+import io.github.getsixtyfour.openpyn.utilities.logException
 
-open class ExampleApplication : Application() {
+open class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -14,9 +16,13 @@ open class ExampleApplication : Application() {
             // You should not init your app in this process.
             return
         }
+
+        NetworkInfo.getInstance(this)
+
         installBlockCanary()
         installLeakCanary()
         populateAboutConfig()
+        GDPR.getInstance().init(this)
     }
 
     protected open fun installBlockCanary() {
@@ -49,7 +55,7 @@ open class ExampleApplication : Application() {
 
             override fun logException(e: Exception, b: Boolean) {
                 // handle exception events.
-                Crashlytics.logException(e)
+                logException(e)
             }
         }
         // email

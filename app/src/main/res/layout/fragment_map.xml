@@ -2,13 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/maplayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:transitionGroup="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="io.github.getsixtyfour.openpyn.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context=".map.MapFragment">
 
     <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map"
@@ -88,10 +86,12 @@
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
         android:layout_margin="16dp"
+        android:visibility="gone"
         app:elevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_flash_on_white_24dp"
-        app:useCompatPadding="false" />
+        app:useCompatPadding="false"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
