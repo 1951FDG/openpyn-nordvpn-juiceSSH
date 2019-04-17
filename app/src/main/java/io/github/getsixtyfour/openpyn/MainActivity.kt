@@ -258,6 +258,7 @@ class MainActivity : AppCompatActivity(),
         toolbar.showProgress(true)
     }
 
+    @Suppress("MagicNumber")
     override fun onDisconnect() {
         toolbar.showProgress(true)
 
