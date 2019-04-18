@@ -538,7 +538,7 @@ class MapControlTower : SVC_MapControlTower(),
         fun onFinish() {
             markers.forEach { (key, value) ->
                 val level = value.level
-                if (key == latLng) {
+                if (key == latLng && flags.contains(value.tag)) {
                     if (!value.isVisible) value.isVisible = true
                     if (!value.isInfoWindowShown) value.showInfoWindow()
 
@@ -548,12 +548,6 @@ class MapControlTower : SVC_MapControlTower(),
                     views.toggleFavoriteFab((level == 1))
 
                     views.showFavoriteFab()
-                } else {
-                    if (value.zIndex == 1.0f) {
-                        //if (value.isInfoWindowShown) value.hideInfoWindow()
-                        value.setLevel(level, null)
-                        onLevelChange(value, level)
-                    }
                 }
             }
 
