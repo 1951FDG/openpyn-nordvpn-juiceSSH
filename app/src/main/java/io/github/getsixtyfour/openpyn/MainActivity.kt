@@ -1,6 +1,5 @@
 package io.github.getsixtyfour.openpyn
 
-import android.R.string
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -15,7 +14,9 @@ import android.view.View.OnClickListener
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager
+import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
 import com.adityaanand.morphdialog.MorphDialog
 import com.afollestad.materialdialogs.MaterialDialog
@@ -263,7 +264,7 @@ class MainActivity : AppCompatActivity(),
         toolbar.showProgress(true)
 
         Handler().postDelayed({
-            val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
+            val fragment = getCurrentNavigationFragment() as? MapFragment
             fragment?.controlTower?.updateMasterMarker(true)
         }, 10000)
     }
@@ -271,7 +272,7 @@ class MainActivity : AppCompatActivity(),
     @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
         // todo
-        val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
+        val fragment = getCurrentNavigationFragment() as? MapFragment
         return fragment?.controlTower?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
     }
 
@@ -299,15 +300,16 @@ class MainActivity : AppCompatActivity(),
             toolbar.hideProgress(true)
 
             Handler().postDelayed({
-                val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? MapFragment
+                val fragment = getCurrentNavigationFragment() as? MapFragment
                 fragment?.controlTower?.updateMasterMarker(true)
             }, 10000)
         }
     }
 
     override fun onSessionFinished() {
+        info("onSessionFinished")
         toolbar.hideProgress(true)
-        val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? OnSessionFinishedListener
+        val fragment = getCurrentNavigationFragment() as? OnSessionFinishedListener
 
         fragment?.onSessionFinished()
 
@@ -316,7 +318,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
-        val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? OnSessionStartedListener
+        info("onSessionStarted")
+        val fragment = getCurrentNavigationFragment() as? OnSessionStartedListener
 
         fragment?.onSessionStarted(sessionId, sessionKey)
 
@@ -325,9 +328,15 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSessionCancelled() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as? OnSessionStartedListener
+        info("onSessionCancelled")
+        val fragment = getCurrentNavigationFragment() as? OnSessionStartedListener
 
         fragment?.onSessionCancelled()
+    }
+
+    private fun getCurrentNavigationFragment(): Fragment? {
+        val navHostFragment = supportFragmentManager.primaryNavigationFragment as? NavHostFragment
+        return navHostFragment?.childFragmentManager?.primaryNavigationFragment
     }
 
     fun getSnackProgressBarManager(): SnackProgressBarManager? {
@@ -487,7 +496,7 @@ class MainActivity : AppCompatActivity(),
 
         snackProgressBarManager = SnackProgressBarManager(mainlayout)
         val type = SnackProgressBar.TYPE_NORMAL
-        val action = getString(string.ok)
+        val action = getString(android.R.string.ok)
 
         snackProgressBarManager?.put(
             snackProgressBar(

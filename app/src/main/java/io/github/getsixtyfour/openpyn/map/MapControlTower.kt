@@ -474,6 +474,7 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     fun onSessionFinished() {
+        info("onSessionFinished")
         views.setClickableConnectFab(true)
         views.setAppearanceConnectFab(false)
 
@@ -489,6 +490,7 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     fun onSessionStarted() {
+        info("onSessionStarted")
         views.setClickableConnectFab(true)
         views.setAppearanceConnectFab(true)
 
@@ -504,6 +506,7 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     fun onSessionCancelled() {
+        info("onSessionCancelled")
         views.setClickableConnectFab(true)
     }
 
