@@ -67,6 +67,14 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab1.isClickable = clickable
     }
 
+    fun fakeLayoutAllFabs() {
+        val i = 0
+        fab0.layout(i, i, i, i)
+        fab1.layout(i, i, i, i)
+        fab2.layout(i, i, i, i)
+        fab3.layout(i, i, i, i)
+    }
+
     fun showAllFabs() {
         fab0.show()
         fab1.show()
@@ -93,6 +101,6 @@ class MapViews : ActionViews<MapViewsAction>() {
 
     fun toggleFavoriteFab(checked: Boolean) {
         fab3.isChecked = checked
-        fab3.refreshDrawableState()
+        fab3.show()
     }
 }

@@ -364,8 +364,6 @@ class MapControlTower : SVC_MapControlTower(),
             views.toggleFavoriteFab((markers[p0.position]?.level == 1))
         }
 
-        views.showFavoriteFab()
-
         return false
     }
 
@@ -536,18 +534,18 @@ class MapControlTower : SVC_MapControlTower(),
         }
 
         fun onFinish() {
+            views.fakeLayoutAllFabs()
+
             markers.forEach { (key, value) ->
                 val level = value.level
                 if (key == latLng && flags.contains(value.tag)) {
-                    if (!value.isVisible) value.isVisible = true
-                    if (!value.isInfoWindowShown) value.showInfoWindow()
-
                     value.zIndex = 1.0f
                     value.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
-                    views.toggleFavoriteFab((level == 1))
+                    if (!value.isVisible) value.isVisible = true
+                    if (!value.isInfoWindowShown) value.showInfoWindow()
 
-                    views.showFavoriteFab()
+                    views.toggleFavoriteFab((level == 1))
                 }
             }
 
