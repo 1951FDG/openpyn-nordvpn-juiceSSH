@@ -468,7 +468,7 @@ class MapControlTower : SVC_MapControlTower(),
     fun onSessionFinished() {
         info("onSessionFinished")
         views.setClickableConnectFab(true)
-        views.setAppearanceConnectFab(false)
+        views.toggleConnectFab(false)
 
         views.showListAndLocationFab()
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
@@ -484,7 +484,7 @@ class MapControlTower : SVC_MapControlTower(),
     fun onSessionStarted() {
         info("onSessionStarted")
         views.setClickableConnectFab(true)
-        views.setAppearanceConnectFab(true)
+        views.toggleConnectFab(true)
 
         views.hideListAndLocationFab()
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
@@ -500,6 +500,7 @@ class MapControlTower : SVC_MapControlTower(),
     fun onSessionCancelled() {
         info("onSessionCancelled")
         views.setClickableConnectFab(true)
+        views.toggleConnectFab(false)
     }
 
     @MainThread

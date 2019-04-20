@@ -61,7 +61,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/fab0"
         app:layout_constraintRight_toRightOf="@+id/fab0"
         app:layout_constraintTop_toBottomOf="@+id/fab2"
-        app:srcCompat="@drawable/fab_switch"
+        app:srcCompat="@drawable/fab_favorite"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
@@ -80,7 +80,7 @@
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <io.errorlab.widget.CheckableFloatingActionButton
         android:id="@+id/fab0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
         app:elevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_flash_on_white_24dp"
+        app:srcCompat="@drawable/fab_connect"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
