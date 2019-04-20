@@ -274,8 +274,7 @@ class MapControlTower : SVC_MapControlTower(),
                 }
             }
             // Load all map tiles
-            @Suppress("MagicNumber")
-            val z = 3
+            @Suppress("MagicNumber") val z = 3
             //val z = tileProvider!!.minimumZoom.toInt()
             val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
             // Traverse through all rows
@@ -341,30 +340,27 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     override fun onMapClick(p0: LatLng?) {
-        markers.forEach { (_, value) ->
-            if (value.zIndex == 1.0f) {
-                value.setLevel(value.level, this)
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            it.setLevel(it.level, this)
 
-                views.hideFavoriteFab()
-            }
+            views.hideFavoriteFab()
         }
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         if (p0 != null && p0.zIndex != 1.0f) {
             //info(p0.tag)
-            markers.forEach { (_, value) ->
-                if (value.zIndex == 1.0f) {
-                    value.setLevel(value.level, this)
-                }
+            markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+                it.setLevel(it.level, this)
             }
-            p0.zIndex = 1.0f
-            p0.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
-            views.toggleFavoriteFab((markers[p0.position]?.level == 1))
+            markers[p0.position]?.let {
+                it.zIndex = 1.0f
+                it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+
+                views.toggleFavoriteFab(it.level == 1)
+            }
         }
-
-        views.showFavoriteFab()
 
         return false
     }
@@ -421,12 +417,8 @@ class MapControlTower : SVC_MapControlTower(),
             }
         }
 
-        if (mMap != null && markers.size != 0) {
-            markers.forEach { (_, value) ->
-                if (value.zIndex == 1.0f) {
-                    toggleLevel(value)
-                }
-            }
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            toggleLevel(it)
         }
     }
 
@@ -474,12 +466,13 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     fun onSessionFinished() {
+        info("onSessionFinished")
         views.setClickableConnectFab(true)
-        views.setAppearanceConnectFab(false)
+        views.toggleConnectFab(false)
 
         views.showListAndLocationFab()
-        markers.forEach { (_, value) ->
-            if (value.zIndex == 1.0f) views.showFavoriteFab()
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            views.showFavoriteFab()
         }
 
         mMap?.setOnMapClickListener(this)
@@ -489,12 +482,13 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     fun onSessionStarted() {
+        info("onSessionStarted")
         views.setClickableConnectFab(true)
-        views.setAppearanceConnectFab(true)
+        views.toggleConnectFab(true)
 
         views.hideListAndLocationFab()
-        markers.forEach { (_, value) ->
-            if (value.zIndex == 1.0f) views.hideFavoriteFab()
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            views.hideFavoriteFab()
         }
 
         mMap?.setOnMapClickListener(null)
@@ -504,20 +498,20 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     fun onSessionCancelled() {
+        info("onSessionCancelled")
         views.setClickableConnectFab(true)
+        views.toggleConnectFab(false)
     }
 
     @MainThread
     fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        if (mMap != null && markers.size != 0) {
-            markers.forEach { (key, value) ->
-                if (value.zIndex == 1.0f) {
-                    return Pair(Coordinate(key.latitude, key.longitude), value.tag.toString())
-                }
-            }
+        var pair: Pair<Coordinate?, String> = Pair(null, "")
+
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.let {
+            pair = Pair(Coordinate(it.key.latitude, it.key.longitude), it.value.tag.toString())
         }
 
-        return Pair(null, "")
+        return pair
     }
 
     @Suppress("ComplexMethod")
@@ -533,24 +527,17 @@ class MapControlTower : SVC_MapControlTower(),
         }
 
         fun onFinish() {
-            markers.forEach { (key, value) ->
-                val level = value.level
-                if (key == latLng) {
-                    if (!value.isVisible) value.isVisible = true
-                    if (!value.isInfoWindowShown) value.showInfoWindow()
+            views.fakeLayoutAllFabs()
 
-                    value.zIndex = 1.0f
-                    value.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+            markers[latLng]?.let {
+                if (flags.contains(it.tag)) {
+                    it.zIndex = 1.0f
+                    it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
-                    views.toggleFavoriteFab((level == 1))
+                    if (!it.isVisible) it.isVisible = true
+                    if (!it.isInfoWindowShown) it.showInfoWindow()
 
-                    views.showFavoriteFab()
-                } else {
-                    if (value.zIndex == 1.0f) {
-                        //if (value.isInfoWindowShown) value.hideInfoWindow()
-                        value.setLevel(level, null)
-                        onLevelChange(value, level)
-                    }
+                    views.toggleFavoriteFab((it.level == 1))
                 }
             }
 
@@ -558,11 +545,8 @@ class MapControlTower : SVC_MapControlTower(),
         }
 
         fun onCancel() {
-            markers.forEach { (key, value) ->
-                if (key == latLng) {
-                    info("Animation to $value canceled")
-                    return@onCancel
-                }
+            markers[latLng]?.let {
+                info("Animation to $it canceled")
             }
         }
 
@@ -611,8 +595,7 @@ class MapControlTower : SVC_MapControlTower(),
             var t = System.nanoTime()
             val ids = countryBoundaries?.getIds(lon, lat)
             t = System.nanoTime() - t
-            @Suppress("MagicNumber")
-            val i = 1000
+            @Suppress("MagicNumber") val i = 1000
             debug(getToastString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
             return getFlag(ids)
         }
@@ -677,172 +660,129 @@ class MapControlTower : SVC_MapControlTower(),
             val weight = 1.0f
             with(screen.requireContext()) {
                 alert {
-                    customView =
-                        verticalLayout {
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_tor)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (tor) "YES" else "NO"
-                                    textColor = if (tor) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_proxy)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (proxy) "YES" else "NO"
-                                    textColor = if (proxy) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_anonymous)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (anonymous) "YES" else "NO"
-                                    textColor = if (anonymous) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_known_attacker)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (attacker) "YES" else "NO"
-                                    textColor = if (attacker) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_known_abuser)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (abuser) "YES" else "NO"
-                                    textColor = if (abuser) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_threat)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (threat) "YES" else "NO"
-                                    textColor = if (threat) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_bogon)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (bogon) "YES" else "NO"
-                                    textColor = if (bogon) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            gravity = android.view.Gravity.CENTER
-                            padding = dip(40)
+                    customView = verticalLayout {
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_tor)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (tor) "YES" else "NO"
+                                textColor = if (tor) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
                         }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_proxy)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (proxy) "YES" else "NO"
+                                textColor = if (proxy) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_anonymous)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (anonymous) "YES" else "NO"
+                                textColor = if (anonymous) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_known_attacker)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (attacker) "YES" else "NO"
+                                textColor = if (attacker) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_known_abuser)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (abuser) "YES" else "NO"
+                                textColor = if (abuser) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_threat)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (threat) "YES" else "NO"
+                                textColor = if (threat) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_bogon)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (bogon) "YES" else "NO"
+                                textColor = if (bogon) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        gravity = android.view.Gravity.CENTER
+                        padding = dip(40)
+                    }
                 }.show()
             }
         }

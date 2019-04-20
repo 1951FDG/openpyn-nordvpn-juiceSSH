@@ -16,6 +16,7 @@ import io.github.getsixtyfour.openpyn.R
 import kotlinx.android.synthetic.main.fragment_map.map
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
+import org.jetbrains.anko.info
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 
 /**
@@ -113,14 +114,17 @@ class MapFragment : SVC_MapFragment(),
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
+        info("onSessionStarted")
         controlTower.onSessionStarted()
     }
 
     override fun onSessionCancelled() {
+        info("onSessionCancelled")
         controlTower.onSessionCancelled()
     }
 
     override fun onSessionFinished() {
+        info("onSessionFinished")
         controlTower.onSessionFinished()
     }
 

@@ -10,9 +10,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class CheckableFloatingActionButton extends FloatingActionButton implements Checkable {
 
-    private static final int[] CheckedStateSet = { android.R.attr.state_checked, };
+    @SuppressWarnings("PublicInnerClass")
+    @FunctionalInterface
+    public interface OnCheckedChangeListener {
 
-    private boolean checked;
+        void onCheckedChanged(@NonNull FloatingActionButton fabView, boolean isChecked);
+    }
+
+    private static final int[] CHECKED_STATE_SET = { android.R.attr.state_checked, };
+
+    private boolean mChecked;
+
+    private OnCheckedChangeListener mOnCheckedChangeListener;
 
     public CheckableFloatingActionButton(@NonNull Context ctx) {
         this(ctx, null);
@@ -41,19 +50,23 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
     @Override
     protected Parcelable onSaveInstanceState() {
         CheckedSavedState result = new CheckedSavedState(super.onSaveInstanceState());
-        result.checked = checked;
+        result.checked = mChecked;
         return result;
     }
 
     @Override
     public boolean isChecked() {
-        return checked;
+        return mChecked;
     }
 
     @Override
     public void setChecked(boolean checked) {
-        if (checked != this.checked) {
-            this.checked = checked;
+        if (checked != mChecked) {
+            mChecked = checked;
+            refreshDrawableState();
+            if (mOnCheckedChangeListener != null) {
+                mOnCheckedChangeListener.onCheckedChanged(this, checked);
+            }
         }
     }
 
@@ -61,8 +74,8 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
     @Override
     public int[] onCreateDrawableState(int extraSpace) {
         int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
-        if (checked) {
-            mergeDrawableStates(drawableState, CheckedStateSet);
+        if (mChecked) {
+            mergeDrawableStates(drawableState, CHECKED_STATE_SET);
         }
         return drawableState;
     }
@@ -73,8 +86,13 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
         return super.performClick();
     }
 
+    @SuppressWarnings("unused")
+    public void setOnCheckedChangeListener(@Nullable OnCheckedChangeListener listener) {
+        mOnCheckedChangeListener = listener;
+    }
+
     @Override
     public void toggle() {
-        setChecked(!checked);
+        setChecked(!mChecked);
     }
 }

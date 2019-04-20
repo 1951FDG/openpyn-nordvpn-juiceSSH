@@ -108,13 +108,11 @@ After the map is done loading, the NordVPN API is invoked to query all the suppo
 
 The public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) is open to anyone.
 
-Please use my `test` branch of Openpyn.
+Please use my `test` branch of [Openpyn](https://github.com/1951FDG/openpyn-nordvpn).
 
-```sh
-git clone --branch test git@github.com:1951FDG/openpyn-nordvpn.git
-cd openpyn-nordvpn
-pip3 install --upgrade .
-```
+    git clone --branch test git@github.com:1951FDG/openpyn-nordvpn.git
+    cd openpyn-nordvpn
+    pip3 install --upgrade .
 
 ## Requirements
 

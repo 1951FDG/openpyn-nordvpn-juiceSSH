@@ -34,8 +34,10 @@ class OpenpynController(
     override val regex: Regex = Regex("""\d+""")
     private var test = false
     private var nvram = false
+    @Suppress("MagicNumber")
     private var buffer = StringBuilder(256)
 
+    @Suppress("MagicNumber")
     override fun onCompleted(exitCode: Int) {
         super.onCompleted(exitCode)
 
@@ -69,6 +71,7 @@ class OpenpynController(
             CRITICAL
         )
 
+        @Suppress("MagicNumber")
         logging.forEach {
             val str = ":$it"
             val end = buffer.indexOf(str)

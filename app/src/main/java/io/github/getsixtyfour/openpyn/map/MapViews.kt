@@ -37,6 +37,14 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab3.setOnClickListener { viewsAction.toggleFavoriteMarker() }
     }
 
+    fun fakeLayoutAllFabs() {
+        val i = 0
+        fab0.layout(i, i, i, i)
+        fab1.layout(i, i, i, i)
+        fab2.layout(i, i, i, i)
+        fab3.layout(i, i, i, i)
+    }
+
     fun hideFavoriteFab() {
         fab3.hide()
     }
@@ -44,13 +52,6 @@ class MapViews : ActionViews<MapViewsAction>() {
     fun hideListAndLocationFab() {
         fab1.hide()
         fab2.hide()
-    }
-
-    fun setAppearanceConnectFab(connected: Boolean) {
-        fab0.setImageResource(
-            if (connected) R.drawable.ic_flash_off_white_24dp
-            else R.drawable.ic_flash_on_white_24dp
-        )
     }
 
     fun setClickableConnectFab(clickable: Boolean) {
@@ -91,8 +92,13 @@ class MapViews : ActionViews<MapViewsAction>() {
         minibarView.show(userMessage)
     }
 
+    fun toggleConnectFab(checked: Boolean) {
+        fab0.isChecked = checked
+        fab0.show()
+    }
+
     fun toggleFavoriteFab(checked: Boolean) {
         fab3.isChecked = checked
-        fab3.refreshDrawableState()
+        fab3.show()
     }
 }
