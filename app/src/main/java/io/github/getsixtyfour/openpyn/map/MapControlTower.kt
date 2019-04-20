@@ -659,172 +659,129 @@ class MapControlTower : SVC_MapControlTower(),
             val weight = 1.0f
             with(screen.requireContext()) {
                 alert {
-                    customView =
-                        verticalLayout {
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_tor)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (tor) "YES" else "NO"
-                                    textColor = if (tor) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_proxy)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (proxy) "YES" else "NO"
-                                    textColor = if (proxy) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_anonymous)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (anonymous) "YES" else "NO"
-                                    textColor = if (anonymous) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_known_attacker)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (attacker) "YES" else "NO"
-                                    textColor = if (attacker) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_known_abuser)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (abuser) "YES" else "NO"
-                                    textColor = if (abuser) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_threat)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (threat) "YES" else "NO"
-                                    textColor = if (threat) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            linearLayout {
-                                textView {
-                                    text = getString(R.string.is_bogon)
-                                    textSize = fl
-                                    gravity = android.view.Gravity.START
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                                textView {
-                                    text = if (bogon) "YES" else "NO"
-                                    textColor = if (bogon) color2 else color1
-                                    textSize = fl
-                                    gravity = android.view.Gravity.END
-                                }.lparams(
-                                    width = org.jetbrains.anko.wrapContent,
-                                    height = org.jetbrains.anko.wrapContent,
-                                    weight = weight
-                                ) {
-                                }
-                            }
-                            gravity = android.view.Gravity.CENTER
-                            padding = dip(40)
+                    customView = verticalLayout {
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_tor)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (tor) "YES" else "NO"
+                                textColor = if (tor) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
                         }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_proxy)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (proxy) "YES" else "NO"
+                                textColor = if (proxy) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_anonymous)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (anonymous) "YES" else "NO"
+                                textColor = if (anonymous) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_known_attacker)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (attacker) "YES" else "NO"
+                                textColor = if (attacker) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_known_abuser)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (abuser) "YES" else "NO"
+                                textColor = if (abuser) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_threat)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (threat) "YES" else "NO"
+                                textColor = if (threat) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        linearLayout {
+                            textView {
+                                text = getString(R.string.is_bogon)
+                                textSize = fl
+                                gravity = android.view.Gravity.START
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                            textView {
+                                text = if (bogon) "YES" else "NO"
+                                textColor = if (bogon) color2 else color1
+                                textSize = fl
+                                gravity = android.view.Gravity.END
+                            }.lparams(
+                                width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                            ) {}
+                        }
+                        gravity = android.view.Gravity.CENTER
+                        padding = dip(40)
+                    }
                 }.show()
             }
         }
