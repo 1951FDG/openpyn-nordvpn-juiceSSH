@@ -274,8 +274,7 @@ class MapControlTower : SVC_MapControlTower(),
                 }
             }
             // Load all map tiles
-            @Suppress("MagicNumber")
-            val z = 3
+            @Suppress("MagicNumber") val z = 3
             //val z = tileProvider!!.minimumZoom.toInt()
             val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
             // Traverse through all rows
@@ -341,27 +340,26 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     override fun onMapClick(p0: LatLng?) {
-        markers.forEach { (_, value) ->
-            if (value.zIndex == 1.0f) {
-                value.setLevel(value.level, this)
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            it.setLevel(it.level, this)
 
-                views.hideFavoriteFab()
-            }
+            views.hideFavoriteFab()
         }
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         if (p0 != null && p0.zIndex != 1.0f) {
             //info(p0.tag)
-            markers.forEach { (_, value) ->
-                if (value.zIndex == 1.0f) {
-                    value.setLevel(value.level, this)
-                }
+            markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+                it.setLevel(it.level, this)
             }
-            p0.zIndex = 1.0f
-            p0.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
-            views.toggleFavoriteFab((markers[p0.position]?.level == 1))
+            markers[p0.position]?.let {
+                it.zIndex = 1.0f
+                it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+
+                views.toggleFavoriteFab(it.level == 1)
+            }
         }
 
         return false
@@ -419,12 +417,8 @@ class MapControlTower : SVC_MapControlTower(),
             }
         }
 
-        if (mMap != null && markers.size != 0) {
-            markers.forEach { (_, value) ->
-                if (value.zIndex == 1.0f) {
-                    toggleLevel(value)
-                }
-            }
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            toggleLevel(it)
         }
     }
 
@@ -477,8 +471,8 @@ class MapControlTower : SVC_MapControlTower(),
         views.setAppearanceConnectFab(false)
 
         views.showListAndLocationFab()
-        markers.forEach { (_, value) ->
-            if (value.zIndex == 1.0f) views.showFavoriteFab()
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            views.showFavoriteFab()
         }
 
         mMap?.setOnMapClickListener(this)
@@ -493,8 +487,8 @@ class MapControlTower : SVC_MapControlTower(),
         views.setAppearanceConnectFab(true)
 
         views.hideListAndLocationFab()
-        markers.forEach { (_, value) ->
-            if (value.zIndex == 1.0f) views.hideFavoriteFab()
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            views.hideFavoriteFab()
         }
 
         mMap?.setOnMapClickListener(null)
@@ -510,15 +504,13 @@ class MapControlTower : SVC_MapControlTower(),
 
     @MainThread
     fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        if (mMap != null && markers.size != 0) {
-            markers.forEach { (key, value) ->
-                if (value.zIndex == 1.0f) {
-                    return Pair(Coordinate(key.latitude, key.longitude), value.tag.toString())
-                }
-            }
+        var pair: Pair<Coordinate?, String> = Pair(null, "")
+
+        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.let {
+            pair = Pair(Coordinate(it.key.latitude, it.key.longitude), it.value.tag.toString())
         }
 
-        return Pair(null, "")
+        return pair
     }
 
     @Suppress("ComplexMethod")
@@ -536,16 +528,15 @@ class MapControlTower : SVC_MapControlTower(),
         fun onFinish() {
             views.fakeLayoutAllFabs()
 
-            markers.forEach { (key, value) ->
-                val level = value.level
-                if (key == latLng && flags.contains(value.tag)) {
-                    value.zIndex = 1.0f
-                    value.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+            markers[latLng]?.let {
+                if (flags.contains(it.tag)) {
+                    it.zIndex = 1.0f
+                    it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
-                    if (!value.isVisible) value.isVisible = true
-                    if (!value.isInfoWindowShown) value.showInfoWindow()
+                    if (!it.isVisible) it.isVisible = true
+                    if (!it.isInfoWindowShown) it.showInfoWindow()
 
-                    views.toggleFavoriteFab((level == 1))
+                    views.toggleFavoriteFab((it.level == 1))
                 }
             }
 
@@ -553,11 +544,8 @@ class MapControlTower : SVC_MapControlTower(),
         }
 
         fun onCancel() {
-            markers.forEach { (key, value) ->
-                if (key == latLng) {
-                    info("Animation to $value canceled")
-                    return@onCancel
-                }
+            markers[latLng]?.let {
+                info("Animation to $it canceled")
             }
         }
 
@@ -606,8 +594,7 @@ class MapControlTower : SVC_MapControlTower(),
             var t = System.nanoTime()
             val ids = countryBoundaries?.getIds(lon, lat)
             t = System.nanoTime() - t
-            @Suppress("MagicNumber")
-            val i = 1000
+            @Suppress("MagicNumber") val i = 1000
             debug(getToastString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
             return getFlag(ids)
         }
