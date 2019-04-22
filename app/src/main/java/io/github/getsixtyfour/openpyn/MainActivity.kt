@@ -245,7 +245,7 @@ class MainActivity : AppCompatActivity(),
         fun element(location: Coordinate?, flag: String, server: String, country: String): String = when {
             flag.isNotEmpty() -> {
                 val name = getEntryForValue(flag, R.array.pref_country_entries, R.array.pref_country_values)
-                "$name at ${location?.latitude}, ${location?.longitude}"
+                if (location != null) "$name at ${location?.latitude}, ${location?.longitude}" else name
             }
             server.isNotEmpty() -> {
                 "server $server.nordvpn.com"

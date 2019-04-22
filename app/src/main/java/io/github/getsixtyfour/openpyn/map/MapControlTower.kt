@@ -531,7 +531,13 @@ class MapControlTower : SVC_MapControlTower(),
         var pair: Pair<Coordinate?, String> = Pair(null, "")
 
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.let {
-            pair = Pair(Coordinate(it.key.latitude, it.key.longitude), it.value.tag.toString())
+            val latLng = it.key
+            val tag = it.value.tag
+
+            pair = when {
+                markers.count { entry -> entry.value.tag == tag } == 1 -> Pair(null, tag.toString())
+                else -> Pair(Coordinate(latLng.latitude, latLng.longitude), tag.toString())
+            }
         }
 
         return pair
