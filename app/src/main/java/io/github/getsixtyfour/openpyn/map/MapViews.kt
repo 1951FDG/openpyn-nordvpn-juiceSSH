@@ -37,6 +37,10 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab3.setOnClickListener { viewsAction.toggleFavoriteMarker() }
     }
 
+    fun callConnectFabOnClick() {
+        fab0.callOnClick()
+    }
+
     fun fakeLayoutAllFabs() {
         val i = 0
         fab0.layout(i, i, i, i)
