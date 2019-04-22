@@ -234,6 +234,7 @@ class MainActivity : AppCompatActivity(),
         GDPR.getInstance().showDialog(this, mSetup, data?.location)
     }
 
+    @Suppress("ComplexMethod")
     override fun onClick(v: View?) {
         val id = checkNotNull(v).id
 
@@ -319,7 +320,6 @@ class MainActivity : AppCompatActivity(),
 
     @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        // todo
         val fragment = getCurrentNavigationFragment() as? MapFragment
         return fragment?.controlTower?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
     }

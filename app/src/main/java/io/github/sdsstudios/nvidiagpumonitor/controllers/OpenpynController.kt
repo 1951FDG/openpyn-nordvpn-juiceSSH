@@ -102,6 +102,7 @@ class OpenpynController(
         mActivitySessionExecuteListener?.onError(error, reason)
     }
 
+    @Suppress("ComplexMethod", "LongMethod")
     override fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         fun code(iso: String): String = when (iso) {
             "gb" -> "uk" // "domain":"uk1000.nordvpn.com", res["domain"][:2]
