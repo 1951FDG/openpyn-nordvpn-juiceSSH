@@ -19,6 +19,7 @@ import androidx.loader.app.LoaderManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
 import com.adityaanand.morphdialog.MorphDialog
+import com.adityaanand.morphdialog.utils.MorphDialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity(),
     OnSessionExecuteListener,
     OnSessionFinishedListener,
     OnSessionStartedListener {
+    private var dialog: MorphDialog? = null
 
     private val mConnectionListAdapter by lazy {
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
@@ -157,6 +159,8 @@ class MainActivity : AppCompatActivity(),
                 // TODO
             }
         }
+
+        MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -230,22 +234,67 @@ class MainActivity : AppCompatActivity(),
         GDPR.getInstance().showDialog(this, mSetup, data?.location)
     }
 
+    @Suppress("ComplexMethod")
     override fun onClick(v: View?) {
         val id = checkNotNull(v).id
 
-        if (id == R.id.fab0) {
-            if (mConnectionListAdapter.count == 0 && v is FloatingActionButton) {
-                MorphDialog.Builder(this, v)
-                    .title("Error")
-                    .content(R.string.error_must_have_atleast_one_server)
-                    .positiveText(android.R.string.ok)
-                    .show()
-                return
-            }
+        fun getEntryForValue(value: String, vararg ids: Int): String {
+            return resources.getStringArray(ids[0])[resources.getStringArray(ids[1]).indexOf(value)]
+        }
 
+        fun element(location: Coordinate?, flag: String, server: String, country: String): String = when {
+            flag.isNotEmpty() -> {
+                val name = getEntryForValue(flag, R.array.pref_country_entries, R.array.pref_country_values)
+                "$name at ${location?.latitude}, ${location?.longitude}"
+            }
+            server.isNotEmpty() -> {
+                "server $server.nordvpn.com"
+            }
+            country.isNotEmpty() -> {
+                getEntryForValue(country, R.array.pref_country_entries, R.array.pref_country_values)
+            }
+            else -> ""
+        }
+
+        fun toggleConnection(v: FloatingActionButton) {
             v.isClickable = false
             val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
             mConnectionManager?.toggleConnection(uuid!!, this)
+        }
+
+        fun morph(v: FloatingActionButton) {
+            val (location, flag) = this.positionAndFlagForSelectedMarker()
+            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+            val server: String = preferences.getString("pref_server", "")!!
+            val country: String = preferences.getString("pref_country", "")!!
+            val content = "Are you sure you want to connect to ${element(location, flag, server, country)}"
+
+            val builder = MorphDialog.Builder(this, v).apply {
+                title("VPN Connection")
+                content(content)
+                positiveText(android.R.string.ok)
+                negativeText(android.R.string.cancel)
+                onPositive { _: MorphDialog, _: MorphDialogAction -> toggleConnection(v) }
+            }
+
+            dialog = builder.show()
+        }
+
+        if (id == R.id.fab0 && v is FloatingActionButton) {
+            if (mConnectionListAdapter.count > 0) {
+                if (spinnerConnectionList.isEnabled) {
+                    morph(v)
+                } else {
+                    toggleConnection(v)
+                }
+            } else {
+                MorphDialog.Builder(this, v).apply {
+                    title("Error")
+                    content(R.string.error_must_have_atleast_one_server)
+                    positiveText(android.R.string.ok)
+                    show()
+                }
+            }
         }
     }
 
@@ -271,7 +320,6 @@ class MainActivity : AppCompatActivity(),
 
     @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        // todo
         val fragment = getCurrentNavigationFragment() as? MapFragment
         return fragment?.controlTower?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
     }

@@ -80,12 +80,6 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
         return drawableState;
     }
 
-    @Override
-    public boolean performClick() {
-        toggle();
-        return super.performClick();
-    }
-
     @SuppressWarnings("unused")
     public void setOnCheckedChangeListener(@Nullable OnCheckedChangeListener listener) {
         mOnCheckedChangeListener = listener;

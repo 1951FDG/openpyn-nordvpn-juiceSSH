@@ -81,6 +81,7 @@ class MapControlTower : SVC_MapControlTower(),
     GoogleMap.OnCameraIdleListener,
     GoogleMap.OnMapClickListener,
     GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnInfoWindowClickListener,
     OnLevelChangeCallback,
     SubmitCallbackListener,
     MapViewsAction {
@@ -300,13 +301,18 @@ class MapControlTower : SVC_MapControlTower(),
                 googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
                 googleMap.setMaxZoomPreference(tileProvider!!.maximumZoom)
                 googleMap.setMinZoomPreference(tileProvider!!.minimumZoom)
+
+                googleMap.setOnInfoWindowClickListener(it)
                 googleMap.setOnMapClickListener(it)
-                googleMap.setOnMapLoadedCallback(it)
                 googleMap.setOnMarkerClickListener(it)
+
+                googleMap.setOnMapLoadedCallback(it)
+
                 //val params = fab1.layoutParams as ConstraintLayout.LayoutParams
                 //googleMap.setPadding(0, 0, 0, params.height + params.bottomMargin)
                 googleMap.uiSettings.isScrollGesturesEnabled = true
                 googleMap.uiSettings.isZoomGesturesEnabled = true
+
                 // Load map
                 views.showMap()
             }
@@ -348,21 +354,33 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
-        if (p0 != null && p0.zIndex != 1.0f) {
-            //info(p0.tag)
-            markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
-                it.setLevel(it.level, this)
-            }
+        if (p0 != null) {
+            if (p0.zIndex == 1.0f) {
+                views.callConnectFabOnClick()
+            } else {
+                //info(p0.tag)
+                markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+                    it.setLevel(it.level, this)
+                }
 
-            markers[p0.position]?.let {
-                it.zIndex = 1.0f
-                it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+                markers[p0.position]?.let {
+                    it.zIndex = 1.0f
+                    it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
-                views.toggleFavoriteFab(it.level == 1)
+                    views.toggleFavoriteFab(it.level == 1)
+                }
             }
         }
 
         return false
+    }
+
+    override fun onInfoWindowClick(p0: Marker?) {
+        if (p0 != null) {
+            if (p0.zIndex == 1.0f) {
+                views.callConnectFabOnClick()
+            }
+        }
     }
 
     @Suppress("MagicNumber")
@@ -419,6 +437,7 @@ class MapControlTower : SVC_MapControlTower(),
 
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             toggleLevel(it)
+            views.toggleFavoriteFab((it.level == 1))
         }
     }
 
@@ -472,9 +491,11 @@ class MapControlTower : SVC_MapControlTower(),
 
         views.showListAndLocationFab()
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            if (!it.isInfoWindowShown) it.showInfoWindow()
             views.showFavoriteFab()
         }
 
+        mMap?.setOnInfoWindowClickListener(this)
         mMap?.setOnMapClickListener(this)
         mMap?.setOnMarkerClickListener(this)
         mMap?.uiSettings?.isScrollGesturesEnabled = true
@@ -488,9 +509,11 @@ class MapControlTower : SVC_MapControlTower(),
 
         views.hideListAndLocationFab()
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            if (it.isInfoWindowShown) it.hideInfoWindow()
             views.hideFavoriteFab()
         }
 
+        mMap?.setOnInfoWindowClickListener(null)
         mMap?.setOnMapClickListener(null)
         mMap?.setOnMarkerClickListener { true }
         mMap?.uiSettings?.isScrollGesturesEnabled = false
@@ -537,7 +560,7 @@ class MapControlTower : SVC_MapControlTower(),
                     if (!it.isVisible) it.isVisible = true
                     if (!it.isInfoWindowShown) it.showInfoWindow()
 
-                    views.toggleFavoriteFab((it.level == 1))
+                    views.toggleFavoriteFab(it.level == 1)
                 }
             }
 
