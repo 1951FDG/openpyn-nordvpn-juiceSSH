@@ -10,7 +10,7 @@
     <style name="Base.Theme.AppTheme" parent="Base.V21.Theme.AppTheme" />
 
     <style name="AppTheme" parent="Base.Theme.AppTheme">
-        <item name="android:windowExitTransition">@transition/fade_out</item>
+        <item name="android:windowContentTransitions">true</item>
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
