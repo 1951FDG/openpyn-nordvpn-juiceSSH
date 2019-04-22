@@ -843,7 +843,6 @@
       <option name="KEEP_BLANK_LINES_BEFORE_RBRACE" value="0" />
       <option name="BLANK_LINES_AFTER_CLASS_HEADER" value="1" />
       <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
-      <option name="METHOD_PARAMETERS_WRAP" value="2" />
     </codeStyleSettings>
   </code_scheme>
 </component>
