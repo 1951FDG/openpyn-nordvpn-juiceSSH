@@ -336,7 +336,7 @@ class MainActivity : AppCompatActivity(),
             0 -> {
                 info("Success")
             }
-            1 -> {
+            -1, 1 -> {
                 info("Failure")
             }
         }

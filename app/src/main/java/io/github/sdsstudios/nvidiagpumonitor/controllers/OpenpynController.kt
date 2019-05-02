@@ -48,6 +48,10 @@ class OpenpynController(
                 info("Terminated")
                 return
             }
+            -1 -> {
+                info("Terminated \"abnormal\"")
+                info(command)
+            }
         }
 
         mActivitySessionExecuteListener?.onCompleted(exitCode)
