@@ -234,7 +234,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     "gr", "hk", "hu", "is", "in", "id", "ie", "il", "it", "jp", "lv",
                     "lu", "mk", "my", "mx", "md", "nl", "nz", "no", "pl", "pt", "ro",
                     "ru", "rs", "sg", "sk", "si", "za", "kr", "es", "se", "ch", "tw",
-                    "th", "tr", "ua", "ae", "gb", "us", "vn"
+                    "th", "tr", "ua", "ae", "uk", "us", "vn"
                 ).contains(str.take(2))
             }
 
