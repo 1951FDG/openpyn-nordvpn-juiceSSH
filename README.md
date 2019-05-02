@@ -64,8 +64,6 @@ JuiceSSH supports the use of plugins, which allowed me to create this fantastic 
 
 -   On app start, it will use a smart location, to determine the closest country
 
--   A floating action button (FAB), to determine current location based on the current public IP address
-
 -   Uses Geolocation APIs to determine the current location based on the current public IP address
     -   <http://ip-api.com/>, <https://ipdata.co/>, <https://ipinfo.io/>, <https://ipstack.com/>
 
@@ -155,6 +153,7 @@ To compile and run the project you'll need:
 -   [emoji-java](https://github.com/vdurmont/emoji-java)
 -   [Fuel](https://github.com/kittinunf/Fuel)
 -   [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
+-   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
 -   [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 -   [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 -   [Kotlin](https://github.com/JetBrains/kotlin)
@@ -222,6 +221,7 @@ This app uses (modified) code from several open source projects.
 -   [AX2J](http://ax2j.sickworm.com/)
 -   [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 -   [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
+-   [Android Sorter Plugin](https://github.com/cuongloveit/AndroidSorter)
 -   [Android Studio](https://developer.android.com/studio/)
 -   [Atom](https://atom.io/)
 -   [Codacy](https://www.codacy.com/)
@@ -236,7 +236,6 @@ This app uses (modified) code from several open source projects.
 -   [Snyk](https://snyk.io/)
 -   [Sourcetree](https://www.sourcetreeapp.com/)
 -   [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
--   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
 
 ## Attributions
 
