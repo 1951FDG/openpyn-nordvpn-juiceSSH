@@ -153,7 +153,7 @@ dependencies {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
     implementation('com.github.1951FDG:Android-Multi-Select-Dialog:v3.3')
-    implementation('com.github.1951FDG:ProgressToolbar:1.0.5') {
+    implementation('com.github.1951FDG:ProgressToolbar:1.0.6') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
     implementation 'com.github.AdityaAnand1:Morphing-Material-Dialogs:0.0.4'
