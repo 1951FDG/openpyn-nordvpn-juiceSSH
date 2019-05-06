@@ -149,7 +149,7 @@ dependencies {
     implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.14'
     implementation 'com.github.kittinunf.fuel:fuel-android:2.0.1'
     // UI
-    implementation('com.afollestad.material-dialogs:core:0.9.6.0') {
+    implementation('com.afollestad.material-dialogs:core:2.8.1') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
     implementation('com.github.1951FDG:Android-Multi-Select-Dialog:v3.3')
