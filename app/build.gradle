@@ -193,5 +193,5 @@ dependencies {
     // GDPR
     implementation 'com.github.MFlisar:GDPRDialog:1.4.1'
     // KTX
-    implementation 'androidx.core:core-ktx:1.0.1'
+    implementation 'androidx.core:core-ktx:1.0.2'
 }
