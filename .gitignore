@@ -68,6 +68,9 @@ app/src/release/res/values/values.xml
 fabric.properties
 app/fabric.properties
 
+# Sonarlint plugin
+.idea/sonarlint
+
 # Fastlane
 fastlane/.env
 fastlane/.env.local
