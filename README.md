@@ -226,6 +226,7 @@ This app uses (modified) code from several open source projects.
 -   [Atom](https://atom.io/)
 -   [Codacy](https://www.codacy.com/)
 -   [DB Browser for SQLite](http://sqlitebrowser.org/)
+-   [Dependabot](https://dependabot.com/)
 -   [Detekt](https://github.com/arturbosch/detekt)
 -   [Fastlane](https://fastlane.tools/)
 -   [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
@@ -234,6 +235,7 @@ This app uses (modified) code from several open source projects.
 -   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 -   [Regex101](https://regex101.com/)
 -   [Snyk](https://snyk.io/)
+-   [SonarLint](https://www.sonarlint.org/)
 -   [Sourcetree](https://www.sourcetreeapp.com/)
 -   [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
 
