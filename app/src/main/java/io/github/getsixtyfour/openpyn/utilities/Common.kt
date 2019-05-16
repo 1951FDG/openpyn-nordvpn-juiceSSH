@@ -2,8 +2,8 @@ package io.github.getsixtyfour.openpyn.utilities
 
 import android.util.Xml
 import androidx.annotation.WorkerThread
-import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.json.responseJson
 import com.github.kittinunf.result.Result
 import de.jupf.staticlog.Log
 import org.json.JSONArray
