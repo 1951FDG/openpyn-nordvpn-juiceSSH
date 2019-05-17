@@ -2,22 +2,26 @@ package com.cocoahero.android.gmaps.addons.mapbox;
 
 import android.database.Cursor;
 import android.util.Log;
+
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
-import java.io.Closeable;
-import java.io.File;
+
 import org.sqlite.database.sqlite.SQLiteCursor;
 import org.sqlite.database.sqlite.SQLiteCursorDriver;
 import org.sqlite.database.sqlite.SQLiteDatabase;
 import org.sqlite.database.sqlite.SQLiteDatabase.CursorFactory;
 import org.sqlite.database.sqlite.SQLiteQuery;
+
+import java.io.Closeable;
+import java.io.File;
 
 @MainThread
 public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriver, Closeable {

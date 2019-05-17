@@ -18,6 +18,8 @@ package com.antoniocarlon.map;
 
 import android.os.Handler;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
@@ -27,9 +29,8 @@ import com.google.android.gms.maps.UiSettings;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-
 public class CameraUpdateAnimator implements OnCameraIdleListener {
+
     @SuppressWarnings("WeakerAccess")
     final GoogleMap mMap;
     private final OnCameraIdleListener mOnCameraIdleListener;
@@ -40,8 +41,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
     private boolean mIsZoomControlsEnabled;
     private boolean mIsZoomGestureEnabled;
 
-    public CameraUpdateAnimator(@NonNull GoogleMap map,
-                                @NonNull OnCameraIdleListener onCameraIdleListener) {
+    public CameraUpdateAnimator(@NonNull GoogleMap map, @NonNull OnCameraIdleListener onCameraIdleListener) {
         mMap = map;
         mOnCameraIdleListener = onCameraIdleListener;
     }
@@ -113,6 +113,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
     }
 
     private static class Animation {
+
         final CameraUpdate mCameraUpdate;
         final boolean mAnimate;
         final long mDelay;

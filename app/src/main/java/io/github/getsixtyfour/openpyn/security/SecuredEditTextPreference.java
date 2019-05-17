@@ -2,6 +2,7 @@ package io.github.getsixtyfour.openpyn.security;
 
 import android.content.Context;
 import android.util.AttributeSet;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.EditTextPreference;

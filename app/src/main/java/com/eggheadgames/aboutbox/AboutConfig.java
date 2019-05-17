@@ -5,7 +5,10 @@ import android.annotation.SuppressLint;
 @SuppressLint("UnknownNullness")
 public class AboutConfig {
 
-    public enum BuildType {AMAZON, GOOGLE}
+    public enum BuildType {
+        AMAZON,
+        GOOGLE
+    }
 
     //    general info
     public String appName;
@@ -43,11 +46,11 @@ public class AboutConfig {
     public String sharingTitle;
 
     public static class SingletonHolder {
+
         public static final AboutConfig HOLDER_INSTANCE = new AboutConfig();
     }
 
     public static AboutConfig getInstance() {
         return SingletonHolder.HOLDER_INSTANCE;
     }
-
 }

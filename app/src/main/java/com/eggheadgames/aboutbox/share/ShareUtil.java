@@ -3,7 +3,9 @@ package com.eggheadgames.aboutbox.share;
 import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
+
 import com.eggheadgames.aboutbox.AboutBoxUtils;
 import com.eggheadgames.aboutbox.AboutConfig;
 

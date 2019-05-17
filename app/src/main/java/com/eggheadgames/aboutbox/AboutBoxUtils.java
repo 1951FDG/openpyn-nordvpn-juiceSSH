@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 public final class AboutBoxUtils {
@@ -71,7 +72,8 @@ public final class AboutBoxUtils {
         openApplication(context, appURI, webURI);
     }
 
-    public static void openPublisher(@NonNull Activity context, @NonNull AboutConfig.BuildType buildType, @NonNull String publisher, @NonNull String packageName) {
+    public static void openPublisher(@NonNull Activity context, @NonNull AboutConfig.BuildType buildType, @NonNull String publisher,
+                                     @NonNull String packageName) {
         String appURI = null;
         String webURI = null;
         switch (buildType) {

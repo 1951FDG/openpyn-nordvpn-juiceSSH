@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
+
 import com.eggheadgames.aboutbox.AboutConfig;
 
 public final class EmailUtil {
@@ -28,9 +30,7 @@ public final class EmailUtil {
             deviceInfo += "\n Android version: " + VERSION.RELEASE + " (" + VERSION.SDK_INT + ")";
             deviceInfo += "\n Device: " + Build.MODEL + " (" + Build.PRODUCT + ")";
             deviceInfo += "\n Platform: " + platformName(config.buildType);
-
-            emailBody = config.emailBodyPrompt + "\n\n\n\n\n"
-                    + "---------------------------" + deviceInfo;
+            emailBody = config.emailBodyPrompt + "\n\n\n\n\n" + "---------------------------" + deviceInfo;
         }
 
         try {
