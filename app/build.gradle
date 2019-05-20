@@ -149,7 +149,7 @@ dependencies {
     // Networking
     implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.15'
     implementation 'com.github.kittinunf.fuel:fuel-android:2.1.0'
-    implementation('com.github.kittinunf.fuel:fuel-json:2.0.1') {
+    implementation('com.github.kittinunf.fuel:fuel-json:2.1.0') {
         exclude group: 'org.json', module: 'json'
     }
     // UI
