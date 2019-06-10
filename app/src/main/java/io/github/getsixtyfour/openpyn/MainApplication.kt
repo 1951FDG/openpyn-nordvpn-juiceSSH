@@ -1,6 +1,7 @@
 package io.github.getsixtyfour.openpyn
 
 import android.app.Application
+import android.os.Build
 import com.ariascode.networkutility.NetworkInfo
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
@@ -19,7 +20,9 @@ open class MainApplication : Application() {
 
         NetworkInfo.getInstance(this)
 
-        installBlockCanary()
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+            installBlockCanary()
+        }
         installLeakCanary()
         populateAboutConfig()
         GDPR.getInstance().init(this)
