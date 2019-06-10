@@ -27,14 +27,13 @@ import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
 import com.google.android.gms.maps.UiSettings;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CameraUpdateAnimator implements OnCameraIdleListener {
 
     @SuppressWarnings("WeakerAccess")
     final GoogleMap mMap;
     private final OnCameraIdleListener mOnCameraIdleListener;
-    private final List<Animation> cameraUpdates = new ArrayList<>();
+    private final ArrayList<Animation> cameraUpdates = new ArrayList<>();
     private boolean mIsRotateGestureEnabled;
     private boolean mIsScrollGestureEnabled;
     private boolean mIsTiltGestureEnabled;

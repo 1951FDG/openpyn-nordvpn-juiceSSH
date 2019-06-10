@@ -35,23 +35,8 @@ public final class SecurityManager {
 
     private SecretKey mKey;
 
-    @NonNull
-    public static SecurityManager getInstance(@NonNull Context context) {
-        if (sInstance == null) {
-            synchronized (SecurityManager.class) {
-                if (sInstance == null) {
-                    sInstance = new SecurityManager(context);
-                }
-            }
-        }
-        return sInstance;
-    }
-
     @SuppressWarnings("unused")
     private SecurityManager() {
-        if (sInstance != null) {
-            throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
-        }
     }
 
     @SuppressLint("HardwareIds")
@@ -66,6 +51,19 @@ public final class SecurityManager {
         } catch (NoSuchAlgorithmException e) {
             Log.wtf(getClass().getSimpleName(), e);
         }
+    }
+
+    @SuppressWarnings({ "DoubleCheckedLocking", "SynchronizeOnThis" })
+    @NonNull
+    public static SecurityManager getInstance(@NonNull Context context) {
+        if (sInstance == null) {
+            synchronized (SecurityManager.class) {
+                if (sInstance == null) {
+                    sInstance = new SecurityManager(context);
+                }
+            }
+        }
+        return sInstance;
     }
 
     @NonNull
