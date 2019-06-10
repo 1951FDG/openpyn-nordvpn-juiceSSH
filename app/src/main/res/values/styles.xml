@@ -89,4 +89,6 @@
         <item name="mpb_useIntrinsicPadding">false</item>
     </style>
 
+    <style name="blinkt.dialog" parent="android:Theme.DeviceDefault.Light.Dialog" />
+
 </resources>
