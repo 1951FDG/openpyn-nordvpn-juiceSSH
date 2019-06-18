@@ -147,7 +147,7 @@ dependencies {
     // Google Play Services
     implementation 'com.google.android.gms:play-services-oss-licenses:16.0.2'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     // Networking
     implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.15'
     implementation "com.github.kittinunf.fuel:fuel-android:$fuel_version"
