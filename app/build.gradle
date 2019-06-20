@@ -146,7 +146,7 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-simple:1.7.26'
     // Google Play Services
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     // Networking
     implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.15'
