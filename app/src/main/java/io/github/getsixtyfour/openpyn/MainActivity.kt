@@ -109,10 +109,9 @@ class MainActivity : AppCompatActivity(),
 
         setDefaultPreferences()
         val api = GoogleApiAvailability.getInstance()
-        val errorCode = api.isGooglePlayServicesAvailable(this)
 
-        when (errorCode) {
-            ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, AppCompatActivity.RESULT_OK, null)
+        when (val errorCode = api.isGooglePlayServicesAvailable(this)) {
+            ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, RESULT_OK, null)
             //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
             else -> error(api.getErrorString(errorCode))
         }
@@ -124,6 +123,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onResume() {
         super.onResume()
+
         val snackProgressBar = snackProgressBarManager?.getLastShown()
 
         if (isJuiceSSHInstalled(this)) {
@@ -139,6 +139,7 @@ class MainActivity : AppCompatActivity(),
                 else -> snackProgressBarManager?.getSnackProgressBar(SNACK_BAR_JUICESSH)?.let { snackProgressBarManager?.updateTo(it) }
             }
         }
+
     }
 
     override fun onDestroy() {
@@ -155,7 +156,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
-            if (resultCode == AppCompatActivity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 // TODO
             }
         }
@@ -182,8 +183,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        return when (id) {
+        return when (item.itemId) {
             R.id.action_settings -> {
                 onSettingsItemSelected(item)
                 true
@@ -245,7 +245,7 @@ class MainActivity : AppCompatActivity(),
         fun element(location: Coordinate?, flag: String, server: String, country: String): String = when {
             flag.isNotEmpty() -> {
                 val name = getEntryForValue(flag, R.array.pref_country_entries, R.array.pref_country_values)
-                if (location != null) "$name at ${location?.latitude}, ${location?.longitude}" else name
+                if (location != null) "$name at ${location.latitude}, ${location.longitude}" else name
             }
             server.isNotEmpty() -> {
                 "server $server.nordvpn.com"
@@ -401,6 +401,7 @@ class MainActivity : AppCompatActivity(),
 
         mConnectionManager = ConnectionManager(
             ctx = this,
+            onClientStartedListener = this,
             mActivitySessionStartedListener = this,
             mActivitySessionFinishedListener = this,
             mActivitySessionExecuteListener = this,
@@ -441,7 +442,7 @@ class MainActivity : AppCompatActivity(),
         })
         */
 
-        mConnectionManager?.startClient(this)
+        mConnectionManager?.startClient()
     }
 
     fun requestPermissions() {
