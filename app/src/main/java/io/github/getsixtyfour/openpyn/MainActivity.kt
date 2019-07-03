@@ -384,7 +384,15 @@ class MainActivity : AppCompatActivity(),
 
     private fun getCurrentNavigationFragment(): Fragment? {
         val navHostFragment = supportFragmentManager.primaryNavigationFragment as? NavHostFragment
-        return navHostFragment?.childFragmentManager?.primaryNavigationFragment
+        val host = navHostFragment?.host
+        if (host == null) {
+            logException(IllegalStateException("Fragment $navHostFragment has not been attached yet."))
+        }
+
+        return when (host) {
+            null -> null
+            else -> navHostFragment.childFragmentManager.primaryNavigationFragment
+        }
     }
 
     fun getSnackProgressBarManager(): SnackProgressBarManager? {
