@@ -59,7 +59,7 @@ public final class SecurityManager {
         if (sInstance == null) {
             synchronized (SecurityManager.class) {
                 if (sInstance == null) {
-                    sInstance = new SecurityManager(context);
+                    sInstance = new SecurityManager(context.getApplicationContext());
                 }
             }
         }

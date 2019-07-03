@@ -42,7 +42,7 @@ public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
     }
 
     public VPNAuthenticationHandler(@NonNull Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
 
     @NonNull
