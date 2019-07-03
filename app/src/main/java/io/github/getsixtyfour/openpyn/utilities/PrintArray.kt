@@ -65,6 +65,7 @@ object PrintArray {
     }
 
     // AlertDialog
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     fun show(
         @Size(min = 1) key: String,
         items: Array<CharSequence>,
@@ -102,6 +103,7 @@ object PrintArray {
     }
 
     // AlertDialog
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     fun show(
         @Size(min = 1) key: String,
         items: ArrayList<String>,
