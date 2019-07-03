@@ -100,6 +100,12 @@ class MapControlTower : SVC_MapControlTower(),
         super.onDestroy()
 
         tileProvider?.close()
+
+        mMap?.setOnInfoWindowClickListener(null)
+        mMap?.setOnMapClickListener(null)
+        mMap?.setOnMarkerClickListener { true }
+
+        mMap?.setOnMapLoadedCallback(null)
     }
 
     @Suppress("ComplexMethod")
