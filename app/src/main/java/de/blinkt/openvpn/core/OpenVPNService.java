@@ -306,6 +306,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         Intent intent = new Intent(this, DisconnectVPN.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // The notification action icons are still required and continue to be used on older versions of Android
         builder.addAction(R.drawable.ic_close_white_24dp, getString(R.string.cancel_connection), pendingIntent);
     }
 
