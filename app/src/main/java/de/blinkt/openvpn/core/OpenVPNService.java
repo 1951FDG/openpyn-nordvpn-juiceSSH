@@ -175,6 +175,16 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         return Service.START_REDELIVER_INTENT;
     }
 
+    @Nullable
+    @Override
+    public IBinder onBind(@Nullable Intent intent) {
+        Log.i(TAG, "onBind");
+        if ((intent != null) && START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
+            return mBinder;
+        }
+        return null;
+    }
+
     @Override
     public void onDestroy() {
         {
@@ -189,15 +199,6 @@ public final class OpenVPNService extends Service implements LogListener, StateL
     @Override
     public IBinder asBinder() {
         return mBinder;
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(@Nullable Intent intent) {
-        if ((intent != null) && START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
-            return mBinder;
-        }
-        return null;
     }
 
     @Override
