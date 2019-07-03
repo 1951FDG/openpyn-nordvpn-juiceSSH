@@ -120,7 +120,7 @@ class AboutActivity : AppCompatPreferenceActivity() {
             return this
         }
 
-        private fun addOtherPreferences(context: ContextThemeWrapper, root: PreferenceScreen, config: AboutConfig) {
+        private fun addOtherPreferences(context: Context, root: PreferenceScreen, config: AboutConfig) {
             val category = PreferenceCategory(context)
             category.title = context.getString(R.string.pref_category_other)
 
@@ -162,7 +162,7 @@ class AboutActivity : AppCompatPreferenceActivity() {
             ))
         }
 
-        private fun addSupportPreferences(context: ContextThemeWrapper, root: PreferenceScreen, config: AboutConfig) {
+        private fun addSupportPreferences(context: Context, root: PreferenceScreen, config: AboutConfig) {
             val category = PreferenceCategory(context)
             category.title = context.getString(R.string.pref_category_support)
 
@@ -191,7 +191,7 @@ class AboutActivity : AppCompatPreferenceActivity() {
             ))
         }
 
-        private fun addAboutPreferences(context: ContextThemeWrapper, root: PreferenceScreen, config: AboutConfig) {
+        private fun addAboutPreferences(context: Context, root: PreferenceScreen, config: AboutConfig) {
             val category = PreferenceCategory(context)
             category.title = context.getString(R.string.pref_category_about)
 
