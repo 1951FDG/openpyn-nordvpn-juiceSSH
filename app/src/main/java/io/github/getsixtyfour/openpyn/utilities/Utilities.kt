@@ -1,8 +1,8 @@
 package io.github.getsixtyfour.openpyn.utilities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -17,6 +17,7 @@ import com.abdeveloper.library.MultiSelectModel
 import com.abdeveloper.library.MultiSelectable
 import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
+import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.maps.model.LatLng
 import de.jupf.staticlog.Log
 import io.fabric.sdk.android.Fabric
@@ -55,29 +56,28 @@ fun isJuiceSSHInstalled(context: Context): Boolean = try {
     false
 }
 
-fun juiceSSHInstall(context: Context) {
-    val pkg = "com.android.vending"
-    val cls = "com.google.android.finsky.activities.LaunchUrlHandlerActivity"
-    val launchIntent = context.packageManager.getLaunchIntentForPackage(pkg)
-    fun openURI(uriString: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-        ActivityCompat.startActivity(context, intent, null)
+fun juiceSSHInstall(activity: Activity) {
+    fun openURI(uri: Uri, packageName: String? = null) {
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        intent.setPackage(packageName)
+        ActivityCompat.startActivity(activity, intent, null)
     }
 
-    if (launchIntent != null) {
-        launchIntent.component = ComponentName(pkg, cls)
-        launchIntent.data = Uri.parse("market://details?id=$JUICE_SSH_PACKAGE_NAME")
+    try {
+        activity.packageManager.getPackageInfo(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE, 0)
+        val uriBuilder = Uri.parse("https://play.google.com/store/apps/details")
+            .buildUpon()
+            .appendQueryParameter("id", JUICE_SSH_PACKAGE_NAME)
+            .appendQueryParameter("launch", "true")
         try {
-            ActivityCompat.startActivity(context, launchIntent, null)
+            openURI(uriBuilder.build(), GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)
         } catch (e: ActivityNotFoundException) {
-            logException(e)
-            val uriString = "https://play.google.com/store/apps/details?id=$JUICE_SSH_PACKAGE_NAME"
-            openURI(uriString)
+            openURI(uriBuilder.build())
         }
-    } else {
+    } catch (e : NameNotFoundException) {
         val s = "juicessh-2-1-4"
         val uriString = "https://www.apkmirror.com/apk/sonelli-ltd/juicessh-ssh-client/$s-release/$s-android-apk-download/download/"
-        openURI(uriString)
+        openURI(Uri.parse(uriString))
     }
 }
 
