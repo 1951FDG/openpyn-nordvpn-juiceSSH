@@ -63,7 +63,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private ConnectionStatus mLastLevel = ConnectionStatus.LEVEL_NOT_CONNECTED;
 
-    private WeakReference<UsernamePasswordHandler> mUsernamePasswordHandler;
+    private UsernamePasswordHandler mUsernamePasswordHandler;
 
     @NotNull
     @SuppressWarnings({ "DoubleCheckedLocking", "SynchronizeOnThis" })
@@ -226,7 +226,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @Override
     public void setUsernamePasswordHandler(@NotNull UsernamePasswordHandler handler) {
-        mUsernamePasswordHandler = new WeakReference<>(handler);
+        mUsernamePasswordHandler = handler;
     }
 
     @Override
@@ -386,10 +386,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             LOGGER.info("OpenVPN requires Authentication type {}", type);
             String handlerUsername = null;
             String handlerPassword = null;
-            UsernamePasswordHandler handler = null;
-            if (mUsernamePasswordHandler != null) {
-                handler = mUsernamePasswordHandler.get();
-            }
+            UsernamePasswordHandler handler = mUsernamePasswordHandler;
             if (handler != null) {
                 handlerUsername = handler.getUserName();
                 handlerPassword = handler.getUserPass();
