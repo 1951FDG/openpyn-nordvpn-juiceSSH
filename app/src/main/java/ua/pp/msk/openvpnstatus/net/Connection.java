@@ -8,9 +8,9 @@ package ua.pp.msk.openvpnstatus.net;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import ua.pp.msk.openvpnstatus.listeners.ByteCountListenerManager.ByteCountListener;
-import ua.pp.msk.openvpnstatus.listeners.LogListenerManager.LogListener;
-import ua.pp.msk.openvpnstatus.listeners.StateListenerManager.StateListener;
+import ua.pp.msk.openvpnstatus.listeners.ByteCountManager.ByteCountListener;
+import ua.pp.msk.openvpnstatus.listeners.LogManager.LogListener;
+import ua.pp.msk.openvpnstatus.listeners.StateManager.StateListener;
 
 /**
  * @author 1951FDG

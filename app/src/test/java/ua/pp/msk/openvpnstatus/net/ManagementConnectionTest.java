@@ -17,9 +17,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import ua.pp.msk.openvpnstatus.core.LogLevel;
-import ua.pp.msk.openvpnstatus.listeners.ByteCountListenerManager.ByteCountListener;
-import ua.pp.msk.openvpnstatus.listeners.LogListenerManager.Log;
-import ua.pp.msk.openvpnstatus.listeners.LogListenerManager.LogListener;
+import ua.pp.msk.openvpnstatus.listeners.ByteCountManager.ByteCountListener;
+import ua.pp.msk.openvpnstatus.listeners.LogManager.Log;
+import ua.pp.msk.openvpnstatus.listeners.LogManager.LogListener;
 
 /**
  * @author 1951FDG

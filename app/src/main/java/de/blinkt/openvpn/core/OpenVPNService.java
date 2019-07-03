@@ -39,11 +39,11 @@ import io.github.getsixtyfour.openpyn.R;
 import ua.pp.msk.openvpnstatus.core.ConnectionStatus;
 import ua.pp.msk.openvpnstatus.core.LogLevel;
 import ua.pp.msk.openvpnstatus.core.VpnStatus;
-import ua.pp.msk.openvpnstatus.listeners.ByteCountListenerManager.ByteCountListener;
-import ua.pp.msk.openvpnstatus.listeners.LogListenerManager;
-import ua.pp.msk.openvpnstatus.listeners.LogListenerManager.LogListener;
-import ua.pp.msk.openvpnstatus.listeners.StateListenerManager.State;
-import ua.pp.msk.openvpnstatus.listeners.StateListenerManager.StateListener;
+import ua.pp.msk.openvpnstatus.listeners.ByteCountManager.ByteCountListener;
+import ua.pp.msk.openvpnstatus.listeners.LogManager;
+import ua.pp.msk.openvpnstatus.listeners.LogManager.LogListener;
+import ua.pp.msk.openvpnstatus.listeners.StateManager.State;
+import ua.pp.msk.openvpnstatus.listeners.StateManager.StateListener;
 import ua.pp.msk.openvpnstatus.net.Connection;
 import ua.pp.msk.openvpnstatus.net.ManagementConnection;
 
@@ -217,7 +217,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
     }
 
     @Override
-    public void onLog(@NotNull LogListenerManager.Log log) {
+    public void onLog(@NotNull LogManager.Log log) {
         LogLevel value = log.getLevel();
         switch (value) {
             case ERROR:

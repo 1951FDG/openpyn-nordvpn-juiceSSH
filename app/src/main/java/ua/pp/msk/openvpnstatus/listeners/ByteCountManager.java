@@ -10,7 +10,7 @@ import ua.pp.msk.openvpnstatus.core.TrafficHistory;
  * @author 1951FDG
  */
 
-public class ByteCountListenerManager {
+public class ByteCountManager {
 
     public static class ByteCount {
 
@@ -47,7 +47,7 @@ public class ByteCountListenerManager {
 
     private ByteCount mByteCount;
 
-    public ByteCountListenerManager(@NotNull List<ByteCountListener> list) {
+    public ByteCountManager(@NotNull List<ByteCountListener> list) {
         mByteCountListeners = list;
     }
 

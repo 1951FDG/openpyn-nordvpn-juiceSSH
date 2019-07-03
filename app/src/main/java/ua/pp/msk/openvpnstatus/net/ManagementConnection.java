@@ -19,15 +19,15 @@ import ua.pp.msk.openvpnstatus.core.LogLevel;
 import ua.pp.msk.openvpnstatus.core.VpnStatus;
 import ua.pp.msk.openvpnstatus.exceptions.OpenVpnParseException;
 import ua.pp.msk.openvpnstatus.implementation.OpenVpnStatus;
-import ua.pp.msk.openvpnstatus.listeners.ByteCountListenerManager;
-import ua.pp.msk.openvpnstatus.listeners.ByteCountListenerManager.ByteCount;
-import ua.pp.msk.openvpnstatus.listeners.ByteCountListenerManager.ByteCountListener;
-import ua.pp.msk.openvpnstatus.listeners.LogListenerManager;
-import ua.pp.msk.openvpnstatus.listeners.LogListenerManager.Log;
-import ua.pp.msk.openvpnstatus.listeners.LogListenerManager.LogListener;
-import ua.pp.msk.openvpnstatus.listeners.StateListenerManager;
-import ua.pp.msk.openvpnstatus.listeners.StateListenerManager.State;
-import ua.pp.msk.openvpnstatus.listeners.StateListenerManager.StateListener;
+import ua.pp.msk.openvpnstatus.listeners.ByteCountManager;
+import ua.pp.msk.openvpnstatus.listeners.ByteCountManager.ByteCount;
+import ua.pp.msk.openvpnstatus.listeners.ByteCountManager.ByteCountListener;
+import ua.pp.msk.openvpnstatus.listeners.LogManager;
+import ua.pp.msk.openvpnstatus.listeners.LogManager.Log;
+import ua.pp.msk.openvpnstatus.listeners.LogManager.LogListener;
+import ua.pp.msk.openvpnstatus.listeners.StateManager;
+import ua.pp.msk.openvpnstatus.listeners.StateManager.State;
+import ua.pp.msk.openvpnstatus.listeners.StateManager.StateListener;
 import ua.pp.msk.openvpnstatus.utils.StringUtils;
 
 /**
@@ -53,11 +53,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private static final Integer mByteCountInterval = 2;
 
-    private final ByteCountListenerManager mByteCountListenerManager = new ByteCountListenerManager(new CopyOnWriteArrayList<>());
+    private final ByteCountManager mByteCountManager = new ByteCountManager(new CopyOnWriteArrayList<>());
 
-    private final LogListenerManager mLogListenerManager = new LogListenerManager(new CopyOnWriteArrayList<>());
+    private final LogManager mLogManager = new LogManager(new CopyOnWriteArrayList<>());
 
-    private final StateListenerManager mStateListenerManager = new StateListenerManager(new CopyOnWriteArrayList<>());
+    private final StateManager mStateManager = new StateManager(new CopyOnWriteArrayList<>());
 
     private boolean isRunning = false;
 
@@ -83,17 +83,17 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @Override
     public void addByteCountListener(@NotNull ByteCountListener listener) {
-        mByteCountListenerManager.addListener(Objects.requireNonNull(listener));
+        mByteCountManager.addListener(Objects.requireNonNull(listener));
     }
 
     @Override
     public void addLogListener(@NotNull LogListener listener) {
-        mLogListenerManager.addListener(Objects.requireNonNull(listener));
+        mLogManager.addListener(Objects.requireNonNull(listener));
     }
 
     @Override
     public void addStateListener(@NotNull StateListener listener) {
-        mStateListenerManager.addListener(Objects.requireNonNull(listener));
+        mStateManager.addListener(Objects.requireNonNull(listener));
     }
 
     @Override
@@ -166,17 +166,17 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @Override
     public void removeByteCountListener(@NotNull ByteCountListener listener) {
-        mByteCountListenerManager.removeListener(Objects.requireNonNull(listener));
+        mByteCountManager.removeListener(Objects.requireNonNull(listener));
     }
 
     @Override
     public void removeLogListener(@NotNull LogListener listener) {
-        mLogListenerManager.removeListener(Objects.requireNonNull(listener));
+        mLogManager.removeListener(Objects.requireNonNull(listener));
     }
 
     @Override
     public void removeStateListener(@NotNull StateListener listener) {
-        mStateListenerManager.removeListener(Objects.requireNonNull(listener));
+        mStateManager.removeListener(Objects.requireNonNull(listener));
     }
 
     @SuppressWarnings({ "NestedAssignment", "MethodCallInLoopCondition", "ProhibitedExceptionThrown" })
@@ -314,7 +314,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         long in = Long.parseLong(argument.substring(0, comma));
         long out = Long.parseLong(argument.substring(comma + 1));
         ByteCount byteCount = new ByteCount(in, out);
-        mByteCountListenerManager.setByteCount(byteCount);
+        mByteCountManager.setByteCount(byteCount);
     }
 
     private void processHold(String argument) throws IOException {
@@ -368,7 +368,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             message = message.substring(Strings.NOTE_PREFIX.length() + 1);
         }
         Log log = new Log(date, logLevel, message);
-        mLogListenerManager.setLog(log);
+        mLogManager.setLog(log);
     }
 
     private void processPassword(String argument) throws IOException {
@@ -422,7 +422,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         if ((mLastLevel == ConnectionStatus.LEVEL_CONNECTED) && (VpnStatus.WAIT.equals(name) || VpnStatus.AUTH.equals(name))) {
             LOGGER.info("Ignoring OpenVPN Status in CONNECTED state ({}->{}): {}", name, mLastLevel, message);
         } else {
-            mStateListenerManager.setState(state);
+            mStateManager.setState(state);
             mLastLevel = VpnStatus.getLevel(name, message);
             LOGGER.info("New OpenVPN Status ({}->{}): {}", name, mLastLevel, message);
         }

@@ -10,7 +10,7 @@ import ua.pp.msk.openvpnstatus.core.LogLevel;
  * @author 1951FDG
  */
 
-public class LogListenerManager {
+public class LogManager {
 
     public static class Log {
 
@@ -53,7 +53,7 @@ public class LogListenerManager {
 
     private Log mLog;
 
-    public LogListenerManager(@NotNull List<LogListener> list) {
+    public LogManager(@NotNull List<LogListener> list) {
         logListener = list;
     }
 

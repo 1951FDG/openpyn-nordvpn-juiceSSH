@@ -9,7 +9,7 @@ import java.util.List;
  * @author 1951FDG
  */
 
-public class StateListenerManager {
+public class StateManager {
 
     public static class State {
 
@@ -77,7 +77,7 @@ public class StateListenerManager {
 
     private State mState;
 
-    public StateListenerManager(@NotNull List<StateListener> list) {
+    public StateManager(@NotNull List<StateListener> list) {
         stateListener = list;
     }
 
