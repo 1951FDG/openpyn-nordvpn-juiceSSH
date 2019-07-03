@@ -41,11 +41,13 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
         @Override
         public void run() {
             IOpenVPNServiceInternal service = mService.get();
-            try {
-                service.stopVPN(false);
-            } catch (RemoteException e) {
-                // TODO
-                e.printStackTrace();
+            if (service != null) {
+                try {
+                    service.stopVPN(false);
+                } catch (RemoteException e) {
+                    // TODO
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -89,8 +91,10 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            Runnable target = new stopVPNTask(mService);
-            new Thread(target).start();
+            if (mService != null) {
+                Runnable target = new stopVPNTask(mService);
+                new Thread(target).start();
+            }
         }
         finish();
     }
