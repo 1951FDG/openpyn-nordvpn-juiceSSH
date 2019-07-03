@@ -28,9 +28,12 @@
 
     <style name="Base.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings" />
 
+    <!--https://issuetracker.google.com/issues/68454482-->
+    <!--https://android.googlesource.com/platform/frameworks/base/+/android-8.0.0_r1/services/core/java/com/android/server/am/ActivityRecord.java-->
+    <!--android-8.0: Only fullscreen opaque activities can request orientation-->
+    <!--Do not use windowIsTranslucent!-->
     <style name="AppTheme.Settings" parent="Base.Theme.AppTheme.Settings">
         <item name="android:windowEnterTransition">@transition/fade_in</item>
-        <item name="android:windowIsTranslucent">true</item>
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>
 
