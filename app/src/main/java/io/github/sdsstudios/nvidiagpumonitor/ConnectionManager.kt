@@ -24,6 +24,7 @@ import java.util.UUID
 @MainThread
 class ConnectionManager(
     ctx: Context,
+    private val onClientStartedListener: OnClientStartedListener,
     private val mActivitySessionStartedListener: OnSessionStartedListener,
     private val mActivitySessionFinishedListener: OnSessionFinishedListener,
     mActivitySessionExecuteListener: OnSessionExecuteListener?,
@@ -107,7 +108,7 @@ class ConnectionManager(
         if (isConnected()) disconnect() else connect(uuid, activity)
     }
 
-    fun startClient(onClientStartedListener: OnClientStartedListener) {
+    fun startClient() {
         mClient.start(mCtx, onClientStartedListener)
     }
 
