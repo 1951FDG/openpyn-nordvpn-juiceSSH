@@ -67,8 +67,8 @@
     </style>
 
     <style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:cacheColorHint">@color/colorPrimary</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:cacheColorHint">?android:attr/colorBackground</item>
     </style>
 
     <style name="MorphDialog.Custom.Light" parent="MorphDialog.Base.Light">

@@ -3,7 +3,7 @@
 
     <style name="Base.V27.Theme.AppTheme" parent="Base.V21.Theme.AppTheme">
         <item name="android:navigationBarColor">#fffafafa</item>
-        <item name="android:statusBarColor">#fffafafa</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
@@ -13,7 +13,7 @@
     <style name="Base.V27.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings">
         <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
         <item name="android:navigationBarColor">#fffafafa</item>
-        <item name="android:statusBarColor">#fffafafa</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
