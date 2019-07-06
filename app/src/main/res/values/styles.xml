@@ -5,16 +5,7 @@
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 
-    <style name="Base.V21.Theme.AppTheme" parent="Theme.AppCompat.Light" />
-
-    <style name="Base.Theme.AppTheme" parent="Base.V21.Theme.AppTheme" />
-
-    <style name="AppTheme" parent="Base.Theme.AppTheme">
-        <item name="android:windowContentTransitions">true</item>
-
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-
+    <style name="Base.V21.Theme.AppTheme" parent="Theme.AppCompat.Light">
         <!-- Original AppCompat attributes. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -24,7 +15,25 @@
 
     </style>
 
-    <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.AppCompat.Light" />
+    <style name="Base.Theme.AppTheme" parent="Base.V21.Theme.AppTheme" />
+
+    <style name="AppTheme" parent="Base.Theme.AppTheme">
+        <item name="android:windowContentTransitions">true</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.AppCompat.Light">
+        <!-- Original AppCompat attributes. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorButtonNormal">@color/colorAccent</item>
+
+    </style>
 
     <style name="Base.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings" />
 
@@ -39,14 +48,6 @@
 
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
-
-        <!-- Original AppCompat attributes. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="colorButtonNormal">@color/colorAccent</item>
-
     </style>
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
