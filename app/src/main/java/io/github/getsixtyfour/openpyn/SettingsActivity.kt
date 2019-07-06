@@ -158,12 +158,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 
     companion object {
         fun launch(activity: Activity) {
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+            //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
             val intent = Intent(activity, SettingsActivity::class.java).apply {
                 putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
-            ActivityCompat.startActivity(activity, intent, options.toBundle())
+            ActivityCompat.startActivity(activity, intent, null)
         }
 
         /**
