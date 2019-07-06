@@ -137,7 +137,7 @@ class MainActivityTest {
         val overflowMenuButton = onView(
             allOf(
                 withContentDescription("More options"),
-                childAtPosition(childAtPosition(withId(R.id.toolbar), 1), 2),
+                childAtPosition(childAtPosition(withId(R.id.toolbar), 1), 1),
                 isDisplayed()
             )
         )
