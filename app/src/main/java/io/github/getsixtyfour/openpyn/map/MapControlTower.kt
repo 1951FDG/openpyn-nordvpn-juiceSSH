@@ -66,6 +66,7 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import kotlin.math.pow
 
 /**
  * @author 1951FDG
@@ -283,7 +284,7 @@ class MapControlTower : SVC_MapControlTower(),
             // Load all map tiles
             @Suppress("MagicNumber") val z = 3
             //val z = tileProvider!!.minimumZoom.toInt()
-            val rows = Math.pow(2.0, z.toDouble()).toInt() - 1
+            val rows = 2.0.pow(z.toDouble()).toInt() - 1
             // Traverse through all rows
             for (y in 0..rows) {
                 for (x in 0..rows) {

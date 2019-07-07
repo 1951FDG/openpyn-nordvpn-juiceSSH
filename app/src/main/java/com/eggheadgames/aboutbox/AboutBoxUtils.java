@@ -8,6 +8,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
+@SuppressWarnings("UtilityClass")
 public final class AboutBoxUtils {
 
     public static final String playStoreAppURI = "https://play.google.com/store/apps/details?id=";
@@ -66,8 +67,6 @@ public final class AboutBoxUtils {
                 appURI = "amzn://apps/android?p=" + packageName;
                 webURI = amznStoreAppURI + packageName;
                 break;
-            default:
-                break;
         }
         openApplication(activity, appURI, webURI);
     }
@@ -93,8 +92,6 @@ public final class AboutBoxUtils {
             case AMAZON:
                 appURI = "amzn://apps/android?showAll=1&p=" + packageName;
                 webURI = "http://www.amazon.com/gp/mas/dl/android?showAll=1&p=" + packageName;
-                break;
-            default:
                 break;
         }
         openApplication(activity, appURI, webURI);

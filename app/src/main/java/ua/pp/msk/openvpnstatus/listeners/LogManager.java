@@ -12,6 +12,7 @@ import ua.pp.msk.openvpnstatus.core.LogLevel;
 
 public class LogManager {
 
+    @SuppressWarnings("PublicInnerClass")
     public static class Log {
 
         private final String mDate;
@@ -42,7 +43,7 @@ public class LogManager {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     @FunctionalInterface
     public interface LogListener {
 

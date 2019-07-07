@@ -42,7 +42,8 @@ public final class EmojiFlagManager {
         try (InputStream stream = EmojiLoader.class.getResourceAsStream(PATH)) {
             List<Emoji> emojis = EmojiLoader.loadEmojis(stream);
             for (Emoji emoji : emojis) {
-                EMOJIS_BY_ALIAS.put(emoji.getAliases().get(0), emoji);
+                List<String> aliases = emoji.getAliases();
+                EMOJIS_BY_ALIAS.put(aliases.get(0), emoji);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

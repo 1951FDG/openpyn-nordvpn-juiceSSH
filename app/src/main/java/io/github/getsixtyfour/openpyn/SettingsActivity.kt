@@ -10,7 +10,6 @@ import android.preference.PreferenceActivity
 import android.view.MenuItem
 import android.view.View
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
 import androidx.preference.AndroidResources
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -59,7 +58,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     /**
      * {@inheritDoc}
      */
-    override fun onBuildHeaders(target: List<PreferenceActivity.Header>) {
+    override fun onBuildHeaders(target: List<Header>) {
         loadHeadersFromResource(R.xml.pref_headers, target)
     }
 

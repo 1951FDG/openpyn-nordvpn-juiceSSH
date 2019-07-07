@@ -33,11 +33,11 @@ public class ConnectionTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionTest.class);
 
-    ResourceBundle bundle = ResourceBundle.getBundle("test");
+    private final ResourceBundle bundle = ResourceBundle.getBundle("test");
 
-    String host = bundle.getString("management.server");
+    private final String host = bundle.getString("management.server");
 
-    Integer port = Integer.valueOf(bundle.getString("management.port"));
+    private final Integer port = Integer.valueOf(bundle.getString("management.port"));
 
     @BeforeClass
     public static void setUpClass() {

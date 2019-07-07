@@ -11,6 +11,7 @@ import java.util.List;
 
 public class StateManager {
 
+    @SuppressWarnings("PublicInnerClass")
     public static class State {
 
         private final String mDate;
@@ -66,7 +67,7 @@ public class StateManager {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     @FunctionalInterface
     public interface StateListener {
 

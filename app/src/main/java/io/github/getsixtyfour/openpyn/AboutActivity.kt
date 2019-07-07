@@ -12,7 +12,6 @@ import android.view.ContextThemeWrapper
 import android.view.MenuItem
 import android.view.View
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -67,7 +66,7 @@ class AboutActivity : AppCompatPreferenceActivity() {
     /**
      * {@inheritDoc}
      */
-    override fun onBuildHeaders(target: List<PreferenceActivity.Header>) {
+    override fun onBuildHeaders(target: List<Header>) {
         loadHeadersFromResource(R.xml.pref_headers, target)
     }
 

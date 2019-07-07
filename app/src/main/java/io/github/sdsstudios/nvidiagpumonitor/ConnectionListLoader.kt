@@ -20,7 +20,7 @@ class ConnectionListLoader(
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         val selection = "type = ?"
-        val selectionArgs = arrayOf(Integer.toString(TYPE_SSH))
+        val selectionArgs = arrayOf(TYPE_SSH.toString())
 
         return ConnectionLoader(
             mCtx,

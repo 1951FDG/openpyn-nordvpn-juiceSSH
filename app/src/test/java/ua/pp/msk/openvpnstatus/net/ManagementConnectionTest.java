@@ -95,6 +95,7 @@ public class ManagementConnectionTest {
     /**
      * Test of processPassword method, of class ManagementConnection.
      */
+    @SuppressWarnings({ "ReuseOfLocalVariable", "ThrowInsideCatchBlockWhichIgnoresCaughtException" })
     @Test(expected = IOException.class)
     public void testProcessPassword() throws InvocationTargetException, IOException {
         String line = ">PASSWORD:Auth-Token:";
@@ -132,6 +133,7 @@ public class ManagementConnectionTest {
     /**
      * Test of processState method, of class ManagementConnection.
      */
+    @SuppressWarnings("ReuseOfLocalVariable")
     @Test
     public void testProcessState() throws InvocationTargetException {
         /*
@@ -162,6 +164,7 @@ public class ManagementConnectionTest {
         invokeStaticMethod(ManagementConnection.class, "parseInput", argClasses, argObjects);
     }
 
+    @SuppressWarnings({ "SameParameterValue", "ThrowInsideCatchBlockWhichIgnoresCaughtException" })
     private static void invokeStaticMethod(Class targetClass, String methodName, Class[] argClasses, Object[] argObjects)
             throws InvocationTargetException {
         try {

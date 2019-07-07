@@ -11,7 +11,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-public class ResourceUtil {
+public final class ResourceUtil {
 
     @NonNull
     public static Bitmap getBitmap(@NonNull VectorDrawable vectorDrawable) {

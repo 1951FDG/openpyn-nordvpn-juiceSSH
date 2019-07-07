@@ -35,7 +35,7 @@ public final class StatusCli {
 
     public static void main(String[] args) {
         String host = null;
-        int port = 0;
+        Integer port = 0;
         try {
             Options opts = new Options();
             opts.addOption("H", "host", true, "OpenVPN server management interface address");
@@ -53,7 +53,7 @@ public final class StatusCli {
                 System.exit(1);
             }
             host = cmd.getOptionValue("host");
-            port = Integer.parseInt(cmd.getOptionValue("port"));
+            port = Integer.valueOf(cmd.getOptionValue("port"));
         } catch (ParseException ex) {
             LOGGER.error("Cannot parse arguments", ex);
         }

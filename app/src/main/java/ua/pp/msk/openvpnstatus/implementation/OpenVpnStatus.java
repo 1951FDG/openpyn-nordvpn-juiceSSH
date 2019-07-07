@@ -37,6 +37,14 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
 
     private Calendar updatedAt;
 
+    private static final Pattern statsHeader = Pattern.compile("^OpenVPN STATISTICS");
+    private static final Pattern clientsHeader = Pattern.compile("^OpenVPN CLIENT LIST");
+    private static final Pattern updated = Pattern.compile("^Updated,.*");
+    private static final Pattern clientColumns = Pattern.compile("Common Name,Real Address,Bytes Received,Bytes Sent,Connected Since");
+    private static final Pattern routesHeader = Pattern.compile("^ROUTING TABLE");
+    private static final Pattern routesColumns = Pattern.compile("Virtual Address,Common Name,Real Address,Last Ref");
+    private static final Pattern globalStats = Pattern.compile("GLOBAL STATS");
+
     @NotNull
     @Override
     public String toString() {
@@ -88,13 +96,6 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             "OverlyComplexMethod", "OverlyLongMethod" })
     @Override
     public void setCommandOutput(String[] lines) throws OpenVpnParseException {
-        Pattern statsHeader = Pattern.compile("^OpenVPN STATISTICS");
-        Pattern clientsHeader = Pattern.compile("^OpenVPN CLIENT LIST");
-        Pattern updated = Pattern.compile("^Updated,.*");
-        Pattern clientColumns = Pattern.compile("Common Name,Real Address,Bytes Received,Bytes Sent,Connected Since");
-        Pattern routesHeader = Pattern.compile("^ROUTING TABLE");
-        Pattern routesColumns = Pattern.compile("Virtual Address,Common Name,Real Address,Last Ref");
-        Pattern globalStats = Pattern.compile("GLOBAL STATS");
         String msg = "Cannot parse OpenVPN status. Wrong lines sequence.";
         int length = lines.length;
         for (int i = 0; i < length; i++) {

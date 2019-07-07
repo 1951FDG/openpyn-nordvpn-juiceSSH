@@ -12,6 +12,7 @@ import ua.pp.msk.openvpnstatus.core.TrafficHistory;
 
 public class ByteCountManager {
 
+    @SuppressWarnings("PublicInnerClass")
     public static class ByteCount {
 
         private final Long mIn;
@@ -34,7 +35,7 @@ public class ByteCountManager {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     @FunctionalInterface
     public interface ByteCountListener {
 
@@ -69,8 +70,8 @@ public class ByteCountManager {
     }
 
     private void notifyListeners() {
-        Long in = mByteCount.getIn();
-        Long out = mByteCount.getOut();
+        long in = mByteCount.getIn();
+        long out = mByteCount.getOut();
         TrafficHistory.LastDiff diff = trafficHistory.add(in, out);
         for (ByteCountListener listener : mByteCountListeners) {
             listener.onByteCountChanged(in, out, diff.getDiffIn(), diff.getDiffOut());

@@ -32,8 +32,6 @@ public final class ShareUtil {
                 case AMAZON:
                     shareMessage = shareMessage + AboutBoxUtils.amznStoreAppURI + config.packageName;
                     break;
-                default:
-                    break;
             }
         }
 

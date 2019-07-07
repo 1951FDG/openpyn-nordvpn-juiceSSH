@@ -9,6 +9,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -78,7 +79,8 @@ public class TrafficHistory implements Parcelable {
             if (seconds.size() < 2) {
                 newTdp = lastTdp;
             } else {
-                newTdp = seconds.descendingIterator().next();
+                Iterator<TrafficDataPoint> iterator = seconds.descendingIterator();
+                newTdp = iterator.next();
             }
         }
         return new LastDiff(lastTdp, newTdp);

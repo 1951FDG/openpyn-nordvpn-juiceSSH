@@ -21,7 +21,7 @@ public final class EmailUtil {
     public static void contactUs(@NonNull Activity activity) {
         AboutConfig config = AboutConfig.getInstance();
 
-        final Uri mailto = Uri.fromParts("mailto", config.emailAddress, null);
+        Uri mailto = Uri.fromParts("mailto", config.emailAddress, null);
 
         String emailBody = config.emailBody;
         if (TextUtils.isEmpty(emailBody)) {

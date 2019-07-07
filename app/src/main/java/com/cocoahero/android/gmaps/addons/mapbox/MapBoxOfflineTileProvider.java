@@ -297,6 +297,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
 
     //region Instance Methods
 
+    @SuppressWarnings("StandardVariableNames")
     private void calculateBounds() {
         String result = getStringValue("bounds");
         if (result != null) {

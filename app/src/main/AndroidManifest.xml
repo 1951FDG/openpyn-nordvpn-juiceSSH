@@ -95,7 +95,7 @@
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
 
-        <service android:name="de.blinkt.openvpn.core.OpenVPNService"></service>
+        <service android:name="de.blinkt.openvpn.core.OpenVPNService" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

@@ -52,6 +52,7 @@ import ua.pp.msk.openvpnstatus.net.ManagementConnection;
  * @author 1951FDG
  */
 
+@SuppressWarnings("OverlyComplexClass")
 public final class OpenVPNService extends Service implements LogListener, StateListener, ByteCountListener, IOpenVPNServiceInternal {
 
     @NonNls
@@ -80,9 +81,9 @@ public final class OpenVPNService extends Service implements LogListener, StateL
 
     private static final String TAG = "OpenVPNService";
 
-    String mHost;
+    private String mHost = "127.0.0.1";
 
-    Integer mPort;
+    private Integer mPort = 23;
 
     private final IBinder mBinder = new IOpenVPNServiceInternal.Stub() {
         @Override
@@ -129,8 +130,8 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             throw new IllegalArgumentException("intent can't be null");
         }
         mNotificationAlwaysVisible = intent.getBooleanExtra(EXTRA_ALWAYS_SHOW_NOTIFICATION, true);
-        mHost = (intent.getStringExtra(EXTRA_HOST) != null) ? intent.getStringExtra(EXTRA_HOST) : "127.0.0.1";
-        mPort = intent.getIntExtra(EXTRA_PORT, 23);
+        mHost = (intent.getStringExtra(EXTRA_HOST) != null) ? intent.getStringExtra(EXTRA_HOST) : mHost;
+        mPort = intent.getIntExtra(EXTRA_PORT, mPort);
         Log.i(TAG, "Starting OpenVPN Service");
         // Always show notification here to avoid problem with startForeground timeout
         {
@@ -204,8 +205,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
     @Override
     public void onByteCountChanged(long in, long out, long diffIn, long diffOut) {
         if (mDisplayByteCount) {
-            Connection connection = ManagementConnection.getInstance();
-            long byteCountInterval = connection.getByteCountInterval().longValue();
+            long byteCountInterval = ManagementConnection.BYTE_COUNT_INTERVAL.longValue();
             Resources resources = getResources();
             String sIn = humanReadableByteCount(resources, in, false);
             String sDiffIn = humanReadableByteCount(resources, diffIn / byteCountInterval, true);
@@ -269,10 +269,10 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             // (y) optional port of remote server (OpenVPN 2.4 or higher)
             // (x) and (y) are shown for ASSIGN_IP and CONNECTED states
             if (VpnStatus.ASSIGN_IP.equals(name) || VpnStatus.CONNECTED.equals(name)) {
-                @NonNls String prefix = port;
                 if ((address != null) && !address.isEmpty()) {
-                    if ((prefix != null) && !prefix.isEmpty()) {
-                        if ("1194".equals(prefix)) {
+                    @NonNls String prefix = null;
+                    if ((port != null) && !port.isEmpty()) {
+                        if ("1194".equals(port)) {
                             prefix = "UDP";
                         } else {
                             prefix = "TCP";

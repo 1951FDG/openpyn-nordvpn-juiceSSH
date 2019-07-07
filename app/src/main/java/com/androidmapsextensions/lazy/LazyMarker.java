@@ -30,14 +30,14 @@ import java.util.Objects;
 public class LazyMarker {
 
     @FunctionalInterface
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     public interface OnMarkerCreateListener {
 
         void onMarkerCreate(@NonNull LazyMarker marker);
     }
 
     @FunctionalInterface
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     public interface OnLevelChangeCallback {
 
         void onLevelChange(@NonNull LazyMarker marker, int level);
@@ -45,20 +45,23 @@ public class LazyMarker {
 
     private int level;
 
+    @Nullable
     @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient OnMarkerCreateListener listener;
 
-    private final LatLng location;
+    private LatLng location;
 
     @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient GoogleMap map;
 
+    @Nullable
     @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient Marker marker;
 
     @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient MarkerOptions markerOptions;
 
+    @Nullable
     private Object tag;
 
     @SuppressWarnings("unused")
@@ -124,9 +127,9 @@ public class LazyMarker {
     }
 
     @NonNull
-    @Deprecated
     public String getId() {
         createMarker();
+        assert marker != null;
         return marker.getId();
     }
 
@@ -145,6 +148,7 @@ public class LazyMarker {
     }
 
     public void setPosition(@NonNull LatLng position) {
+        location = position;
         if (marker != null) {
             marker.setPosition(position);
         } else {
@@ -298,10 +302,6 @@ public class LazyMarker {
         if (marker != null) {
             marker.remove();
             marker = null;
-        } else {
-            map = null;
-            markerOptions = null;
-            listener = null;
         }
     }
 

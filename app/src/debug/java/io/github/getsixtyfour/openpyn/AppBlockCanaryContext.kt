@@ -28,12 +28,10 @@ class AppBlockCanaryContext : BlockCanaryContext() {
     }
 
     override fun concernPackages(): List<String> {
-        val list = super.provideWhiteList()
-        return list
+        return super.provideWhiteList()
     }
 
     override fun provideWhiteList(): List<String> {
-        val list = super.provideWhiteList()
-        return list
+        return super.provideWhiteList()
     }
 }

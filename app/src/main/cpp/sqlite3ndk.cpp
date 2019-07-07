@@ -44,6 +44,8 @@
 #include <jni.h>
 #include <cstring>
 
+#define SQLITE_VERSION 3024000
+
 #ifndef SQLITE_DEFAULT_SECTOR_SIZE
 # define SQLITE_DEFAULT_SECTOR_SIZE 512
 #endif
@@ -298,7 +300,8 @@ static int ndkFileClose(sqlite3_file *pFile)
 static int ndkFileRead(sqlite3_file *pFile, void *pBuf, int amt, sqlite3_int64 offset)
 {
 	const ndk_file *file = reinterpret_cast<ndk_file *>(pFile);
-	int got, off;
+	int got;
+	int off;
 	int rc;
 
 	off = (int) offset;
@@ -544,8 +547,8 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 	int version = sqlite3_libversion_number();
 	const char *version_str = sqlite3_libversion();
 	INFO("found sqlite library version %s", version_str);
-	if (version < 3024000) { WARN("sqlite version %s is older than 3.24.0!", version_str); }
-	if (version > 3024000) { WARN("sqlite version %s is newer than 3.24.0!", version_str); }
+	if (version < SQLITE_VERSION) { WARN("sqlite version %s is older than 3.24.0!", version_str); }
+	if (version > SQLITE_VERSION) { WARN("sqlite version %s is newer than 3.24.0!", version_str); }
 
 	jclass cActivityThread = env->FindClass("android/app/ActivityThread");
 	if (cActivityThread == JNI_FALSE) { return JNI_ERR; }

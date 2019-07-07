@@ -31,8 +31,6 @@ public interface Connection extends ConnectionBackground {
     void setKeepAlive(boolean keepAlive);
 
     //region ManagementConnection
-    @NotNull
-    Integer getByteCountInterval();
 
     boolean isOpenVPNActive();
 

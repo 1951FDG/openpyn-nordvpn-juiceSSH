@@ -30,14 +30,20 @@ import java.util.ArrayList;
 
 public class CameraUpdateAnimator implements OnCameraIdleListener {
 
-    @SuppressWarnings("WeakerAccess")
-    final GoogleMap mMap;
+    private final GoogleMap mMap;
+
     private final OnCameraIdleListener mOnCameraIdleListener;
+
     private final ArrayList<Animation> cameraUpdates = new ArrayList<>();
+
     private boolean mIsRotateGestureEnabled;
+
     private boolean mIsScrollGestureEnabled;
+
     private boolean mIsTiltGestureEnabled;
+
     private boolean mIsZoomControlsEnabled;
+
     private boolean mIsZoomGestureEnabled;
 
     public CameraUpdateAnimator(@NonNull GoogleMap map, @NonNull OnCameraIdleListener onCameraIdleListener) {
@@ -65,13 +71,11 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         mIsTiltGestureEnabled = settings.isTiltGesturesEnabled();
         mIsZoomControlsEnabled = settings.isZoomControlsEnabled();
         mIsZoomGestureEnabled = settings.isZoomGesturesEnabled();
-
         settings.setRotateGesturesEnabled(false);
         settings.setScrollGesturesEnabled(false);
         settings.setTiltGesturesEnabled(false);
         settings.setZoomControlsEnabled(false);
         settings.setZoomGesturesEnabled(false);
-
         mMap.setOnCameraIdleListener(this);
         executeNext();
     }
@@ -88,21 +92,8 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
             settings.setZoomGesturesEnabled(mIsZoomGestureEnabled);
         } else {
             Animation animation = cameraUpdates.remove(0);
-
             Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    if (animation.mAnimate) {
-                        if (animation.mCancelableCallback != null) {
-                            mMap.animateCamera(animation.mCameraUpdate, animation.mCancelableCallback);
-                        } else {
-                            mMap.animateCamera(animation.mCameraUpdate);
-                        }
-                    } else {
-                        mMap.moveCamera(animation.mCameraUpdate);
-                    }
-                }
-            }, animation.mDelay);
+            handler.postDelayed(new MyRunnable(mMap, animation), animation.mDelay);
         }
     }
 
@@ -111,11 +102,15 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         executeNext();
     }
 
+    @SuppressWarnings("PackageVisibleField")
     private static class Animation {
 
         final CameraUpdate mCameraUpdate;
+
         final boolean mAnimate;
+
         final long mDelay;
+
         final CancelableCallback mCancelableCallback;
 
         Animation(CameraUpdate cameraUpdate, boolean animate, long delay, CancelableCallback cancelableCallback) {
@@ -123,6 +118,30 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
             mAnimate = animate;
             mDelay = delay;
             mCancelableCallback = cancelableCallback;
+        }
+    }
+
+    private static class MyRunnable implements Runnable {
+
+        private final Animation mAnimation;
+
+        private final GoogleMap mGoogleMap;
+
+        public MyRunnable(GoogleMap googleMap, Animation animation) {
+            mGoogleMap = googleMap;
+            mAnimation = animation;
+        }
+
+        public void run() {
+            if (mAnimation.mAnimate) {
+                if (mAnimation.mCancelableCallback != null) {
+                    mGoogleMap.animateCamera(mAnimation.mCameraUpdate, mAnimation.mCancelableCallback);
+                } else {
+                    mGoogleMap.animateCamera(mAnimation.mCameraUpdate);
+                }
+            } else {
+                mGoogleMap.moveCamera(mAnimation.mCameraUpdate);
+            }
         }
     }
 }

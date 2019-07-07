@@ -14,11 +14,6 @@ public class FileWritingScreenshotCustomCallback extends FileWritingScreenshotCa
     }
 
     @Override
-    public void screenshotCaptured(String screenshotName, Bitmap screenshot) {
-        super.screenshotCaptured(screenshotName, screenshot);
-    }
-
-    @Override
     protected File getScreenshotFile(File screenshotDirectory, String screenshotName) {
         String screenshotFileName = screenshotName + ".png";
         return new File(screenshotDirectory, screenshotFileName);

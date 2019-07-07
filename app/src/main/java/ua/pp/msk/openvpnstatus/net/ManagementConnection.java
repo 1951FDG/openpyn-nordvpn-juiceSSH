@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -35,10 +34,12 @@ import ua.pp.msk.openvpnstatus.utils.StringUtils;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "Singleton", "OverlyComplexClass" })
+@SuppressWarnings({ "Singleton", "OverlyCoupledClass" })
 public final class ManagementConnection extends AbstractConnection implements Connection {
 
     private static volatile ManagementConnection mInstance = null;
+
+    public static final Integer BYTE_COUNT_INTERVAL = 2;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
 
@@ -50,8 +51,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @NonNls
     public static final String STREAM_CLOSED = "Stream closed";
-
-    private static final Integer mByteCountInterval = 2;
 
     private final ByteCountManager mByteCountManager = new ByteCountManager(new CopyOnWriteArrayList<>());
 
@@ -135,12 +134,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @NotNull
     @Override
-    public Integer getByteCountInterval() {
-        return mByteCountInterval;
-    }
-
-    @NotNull
-    @Override
     public Status getOpenVPNStatus() throws OpenVpnParseException, IOException {
         OpenVpnStatus ovs = new OpenVpnStatus();
         ovs.setCommandOutput(executeCommand(Commands.STATUS_COMMAND));
@@ -189,14 +182,12 @@ public final class ManagementConnection extends AbstractConnection implements Co
         isRunning = true;
         {
             try {
+                managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, "interact"));
+                managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
+                managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, "on"));
+                managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, "on"));
+                managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, "release"));
                 BufferedReader in = getBufferedReader();
-                {
-                    managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, "interact"));
-                    managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, mByteCountInterval));
-                    managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, "on"));
-                    managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, "on"));
-                    managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, "release"));
-                }
                 String line;
                 while ((line = in.readLine()) != null) {
                     if (!line.isEmpty()) {
@@ -311,8 +302,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void processByteCount(String argument) {
         int comma = argument.indexOf(',');
-        long in = Long.parseLong(argument.substring(0, comma));
-        long out = Long.parseLong(argument.substring(comma + 1));
+        Long in = Long.valueOf(argument.substring(0, comma));
+        Long out = Long.valueOf(argument.substring(comma + 1));
         ByteCount byteCount = new ByteCount(in, out);
         mByteCountManager.setByteCount(byteCount);
     }

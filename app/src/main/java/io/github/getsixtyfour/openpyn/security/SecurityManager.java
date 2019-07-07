@@ -25,13 +25,16 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+@SuppressWarnings("Singleton")
 public final class SecurityManager {
 
-    private static final int IV_LENGTH = 16;
+    private static volatile SecurityManager sInstance = null;
 
     private static final String AES_GCM_NO_PADDING = "AES/GCM/NoPadding";
 
-    private static volatile SecurityManager sInstance = null;
+    private static final int IV_LENGTH = 16;
+
+    private static final String TAG = "SecurityManager";
 
     private SecretKey mKey;
 
@@ -49,7 +52,7 @@ public final class SecurityManager {
             key = Arrays.copyOf(key, IV_LENGTH);
             mKey = new SecretKeySpec(key, "AES");
         } catch (NoSuchAlgorithmException e) {
-            Log.wtf(getClass().getSimpleName(), e);
+            Log.wtf(TAG, e);
         }
     }
 
@@ -78,7 +81,7 @@ public final class SecurityManager {
             byte[] cipherBytes = cipher.doFinal(encryptedBytes, IV_LENGTH, encryptedBytes.length - IV_LENGTH);
             output = new String(cipherBytes, StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            Log.wtf(getClass().getSimpleName(), e);
+            Log.wtf(TAG, e);
         }
         return output;
     }
@@ -97,7 +100,7 @@ public final class SecurityManager {
             byte[] cipherBytes = cipher.doFinal(clearText);
             output = new String(Base64.encode(concat(iv, cipherBytes), Base64.NO_WRAP), StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            Log.wtf(getClass().getSimpleName(), e);
+            Log.wtf(TAG, e);
         }
         return output;
     }
