@@ -14,6 +14,7 @@ import android.view.View.OnClickListener
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager
 import androidx.navigation.fragment.NavHostFragment
@@ -400,7 +401,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun hasPermission(permission: String): Boolean {
-        return ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun onPermissionsGranted() {
@@ -471,7 +472,7 @@ class MainActivity : AppCompatActivity(),
     private fun onGitHubItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
         val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-        ActivityCompat.startActivity(this, intent, null)
+        ContextCompat.startActivity(this, intent, null)
     }
 
     private fun onRefreshItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
@@ -523,13 +524,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun onSettingsItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
-        /*
-        startActivity<SettingsActivity>(
-                EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name,
-                EXTRA_NO_HEADERS to true
-        )
-        */
-
         SettingsActivity.startSettingsFragment(this)
     }
 

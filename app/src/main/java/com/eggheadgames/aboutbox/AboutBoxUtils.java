@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 @SuppressWarnings("UtilityClass")
 public final class AboutBoxUtils {
@@ -23,11 +24,11 @@ public final class AboutBoxUtils {
         try {
             activity.getPackageManager().getPackageInfo("com.facebook.katana", 0);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/" + name));
-            activity.startActivity(intent);
+            ContextCompat.startActivity(activity, intent, null);
         } catch (PackageManager.NameNotFoundException | ActivityNotFoundException e) {
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/" + name));
-                activity.startActivity(intent);
+                ContextCompat.startActivity(activity, intent, null);
             } catch (ActivityNotFoundException e1) {
                 if (config.analytics != null) {
                     config.analytics.logException(e1, false);
@@ -42,11 +43,11 @@ public final class AboutBoxUtils {
             activity.getPackageManager().getPackageInfo("com.twitter.android", 0);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + name));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            activity.startActivity(intent);
+            ContextCompat.startActivity(activity, intent, null);
         } catch (PackageManager.NameNotFoundException | ActivityNotFoundException e) {
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + name));
-                activity.startActivity(intent);
+                ContextCompat.startActivity(activity, intent, null);
             } catch (ActivityNotFoundException e1) {
                 if (config.analytics != null) {
                     config.analytics.logException(e1, false);
@@ -100,7 +101,7 @@ public final class AboutBoxUtils {
     public static void openApplication(@NonNull Activity activity, @NonNull String appURI, @NonNull String webURI) {
         AboutConfig config = AboutConfig.getInstance();
         try {
-            activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(appURI)));
+            ContextCompat.startActivity(activity, new Intent(Intent.ACTION_VIEW, Uri.parse(appURI)), null);
         } catch (ActivityNotFoundException e1) {
             try {
                 openHTMLPage(activity, webURI);
@@ -113,6 +114,6 @@ public final class AboutBoxUtils {
     }
 
     public static void openHTMLPage(@NonNull Activity activity, @NonNull String htmlPath) {
-        activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(htmlPath)));
+        ContextCompat.startActivity(activity, new Intent(Intent.ACTION_VIEW, Uri.parse(htmlPath)), null);
     }
 }

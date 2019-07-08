@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.eggheadgames.aboutbox.AboutBoxUtils;
 import com.eggheadgames.aboutbox.AboutConfig;
@@ -18,9 +19,9 @@ public final class ShareUtil {
     public static void share(@NonNull Activity activity) {
         AboutConfig config = AboutConfig.getInstance();
 
-        Intent intent2 = new Intent();
-        intent2.setAction(Intent.ACTION_SEND);
-        intent2.setType("text/plain");
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
 
         String shareMessage = config.shareMessage;
 
@@ -35,8 +36,8 @@ public final class ShareUtil {
             }
         }
 
-        intent2.putExtra(Intent.EXTRA_TEXT, shareMessage);
+        intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
 
-        activity.startActivity(Intent.createChooser(intent2, config.sharingTitle));
+        ContextCompat.startActivity(activity, Intent.createChooser(intent, config.sharingTitle), null);
     }
 }

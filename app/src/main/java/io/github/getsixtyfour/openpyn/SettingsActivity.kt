@@ -8,7 +8,6 @@ import android.content.res.Configuration.SCREENLAYOUT_SIZE_XLARGE
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -338,7 +337,7 @@ class SettingsActivity : PreferenceActivityCompat() {
                 Preference.OnPreferenceClickListener {
                     OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_activity_licenses))
                     val intent = Intent(activity, OssLicensesMenuActivity::class.java)
-                    ActivityCompat.startActivity(activity, intent, null)
+                    ContextCompat.startActivity(activity, intent, null)
                     true
                 }
             ))
@@ -444,7 +443,7 @@ class SettingsActivity : PreferenceActivityCompat() {
                 putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.AboutSyncPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
-            ActivityCompat.startActivity(activity, intent, null)
+            ContextCompat.startActivity(activity, intent, null)
         }
 
         fun startSettingsFragment(activity: Activity) {
@@ -453,7 +452,7 @@ class SettingsActivity : PreferenceActivityCompat() {
                 putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
-            ActivityCompat.startActivity(activity, intent, null)
+            ContextCompat.startActivity(activity, intent, null)
         }
 
         @Suppress("WeakerAccess")

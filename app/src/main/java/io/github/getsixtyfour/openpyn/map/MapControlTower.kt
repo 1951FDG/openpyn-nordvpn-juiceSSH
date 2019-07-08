@@ -7,7 +7,7 @@ import android.view.View.OnClickListener
 import android.view.animation.AccelerateInterpolator
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
@@ -651,7 +651,7 @@ class MapControlTower : SVC_MapControlTower(),
                 val flag = getFLag(lon, lat)
                 latLng = latLng(flag, lat, lon)
             }
-            ActivityCompat.checkSelfPermission(
+            ContextCompat.checkSelfPermission(
                 screen.requireContext(),
                 permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
@@ -690,8 +690,8 @@ class MapControlTower : SVC_MapControlTower(),
             val abuser = threats.getBoolean("is_known_abuser")
             val threat = threats.getBoolean("is_threat")
             val bogon = threats.getBoolean("is_bogon")
-            val color1 = ActivityCompat.getColor(screen.requireContext(), R.color.colorConnect)
-            val color2 = ActivityCompat.getColor(screen.requireContext(), R.color.colorDisconnect)
+            val color1 = ContextCompat.getColor(screen.requireContext(), R.color.colorConnect)
+            val color2 = ContextCompat.getColor(screen.requireContext(), R.color.colorDisconnect)
             val fl = 22f
             val weight = 1.0f
             with(screen.requireContext()) {

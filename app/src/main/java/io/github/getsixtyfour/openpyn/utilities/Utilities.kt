@@ -12,7 +12,7 @@ import android.location.Location
 import android.net.Uri
 import android.text.SpannableString
 import androidx.annotation.WorkerThread
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.abdeveloper.library.MultiSelectModel
 import com.abdeveloper.library.MultiSelectable
 import com.ariascode.networkutility.NetworkInfo
@@ -60,7 +60,7 @@ fun juiceSSHInstall(activity: Activity) {
     fun openURI(uri: Uri, packageName: String? = null) {
         val intent = Intent(Intent.ACTION_VIEW, uri)
         intent.setPackage(packageName)
-        ActivityCompat.startActivity(activity, intent, null)
+        ContextCompat.startActivity(activity, intent, null)
     }
 
     try {

@@ -9,6 +9,7 @@ import android.os.Build.VERSION;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.eggheadgames.aboutbox.AboutConfig;
 
@@ -37,7 +38,7 @@ public final class EmailUtil {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, mailto);
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, config.emailSubject);
             emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
-            activity.startActivity(Intent.createChooser(emailIntent, "Send email..."));
+            ContextCompat.startActivity(activity, Intent.createChooser(emailIntent, "Send email..."), null);
         } catch (ActivityNotFoundException e) {
             if (config.analytics != null) {
                 config.analytics.logException(e, false);
