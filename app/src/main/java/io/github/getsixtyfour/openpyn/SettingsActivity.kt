@@ -262,7 +262,7 @@ class SettingsActivity : PreferenceActivityCompat() {
                 null,
                 R.drawable.ic_copyleft_green_24dp,
                 Preference.OnPreferenceClickListener {
-                    OssLicensesMenuActivity.setActivityTitle(getString(R.string.menu_licenses))
+                    OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_activity_licenses))
                     val intent = Intent(activity, OssLicensesMenuActivity::class.java)
                     ActivityCompat.startActivity(activity, intent, null)
                     true

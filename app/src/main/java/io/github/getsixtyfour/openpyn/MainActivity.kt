@@ -465,7 +465,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun onAboutItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
-        AboutActivity.launch(this)
+        SettingsActivity.startAboutFragment(this)
     }
 
     private fun onGitHubItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
@@ -530,7 +530,7 @@ class MainActivity : AppCompatActivity(),
         )
         */
 
-        SettingsActivity.launch(this)
+        SettingsActivity.startSettingsFragment(this)
     }
 
     private fun setProgressToolBar(toolbar: ProgressToolbar) {
