@@ -218,7 +218,6 @@ class SettingsActivity : PreferenceActivityCompat() {
             addOtherPreferences(activity, root, config)
 
             preferenceScreen = root
-
             val title: CharSequence? = preferenceScreen.title
             // Set the title of the activity
             activity.title = title
@@ -232,6 +231,75 @@ class SettingsActivity : PreferenceActivityCompat() {
 
         override fun getCallbackFragment(): PreferenceFragmentCompat {
             return this
+        }
+
+        private fun addAboutPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
+            val category = PreferenceCategory(activity)
+            category.title = activity.getString(R.string.pref_category_about)
+
+            root.addPreference(category)
+
+            category.addPreference(getPreference(
+                activity,
+                R.string.egab_author,
+                config.author,
+                R.drawable.ic_person_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    openHTMLPage(activity, config.companyHtmlPath)
+                    true
+                }
+            ))
+
+            category.addPreference(getPreference(
+                activity,
+                R.string.egab_version,
+                config.version,
+                R.drawable.ic_info_outline_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    openHTMLPage(activity, config.webHomePage)
+                    true
+                }
+            ))
+
+            category.addPreference(getPreference(
+                activity,
+                R.string.egab_changelog,
+                null,
+                R.drawable.ic_history_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    openHTMLPage(activity, config.webHomePage + "/releases")
+                    true
+                }
+            ))
+        }
+
+        private fun addSupportPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
+            val category = PreferenceCategory(activity)
+            category.title = activity.getString(R.string.pref_category_support)
+
+            root.addPreference(category)
+
+            category.addPreference(getPreference(
+                activity,
+                R.string.egab_submit_issue,
+                null,
+                R.drawable.ic_bug_report_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    openHTMLPage(activity, config.webHomePage + "/issues/new")
+                    true
+                }
+            ))
+
+            category.addPreference(getPreference(
+                activity,
+                R.string.egab_contact_support,
+                null,
+                R.drawable.ic_email_black_24dp,
+                Preference.OnPreferenceClickListener {
+                    EmailUtil.contactUs(activity)
+                    true
+                }
+            ))
         }
 
         private fun addOtherPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
@@ -271,75 +339,6 @@ class SettingsActivity : PreferenceActivityCompat() {
                     OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_activity_licenses))
                     val intent = Intent(activity, OssLicensesMenuActivity::class.java)
                     ActivityCompat.startActivity(activity, intent, null)
-                    true
-                }
-            ))
-        }
-
-        private fun addSupportPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
-            val category = PreferenceCategory(activity)
-            category.title = activity.getString(R.string.pref_category_support)
-
-            root.addPreference(category)
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_submit_issue,
-                null,
-                R.drawable.ic_bug_report_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    openHTMLPage(activity, config.webHomePage + "/issues/new")
-                    true
-                }
-            ))
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_contact_support,
-                null,
-                R.drawable.ic_email_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    EmailUtil.contactUs(activity)
-                    true
-                }
-            ))
-        }
-
-        private fun addAboutPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
-            val category = PreferenceCategory(activity)
-            category.title = activity.getString(R.string.pref_category_about)
-
-            root.addPreference(category)
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_author,
-                config.author,
-                R.drawable.ic_person_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    openHTMLPage(activity, config.companyHtmlPath)
-                    true
-                }
-            ))
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_version,
-                config.version,
-                R.drawable.ic_info_outline_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    openHTMLPage(activity, config.webHomePage)
-                    true
-                }
-            ))
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_changelog,
-                null,
-                R.drawable.ic_history_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    openHTMLPage(activity, config.webHomePage + "/releases")
                     true
                 }
             ))
@@ -439,19 +438,19 @@ class SettingsActivity : PreferenceActivityCompat() {
             return context.resources.configuration.screenLayout and SCREENLAYOUT_SIZE_MASK >= SCREENLAYOUT_SIZE_XLARGE
         }
 
-        fun startSettingsFragment(activity: Activity) {
+        fun startAboutFragment(activity: Activity) {
             //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
             val intent = Intent(activity, SettingsActivity::class.java).apply {
-                putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
+                putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.AboutSyncPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
             ActivityCompat.startActivity(activity, intent, null)
         }
 
-        fun startAboutFragment(activity: Activity) {
+        fun startSettingsFragment(activity: Activity) {
             //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
             val intent = Intent(activity, SettingsActivity::class.java).apply {
-                putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.AboutSyncPreferenceFragment::class.java.name)
+                putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
             ActivityCompat.startActivity(activity, intent, null)
