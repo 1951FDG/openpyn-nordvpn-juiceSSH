@@ -52,16 +52,6 @@
             android:name="com.adityaanand.morphdialog.MorphDialogActivity"
             android:theme="@style/MorphDialog.Custom.Light" />
         <activity
-            android:name=".AboutActivity"
-            android:label="@string/title_activity_about"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Settings">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-        <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:theme="@style/AppTheme.Settings" />
         <activity
