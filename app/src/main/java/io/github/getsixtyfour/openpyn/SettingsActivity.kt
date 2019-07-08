@@ -6,18 +6,18 @@ import android.content.Intent
 import android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK
 import android.content.res.Configuration.SCREENLAYOUT_SIZE_XLARGE
 import android.os.Bundle
-import android.preference.PreferenceActivity
 import android.view.MenuItem
 import android.view.View
 import androidx.core.app.ActivityCompat
-import androidx.preference.AndroidResources
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragment
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
+import net.mm2d.preference.Header
+import net.mm2d.preference.PreferenceActivityCompat
 
 /**
- * A [PreferenceActivity] that presents a set of application settings. On
+ * A [PreferenceActivityCompat] that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
  * settings are split by category, with category headers shown to the left of
  * the list of settings.
@@ -26,13 +26,52 @@ import androidx.preference.PreferenceManager.getDefaultSharedPreferences
  * for design guidelines and the [Settings API Guide](http://developer.android.com/guide/topics/ui/settings.html)
  * for more information on developing a Settings UI.
  */
-class SettingsActivity : AppCompatPreferenceActivity() {
+class SettingsActivity : PreferenceActivityCompat() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        if (onIsHidingHeaders()) {
+            setContentView(R.layout.content_preference)
+            val initialFragment: String? = intent.getStringExtra(EXTRA_SHOW_FRAGMENT)
+            val initialArguments: Bundle? = intent.getBundleExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS)
+
+            if (!isValidFragment(initialFragment)) {
+                throw IllegalArgumentException("Invalid fragment for this activity: $initialFragment")
+            }
+
+            initialFragment?.let { startPreferenceFragment(it, initialArguments) }
+        }
+    }
 
     /**
-     * Set up the [android.app.ActionBar], if the API is available.
+     * This method stops fragment injection in malicious applications.
+     * Make sure to deny any unknown fragments here.
      */
-    private fun setupActionBar() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    override fun isValidFragment(fragmentName: String?): Boolean {
+        return (SettingsSyncPreferenceFragment::class.java.name == fragmentName || ApiSyncPreferenceFragment::class.java.name == fragmentName)
+    }
+
+    /**
+     * Called when the activity needs its list of headers build.  By
+     * implementing this and adding at least one item to the list, you
+     * will cause the activity to run in its modern fragment mode.  Note
+     * that this function may not always be called; for example, if the
+     * activity has been asked to display a particular fragment without
+     * the header list, there is no need to build the headers.
+     *
+     * @param target The list in which to place the headers.
+     */
+    override fun onBuildHeaders(target: List<Header>) {
+        loadHeadersFromResource(R.xml.pref_headers, target)
+    }
+
+    /**
+     * Called to determine if the activity should run in multi-pane mode.
+     */
+    override fun onIsMultiPane(): Boolean {
+        return isXLargeTablet(this)
     }
 
     /**
@@ -49,43 +88,39 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     }
 
     /**
-     * {@inheritDoc}
+     * Called to determine whether the header list should be hidden.
      */
-    override fun onIsMultiPane(): Boolean {
-        return isXLargeTablet(this)
+    private fun onIsHidingHeaders(): Boolean {
+        return intent.getBooleanExtra(EXTRA_NO_HEADERS, false)
     }
 
     /**
-     * {@inheritDoc}
+     * Start a new fragment.
+     *
+     * @param fragmentName The name of the fragment to start.
+     * @param args Optional arguments to supply to the fragment.
      */
-    override fun onBuildHeaders(target: List<Header>) {
-        loadHeadersFromResource(R.xml.pref_headers, target)
-    }
-
-    /**
-     * This method stops fragment injection in malicious applications.
-     * Make sure to deny any unknown fragments here.
-     */
-    override fun isValidFragment(fragmentName: String): Boolean {
-        return SettingsSyncPreferenceFragment::class.java.name == fragmentName
+    private fun startPreferenceFragment(fragmentName: String, args: Bundle?) {
+        val fragmentManager = supportFragmentManager
+        val fragment = fragmentManager.fragmentFactory.instantiate(classLoader, fragmentName)
+        fragment.arguments = args
+        fragmentManager.beginTransaction().replace(R.id.prefs, fragment).commitAllowingStateLoss()
     }
 
     /**
      * This fragment shows settings preferences only.
      */
-    class SettingsSyncPreferenceFragment : PreferenceFragment(), PreferenceFragment.OnPreferenceStartFragmentCallback {
+    class SettingsSyncPreferenceFragment : PreferenceFragmentCompat(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
-        override fun onPreferenceStartFragment(caller: PreferenceFragment?, pref: Preference?): Boolean {
+        override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
             // Instantiate the new Fragment
-            val args = pref?.extras
-            val fragment = ApiSyncPreferenceFragment()
+            val activity = requireActivity()
+            val fragmentManager = activity.supportFragmentManager
+            val args = pref.extras
+            val fragment = fragmentManager.fragmentFactory.instantiate(activity.classLoader, pref.fragment)
             fragment.arguments = args
             fragment.setTargetFragment(caller, 0)
-
-            fragmentManager.beginTransaction()
-                .replace(AndroidResources.ANDROID_R_LIST_CONTAINER, fragment)
-                .addToBackStack(null)
-                .commit()
+            fragmentManager.beginTransaction().replace((view!!.parent as View).id, fragment).addToBackStack(null).commit()
 
             return true
         }
@@ -94,13 +129,13 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             super.onCreate(savedInstanceState)
             setHasOptionsMenu(false)
 
-            findPreference("pref_server")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_country")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_max_load")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_top_servers")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_pings")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_log_level")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_nvram_client")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_server")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_country")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_max_load")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_top_servers")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_pings")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_log_level")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_nvram_client")?.let { bindPreferenceSummaryToValue(it) }
         }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -114,7 +149,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             super.onViewCreated(view, savedInstanceState)
         }
 
-        override fun getCallbackFragment(): PreferenceFragment {
+        override fun getCallbackFragment(): PreferenceFragmentCompat {
             return this
         }
     }
@@ -122,16 +157,16 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     /**
      * This fragment shows API settings preferences only.
      */
-    class ApiSyncPreferenceFragment : PreferenceFragment() {
+    internal class ApiSyncPreferenceFragment : PreferenceFragmentCompat() {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setHasOptionsMenu(false)
 
-            findPreference("pref_geo_client")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_api_ipdata")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_api_ipinfo")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference("pref_api_ipstack")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_geo_client")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_api_ipdata")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_api_ipinfo")?.let { bindPreferenceSummaryToValue(it) }
+            findPreference<Preference>("pref_api_ipstack")?.let { bindPreferenceSummaryToValue(it) }
         }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -145,26 +180,33 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             super.onViewCreated(view, savedInstanceState)
         }
 
-        override fun getCallbackFragment(): PreferenceFragment {
+        override fun getCallbackFragment(): PreferenceFragmentCompat {
             return this
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupActionBar()
-    }
-
     companion object {
-        fun launch(activity: Activity) {
-            //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
-            val intent = Intent(activity, SettingsActivity::class.java).apply {
-                putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
-                putExtra(EXTRA_NO_HEADERS, true)
-            }
-            ActivityCompat.startActivity(activity, intent, null)
-        }
 
+        /**
+         * When starting this activity, the invoking Intent can contain this extra
+         * boolean that the header list should not be displayed. This is most often
+         * used in conjunction with {@link #EXTRA_SHOW_FRAGMENT} to launch
+         * the activity to display a specific fragment that the user has navigated
+         * to.
+         */
+        const val EXTRA_NO_HEADERS: String = ":android:no_headers"
+        /**
+         * When starting this activity, the invoking Intent can contain this extra
+         * string to specify which fragment should be initially displayed.
+         */
+        const val EXTRA_SHOW_FRAGMENT: String = ":android:show_fragment"
+        /**
+         * When starting this activity and using {@link #EXTRA_SHOW_FRAGMENT},
+         * this extra can also be specified to supply a Bundle of arguments to pass
+         * to that fragment when it is instantiated during the initial creation
+         * of PreferenceActivityCompat.
+         */
+        const val EXTRA_SHOW_FRAGMENT_ARGUMENTS: String = ":android:show_fragment_args"
         /**
          * A preference value change listener that updates the preference's summary
          * to reflect its new value.
@@ -175,8 +217,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 val stringValue = value.toString()
 
                 if (preference is ListPreference) {
-                    // For list preferences, look up the correct display value in
-                    // the preference's 'entries' list.
+                    // For list preferences, look up the correct display value in the preference's 'entries' list.
                     val index = preference.findIndexOfValue(stringValue)
                     // Set the summary to reflect the new value.
                     preference.summary = if (index >= 0) preference.entries[index] else null
@@ -198,14 +239,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             }
 
         /**
-         * Helper method to determine if the device has an extra-large screen. For
-         * example, 10" tablets are extra-large.
-         */
-        fun isXLargeTablet(context: Context): Boolean {
-            return context.resources.configuration.screenLayout and SCREENLAYOUT_SIZE_MASK >= SCREENLAYOUT_SIZE_XLARGE
-        }
-
-        /**
          * Binds a preference's summary to its value. More specifically, when the
          * preference's value is changed, its summary (line of text below the
          * preference title) is updated to reflect the value. The summary is also
@@ -217,10 +250,26 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         fun bindPreferenceSummaryToValue(preference: Preference) {
             // Set the listener to watch for value changes.
             preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
-            // Trigger the listener immediately with the preference's
-            // current value.
+            // Trigger the listener immediately with the preference's current value.
             val newValue = getDefaultSharedPreferences(preference.context).getString(preference.key, "")
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, newValue)
+        }
+
+        /**
+         * Helper method to determine if the device has an extra-large screen. For
+         * example, 10" tablets are extra-large.
+         */
+        fun isXLargeTablet(context: Context): Boolean {
+            return context.resources.configuration.screenLayout and SCREENLAYOUT_SIZE_MASK >= SCREENLAYOUT_SIZE_XLARGE
+        }
+
+        fun launch(activity: Activity) {
+            //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
+            val intent = Intent(activity, SettingsActivity::class.java).apply {
+                putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
+                putExtra(EXTRA_NO_HEADERS, true)
+            }
+            ActivityCompat.startActivity(activity, intent, null)
         }
 
         @Suppress("WeakerAccess")

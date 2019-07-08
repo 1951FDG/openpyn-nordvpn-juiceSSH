@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- These settings headers are only used on tablets. -->
-    <header
-        android:fragment="io.github.getsixtyfour.openpyn.SettingsActivity$SettingsSyncPreferenceFragment"
-        android:title="@string/pref_header_settings" />
+    <!--<header-->
+        <!--app:fragment="io.github.getsixtyfour.openpyn.SettingsActivity$SettingsSyncPreferenceFragment"-->
+        <!--app:title="@string/pref_header_settings" />-->
 </preference-headers>

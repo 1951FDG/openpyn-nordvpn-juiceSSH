@@ -44,7 +44,7 @@
     <style name="AppTheme.Settings" parent="Base.Theme.AppTheme.Settings">
         <!--<item name="android:windowEnterTransition">@transition/fade_in</item>-->
 
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>
+        <!--<item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>-->
 
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
