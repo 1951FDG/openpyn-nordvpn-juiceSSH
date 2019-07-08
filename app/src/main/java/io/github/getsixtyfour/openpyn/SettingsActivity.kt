@@ -209,6 +209,8 @@ class SettingsActivity : PreferenceActivityCompat() {
             val root = preferenceManager.createPreferenceScreen(activity)
             val config = AboutConfig.getInstance()
 
+            root.setTitle(R.string.title_activity_about)
+
             addAboutPreferences(activity, root, config)
 
             addSupportPreferences(activity, root, config)
@@ -216,6 +218,10 @@ class SettingsActivity : PreferenceActivityCompat() {
             addOtherPreferences(activity, root, config)
 
             preferenceScreen = root
+
+            val title: CharSequence? = preferenceScreen.title
+            // Set the title of the activity
+            activity.title = title
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
