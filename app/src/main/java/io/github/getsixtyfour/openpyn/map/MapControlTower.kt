@@ -35,7 +35,19 @@ import com.vdurmont.emoji.EmojiFlagManager
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.security.SecurityManager
+import io.github.getsixtyfour.openpyn.utilities.CATEGORIES
+import io.github.getsixtyfour.openpyn.utilities.COUNTRY
+import io.github.getsixtyfour.openpyn.utilities.DEDICATED
+import io.github.getsixtyfour.openpyn.utilities.DOUBLE
+import io.github.getsixtyfour.openpyn.utilities.FLAG
+import io.github.getsixtyfour.openpyn.utilities.LAT
+import io.github.getsixtyfour.openpyn.utilities.LOCATION
+import io.github.getsixtyfour.openpyn.utilities.LONG
 import io.github.getsixtyfour.openpyn.utilities.LazyMarkerStorage
+import io.github.getsixtyfour.openpyn.utilities.NAME
+import io.github.getsixtyfour.openpyn.utilities.OBFUSCATED
+import io.github.getsixtyfour.openpyn.utilities.ONION
+import io.github.getsixtyfour.openpyn.utilities.P2P
 import io.github.getsixtyfour.openpyn.utilities.PrintArray
 import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener
 import io.github.getsixtyfour.openpyn.utilities.countryList
@@ -163,12 +175,13 @@ class MapControlTower : SVC_MapControlTower(),
             val textArray = screen.resources.getTextArray(R.array.pref_country_entries)
             val countries = countryList(textArray)
             val selectedCountries = selectedCountries(countries)
-            val p2p = preferences.getBoolean("pref_p2p", false)
+            
+            val netflix = preferences.getBoolean("pref_netflix", false)
             val dedicated = preferences.getBoolean("pref_dedicated", false)
             val double = preferences.getBoolean("pref_double", false)
-            val onion = preferences.getBoolean("pref_tor", false)
             val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
-            val netflix = preferences.getBoolean("pref_netflix", false)
+            val onion = preferences.getBoolean("pref_tor", false)
+            val p2p = preferences.getBoolean("pref_p2p", false)
 
             tileProvider = tileProvider()
 
@@ -221,29 +234,29 @@ class MapControlTower : SVC_MapControlTower(),
                     (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
                 for (res in jsonArray) {
-                    val flag = res.getString("flag")
+                    val flag = res.getString(FLAG)
                     var pass = when {
                         netflix -> netflix(flag)
-                        p2p -> false
                         dedicated -> false
                         double -> false
-                        onion -> false
                         obfuscated -> false
+                        onion -> false
+                        p2p -> false
                         else -> true
                     }
 
                     if (!pass && !netflix) {
-                        val categories = res.getJSONArray("categories")
+                        val categories = res.getJSONArray(CATEGORIES)
 
                         loop@ for (category in categories) {
-                            val name = category.getString("name")
+                            val name = category.getString(NAME)
                             //todo check python code again
                             pass = when {
-                                p2p and (name == "P2P") -> true
-                                dedicated and (name == "Dedicated IP") -> true
-                                double and (name == "Double VPN") -> true
-                                onion and (name == "Onion Over VPN") -> true
-                                obfuscated and (name == "Obfuscated Servers") -> true
+                                dedicated and (name == DEDICATED) -> true
+                                double and (name == DOUBLE) -> true
+                                obfuscated and (name == OBFUSCATED) -> true
+                                onion and (name == ONION) -> true
+                                p2p and (name == P2P) -> true
                                 else -> false
                             }
 
@@ -256,10 +269,10 @@ class MapControlTower : SVC_MapControlTower(),
                     if (!pass) {
                         continue
                     }
-                    val country = res.getString("country")
+                    val country = res.getString(COUNTRY)
                     val emoji = parseToUnicode(flag)
-                    val location = res.getJSONObject("location")
-                    val latLng = LatLng(location.getDouble("lat"), location.getDouble("long"))
+                    val location = res.getJSONObject(LOCATION)
+                    val latLng = LatLng(location.getDouble(LAT), location.getDouble(LONG))
                     val options = MarkerOptions().apply {
                         flat(true)
                         position(latLng)

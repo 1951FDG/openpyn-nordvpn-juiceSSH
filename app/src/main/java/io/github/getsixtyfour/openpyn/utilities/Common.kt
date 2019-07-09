@@ -16,11 +16,30 @@ import java.util.Locale
 
 operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
+const val CATEGORIES: String = "categories"
+const val NAME: String = "name"
+const val DEDICATED: String = "Dedicated IP"
+const val DOUBLE: String = "Double VPN"
+const val OBFUSCATED: String = "Obfuscated Servers"
+const val ONION: String = "Onion Over VPN"
+const val P2P: String = "P2P"
+const val STANDARD: String = "Standard VPN servers"
+
+const val COUNTRY: String = "country"
+
+const val FLAG: String = "flag"
+
+const val LOCATION: String = "location"
+const val LAT: String = "lat"
+const val LONG: String = "long"
+
+const val SERVER: String = "https://api.nordvpn.com/server"
+
+@Suppress("unused")
 @WorkerThread
 fun generateXML() {
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    val server = "https://api.nordvpn.com/server"
-    server.httpGet().responseJson { _, _, result ->
+    SERVER.httpGet().responseJson { _, _, result ->
         when (result) {
             is Result.Failure -> {
                 logException(result.getException())
@@ -29,8 +48,8 @@ fun generateXML() {
                 val mutableMap = mutableMapOf<String, String>()
                 val jsonArray = result.get().array()
                 for (res in jsonArray) {
-                    if (res.getString("country") !in mutableMap) {
-                        mutableMap[res.getString("country")] = res.getString("flag").toLowerCase(Locale.ROOT)
+                    if (res.getString(COUNTRY) !in mutableMap) {
+                        mutableMap[res.getString(COUNTRY)] = res.getString(FLAG).toLowerCase(Locale.ROOT)
                     }
                 }
                 val sortedMap = mutableMap.toSortedMap(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
@@ -171,11 +190,31 @@ fun createJson2(value: String?, token: String?): JSONObject? {
 @WorkerThread
 @Suppress("MagicNumber")
 fun createJson(): JSONArray? {
-    val server = "https://api.nordvpn.com/server"
+    fun populateFeatures(res: JSONObject, features: JSONObject) {
+        val categories = res.getJSONArray(CATEGORIES)
+
+        for (category in categories) {
+            val name = category.getString(NAME)
+
+            when {
+                name.equals(DEDICATED, true) -> features.put(DEDICATED, true)
+                name.equals(DOUBLE, true) -> features.put(DOUBLE, true)
+                name.equals(OBFUSCATED, true) -> features.put(OBFUSCATED, true)
+                name.equals(ONION, true) -> features.put(ONION, true)
+                name.equals(P2P, true) -> features.put(P2P, true)
+                name.equals(STANDARD, true) -> features.put(STANDARD, true)
+                else -> {
+                    logException(Exception(name))
+                    Log.error(name)
+                }
+            }
+        }
+    }
+
     val timeout = 1000
     val timeoutRead = 1000
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    val (_, _, result) = server.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
+    val (_, _, result) = SERVER.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
     when (result) {
         is Result.Failure -> {
             logException(result.getException())
@@ -184,114 +223,81 @@ fun createJson(): JSONArray? {
             val jsonObj = JSONObject()
             val content = result.get().array() //JSONArray
             for (res in content) {
-                val location = res.getJSONObject("location")
-                var json1: JSONObject? = jsonObj.optJSONObject(location.toString())
-                if (json1 == null) {
-                    json1 = JSONObject().apply {
-                        put("flag", res.getString("flag").toLowerCase(Locale.ROOT))
-                        put("country", res.getString("country"))
-                        put("location", res.getJSONObject("location"))
+                val location = res.getJSONObject(LOCATION)
+                var json: JSONObject? = jsonObj.optJSONObject(location.toString())
+
+                if (json == null) {
+                    json = JSONObject().apply {
+                        put(FLAG, res.getString(FLAG).toLowerCase(Locale.ROOT))
+                        put(COUNTRY, res.getString(COUNTRY))
+                        put(LOCATION, res.getJSONObject(LOCATION))
                     }
                     val features = JSONObject().apply {
-                        put("p2p", false)
-                        put("dedicated", false)
-                        put("double_vpn", false)
-                        put("tor_over_vpn", false)
-                        put("anti_ddos", false)
-                        put("standard", false)
+                        put(DEDICATED, false)
+                        put(DOUBLE, false)
+                        put(OBFUSCATED, false)
+                        put(ONION, false)
+                        put(P2P, false)
+                        put(STANDARD, false)
                     }
-                    val categories = res.getJSONArray("categories")
+                    populateFeatures(res, features)
 
-                    for (category in categories) {
-                        val name = category.getString("name")
+                    json.put(CATEGORIES, features)
 
-                        when {
-                            name.equals("P2P", true) -> features.put("p2p", true)
-                            name.equals("Dedicated IP", true) -> features.put("dedicated", true)
-                            name.equals("Double VPN", true) -> features.put("double_vpn", true)
-                            name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
-                            name.startsWith("Obfuscated", true) -> features.put("anti_ddos", true)
-                            name.startsWith("Standard VPN", true) -> features.put("standard", true)
-                            else -> {
-                                logException(Exception(name))
-                                Log.error(name)
-                            }
-                        }
-                    }
-
-                    json1.put("features", features)
-
-                    jsonObj.put(location.toString(), json1)
+                    jsonObj.put(location.toString(), json)
                 } else {
-                    val features = json1.getJSONObject("features")
-                    val categories = res.getJSONArray("categories")
-
-                    for (category in categories) {
-                        val name = category.getString("name")
-
-                        when {
-                            name.equals("P2P", true) -> features.put("p2p", true)
-                            name.equals("Dedicated IP", true) -> features.put("dedicated", true)
-                            name.equals("Double VPN", true) -> features.put("double_vpn", true)
-                            name.equals("Onion Over VPN", true) -> features.put("tor_over_vpn", true)
-                            name.startsWith("Obfuscated", true) -> features.put("anti_ddos", true)
-                            name.startsWith("Standard VPN", true) -> features.put("standard", true)
-                            else -> {
-                                logException(Exception(name))
-                                Log.error(name)
-                            }
-                        }
-                    }
+                    val features = json.getJSONObject(CATEGORIES)
+                    populateFeatures(res, features)
                 }
             }
-            val jsonArray = JSONArray()
 
             try {
+                val jsonArray = JSONArray()
                 val keys = jsonObj.keys()
                 while (keys.hasNext()) {
                     val key = keys.next()
                     val value = jsonObj.getJSONObject(key)
                     val jsonArr = JSONArray()
-                    val features = value.getJSONObject("features")
+                    val features = value.getJSONObject(CATEGORIES)
 
-                    if (features.getBoolean("anti_ddos")) {
-                        jsonArr.put(JSONObject().put("name", "Obfuscated Servers"))
+                    if (features.getBoolean(OBFUSCATED)) {
+                        jsonArr.put(JSONObject().put(NAME, OBFUSCATED))
                     }
 
-                    if (features.getBoolean("dedicated")) {
-                        jsonArr.put(JSONObject().put("name", "Dedicated IP"))
+                    if (features.getBoolean(DEDICATED)) {
+                        jsonArr.put(JSONObject().put(NAME, DEDICATED))
                     }
 
-                    if (features.getBoolean("double_vpn")) {
-                        jsonArr.put(JSONObject().put("name", "Double VPN"))
+                    if (features.getBoolean(DOUBLE)) {
+                        jsonArr.put(JSONObject().put(NAME, DOUBLE))
                     }
 
-                    if (features.getBoolean("tor_over_vpn")) {
-                        jsonArr.put(JSONObject().put("name", "Onion Over VPN"))
+                    if (features.getBoolean(ONION)) {
+                        jsonArr.put(JSONObject().put(NAME, ONION))
                     }
 
-                    if (features.getBoolean("p2p")) {
-                        jsonArr.put(JSONObject().put("name", "P2P"))
+                    if (features.getBoolean(P2P)) {
+                        jsonArr.put(JSONObject().put(NAME, P2P))
                     }
 
-                    if (features.getBoolean("standard")) {
-                        jsonArr.put(JSONObject().put("name", "Standard VPN servers"))
+                    if (features.getBoolean(STANDARD)) {
+                        jsonArr.put(JSONObject().put(NAME, STANDARD))
                     }
-                    val json1 = JSONObject().apply {
-                        put("flag", value.getString("flag"))
-                        put("country", value.getString("country"))
-                        put("location", value.getJSONObject("location"))
-                        put("categories", jsonArr)
+                    val json = JSONObject().apply {
+                        put(FLAG, value.getString(FLAG))
+                        put(COUNTRY, value.getString(COUNTRY))
+                        put(LOCATION, value.getJSONObject(LOCATION))
+                        put(CATEGORIES, jsonArr)
                     }
 
-                    jsonArray.put(json1)
+                    jsonArray.put(json)
+                }
+
+                if (jsonArray.length() > 0) {
+                    return jsonArray
                 }
             } catch (e: JSONException) {
                 logException(e)
-            }
-
-            if (jsonArray.length() > 0) {
-                return jsonArray
             }
         }
     }
