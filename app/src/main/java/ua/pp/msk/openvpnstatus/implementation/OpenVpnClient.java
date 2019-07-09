@@ -41,13 +41,12 @@ public class OpenVpnClient implements Client {
     OpenVpnClient(String s) throws OpenVpnParseException {
         String[] strings = s.split(",");
         if (strings.length != 5) {
-            throw new OpenVpnParseException("Malformed route string! " + s + " Need to have 5 sections separated by commas");
+            throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_ROUTE_STRING, s, 5));
         }
         try {
             String[] realConnection = strings[1].split(":");
             if (realConnection.length != 2) {
-                throw new OpenVpnParseException(
-                        "Malformed real connection string! " + strings[2] + " Need to have 2 sections separated by colon");
+                throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_REAL_CONNECTION_STRING, strings[2]));
             }
             InetAddress realAddress = InetAddress.getByName(realConnection[0]);
             int port = Integer.parseInt(realConnection[1]);
@@ -64,11 +63,11 @@ public class OpenVpnClient implements Client {
             mSentBytes = sb;
             connectedSince = calendar;
         } catch (NumberFormatException ex) {
-            throw new OpenVpnParseException("Cannot parse port number. ", ex);
+            throw new OpenVpnParseException(Constants.CANNOT_PARSE_PORT_NUMBER, ex);
         } catch (ParseException ex) {
-            throw new OpenVpnParseException("Cannot Parse date." + ex);
+            throw new OpenVpnParseException(Constants.CANNOT_PARSE_DATE, ex);
         } catch (UnknownHostException ex) {
-            throw new OpenVpnParseException("Cannot parse hostname.", ex);
+            throw new OpenVpnParseException(Constants.CANNOT_PARSE_HOSTNAME, ex);
         }
     }
 

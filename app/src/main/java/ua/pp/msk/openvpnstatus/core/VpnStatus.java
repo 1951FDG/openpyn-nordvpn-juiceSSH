@@ -57,6 +57,9 @@ public final class VpnStatus {
     @NonNls
     public static final String WAIT = "WAIT";
 
+    @NonNls
+    public static final String AUTH_FAILURE = "auth-failure";
+
     private static final String[] mConnected = { CONNECTED };
 
     private static final String[] mNoReply = { CONNECTING, WAIT, RECONNECTING, RESOLVE, TCP_CONNECT };
@@ -68,7 +71,7 @@ public final class VpnStatus {
     @SuppressWarnings({ "OverlyComplexMethod", "MethodWithMultipleReturnPoints" })
     @NotNull
     public static ConnectionStatus getLevel(@NonNls @NotNull String name, @NonNls @Nullable String message) {
-        if (RECONNECTING.equals(name) && "auth-failure".equals(message)) {
+        if (RECONNECTING.equals(name) && AUTH_FAILURE.equals(message)) {
             return ConnectionStatus.LEVEL_AUTH_FAILED;
         }
         for (String x : mNoReply) {

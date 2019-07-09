@@ -93,7 +93,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
     }
 
     @SuppressWarnings({ "AssignmentToForLoopParameter", "ValueOfIncrementOrDecrementUsed", "MethodCallInLoopCondition", "ChainedMethodCall",
-            "OverlyComplexMethod", "OverlyLongMethod" })
+            "OverlyComplexMethod" })
     @Override
     public void setCommandOutput(String[] lines) throws OpenVpnParseException {
         String msg = "Cannot parse OpenVPN status. Wrong lines sequence.";
@@ -104,7 +104,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
                     try {
                         updatedAt = parseUpdatedTime(lines[i++]);
                     } catch (OpenVpnParseException ex) {
-                        LOGGER.error("Cannot parse update date", ex);
+                        LOGGER.error(Constants.CANNOT_PARSE_UPDATE_DATE, ex);
                     }
                 } else {
                     throw new OpenVpnParseException(msg);
@@ -115,7 +115,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
                     try {
                         updatedAt = parseUpdatedTime(lines[i++]);
                     } catch (OpenVpnParseException ex) {
-                        LOGGER.error("Cannot parse update date", ex);
+                        LOGGER.error(Constants.CANNOT_PARSE_UPDATE_DATE, ex);
                     }
                 } else {
                     throw new OpenVpnParseException(msg);

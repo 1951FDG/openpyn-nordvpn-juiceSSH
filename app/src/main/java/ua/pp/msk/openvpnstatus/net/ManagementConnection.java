@@ -102,7 +102,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             String result = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
             String[] lines = result.split(System.lineSeparator());
             String argument = lines[lines.length - 1];
-            if (!argument.contains("auth-failure")) {
+            if (!argument.contains(VpnStatus.AUTH_FAILURE)) {
                 processState(argument);
             }
         }
