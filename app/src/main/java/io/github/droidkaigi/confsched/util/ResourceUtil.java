@@ -11,6 +11,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+@SuppressWarnings("UtilityClass")
 public final class ResourceUtil {
 
     @NonNull
@@ -33,5 +34,8 @@ public final class ResourceUtil {
         } else {
             throw new IllegalArgumentException("Unsupported drawable type");
         }
+    }
+
+    private ResourceUtil() {
     }
 }

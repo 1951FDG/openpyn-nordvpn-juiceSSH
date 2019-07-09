@@ -94,8 +94,6 @@ class MapControlTower : SVC_MapControlTower(),
     private val markers: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
     private val storage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
     private var tileProvider: MapBoxOfflineTileProvider? = null
-    override fun onCreated() {
-    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -365,7 +363,6 @@ class MapControlTower : SVC_MapControlTower(),
             if (p0.zIndex == 1.0f) {
                 views.callConnectFabOnClick()
             } else {
-                //info(p0.tag)
                 markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
                     it.setLevel(it.level, this)
                 }

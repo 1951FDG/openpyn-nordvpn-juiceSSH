@@ -133,11 +133,9 @@ class OpenpynController(
         val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
         val netflix = preferences.getBoolean("pref_netflix", false)
         test = preferences.getBoolean("pref_test", false)
-        //val internally_allowed = args.internally_allowed
         val patch = preferences.getBoolean("pref_skip_dns_patch", false)
         val silent = preferences.getBoolean("pref_silent", false)
         nvram = preferences.getBoolean("pref_nvram", false)
-        //val openvpn_options = args.openvpn_options
         val openvpn = "--syslog openpyn"
         val options = StringBuilder("openpyn")
 
