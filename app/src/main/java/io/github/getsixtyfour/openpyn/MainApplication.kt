@@ -2,6 +2,7 @@ package io.github.getsixtyfour.openpyn
 
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import com.ariascode.networkutility.NetworkInfo
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
@@ -19,11 +20,20 @@ open class MainApplication : Application() {
         }
 
         NetworkInfo.getInstance(this)
-
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+        val sdkInt = Build.VERSION.SDK_INT
+        if (sdkInt <= Build.VERSION_CODES.O) {
             installBlockCanary()
         }
-        installLeakCanary()
+
+        if ((Build.VERSION_CODES.O..Build.VERSION_CODES.P).contains(sdkInt)) {
+            Log.d(
+                "Application",
+                "Ignoring LeakCanary on Android $sdkInt due to an Android bug. See https://github.com/square/leakcanary/issues/1081"
+            )
+        } else {
+            installLeakCanary()
+        }
+
         populateAboutConfig()
         GDPR.getInstance().init(this)
     }
