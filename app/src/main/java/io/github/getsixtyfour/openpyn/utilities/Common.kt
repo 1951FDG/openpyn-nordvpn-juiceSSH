@@ -260,16 +260,16 @@ fun createJson(): JSONArray? {
                     val jsonArr = JSONArray()
                     val features = value.getJSONObject(CATEGORIES)
 
-                    if (features.getBoolean(OBFUSCATED)) {
-                        jsonArr.put(JSONObject().put(NAME, OBFUSCATED))
-                    }
-
                     if (features.getBoolean(DEDICATED)) {
                         jsonArr.put(JSONObject().put(NAME, DEDICATED))
                     }
 
                     if (features.getBoolean(DOUBLE)) {
                         jsonArr.put(JSONObject().put(NAME, DOUBLE))
+                    }
+
+                    if (features.getBoolean(OBFUSCATED)) {
+                        jsonArr.put(JSONObject().put(NAME, OBFUSCATED))
                     }
 
                     if (features.getBoolean(ONION)) {

@@ -383,10 +383,10 @@
     },
     "categories": [
       {
-        "name": "Obfuscated Servers"
+        "name": "Double VPN"
       },
       {
-        "name": "Double VPN"
+        "name": "Obfuscated Servers"
       },
       {
         "name": "P2P"
@@ -418,10 +418,10 @@
     },
     "categories": [
       {
-        "name": "Obfuscated Servers"
+        "name": "Dedicated IP"
       },
       {
-        "name": "Dedicated IP"
+        "name": "Obfuscated Servers"
       },
       {
         "name": "P2P"
@@ -712,13 +712,13 @@
     },
     "categories": [
       {
-        "name": "Obfuscated Servers"
-      },
-      {
         "name": "Dedicated IP"
       },
       {
         "name": "Double VPN"
+      },
+      {
+        "name": "Obfuscated Servers"
       },
       {
         "name": "Onion Over VPN"
@@ -948,10 +948,10 @@
     },
     "categories": [
       {
-        "name": "Obfuscated Servers"
+        "name": "Double VPN"
       },
       {
-        "name": "Double VPN"
+        "name": "Obfuscated Servers"
       },
       {
         "name": "P2P"
@@ -1066,13 +1066,13 @@
     },
     "categories": [
       {
-        "name": "Obfuscated Servers"
-      },
-      {
         "name": "Dedicated IP"
       },
       {
         "name": "Double VPN"
+      },
+      {
+        "name": "Obfuscated Servers"
       },
       {
         "name": "P2P"
@@ -1212,10 +1212,10 @@
     },
     "categories": [
       {
-        "name": "Obfuscated Servers"
+        "name": "Dedicated IP"
       },
       {
-        "name": "Dedicated IP"
+        "name": "Obfuscated Servers"
       },
       {
         "name": "P2P"
@@ -1352,13 +1352,13 @@
     },
     "categories": [
       {
-        "name": "Obfuscated Servers"
-      },
-      {
         "name": "Dedicated IP"
       },
       {
         "name": "Double VPN"
+      },
+      {
+        "name": "Obfuscated Servers"
       },
       {
         "name": "P2P"
