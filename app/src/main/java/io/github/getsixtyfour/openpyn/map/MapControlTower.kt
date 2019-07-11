@@ -44,6 +44,7 @@ import io.github.getsixtyfour.openpyn.utilities.LAT
 import io.github.getsixtyfour.openpyn.utilities.LOCATION
 import io.github.getsixtyfour.openpyn.utilities.LONG
 import io.github.getsixtyfour.openpyn.utilities.LazyMarkerStorage
+import io.github.getsixtyfour.openpyn.utilities.MultiSelectModelExtra
 import io.github.getsixtyfour.openpyn.utilities.NAME
 import io.github.getsixtyfour.openpyn.utilities.OBFUSCATED
 import io.github.getsixtyfour.openpyn.utilities.ONION
@@ -101,7 +102,7 @@ class MapControlTower : SVC_MapControlTower(),
 
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
-    private val flags by lazy { ArrayList<String>() }
+    private val flags by lazy { ArrayList<CharSequence>() }
     private var mMap: GoogleMap? = null
     private val markers: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
     private val storage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
@@ -132,8 +133,8 @@ class MapControlTower : SVC_MapControlTower(),
 
         fun selectedCountries(list: ArrayList<MultiSelectable>): ArrayList<Int> {
             val preSelectedIdsList = ArrayList<Int>()
-            for (i in list.indices) {
-                preSelectedIdsList.add(i)
+            list.forEach {
+                preSelectedIdsList.add(it.id)
             }
             val defValue = preSelectedIdsList.joinToString(separator = PrintArray.delimiter)
             return PrintArray.getListInt("pref_country_values", defValue, preferences)
@@ -189,8 +190,12 @@ class MapControlTower : SVC_MapControlTower(),
 
             printArray(countries, selectedCountries)
 
-            selectedCountries.forEach { index ->
-                flags.add(stringArray[index])
+            countries.forEach { selectable: MultiSelectable ->
+                (selectable as? MultiSelectModelExtra)?.let {
+                    if (selectedCountries.contains(it.id)) {
+                        flags.add(it.tag)
+                    }
+                }
             }
 
             if (jsonArray != null) {
@@ -419,9 +424,14 @@ class MapControlTower : SVC_MapControlTower(),
 
     override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
         flags.clear()
-        val strings = screen.resources.getStringArray(R.array.pref_country_values)
-        selectedIds.forEach { index ->
-            flags.add(strings[index])
+        val textArray = screen.resources.getTextArray(R.array.pref_country_entries)
+        val countries = countryList(textArray)
+        countries.forEach { selectable: MultiSelectable ->
+            (selectable as? MultiSelectModelExtra)?.let {
+                if (selectedIds.contains(it.id)) {
+                    flags.add(it.tag)
+                }
+            }
         }
 
         onCameraIdle()

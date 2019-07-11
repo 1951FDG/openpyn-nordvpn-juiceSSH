@@ -53,7 +53,6 @@
         <item>Argentina</item>
         <item>Australia</item>
         <item>Austria</item>
-        <item>Azerbaijan</item>
         <item>Belgium</item>
         <item>Bosnia and Herzegovina</item>
         <item>Brazil</item>
@@ -83,17 +82,16 @@
         <item>Japan</item>
         <item>Latvia</item>
         <item>Luxembourg</item>
-        <item>Macedonia</item>
         <item>Malaysia</item>
         <item>Mexico</item>
         <item>Moldova</item>
         <item>Netherlands</item>
         <item>New Zealand</item>
+        <item>North Macedonia</item>
         <item>Norway</item>
         <item>Poland</item>
         <item>Portugal</item>
         <item>Romania</item>
-        <item>Russia</item>
         <item>Serbia</item>
         <item>Singapore</item>
         <item>Slovakia</item>
@@ -110,7 +108,6 @@
         <item>United Arab Emirates</item>
         <item>United Kingdom</item>
         <item>United States</item>
-        <item>Vietnam</item>
     </string-array>
 
     <string-array name="pref_country_values">
@@ -118,7 +115,6 @@
         <item>ar</item>
         <item>au</item>
         <item>at</item>
-        <item>az</item>
         <item>be</item>
         <item>ba</item>
         <item>br</item>
@@ -148,17 +144,16 @@
         <item>jp</item>
         <item>lv</item>
         <item>lu</item>
-        <item>mk</item>
         <item>my</item>
         <item>mx</item>
         <item>md</item>
         <item>nl</item>
         <item>nz</item>
+        <item>mk</item>
         <item>no</item>
         <item>pl</item>
         <item>pt</item>
         <item>ro</item>
-        <item>ru</item>
         <item>rs</item>
         <item>sg</item>
         <item>sk</item>
@@ -175,7 +170,6 @@
         <item>ae</item>
         <item>gb</item>
         <item>us</item>
-        <item>vn</item>
     </string-array>
 
     <string name="pref_tcp">TCP</string>
