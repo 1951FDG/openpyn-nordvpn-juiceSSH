@@ -50,6 +50,7 @@ import io.github.getsixtyfour.openpyn.utilities.createJson
 import io.github.getsixtyfour.openpyn.utilities.isJuiceSSHInstalled
 import io.github.getsixtyfour.openpyn.utilities.juiceSSHInstall
 import io.github.getsixtyfour.openpyn.utilities.logException
+import io.github.getsixtyfour.openpyn.utilities.stringifyJsonArray
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
@@ -481,16 +482,22 @@ class MainActivity : AppCompatActivity(),
         toolbar.showProgress(true)
 
         doAsync {
+            val debug = BuildConfig.DEBUG
             var jsonArray: JSONArray? = null
-
+            var json: String? = null
+            var thrown = true
             if (NetworkInfo.getInstance().isOnline()) {
                 jsonArray = createJson()
             }
-            var thrown = true
 
             if (jsonArray != null) {
-                val json = jsonArray.toString()
+                json = when {
+                    debug -> stringifyJsonArray(jsonArray)
+                    else -> jsonArray.toString()
+                }
+            }
 
+            if (json != null) {
                 try {
                     val child = resources.getResourceEntryName(R.raw.nordvpn) + ".json"
                     val file = File(getExternalFilesDir(null), child)

@@ -304,3 +304,31 @@ fun createJson(): JSONArray? {
 
     return null
 }
+
+fun sortJsonArray(jsonArray: JSONArray): JSONArray? {
+    val array = ArrayList<JSONObject>()
+    for (res in jsonArray) {
+        array.add(res)
+    }
+
+    array.sortWith(compareBy(
+        {it.getString(COUNTRY)},
+        {it.getJSONObject(LOCATION).getDouble(LAT)},
+        {it.getJSONObject(LOCATION).getDouble(LONG)}
+    ))
+
+    val result = JSONArray()
+    for (res in array) {
+        result.put(res)
+    }
+    return result
+}
+
+fun stringifyJsonArray(jsonArray: JSONArray): String? {
+    val jsonArr = sortJsonArray(jsonArray)
+
+    return when {
+        jsonArr != null -> jsonArr.toString(2)
+        else -> null
+    }
+}
