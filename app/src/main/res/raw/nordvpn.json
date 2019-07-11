@@ -125,19 +125,6 @@
     ]
   },
   {
-    "flag": "az",
-    "country": "Azerbaijan",
-    "location": {
-      "lat": 40.395278,
-      "long": 49.882222
-    },
-    "categories": [
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
     "flag": "be",
     "country": "Belgium",
     "location": {
@@ -536,6 +523,19 @@
     },
     "categories": [
       {
+        "name": "Standard VPN servers"
+      }
+    ]
+  },
+  {
+    "flag": "in",
+    "country": "India",
+    "location": {
+      "lat": 18.975,
+      "long": 72.825833
+    },
+    "categories": [
+      {
         "name": "P2P"
       },
       {
@@ -635,9 +635,6 @@
     },
     "categories": [
       {
-        "name": "Onion Over VPN"
-      },
-      {
         "name": "P2P"
       },
       {
@@ -651,22 +648,6 @@
     "location": {
       "lat": 49.6769444,
       "long": 6.1238889
-    },
-    "categories": [
-      {
-        "name": "P2P"
-      },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
-    "flag": "mk",
-    "country": "Macedonia",
-    "location": {
-      "lat": 42,
-      "long": 21.4333333
     },
     "categories": [
       {
@@ -698,6 +679,9 @@
       "long": -99.138611
     },
     "categories": [
+      {
+        "name": "P2P"
+      },
       {
         "name": "Standard VPN servers"
       }
@@ -753,6 +737,22 @@
     "location": {
       "lat": -36.866667,
       "long": 174.766667
+    },
+    "categories": [
+      {
+        "name": "P2P"
+      },
+      {
+        "name": "Standard VPN servers"
+      }
+    ]
+  },
+  {
+    "flag": "mk",
+    "country": "North Macedonia",
+    "location": {
+      "lat": 42,
+      "long": 21.4333333
     },
     "categories": [
       {
@@ -828,41 +828,6 @@
     ]
   },
   {
-    "flag": "ru",
-    "country": "Russia",
-    "location": {
-      "lat": 55.752222,
-      "long": 37.615556
-    },
-    "categories": [
-      {
-        "name": "P2P"
-      },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
-    "flag": "ru",
-    "country": "Russia",
-    "location": {
-      "lat": 59.894444,
-      "long": 30.264167
-    },
-    "categories": [
-      {
-        "name": "Double VPN"
-      },
-      {
-        "name": "P2P"
-      },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
     "flag": "rs",
     "country": "Serbia",
     "location": {
@@ -870,6 +835,9 @@
       "long": 20.468056
     },
     "categories": [
+      {
+        "name": "P2P"
+      },
       {
         "name": "Standard VPN servers"
       }
@@ -986,9 +954,6 @@
         "name": "Double VPN"
       },
       {
-        "name": "Onion Over VPN"
-      },
-      {
         "name": "P2P"
       },
       {
@@ -1006,6 +971,9 @@
     "categories": [
       {
         "name": "Double VPN"
+      },
+      {
+        "name": "Onion Over VPN"
       },
       {
         "name": "P2P"
@@ -1390,6 +1358,9 @@
         "name": "Dedicated IP"
       },
       {
+        "name": "Double VPN"
+      },
+      {
         "name": "P2P"
       },
       {
@@ -1421,6 +1392,9 @@
       "long": -87.65
     },
     "categories": [
+      {
+        "name": "Dedicated IP"
+      },
       {
         "name": "P2P"
       },
@@ -1475,19 +1449,6 @@
       {
         "name": "P2P"
       },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
-    "flag": "vn",
-    "country": "Vietnam",
-    "location": {
-      "lat": 21.033333,
-      "long": 105.85
-    },
-    "categories": [
       {
         "name": "Standard VPN servers"
       }
