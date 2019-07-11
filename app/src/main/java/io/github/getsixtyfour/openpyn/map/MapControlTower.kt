@@ -235,11 +235,24 @@ class MapControlTower : SVC_MapControlTower(),
                     return marker
                 }
 
+                fun logDifference(set: Set<String>, string: String) {
+                    set.forEach {
+                        val message = "$string $it"
+                        logException(Exception(message))
+                        error(message)
+                    }
+                }
+
                 operator fun JSONArray.iterator(): Iterator<JSONObject> =
                     (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
+                val set1 = stringArray.toHashSet()
+                val set2 = hashSetOf<String>()
+
                 for (res in jsonArray) {
                     val flag = res.getString(FLAG)
+                    set2.add(flag)
+
                     var pass = when {
                         netflix -> netflix(flag)
                         dedicated -> false
@@ -288,14 +301,11 @@ class MapControlTower : SVC_MapControlTower(),
 
                     markers[latLng] = lazyMarker(options, flag)
                 }
-            }
-            // Log new countries, if any
-            markers.forEach { (_, value) ->
-                val element = value.tag
-                if (element is String && !stringArray.contains(element)) {
-                    logException(Exception(element))
-                    error(element)
-                }
+
+                // Log old countries, if any
+                logDifference(set1.subtract(set2), "old")
+                // Log new countries, if any
+                logDifference(set2.subtract(set1), "new")
             }
             // Load all map tiles
             @Suppress("MagicNumber") val z = 3
