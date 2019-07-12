@@ -323,10 +323,10 @@ class MapControlTower : SVC_MapControlTower(),
             val jsonObj = createGeoJson(preferences, securityManager)
             val latLng = getCurrentPosition(jsonObj, jsonArray)
 
-            animateCamera(latLng, closest = true, animate = false)
-
             uiThread {
                 screen.toolBar?.hideProgress(true)
+
+                animateCamera(latLng, closest = true, animate = false)
 
                 googleMap.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider).fadeIn(false))
 
