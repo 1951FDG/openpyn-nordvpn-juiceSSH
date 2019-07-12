@@ -108,6 +108,7 @@
         <item>United Arab Emirates</item>
         <item>United Kingdom</item>
         <item>United States</item>
+        <item>Vietnam</item>
     </string-array>
 
     <string-array name="pref_country_values">
@@ -170,6 +171,7 @@
         <item>ae</item>
         <item>gb</item>
         <item>us</item>
+        <item>vn</item>
     </string-array>
 
     <string name="pref_tcp">TCP</string>

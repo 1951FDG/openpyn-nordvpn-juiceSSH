@@ -83,6 +83,7 @@ fun juiceSSHInstall(activity: Activity) {
 
 @Suppress("MagicNumber")
 fun countryList(array: Array<CharSequence>): ArrayList<MultiSelectable> {
+    // TODO change preferences to use tag instead of id, dynamic creation? with valid indexes
     var i = 0
     return arrayListOf(
         MultiSelectModelExtra(0, SpannableString(array[i++]), R.drawable.ic_albania_40dp, "al"),
@@ -143,7 +144,8 @@ fun countryList(array: Array<CharSequence>): ArrayList<MultiSelectable> {
         MultiSelectModelExtra(57, SpannableString(array[i++]), R.drawable.ic_ukraine_40dp, "ua"),
         MultiSelectModelExtra(58, SpannableString(array[i++]), R.drawable.ic_united_arab_emirates_40dp, "ae"),
         MultiSelectModelExtra(59, SpannableString(array[i++]), R.drawable.ic_united_kingdom_40dp, "gb"),
-        MultiSelectModelExtra(60, SpannableString(array[i++]), R.drawable.ic_united_states_of_america_40dp, "us")
+        MultiSelectModelExtra(60, SpannableString(array[i++]), R.drawable.ic_united_states_of_america_40dp, "us"),
+        MultiSelectModelExtra(61, SpannableString(array[i++]), R.drawable.ic_vietnam_40dp, "vn")
     )
 }
 

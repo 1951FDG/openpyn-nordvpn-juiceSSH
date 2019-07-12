@@ -1453,5 +1453,18 @@
         "name": "Standard VPN servers"
       }
     ]
+  },
+  {
+    "flag": "vn",
+    "country": "Vietnam",
+    "location": {
+      "lat": 21.033333,
+      "long": 105.85
+    },
+    "categories": [
+      {
+        "name": "Standard VPN servers"
+      }
+    ]
   }
 ]
