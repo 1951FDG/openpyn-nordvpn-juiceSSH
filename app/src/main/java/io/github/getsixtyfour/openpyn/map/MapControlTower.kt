@@ -122,8 +122,6 @@ class MapControlTower : SVC_MapControlTower(),
 
     @Suppress("ComplexMethod")
     override fun onMapReady(googleMap: GoogleMap) {
-        screen.toolBar?.showProgress(true)
-
         mMap = googleMap
         cameraUpdateAnimator = CameraUpdateAnimator(googleMap, this)
         val preferences = PreferenceManager.getDefaultSharedPreferences(screen.requireContext())
@@ -168,6 +166,8 @@ class MapControlTower : SVC_MapControlTower(),
             info(tileProvider.toString())
             return tileProvider
         }
+
+        screen.toolBar?.showProgress(true)
 
         doAsync {
             // todo benchmarking, coroutines?

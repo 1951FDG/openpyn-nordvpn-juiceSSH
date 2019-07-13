@@ -327,6 +327,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onError(error: Int, reason: String) {
+        toolbar.hideProgress(true)
+
         longToast(reason)
     }
 
@@ -358,7 +360,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onSessionFinished() {
         info("onSessionFinished")
-        toolbar.hideProgress(true)
         val fragment = getCurrentNavigationFragment() as? OnSessionFinishedListener
 
         fragment?.onSessionFinished()
