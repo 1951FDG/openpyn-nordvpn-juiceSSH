@@ -97,6 +97,11 @@ class MainActivity : AppCompatActivity(),
             .withShowPaidOrFreeInfoText(false)
     }
     private var snackProgressBarManager: SnackProgressBarManager? = null
+    private val handler = Handler()
+    private val runnable = Runnable {
+        val fragment = getCurrentNavigationFragment() as? MapFragment
+        fragment?.controlTower?.updateMasterMarker(true)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -148,6 +153,7 @@ class MainActivity : AppCompatActivity(),
         super.onDestroy()
 
         mConnectionManager?.onDestroy()
+        handler.removeCallbacksAndMessages(null)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -314,10 +320,7 @@ class MainActivity : AppCompatActivity(),
     override fun onDisconnect() {
         toolbar.showProgress(true)
 
-        Handler().postDelayed({
-            val fragment = getCurrentNavigationFragment() as? MapFragment
-            fragment?.controlTower?.updateMasterMarker(true)
-        }, 10000)
+        handler.postDelayed(runnable, 10000)
     }
 
     @MainThread
@@ -351,10 +354,7 @@ class MainActivity : AppCompatActivity(),
         if (line.startsWith("CONNECTING TO SERVER", true)) {
             toolbar.hideProgress(true)
 
-            Handler().postDelayed({
-                val fragment = getCurrentNavigationFragment() as? MapFragment
-                fragment?.controlTower?.updateMasterMarker(true)
-            }, 10000)
+            handler.postDelayed(runnable, 10000)
         }
     }
 
