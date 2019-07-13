@@ -509,7 +509,7 @@ class MapControlTower : SVC_MapControlTower(),
                         .setBackgroundColor(R.color.accent_material_indigo_200)
                         .setTextColor(android.R.color.white)
                         .setMessage("Connected to $city, $flag ($ip)")
-                        .setDuration(5000)
+                        .setDuration(7000)
                         .setShowInterpolator(AccelerateInterpolator())
                         .setDismissInterpolator(AccelerateInterpolator())
                         .build()
