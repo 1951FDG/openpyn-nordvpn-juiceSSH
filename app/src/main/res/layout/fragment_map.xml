@@ -27,9 +27,12 @@
 
     <com.mayurrokade.minibar.MinibarView
         android:id="@+id/minibarView"
-        style="@style/MinibarViewCustom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:includeFontPadding="false"
+        android:minHeight="32dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle.Inverse"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -44,7 +47,7 @@
         app:fabCustomSize="40dp"
         app:layout_constraintLeft_toLeftOf="@+id/fab0"
         app:layout_constraintRight_toRightOf="@+id/fab0"
-        app:layout_constraintTop_toTopOf="@+id/map"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_list_black_24dp"
         app:useCompatPadding="false"
         tools:visibility="visible" />

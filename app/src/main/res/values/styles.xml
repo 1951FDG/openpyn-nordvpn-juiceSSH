@@ -67,13 +67,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MinibarViewCustom" parent="MinibarView">
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
     <style name="ToolbarProgress" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:indeterminate">true</item>
         <item name="mpb_indeterminateTint">?android:attr/colorAccent</item>
