@@ -5,6 +5,8 @@
 
 package de.blinkt.openvpn.activities;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,8 +16,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.ref.WeakReference;
 
@@ -28,7 +28,7 @@ import io.github.getsixtyfour.openpyn.R;
  * @author 1951FDG
  */
 
-public class DisconnectVPN extends AppCompatActivity implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
+public class DisconnectVPN extends Activity implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
 
     private static final class stopVPNTask implements Runnable {
 
