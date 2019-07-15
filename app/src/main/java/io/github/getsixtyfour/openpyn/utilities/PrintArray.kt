@@ -229,4 +229,9 @@ object PrintArray {
         val array = prefs.getString(key, defValue)!!.split(delimiter)
         return array.toCollection(ArrayList())
     }
+
+    fun onDestroy() {
+        itemsList = null
+        checkedItemsList = null
+    }
 }

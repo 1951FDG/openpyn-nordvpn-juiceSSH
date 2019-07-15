@@ -7,13 +7,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.MapView
 import com.naver.android.svc.annotation.RequireControlTower
 import com.naver.android.svc.annotation.RequireViews
 import com.naver.android.svc.annotation.SvcFragment
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.getsixtyfour.openpyn.R
-import kotlinx.android.synthetic.main.fragment_map.map
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
@@ -25,10 +25,7 @@ import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 @SvcFragment
 @RequireViews(MapViews::class)
 @RequireControlTower(MapControlTower::class)
-class MapFragment : SVC_MapFragment(),
-    AnkoLogger,
-    OnSessionStartedListener,
-    OnSessionFinishedListener {
+class MapFragment : SVC_MapFragment(), AnkoLogger, OnSessionStartedListener, OnSessionFinishedListener {
 
     var lastLocation: Location? = null
     val toolBar: ProgressToolbar?
@@ -42,6 +39,7 @@ class MapFragment : SVC_MapFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val map = views.findViewById<MapView>(R.id.map)
         map?.getMapAsync(controlTower)
         map?.onCreate(savedInstanceState)
         val watermark = map?.findViewWithTag<ImageView>("GoogleWatermark")
@@ -66,14 +64,13 @@ class MapFragment : SVC_MapFragment(),
         }
 
         fun getLastLocation() {
-            FusedLocationProviderClient(requireActivity()).lastLocation
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        lastLocation = it.result
-                    } else {
-                        error(it.exception)
-                    }
+            FusedLocationProviderClient(requireActivity()).lastLocation.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    lastLocation = it.result
+                } else {
+                    error(it.exception)
                 }
+            }
         }
 
         if (requestCode == PERMISSION_REQUEST_CODE) {
@@ -81,36 +78,6 @@ class MapFragment : SVC_MapFragment(),
                 getLastLocation()
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        map?.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        map?.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        map?.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        map?.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        map?.onDestroy()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        map?.onLowMemory()
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {

@@ -37,6 +37,39 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab3.setOnClickListener { viewsAction.toggleFavoriteMarker() }
     }
 
+    override fun onStarted() {
+        super.onStarted()
+        map?.onStart()
+    }
+
+    override fun onResumed() {
+        super.onResumed()
+        map?.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        map?.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        map?.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        map?.onDestroy()
+
+        fab0.setOnClickListener { null }
+
+        fab1.setOnClickListener { null }
+
+        fab2.setOnClickListener { null }
+
+        fab3.setOnClickListener { null }
+    }
+
     fun callConnectFabOnClick() {
         fab0.callOnClick()
     }

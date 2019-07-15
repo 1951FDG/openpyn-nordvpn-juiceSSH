@@ -16,9 +16,7 @@ import java.util.Map;
  */
 public final class EmojiFlagManager {
 
-    private static final String PATH = "/assets/emojis.json";
-
-    private static final Map<String, Emoji> EMOJIS_BY_ALIAS = new HashMap<>();
+    private final Map<String, Emoji> EMOJIS_BY_ALIAS = new HashMap<>();
 
     /**
      * Returns the {@link com.vdurmont.emoji.Emoji} for a given alias.
@@ -28,25 +26,19 @@ public final class EmojiFlagManager {
      * is unknown
      */
     @Nullable
-    public static Emoji getForAlias(@NonNull String alias) {
+    public Emoji getForAlias(@NonNull String alias) {
         return EMOJIS_BY_ALIAS.get(alias);
     }
 
-    /**
-     * No need for a constructor, all the methods are static.
-     */
-    private EmojiFlagManager() {
-    }
-
-    static {
-        try (InputStream stream = EmojiLoader.class.getResourceAsStream(PATH)) {
+    public void load(@NonNull String name) throws IOException {
+        try (InputStream stream = EmojiLoader.class.getResourceAsStream(name)) {
             List<Emoji> emojis = EmojiLoader.loadEmojis(stream);
             for (Emoji emoji : emojis) {
                 List<String> aliases = emoji.getAliases();
                 EMOJIS_BY_ALIAS.put(aliases.get(0), emoji);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 }

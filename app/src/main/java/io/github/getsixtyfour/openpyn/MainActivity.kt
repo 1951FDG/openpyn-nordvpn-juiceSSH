@@ -153,6 +153,8 @@ class MainActivity : AppCompatActivity(),
         super.onDestroy()
 
         mConnectionManager?.onDestroy()
+        mConnectionManager = null
+        snackProgressBarManager = null
         handler.removeCallbacksAndMessages(null)
     }
 

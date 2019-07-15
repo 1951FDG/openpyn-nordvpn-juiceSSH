@@ -13,11 +13,12 @@ import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
 import com.antoniocarlon.map.CameraUpdateAnimator
+import com.antoniocarlon.map.CameraUpdateAnimator.Animation
+import com.antoniocarlon.map.CameraUpdateAnimator.AnimatorListener
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.GoogleMap.CancelableCallback
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -98,32 +99,38 @@ class MapControlTower : SVC_MapControlTower(),
     GoogleMap.OnInfoWindowClickListener,
     OnLevelChangeCallback,
     SubmitCallbackListener,
-    MapViewsAction {
+    MapViewsAction,
+    AnimatorListener {
 
     private var cameraUpdateAnimator: CameraUpdateAnimator? = null
     private var countryBoundaries: CountryBoundaries? = null
     private val flags by lazy { ArrayList<CharSequence>() }
     private var mMap: GoogleMap? = null
-    private val markers: HashMap<LatLng, LazyMarker> by lazy { HashMap<LatLng, LazyMarker>() }
+    private var markers: HashMap<LatLng, LazyMarker>? = HashMap()
     private val storage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
     private var tileProvider: MapBoxOfflineTileProvider? = null
+    private var countries: java.util.ArrayList<MultiSelectable>? = null
 
     override fun onDestroy() {
         super.onDestroy()
-
+        mMap?.clear()
+        cameraUpdateAnimator?.onDestroy()
+        cameraUpdateAnimator = null
+        countryBoundaries = null
+        countries = null
+        markers = null
         tileProvider?.close()
+        tileProvider = null
+        mMap = null
 
-        mMap?.setOnInfoWindowClickListener(null)
-        mMap?.setOnMapClickListener(null)
-        mMap?.setOnMarkerClickListener { true }
-
-        mMap?.setOnMapLoadedCallback(null)
+        PrintArray.onDestroy()
     }
 
     @Suppress("ComplexMethod")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         cameraUpdateAnimator = CameraUpdateAnimator(googleMap, this)
+        cameraUpdateAnimator?.animatorListener = this
         val preferences = PreferenceManager.getDefaultSharedPreferences(screen.requireContext())
         val favorites = storage.loadFavorites(screen.requireContext())
         val iconDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1)
@@ -174,8 +181,6 @@ class MapControlTower : SVC_MapControlTower(),
             val jsonArray = jsonArray(screen.requireContext(), R.raw.nordvpn, ".json")
             val stringArray = screen.resources.getStringArray(R.array.pref_country_values)
             val textArray = screen.resources.getTextArray(R.array.pref_country_entries)
-            val countries = countryList(textArray)
-            val selectedCountries = selectedCountries(countries)
             
             val netflix = preferences.getBoolean("pref_netflix", false)
             val dedicated = preferences.getBoolean("pref_dedicated", false)
@@ -188,9 +193,15 @@ class MapControlTower : SVC_MapControlTower(),
 
             countryBoundaries = countryBoundaries()
 
-            printArray(countries, selectedCountries)
+            val emojiManager = EmojiFlagManager()
+            emojiManager.load("/assets/emojis.json")
 
-            countries.forEach { selectable: MultiSelectable ->
+            countries = countryList(textArray)
+            val selectedCountries = selectedCountries(countries!!)
+
+            printArray(countries!!, selectedCountries)
+
+            countries!!.forEach { selectable: MultiSelectable ->
                 (selectable as? MultiSelectModelExtra)?.let {
                     if (selectedCountries.contains(it.id)) {
                         flags.add(it.tag)
@@ -213,7 +224,7 @@ class MapControlTower : SVC_MapControlTower(),
                 fun parseToUnicode(input: String): String {
                     // Replace the aliases by their unicode
                     var result = input
-                    val emoji = EmojiFlagManager.getForAlias(input)
+                    val emoji = emojiManager.getForAlias(input)
                     if (emoji != null) {
                         result = emoji.unicode
                     }
@@ -299,7 +310,7 @@ class MapControlTower : SVC_MapControlTower(),
                         icon(iconDescriptor)
                     }
 
-                    markers[latLng] = lazyMarker(options, flag)
+                    markers?.set(latLng, lazyMarker(options, flag))
                 }
 
                 // Log old countries, if any
@@ -317,7 +328,8 @@ class MapControlTower : SVC_MapControlTower(),
                     val bounds = MapBoxOfflineTileProvider.calculateTileBounds(x, y, z)
                     val cameraPosition = CameraPosition.Builder().target(bounds.northeast).build()
                     // Add animations
-                    cameraUpdateAnimator?.add(CameraUpdateFactory.newCameraPosition(cameraPosition), false, 0)
+                    val animation = Animation(CameraUpdateFactory.newCameraPosition(cameraPosition))
+                    cameraUpdateAnimator?.add(animation)
                 }
             }
             val jsonObj = createGeoJson(preferences, securityManager)
@@ -326,7 +338,7 @@ class MapControlTower : SVC_MapControlTower(),
             uiThread {
                 screen.toolBar?.hideProgress(true)
 
-                animateCamera(latLng, closest = true, animate = false)
+                animateCamera(latLng, closest = true, execute = false)
 
                 googleMap.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider).fadeIn(false))
 
@@ -363,7 +375,7 @@ class MapControlTower : SVC_MapControlTower(),
     override fun onCameraIdle() {
         val bounds = mMap!!.projection.visibleRegion.latLngBounds
 
-        markers.forEach { (key, value) ->
+        markers?.forEach { (key, value) ->
             if (bounds.contains(key) && flags.contains(value.tag)) {
                 if (!value.isVisible) value.isVisible = true
             } else {
@@ -379,7 +391,7 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     override fun onMapClick(p0: LatLng?) {
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        markers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             it.setLevel(it.level, this)
 
             views.hideFavoriteFab()
@@ -391,11 +403,11 @@ class MapControlTower : SVC_MapControlTower(),
             if (p0.zIndex == 1.0f) {
                 views.callConnectFabOnClick()
             } else {
-                markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+                markers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
                     it.setLevel(it.level, this)
                 }
 
-                markers[p0.position]?.let {
+                markers?.get(p0.position)?.let {
                     it.zIndex = 1.0f
                     it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
 
@@ -434,9 +446,7 @@ class MapControlTower : SVC_MapControlTower(),
 
     override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
         flags.clear()
-        val textArray = screen.resources.getTextArray(R.array.pref_country_entries)
-        val countries = countryList(textArray)
-        countries.forEach { selectable: MultiSelectable ->
+        countries?.forEach { selectable: MultiSelectable ->
             (selectable as? MultiSelectModelExtra)?.let {
                 if (selectedIds.contains(it.id)) {
                     flags.add(it.tag)
@@ -472,7 +482,7 @@ class MapControlTower : SVC_MapControlTower(),
             }
         }
 
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        markers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             toggleLevel(it)
             views.toggleFavoriteFab((it.level == 1))
         }
@@ -505,7 +515,7 @@ class MapControlTower : SVC_MapControlTower(),
                     //val lon = jsonObj.getDouble("longitude")
                     val ip = jsonObj.getString("ip")
                     val userMessage = UserMessage.Builder()
-                        .with(screen.requireContext())
+                        .with(screen.requireContext().applicationContext)
                         .setBackgroundColor(R.color.accent_material_indigo_200)
                         .setTextColor(android.R.color.white)
                         .setMessage("Connected to $city, $flag ($ip)")
@@ -521,13 +531,45 @@ class MapControlTower : SVC_MapControlTower(),
         }
     }
 
+    override fun onAnimationStart() {
+        views.setClickableFabs(false)
+    }
+
+    override fun onAnimationEnd() {
+        views.setClickableFabs(true)
+    }
+
+    override fun onAnimationFinish(animation: Animation) {
+        views.fakeLayoutAllFabs()
+
+        markers?.get(animation.target)?.let {
+            if (flags.contains(it.tag)) {
+                it.zIndex = 1.0f
+                it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
+
+                if (!it.isVisible) it.isVisible = true
+                if (!it.isInfoWindowShown) it.showInfoWindow()
+
+                views.toggleFavoriteFab(it.level == 1)
+            }
+        }
+
+        views.showAllFabs()
+    }
+
+    override fun onAnimationCancel(animation: Animation) {
+        markers?.get(animation.target)?.let {
+            info("Animation to $it canceled")
+        }
+    }
+
     fun onSessionFinished() {
         info("onSessionFinished")
         views.setClickableConnectFab(true)
         views.toggleConnectFab(false)
 
         views.showListAndLocationFab()
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        markers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             if (!it.isInfoWindowShown) it.showInfoWindow()
             views.showFavoriteFab()
         }
@@ -545,7 +587,7 @@ class MapControlTower : SVC_MapControlTower(),
         views.toggleConnectFab(true)
 
         views.hideListAndLocationFab()
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        markers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             if (it.isInfoWindowShown) it.hideInfoWindow()
             views.hideFavoriteFab()
         }
@@ -567,12 +609,12 @@ class MapControlTower : SVC_MapControlTower(),
     fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
         var pair: Pair<Coordinate?, String> = Pair(null, "")
 
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.let {
+        markers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.let {
             val latLng = it.key
             val tag = it.value.tag
 
             pair = when {
-                markers.count { entry -> entry.value.tag == tag } == 1 -> Pair(null, tag.toString())
+                markers?.count { entry -> entry.value.tag == tag } == 1 -> Pair(null, tag.toString())
                 else -> Pair(Coordinate(latLng.latitude, latLng.longitude), tag.toString())
             }
         }
@@ -581,62 +623,15 @@ class MapControlTower : SVC_MapControlTower(),
     }
 
     @Suppress("ComplexMethod")
-    private fun animateCamera(latLng: LatLng, closest: Boolean, animate: Boolean = true) {
-        info(latLng.toString())
-
-        fun onStart() {
-            views.setClickableFabs(false)
+    private fun animateCamera(latLng: LatLng, closest: Boolean, execute: Boolean = true) {
+        val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
+            isAnimate = true
+            isClosest = closest
+            target = latLng
         }
-
-        fun onEnd() {
-            views.setClickableFabs(true)
-        }
-
-        fun onFinish() {
-            views.fakeLayoutAllFabs()
-
-            markers[latLng]?.let {
-                if (flags.contains(it.tag)) {
-                    it.zIndex = 1.0f
-                    it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map0))
-
-                    if (!it.isVisible) it.isVisible = true
-                    if (!it.isInfoWindowShown) it.showInfoWindow()
-
-                    views.toggleFavoriteFab(it.level == 1)
-                }
-            }
-
-            views.showAllFabs()
-        }
-
-        fun onCancel() {
-            markers[latLng]?.let {
-                info("Animation to $it canceled")
-            }
-        }
-
-        onStart()
-
-        cameraUpdateAnimator?.add(CameraUpdateFactory.newLatLng(latLng), true, 0, object : CancelableCallback {
-            override fun onFinish() {
-                if (closest) {
-                    onFinish()
-                }
-
-                onEnd()
-            }
-
-            override fun onCancel() {
-                if (closest) {
-                    onCancel()
-                }
-
-                onEnd()
-            }
-        })
+        cameraUpdateAnimator?.add(animation)
         // Execute the animation and set the final OnCameraIdleListener
-        if (animate) cameraUpdateAnimator?.execute()
+        if (execute) cameraUpdateAnimator?.execute()
     }
 
     @MainThread
