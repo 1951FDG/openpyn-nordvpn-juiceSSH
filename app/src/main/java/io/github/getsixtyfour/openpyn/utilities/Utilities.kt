@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources.NotFoundException
 import android.location.Location
@@ -13,7 +12,7 @@ import android.net.Uri
 import android.text.SpannableString
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
-import com.abdeveloper.library.MultiSelectModel
+import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectable
 import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
@@ -65,16 +64,15 @@ fun juiceSSHInstall(activity: Activity) {
 
     try {
         activity.packageManager.getPackageInfo(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE, 0)
-        val uriBuilder = Uri.parse("https://play.google.com/store/apps/details")
-            .buildUpon()
-            .appendQueryParameter("id", JUICE_SSH_PACKAGE_NAME)
-            .appendQueryParameter("launch", "true")
+        val uriBuilder =
+            Uri.parse("https://play.google.com/store/apps/details").buildUpon().appendQueryParameter("id", JUICE_SSH_PACKAGE_NAME)
+                .appendQueryParameter("launch", "true")
         try {
             openURI(uriBuilder.build(), GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)
         } catch (e: ActivityNotFoundException) {
             openURI(uriBuilder.build())
         }
-    } catch (e : NameNotFoundException) {
+    } catch (e: NameNotFoundException) {
         val s = "juicessh-2-1-4"
         val uriString = "https://www.apkmirror.com/apk/sonelli-ltd/juicessh-ssh-client/$s-release/$s-android-apk-download/download/"
         openURI(Uri.parse(uriString))
@@ -82,8 +80,9 @@ fun juiceSSHInstall(activity: Activity) {
 }
 
 @Suppress("MagicNumber")
-fun countryList(array: Array<CharSequence>): ArrayList<MultiSelectable> {
+fun countryList(context: Context, resId: Int): ArrayList<MultiSelectable> {
     // TODO change preferences to use tag instead of id, dynamic creation? with valid indexes
+    val array: Array<CharSequence> = context.resources.getTextArray(resId)
     var i = 0
     return arrayListOf(
         MultiSelectModelExtra(0, SpannableString(array[i++]), R.drawable.ic_albania_40dp, "al"),
@@ -149,7 +148,31 @@ fun countryList(array: Array<CharSequence>): ArrayList<MultiSelectable> {
     )
 }
 
-fun jsonArray(context: Context, id: Int, ext: String): JSONArray? {
+fun logDifference(set: Set<CharSequence>, string: CharSequence) {
+    set.forEach {
+        val message = "$string $it"
+        logException(Exception(message))
+        Log.error(message)
+    }
+}
+
+fun jsonArray(context: Context, id: Int, ext: String): JSONArray {
+    val jsonArray = createJsonArray(context, id, ext)
+    val set1 = context.resources.getTextArray(R.array.pref_country_values).toHashSet()
+    val set2 = hashSetOf<CharSequence>()
+
+    for (res in jsonArray) {
+        val flag = res.getString(FLAG)
+        set2.add(flag)
+    }
+    // Log old countries, if any
+    logDifference(set1.subtract(set2), "old")
+    // Log new countries, if any
+    logDifference(set2.subtract(set1), "new")
+    return jsonArray
+}
+
+fun createJsonArray(context: Context, id: Int, ext: String): JSONArray {
     try {
         val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
         if (!file.exists()) {
@@ -168,7 +191,7 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray? {
     } catch (e: JSONException) {
         logException(e)
     }
-    return null
+    return JSONArray()
 }
 
 private fun copyRawResourceToFile(context: Context, id: Int, file: File) {
@@ -181,8 +204,9 @@ private fun copyRawResourceToFile(context: Context, id: Int, file: File) {
 
 @SuppressLint("WrongThread")
 @WorkerThread
-fun createGeoJson(preferences: SharedPreferences, securityManager: SecurityManager): JSONObject? {
+fun createGeoJson(context: Context): JSONObject? {
     if (NetworkInfo.getInstance().isOnline()) {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val geo = preferences.getBoolean("pref_geo", true)
         val api = preferences.getString("pref_geo_client", "")
         val ipdata = preferences.getString("pref_api_ipdata", "")
@@ -202,8 +226,7 @@ fun createGeoJson(preferences: SharedPreferences, securityManager: SecurityManag
                     key = ipstack
                 }
             }
-
-            if (key != null && key.isNotEmpty()) key = securityManager.decryptString(key)
+            if (key != null && key.isNotEmpty()) key = SecurityManager.getInstance(context).decryptString(key)
 
             return createJson2(api, key)
         }
@@ -217,7 +240,7 @@ fun getDefaultLatLng(): LatLng {
     return LatLng(51.514125, -0.093689)
 }
 
-fun getLatLng(flag: String, latLng: LatLng, jsonArr: JSONArray): LatLng {
+fun getLatLng(flag: CharSequence, latLng: LatLng, jsonArr: JSONArray): LatLng {
     Log.info(latLng.toString())
     val latLngList = arrayListOf<LatLng>()
     var match = false

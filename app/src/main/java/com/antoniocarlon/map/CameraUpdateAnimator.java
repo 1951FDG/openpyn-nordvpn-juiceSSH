@@ -28,6 +28,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class CameraUpdateAnimator implements OnCameraIdleListener {
 
@@ -92,9 +93,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
         private AnimatorListener mAnimatorListener;
 
-        CancelableCallback(AnimatorListener animatorListener, Animation animation) {
-            mAnimatorListener = animatorListener;
-            mAnimation = animation;
+        CancelableCallback() {
         }
 
         @Override
@@ -102,7 +101,6 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
             if (mAnimatorListener != null) {
                 mAnimatorListener.onAnimationCancel(mAnimation);
             }
-            onDestroy();
         }
 
         @Override
@@ -110,12 +108,14 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
             if (mAnimatorListener != null) {
                 mAnimatorListener.onAnimationFinish(mAnimation);
             }
-            onDestroy();
         }
 
-        public void onDestroy() {
-            mAnimatorListener = null;
-            mAnimation = null;
+        public void setAnimation(Animation animation) {
+            mAnimation = animation;
+        }
+
+        public void setAnimatorListener(AnimatorListener animatorListener) {
+            mAnimatorListener = animatorListener;
         }
     }
 
@@ -146,9 +146,15 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         void onAnimationCancel(@NonNull Animation animation);
     }
 
-    private final ArrayList<Animation> cameraUpdates = new ArrayList<>();
+    private final ArrayList<Animation> mCameraUpdates;
+
+    private final CancelableCallback mCancelableCallback = new CancelableCallback();
 
     private final Handler mHandler = new Handler();
+
+    private final GoogleMap mMap;
+
+    private final OnCameraIdleListener mOnCameraIdleListener;
 
     private AnimatorListener mAnimatorListener;
 
@@ -162,15 +168,11 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
     private boolean mIsZoomGestureEnabled;
 
-    private GoogleMap mMap;
-
-    private OnCameraIdleListener mOnCameraIdleListener;
-
     public static void startAnimation(@NonNull GoogleMap googleMap, @NonNull Animation animation,
-                                      @Nullable AnimatorListener animatorListener) {
+                                      @Nullable GoogleMap.CancelableCallback cancelableCallback) {
         if (animation.isAnimate()) {
-            if (animation.isClosest()) {
-                googleMap.animateCamera(animation.getCameraUpdate(), new CancelableCallback(animatorListener, animation));
+            if (cancelableCallback != null) {
+                googleMap.animateCamera(animation.getCameraUpdate(), cancelableCallback);
             } else {
                 googleMap.animateCamera(animation.getCameraUpdate());
             }
@@ -180,21 +182,40 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
     }
 
     public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull OnCameraIdleListener onCameraIdleListener) {
+        mCameraUpdates = new ArrayList<>();
         mMap = googleMap;
         mOnCameraIdleListener = onCameraIdleListener;
     }
 
+    public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull ArrayList<Animation> cameraUpdates,
+                                @NonNull OnCameraIdleListener onCameraIdleListener) {
+        mCameraUpdates = cameraUpdates;
+        mMap = googleMap;
+        mOnCameraIdleListener = onCameraIdleListener;
+    }
+
+    public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull ArrayList<Animation> cameraUpdates,
+                                @Nullable AnimatorListener animatorListener, @NonNull OnCameraIdleListener onCameraIdleListener) {
+        mCameraUpdates = cameraUpdates;
+        mMap = googleMap;
+        mOnCameraIdleListener = onCameraIdleListener;
+        mAnimatorListener = animatorListener;
+    }
+
     public void add(@NonNull Animation animation) {
-        cameraUpdates.add(animation);
+        mCameraUpdates.add(animation);
+    }
+
+    public void addAll(@NonNull Collection<? extends Animation> animations) {
+        mCameraUpdates.addAll(animations);
     }
 
     public void clear() {
-        mHandler.removeCallbacksAndMessages(null);
-        cameraUpdates.clear();
+        mCameraUpdates.clear();
     }
 
     public void execute() {
-        if (!cameraUpdates.isEmpty()) {
+        if (!mCameraUpdates.isEmpty()) {
             setUiSettings();
             onAnimationStart();
             executeNext();
@@ -216,21 +237,28 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
     }
 
     public void onDestroy() {
-        clear();
-        mAnimatorListener = null;
-        mMap = null;
-        mOnCameraIdleListener = null;
+        mHandler.removeCallbacksAndMessages(null);
     }
 
     private void executeNext() {
-        if (cameraUpdates.isEmpty()) {
+        if (mCameraUpdates.isEmpty()) {
             onAnimationEnd();
         } else {
-            Animation animation = cameraUpdates.remove(0);
-            if (animation.getDelay() == 0L) {
-                startAnimation(mMap, animation, mAnimatorListener);
+            Animation animation = mCameraUpdates.remove(0);
+            if (animation.isClosest()) {
+                mCancelableCallback.setAnimation(animation);
+                mCancelableCallback.setAnimatorListener(mAnimatorListener);
+                if (animation.getDelay() == 0L) {
+                    startAnimation(mMap, animation, mCancelableCallback);
+                } else {
+                    mHandler.postDelayed(() -> startAnimation(mMap, animation, mCancelableCallback), animation.getDelay());
+                }
             } else {
-                mHandler.postDelayed(() -> startAnimation(mMap, animation, mAnimatorListener), animation.getDelay());
+                if (animation.getDelay() == 0L) {
+                    startAnimation(mMap, animation, null);
+                } else {
+                    mHandler.postDelayed(() -> startAnimation(mMap, animation, null), animation.getDelay());
+                }
             }
         }
     }

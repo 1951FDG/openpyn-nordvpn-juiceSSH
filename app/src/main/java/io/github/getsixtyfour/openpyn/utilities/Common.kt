@@ -35,6 +35,12 @@ const val LONG: String = "long"
 
 const val SERVER: String = "https://api.nordvpn.com/server"
 
+// extended
+
+const val CITY: String = "city"
+const val IP: String = "ip"
+const val THREAT: String = "threat"
+
 @Suppress("unused")
 @WorkerThread
 fun generateXML() {
@@ -171,14 +177,14 @@ fun createJson2(value: String?, token: String?): JSONObject? {
             if (flag.isNotEmpty() && city.isNotEmpty() && lat != 0.0 && lon != 0.0 && ip.isNotEmpty()) {
                 Log.debug("is in $flag")
                 return JSONObject().apply {
-                    put("flag", flag.toLowerCase(Locale.ROOT))
-                    put("country", country)
-                    put("city", city)
-                    put("latitude", lat)
-                    put("longitude", lon)
-                    put("ip", ip)
+                    put(FLAG, flag.toLowerCase(Locale.ROOT))
+                    put(COUNTRY, country)
+                    put(CITY, city)
+                    put(LAT, lat)
+                    put(LONG, lon)
+                    put(IP, ip)
 
-                    putOpt("threat", threat)
+                    putOpt(THREAT, threat)
                 }
             }
         }

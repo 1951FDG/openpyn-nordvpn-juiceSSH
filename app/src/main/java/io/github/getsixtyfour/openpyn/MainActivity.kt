@@ -74,34 +74,28 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
-class MainActivity : AppCompatActivity(),
-    AnkoLogger,
-    ConnectionListLoaderFinishedCallback,
-    GDPR.IGDPRCallback,
-    OnClickListener,
-    OnClientStartedListener,
-    OnCommandExecuteListener,
-    OnSessionExecuteListener,
-    OnSessionFinishedListener,
-    OnSessionStartedListener {
-    private var dialog: MorphDialog? = null
+class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback, OnClickListener,
+    OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener, OnSessionStartedListener {
 
+    private var dialog: MorphDialog? = null
     private val mConnectionListAdapter by lazy {
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
     }
     private var mConnectionManager: ConnectionManager? = null
     private val mSetup by lazy {
-        GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)
-            .withExplicitAgeConfirmation(true)
-            .withForceSelection(true)
-            .withShowPaidOrFreeInfoText(false)
+        GDPRSetup(
+            GDPRDefinitions.FABRIC_CRASHLYTICS,
+            GDPRDefinitions.FIREBASE_CRASH,
+            GDPRDefinitions.FIREBASE_ANALYTICS
+        ).withExplicitAgeConfirmation(true).withForceSelection(true).withShowPaidOrFreeInfoText(false)
     }
-    private var snackProgressBarManager: SnackProgressBarManager? = null
+    private lateinit var mSnackProgressBarManager: SnackProgressBarManager
     private val handler = Handler()
     private val runnable = Runnable {
         val fragment = getCurrentNavigationFragment() as? MapFragment
         fragment?.controlTower?.updateMasterMarker(true)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -117,7 +111,7 @@ class MainActivity : AppCompatActivity(),
         setDefaultPreferences()
         val api = GoogleApiAvailability.getInstance()
 
-        when (val errorCode = api.isGooglePlayServicesAvailable(this)) {
+        when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
             ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, RESULT_OK, null)
             //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
             else -> error(api.getErrorString(errorCode))
@@ -130,31 +124,27 @@ class MainActivity : AppCompatActivity(),
 
     override fun onResume() {
         super.onResume()
-
-        val snackProgressBar = snackProgressBarManager?.getLastShown()
+        val snackProgressBar = mSnackProgressBarManager.getLastShown()
 
         if (isJuiceSSHInstalled(this)) {
             if (hasPermission(PERMISSION_READ) && hasPermission(PERMISSION_OPEN_SESSIONS)) return
 
             when (snackProgressBar) {
-                null -> snackProgressBarManager?.show(SNACK_BAR_PERMISSIONS, SnackProgressBarManager.LENGTH_INDEFINITE)
-                else -> snackProgressBarManager?.getSnackProgressBar(SNACK_BAR_PERMISSIONS)?.let { snackProgressBarManager?.updateTo(it) }
+                null -> mSnackProgressBarManager.show(SNACK_BAR_PERMISSIONS, SnackProgressBarManager.LENGTH_INDEFINITE)
+                else -> mSnackProgressBarManager.getSnackProgressBar(SNACK_BAR_PERMISSIONS)?.let { mSnackProgressBarManager.updateTo(it) }
             }
         } else {
             when (snackProgressBar) {
-                null -> snackProgressBarManager?.show(SNACK_BAR_JUICESSH, SnackProgressBarManager.LENGTH_INDEFINITE)
-                else -> snackProgressBarManager?.getSnackProgressBar(SNACK_BAR_JUICESSH)?.let { snackProgressBarManager?.updateTo(it) }
+                null -> mSnackProgressBarManager.show(SNACK_BAR_JUICESSH, SnackProgressBarManager.LENGTH_INDEFINITE)
+                else -> mSnackProgressBarManager.getSnackProgressBar(SNACK_BAR_JUICESSH)?.let { mSnackProgressBarManager.updateTo(it) }
             }
         }
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         mConnectionManager?.onDestroy()
-        mConnectionManager = null
-        snackProgressBarManager = null
         handler.removeCallbacksAndMessages(null)
     }
 
@@ -278,7 +268,6 @@ class MainActivity : AppCompatActivity(),
             val server: String = preferences.getString("pref_server", "")!!
             val country: String = preferences.getString("pref_country", "")!!
             val content = "Are you sure you want to connect to ${element(location, flag, server, country)}"
-
             val builder = MorphDialog.Builder(this, v).apply {
                 title("VPN Connection")
                 content(content)
@@ -327,8 +316,8 @@ class MainActivity : AppCompatActivity(),
 
     @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        val fragment = getCurrentNavigationFragment() as? MapFragment
-        return fragment?.controlTower?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
+        val fragment = getCurrentNavigationFragment() as? OnCommandExecuteListener
+        return fragment?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
     }
 
     override fun onError(error: Int, reason: String) {
@@ -401,7 +390,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     fun getSnackProgressBarManager(): SnackProgressBarManager? {
-        return snackProgressBarManager
+        return mSnackProgressBarManager
     }
 
     private fun hasPermission(permission: String): Boolean {
@@ -462,7 +451,7 @@ class MainActivity : AppCompatActivity(),
         ActivityCompat.requestPermissions(this, arrayOf(PERMISSION_READ, PERMISSION_OPEN_SESSIONS), PERMISSION_REQUEST_CODE)
     }
 
-    fun showGDPRIfNecessary() {
+    private fun showGDPRIfNecessary() {
         val debug = BuildConfig.DEBUG
         if (!debug) {
             GDPR.getInstance().checkIfNeedsToBeShown(this, mSetup)
@@ -520,16 +509,12 @@ class MainActivity : AppCompatActivity(),
                 toolbar.hideProgress(true)
 
                 if (!thrown) {
-                    MaterialDialog.Builder(it)
-                        .title("Warning")
-                        .content(R.string.warning_must_restart_app)
-                        .positiveText(android.R.string.ok)
+                    MaterialDialog.Builder(it).title("Warning").content(R.string.warning_must_restart_app).positiveText(android.R.string.ok)
                         .show()
                 }
             }
 
-            onComplete {
-            }
+            onComplete {}
         }
     }
 
@@ -547,42 +532,29 @@ class MainActivity : AppCompatActivity(),
 
     private fun setSnackBarManager() {
         fun snackProgressBar(
-            type: Int,
-            message: String,
-            action: String,
-            onActionClickListener: OnActionClickListener
+            type: Int, message: String, action: String, onActionClickListener: OnActionClickListener
         ): SnackProgressBar {
             return SnackProgressBar(type, message).setAction(action, onActionClickListener)
         }
 
-        snackProgressBarManager = SnackProgressBarManager(mainlayout)
+        mSnackProgressBarManager = SnackProgressBarManager(mainlayout)
         val type = SnackProgressBar.TYPE_NORMAL
         val action = getString(android.R.string.ok)
 
-        snackProgressBarManager?.put(
-            snackProgressBar(
-                type,
-                getString(R.string.error_must_enable_permissions),
-                action,
-                object : OnActionClickListener {
-                    override fun onActionClick() {
-                        requestPermissions()
-                    }
-                }),
-            SNACK_BAR_PERMISSIONS
+        mSnackProgressBarManager.put(
+            snackProgressBar(type, getString(R.string.error_must_enable_permissions), action, object : OnActionClickListener {
+                override fun onActionClick() {
+                    requestPermissions()
+                }
+            }), SNACK_BAR_PERMISSIONS
         )
 
-        snackProgressBarManager?.put(
-            snackProgressBar(
-                type,
-                getString(R.string.error_must_install_juicessh),
-                action,
-                object : OnActionClickListener {
-                    override fun onActionClick() {
-                        juiceSSHInstall(this@MainActivity)
-                    }
-                }),
-            SNACK_BAR_JUICESSH
+        mSnackProgressBarManager.put(
+            snackProgressBar(type, getString(R.string.error_must_install_juicessh), action, object : OnActionClickListener {
+                override fun onActionClick() {
+                    juiceSSHInstall(this@MainActivity)
+                }
+            }), SNACK_BAR_JUICESSH
         )
     }
 

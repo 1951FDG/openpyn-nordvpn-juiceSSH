@@ -14,6 +14,8 @@ import com.naver.android.svc.annotation.SvcFragment
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.getsixtyfour.openpyn.R
+import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
+import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
@@ -25,11 +27,24 @@ import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 @SvcFragment
 @RequireViews(MapViews::class)
 @RequireControlTower(MapControlTower::class)
-class MapFragment : SVC_MapFragment(), AnkoLogger, OnSessionStartedListener, OnSessionFinishedListener {
+class MapFragment : SVC_MapFragment(), AnkoLogger, OnSessionStartedListener, OnSessionFinishedListener, OnCommandExecuteListener {
+
+    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
+        return controlTower.positionAndFlagForSelectedMarker()
+    }
+
+    override fun onConnect() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onDisconnect() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     var lastLocation: Location? = null
-    val toolBar: ProgressToolbar?
-        get() = requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
+    val toolBar: ProgressToolbar? by lazy {
+        requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

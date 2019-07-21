@@ -125,6 +125,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'net.mm2d:preference:0.1.2'
     // Anko
+    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation "org.jetbrains.anko:anko-design:$anko_version"
     //implementation "org.jetbrains.anko:anko-sdk21-listeners:$anko_version"
