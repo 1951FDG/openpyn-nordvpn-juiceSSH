@@ -20,7 +20,6 @@
 
 package org.sqlite.database.sqlite;
 
-@SuppressWarnings("ALL")
 public class SQLiteCantOpenDatabaseException extends SQLiteException {
     public SQLiteCantOpenDatabaseException() {}
 

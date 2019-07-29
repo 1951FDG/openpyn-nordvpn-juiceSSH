@@ -107,7 +107,6 @@ import android.util.Log;
  *
  * @hide
  */
-@SuppressWarnings("ALL")
 public final class CloseGuard {
 
     /**

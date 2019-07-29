@@ -23,7 +23,6 @@ package org.sqlite.database.sqlite;
 /**
  * An exception that indicates that an integrity constraint was violated.
  */
-@SuppressWarnings("ALL")
 public class SQLiteConstraintException extends SQLiteException {
     public SQLiteConstraintException() {}
 

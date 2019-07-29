@@ -28,7 +28,6 @@ package org.sqlite.database.sqlite;
  * explicit transaction then you should rollback the transaction before
  * continuing.
  */
-@SuppressWarnings("ALL")
 public class SQLiteDatabaseLockedException extends SQLiteException {
     public SQLiteDatabaseLockedException() {}
 

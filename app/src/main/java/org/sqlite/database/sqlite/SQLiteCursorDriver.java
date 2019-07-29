@@ -27,7 +27,6 @@ import org.sqlite.database.sqlite.SQLiteDatabase.CursorFactory;
  * A driver for SQLiteCursors that is used to create them and gets notified
  * by the cursors it creates on significant events in their lifetimes.
  */
-@SuppressWarnings("ALL")
 public interface SQLiteCursorDriver {
     /**
      * Executes the query returning a Cursor over the result set.

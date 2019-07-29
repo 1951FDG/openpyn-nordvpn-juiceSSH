@@ -25,7 +25,6 @@ package org.sqlite.database.sqlite;
  * This can happen either through a call to ABORT in a trigger,
  * or as the result of using the ABORT conflict clause.
  */
-@SuppressWarnings("ALL")
 public class SQLiteAbortException extends SQLiteException {
     public SQLiteAbortException() {}
 

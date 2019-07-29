@@ -25,7 +25,6 @@ package org.sqlite.database.sqlite;
  *
  * @hide
  */
-@SuppressWarnings("ALL")
 public final class SQLiteStatementInfo {
     /**
      * The number of parameters that the statement has.

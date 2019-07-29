@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
  *
  * @hide
  */
-@SuppressWarnings("ALL")
 public final class SQLiteDatabaseConfiguration {
     // The pattern we use to strip email addresses from database paths
     // when constructing a label to use in log messages.

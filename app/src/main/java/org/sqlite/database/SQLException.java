@@ -23,7 +23,6 @@ package org.sqlite.database;
 /**
  * An exception that indicates there was an error with SQL parsing or execution.
  */
-@SuppressWarnings("ALL")
 public class SQLException extends RuntimeException {
     public SQLException() {
     }

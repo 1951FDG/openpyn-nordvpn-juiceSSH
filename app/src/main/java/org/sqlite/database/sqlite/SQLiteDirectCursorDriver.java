@@ -29,7 +29,6 @@ import android.os.CancellationSignal;
  * 
  * @hide
  */
-@SuppressWarnings("ALL")
 public final class SQLiteDirectCursorDriver implements SQLiteCursorDriver {
     private final SQLiteDatabase mDatabase;
     private final String mEditTable; 
