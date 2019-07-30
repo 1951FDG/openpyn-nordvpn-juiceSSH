@@ -289,7 +289,7 @@ void jniLogException(C_JNIEnv* env, int priority, const char* tag, jthrowable ex
 }
 
 const char* jniStrError(int errnum, char* buf, size_t buflen) {
-#if __GLIBC__
+#if 1
     // Note: glibc has a nonstandard strerror_r that returns char* rather than POSIX's int.
     // char *strerror_r(int errnum, char *buf, size_t n);
     return strerror_r(errnum, buf, buflen);

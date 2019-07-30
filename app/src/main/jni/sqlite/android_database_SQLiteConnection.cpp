@@ -36,6 +36,9 @@
 
 #include <string>
 
+#include <errno.h>
+#include <android/sharedmem.h>
+
 // Set to 1 to use UTF16 storage for localized indexes.
 #define UTF16_STORAGE 0
 
@@ -187,14 +190,6 @@ static jlong nativeOpen(JNIEnv* env, jclass clazz, jstring pathStr, jint openFla
 
     // Create wrapper object.
     SQLiteConnection* connection = new SQLiteConnection(db, openFlags, path, label);
-
-    // Enable tracing and profiling if requested.
-    if (enableTrace) {
-        sqlite3_trace(db, &sqliteTraceCallback, connection);
-    }
-    if (enableProfile) {
-        sqlite3_profile(db, &sqliteProfileCallback, connection);
-    }
 
     ALOGV("Opened connection %p with label '%s'", db, label.c_str());
     return reinterpret_cast<jlong>(connection);
@@ -531,6 +526,32 @@ static jstring nativeExecuteForString(JNIEnv* env, jclass clazz,
 }
 
 static int createAshmemRegionWithData(JNIEnv* env, const void* data, size_t length) {
+    int error = 0;
+    int fd = ASharedMemory_create(NULL, length);
+    if (fd < 0) {
+        error = errno;
+        ALOGE("ASharedMemory_create failed: %s", strerror(error));
+    } else {
+        if (length > 0) {
+            void* ptr = mmap(NULL, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+            if (ptr == MAP_FAILED) {
+                error = errno;
+                ALOGE("mmap failed: %s", strerror(error));
+            } else {
+                memcpy(ptr, data, length);
+                munmap(ptr, length);
+            }
+        }
+        if (!error) {
+            if (ASharedMemory_setProt(fd, PROT_READ) < 0) {
+                error = errno;
+                ALOGE("ASharedMemory_setProt failed: %s", strerror(errno));
+            } else {
+                return fd;
+            }
+        }
+        close(fd);
+    }
     jniThrowIOException(env, -1);
     return -1;
 }

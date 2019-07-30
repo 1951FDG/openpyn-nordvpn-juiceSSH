@@ -544,6 +544,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 		return -1;
 	}
 
+	INFO("sqlite thread safe %d", sqlite3_threadsafe());
 	int version = sqlite3_libversion_number();
 	const char *version_str = sqlite3_libversion();
 	INFO("found sqlite library version %s", version_str);
