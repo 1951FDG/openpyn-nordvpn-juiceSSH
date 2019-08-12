@@ -155,7 +155,7 @@ dependencies {
     implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
     implementation 'org.slf4j:slf4j-api:1.7.26'
     debugImplementation 'org.slf4j:slf4j-android:1.7.26'
-    testImplementation 'org.slf4j:slf4j-simple:1.7.26'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.28'
     // Google Play Services
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
