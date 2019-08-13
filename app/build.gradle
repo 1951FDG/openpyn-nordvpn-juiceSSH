@@ -14,7 +14,7 @@ androidGitVersion {
 }
 
 detekt {
-    toolVersion = "1.0.0-RC12"
+    toolVersion = "1.0.0-RC16"
     input = files("src/main/java")
     config = files("$rootDir/default-detekt-config.yml")
     filters = ".*/resources/.*,.*/build/.*"
