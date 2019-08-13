@@ -55,6 +55,9 @@
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:theme="@style/AppTheme.Settings" />
         <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:theme="@style/AppTheme.Settings" />
+        <activity
             android:name="de.blinkt.openvpn.activities.DisconnectVPN"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
