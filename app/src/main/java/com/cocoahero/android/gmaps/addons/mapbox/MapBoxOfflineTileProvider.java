@@ -1,6 +1,7 @@
 package com.cocoahero.android.gmaps.addons.mapbox;
 
 import android.database.Cursor;
+
 import android.util.Log;
 
 import androidx.annotation.MainThread;
@@ -14,23 +15,38 @@ import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
 
-import org.sqlite.database.sqlite.SQLiteCursor;
-import org.sqlite.database.sqlite.SQLiteCursorDriver;
-import org.sqlite.database.sqlite.SQLiteDatabase;
-import org.sqlite.database.sqlite.SQLiteDatabase.CursorFactory;
-import org.sqlite.database.sqlite.SQLiteQuery;
-
 import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+
+import io.requery.android.database.sqlite.SQLiteCursor;
+import io.requery.android.database.sqlite.SQLiteDatabase;
+import io.requery.android.database.sqlite.SQLiteDatabase.CursorFactory;
+import io.requery.android.database.sqlite.SQLiteDatabaseConfiguration;
+import io.requery.android.database.sqlite.SQLiteDirectCursorDriver;
+import io.requery.android.database.sqlite.SQLiteQuery;
+
+/*import android.os.ParcelFileDescriptor;
+import android.os.ParcelFileDescriptor.AutoCloseInputStream;
+import com.almworks.sqlite4java.SQLiteConnection;
+import com.almworks.sqlite4java.SQLiteException;
+import com.almworks.sqlite4java.SQLiteJob;
+import com.almworks.sqlite4java.SQLiteQueue;
+import com.almworks.sqlite4java.SQLiteStatement;
+import org.sqlite.database.DatabaseUtils;
+import org.sqlite.database.sqlite.SQLiteCursor;
+import org.sqlite.database.sqlite.SQLiteDatabase;
+import org.sqlite.database.sqlite.SQLiteDatabase.CursorFactory;
+import org.sqlite.database.sqlite.SQLiteDatabaseConfiguration;
+import org.sqlite.database.sqlite.SQLiteDirectCursorDriver;
+import org.sqlite.database.sqlite.SQLiteQuery;
+import org.sqlite.database.sqlite.SQLiteStatement;*/
 
 @MainThread
-public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriver, Closeable {
-
+public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     //region Statics
-
-    private static final String TABLE_METADATA = "metadata";
-
-    private static final String COL_VALUE = "value";
 
     // Used to measure distances relative to the total world size.
     private static final double WORLD_WIDTH = 1.0;
@@ -41,8 +57,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     private static final String TAG = "MBTileProvider";
 
     // TABLE tiles (zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB);
-    private static final String mEditTable = "tiles";
-
     private static final String mSql = "SELECT tile_data FROM tiles WHERE zoom_level = ? AND tile_column = ? AND tile_row = ?";
 
     //endregion Statics
@@ -54,43 +68,17 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
 
     private final SQLiteDatabase mDatabase;
 
-    private SQLiteQuery mQuery;
+    private final SQLiteQuery mQuery;
+
+    private final SQLiteCursor mCursor;
+
+    // private final SQLiteQueue mQueue;
 
     private float maximumZoom;
 
     private float minimumZoom;
 
     //endregion Members
-
-    //region Statics
-
-    /**
-     * Convert tile coordinates and zoom into Bounds format.
-     *
-     * @param x The requested x coordinate.
-     * @param y The requested y coordinate.
-     * @param z The requested zoom level.
-     * @return the geographic bounds of the tile
-     */
-    @NonNull
-    @SuppressWarnings("MagicNumber")
-    public static LatLngBounds calculateTileBounds(int x, int y, int z) {
-        // Width of the world = WORLD_WIDTH = 1
-        // Calculate width of one tile, given there are 2 ^ zoom tiles in that zoom level
-        // In terms of world width units
-        double tileWidth = WORLD_WIDTH / Math.pow(2.0, z);
-        // Make bounds: minX, maxX, minY, maxY
-        double minX = x * tileWidth;
-        double maxX = (x + 1) * tileWidth;
-        double minY = y * tileWidth;
-        double maxY = (y + 1) * tileWidth;
-        SphericalMercatorProjection sProjection = new SphericalMercatorProjection(WORLD_WIDTH);
-        LatLng sw = sProjection.toLatLng(new Point(minX, maxY));
-        LatLng ne = sProjection.toLatLng(new Point(maxX, minY));
-        return new LatLngBounds(sw, ne);
-    }
-
-    //endregion Statics
 
     //region Constructors
 
@@ -101,7 +89,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
 
     @SuppressWarnings({ "WeakerAccess", "unused" })
     public MapBoxOfflineTileProvider(@NonNull String pathToFile) {
-        this(SQLiteDatabase.openDatabase(pathToFile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS));
+        // this(SQLiteDatabase.openDatabase(pathToFile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS));
+        this(SQLiteDatabase.openDatabase(pathToFile, null, SQLiteDatabase.OPEN_READONLY));
     }
 
     @SuppressWarnings({ "LambdaLast", "unused" })
@@ -111,6 +100,12 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
 
     private MapBoxOfflineTileProvider(@NonNull SQLiteDatabase database) {
         mDatabase = database;
+        mQuery = new SQLiteQuery(mDatabase, mSql, null, null);
+        mCursor = new SQLiteCursor(new SQLiteDirectCursorDriver(null, null, null, null), null, mQuery);
+
+        /*mQueue = new SQLiteQueue();
+        mQueue.start();*/
+
         calculateMinZoomLevel();
         calculateMaxZoomLevel();
         calculateBounds();
@@ -121,8 +116,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     @NonNull
     @Override
     public String toString() {
-        return "MapBoxOfflineTileProvider{" + "mDatabase='" + mDatabase.getPath() + '\'' + ", mEditTable='" + mEditTable + '\'' + ", mSql='"
-                + mSql + '\'' + ", mBounds=" + bounds + ", mMinimumZoom=" + minimumZoom + ", mMaximumZoom=" + maximumZoom + '}';
+        return "MapBoxOfflineTileProvider{" + "mDatabase='" + "'" + ", mSql='" + mSql + "'" + ", mBounds=" + bounds + ", mMinimumZoom="
+                + minimumZoom + ", mMaximumZoom=" + maximumZoom + "}";
     }
 
     //region Accessors
@@ -207,73 +202,39 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
 
     //region TileProvider
 
-    @NonNull
+    @SuppressWarnings({ "unused", "ParameterNameDiffersFromOverriddenParameter", "SynchronizedMethod" })
     @Override
-    @SuppressWarnings({ "unused", "ParameterNameDiffersFromOverriddenParameter" })
-    public Tile getTile(int x, int y, int z) {
-        //Log.e(TAG, String.format("%d %d", x, y));
-        //String[] columns = { "tile_data" };
-        //String selection = "zoom_level = ? AND tile_column = ? AND tile_row = ?";
-        //String sql = SQLiteQueryBuilder.buildQueryString(false, TABLE_TILES, columns, selection, null, null, null, null);
-        //Log.e(TAG, sql);
-        String[] selectionArgs = { Integer.toString(z), Integer.toString(x), Integer.toString((1 << z) - 1 - y) };
-        try (Cursor cursor = query(null, selectionArgs)) {
-            return cursor.moveToFirst() ? new Tile(TILE_DIM, TILE_DIM, cursor.getBlob(0)) : NO_TILE;
-        }
+    @NonNull
+    public synchronized Tile getTile(int x, int y, int zoom) {
+        // Log.e(TAG, String.format("%d %d %d", zoom, x, ((1 << zoom) - 1 - y)));
+        String[] bindArgs = { Integer.toString(zoom), Integer.toString(x), Integer.toString((1 << zoom) - 1 - y) };
+        mQuery.bindString(3, bindArgs[2]); // row
+        mQuery.bindString(2, bindArgs[1]); // column
+        mQuery.bindString(1, bindArgs[0]); // zoom
+        mCursor.requery();
+        return mCursor.moveToPosition(0) ? new Tile(TILE_DIM, TILE_DIM, mCursor.getBlob(0)) : NO_TILE;
+
+        //region sqlite4java-android
+        /*SQLiteJob<Tile> job = mQueue.execute(new TileSQLiteJob(x, y, zoom));
+        return job.complete();*/
+        //endregion sqlite4java-android
+
+        //region sqliteX
+        /*Tile tile = NO_TILE;
+        SQLiteStatement st = mDatabase.compileStatement(mSql);
+        st.bindString(3, bindArgs[2]);
+        st.bindString(2, bindArgs[1]);
+        st.bindString(1, bindArgs[0]);
+        ParcelFileDescriptor pfd = DatabaseUtils.blobFileDescriptorForQuery(mDatabase, mSql, bindArgs);
+        try (AutoCloseInputStream fis = new AutoCloseInputStream(pfd)) {
+            tile = new Tile(TILE_DIM, TILE_DIM, read(fis, BUFFER_SIZE << 4));
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+        }*/
+        //endregion sqliteX
     }
 
     //endregion TileProvider
-
-    //region SQLiteCursorDriver
-
-    /**
-     * Executes the query returning a Cursor over the result set.
-     *
-     * @param factory The CursorFactory to use when creating the Cursors, or
-     *                null if standard SQLiteCursors should be returned.
-     * @return a Cursor over the result set
-     */
-    @NonNull
-    @SuppressWarnings("LambdaLast")
-    public Cursor query(@Nullable CursorFactory factory, @NonNull String[] bindArgs) {
-        SQLiteQuery query = new SQLiteQuery(mDatabase, mSql, null);
-        query.bindAllArgsAsStrings(bindArgs);
-        Cursor cursor = new SQLiteCursor(this, mEditTable, query);
-        mQuery = query;
-        return cursor;
-    }
-
-    /**
-     * Called by a SQLiteCursor when it is released.
-     */
-    public void cursorDeactivated() {
-        // Do nothing
-    }
-
-    /**
-     * Called by a SQLiteCursor when it is requeried.
-     */
-    public void cursorRequeried(@NonNull Cursor cursor) {
-        // Do nothing
-    }
-
-    /**
-     * Called by a SQLiteCursor when it it closed to destroy this object as well.
-     */
-    public void cursorClosed() {
-        // Do nothing
-    }
-
-    /**
-     * Set new bind arguments. These will take effect in cursorRequeried().
-     *
-     * @param bindArgs the new arguments
-     */
-    public void setBindArguments(@NonNull String[] bindArgs) {
-        mQuery.bindAllArgsAsStrings(bindArgs);
-    }
-
-    //endregion SQLiteCursorDriver
 
     //region Closeable
 
@@ -288,6 +249,9 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
      */
     @Override
     public void close() {
+        if ((mCursor != null) && (!mCursor.isClosed())) {
+            mCursor.close();
+        }
         if ((mDatabase != null) && (mDatabase.isOpen())) {
             mDatabase.close();
         }
@@ -297,7 +261,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
 
     //region Instance Methods
 
-    @SuppressWarnings("StandardVariableNames")
+    @SuppressWarnings({ "StandardVariableNames", "DynamicRegexReplaceableByCompiledPattern" })
     private void calculateBounds() {
         String result = getStringValue("bounds");
         if (result != null) {
@@ -327,26 +291,67 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
     }
 
     private String getStringValue(@NonNull String key) {
-        String[] columns = { COL_VALUE };
-        String[] selectionArgs = { key };
-        try (Cursor cursor = mDatabase.query(TABLE_METADATA, columns, "name = ?", selectionArgs, null, null, null)) {
-            return cursor.moveToFirst() ? cursor.getString(0) : null;
+        String sql = "SELECT value FROM metadata WHERE name = ?";
+        String[] bindArgs = { key };
+        try (Cursor cursor = mDatabase.rawQueryWithFactory(null, sql, bindArgs, null, null)) {
+            return cursor.moveToPosition(0) ? cursor.getString(0) : null;
         }
+    }
+
+    private String getSQliteVersion() {
+        String sql = "SELECT sqlite_version() AS sqlite_version";
+        //return DatabaseUtils.stringForQuery(mDatabase, sql, null); // sqliteX
+        try (Cursor cursor = mDatabase.rawQueryWithFactory(null, sql, null, null, null)) {
+            return cursor.moveToPosition(0) ? cursor.getString(0) : null;
+        }
+    }
+
+    //endregion Instance Methods
+
+    //region Statics
+
+    /**
+     * Convert tile coordinates and zoom into Bounds format.
+     *
+     * @param x The requested x coordinate.
+     * @param y The requested y coordinate.
+     * @param z The requested zoom level.
+     * @return the geographic bounds of the tile
+     */
+    @SuppressWarnings("MagicNumber")
+    @NonNull
+    public static LatLngBounds calculateTileBounds(int x, int y, int z) {
+        // Width of the world = WORLD_WIDTH = 1
+        // Calculate width of one tile, given there are 2 ^ zoom tiles in that zoom level
+        // In terms of world width units
+        double tileWidth = WORLD_WIDTH / Math.pow(2.0, z);
+        // Make bounds: minX, maxX, minY, maxY
+        double minX = x * tileWidth;
+        double maxX = (x + 1) * tileWidth;
+        double minY = y * tileWidth;
+        double maxY = (y + 1) * tileWidth;
+        SphericalMercatorProjection sProjection = new SphericalMercatorProjection(WORLD_WIDTH);
+        LatLng sw = sProjection.toLatLng(new Point(minX, maxY));
+        LatLng ne = sProjection.toLatLng(new Point(maxX, minY));
+        return new LatLngBounds(sw, ne);
     }
 
     /**
      * Create a memory backed SQLite database.
      *
+     * @param path    to database file to open and/or create
      * @param factory an optional factory class that is called to instantiate a
-     *                cursor when query is called
-     * @return a SQLiteDatabase object, or null if the database can't be created
+     *                cursor when query is called, or null for default
+     * @return the newly opened database
+     * @throws android.database.SQLException if the database cannot be opened
      */
     @SuppressWarnings("DuplicateStringLiteralInspection")
-    private static SQLiteDatabase create(@Nullable CursorFactory factory, @NonNull String pathToFile) {
-        SQLiteDatabase database = SQLiteDatabase.create(factory);
-        database.execSQL("ATTACH DATABASE '" + pathToFile + "' AS db");
+    private static SQLiteDatabase create(@Nullable CursorFactory factory, @NonNull String path) {
+        SQLiteDatabase database = SQLiteDatabase
+                .openDatabase(SQLiteDatabaseConfiguration.MEMORY_DB_PATH, factory, SQLiteDatabase.CREATE_IF_NECESSARY);
+        database.execSQL("ATTACH DATABASE '" + path + "' AS db");
         database.execSQL("CREATE TABLE main." + "map" + " AS SELECT * FROM db." + "map");
-        database.execSQL("CREATE TABLE main." + TABLE_METADATA + " AS SELECT * FROM db." + TABLE_METADATA);
+        database.execSQL("CREATE TABLE main." + "metadata" + " AS SELECT * FROM db." + "metadata");
         database.execSQL("CREATE TABLE main." + "images" + " AS SELECT * FROM db." + "images");
         database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS map_index ON map (zoom_level, tile_column, tile_row);");
         database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS images_id ON images (tile_id);");
@@ -368,10 +373,96 @@ public class MapBoxOfflineTileProvider implements TileProvider, SQLiteCursorDriv
         return database;
     }
 
-    //endregion Instance Methods
+    /**
+     * buffer size used for reading and writing
+     */
+    private static final int BUFFER_SIZE = 8192;
+
+    /**
+     * The maximum size of array to allocate.
+     * Some VMs reserve some header words in an array.
+     * Attempts to allocate larger arrays may result in
+     * OutOfMemoryError: Requested array size exceeds VM limit
+     */
+    private static final int MAX_BUFFER_SIZE = Integer.MAX_VALUE - 8;
+
+    /**
+     * Reads all the bytes from an input stream. Uses {@code initialSize} as a hint
+     * about how many bytes the stream will have.
+     *
+     * @param source      the input stream to read from
+     * @param initialSize the initial size of the byte array to allocate
+     * @return a byte array containing the bytes read from the file
+     * @throws IOException      if an I/O error occurs reading from the stream
+     * @throws OutOfMemoryError if an array of the required size cannot be allocated
+     */
+    @SuppressWarnings({ "unused", "ForLoopWithMissingComponent", "MethodCallInLoopCondition", "NestedAssignment",
+            "ValueOfIncrementOrDecrementUsed" })
+    private static byte[] read(InputStream source, int initialSize) throws IOException {
+        int capacity = initialSize;
+        byte[] buf = new byte[capacity];
+        int nread = 0;
+        int n;
+        for (; ; ) {
+            // read to EOF which may read more or less than initialSize (eg: file
+            // is truncated while we are reading)
+            while ((n = source.read(buf, nread, capacity - nread)) > 0) {
+                nread += n;
+            }
+            // if last call to source.read() returned -1, we are done
+            // otherwise, try to read one more byte; if that failed we're done too
+            if ((n < 0) || (((n = source.read())) < 0)) {
+                break;
+            }
+            // one more byte was read; need to allocate a larger buffer
+            if (capacity <= (MAX_BUFFER_SIZE - capacity)) {
+                capacity = Math.max(capacity << 1, BUFFER_SIZE);
+            } else {
+                if (capacity == MAX_BUFFER_SIZE) {
+                    throw new OutOfMemoryError("Required array size too large");
+                }
+                capacity = MAX_BUFFER_SIZE;
+            }
+            buf = Arrays.copyOf(buf, capacity);
+            buf[nread++] = (byte) n;
+        }
+        return (capacity == nread) ? buf : Arrays.copyOf(buf, nread);
+    }
+
+    /*private static class TileSQLiteJob extends SQLiteJob<Tile> {
+
+        private final int mX;
+
+        private final int mY;
+
+        private final int mZoom;
+
+        public TileSQLiteJob(int x, int y, int zoom) {
+            mX = x;
+            mY = y;
+            mZoom = zoom;
+        }
+
+        protected Tile job(SQLiteConnection connection) throws SQLiteException {
+            SQLiteStatement st = connection.prepare(mSql);
+            st.bind(1, mZoom);
+            st.bind(2, mX);
+            st.bind(3, ((1 << mZoom) - 1 - mY));
+            try {
+                return st.step() ? new Tile(TILE_DIM, TILE_DIM, st.columnBlob(0)) : NO_TILE;
+            } finally {
+                st.dispose();
+            }
+        }
+    }*/
+
+    //endregion Statics
 
     static {
-        System.loadLibrary("sqliteX");
+        // sqlite3ndk should be loaded first
         System.loadLibrary("sqlite3ndk");
+        System.loadLibrary("sqlite3x");
+        // System.loadLibrary("sqliteX");
+        // System.loadLibrary("sqlite4java-android");
     }
 }
