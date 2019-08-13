@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import com.eggheadgames.aboutbox.AboutBoxUtils;
 import com.eggheadgames.aboutbox.AboutConfig;
 
+@SuppressWarnings("UtilityClass")
 public final class ShareUtil {
 
     private ShareUtil() {
