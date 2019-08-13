@@ -49,7 +49,7 @@ public final class StatusCli {
             }
             if (!cmd.hasOption("host") || !cmd.hasOption("port")) {
                 printInfo(opts);
-                LOGGER.warn("Missing required options");
+                LOGGER.error("Missing required options");
                 System.exit(1);
             }
             host = cmd.getOptionValue("host");
