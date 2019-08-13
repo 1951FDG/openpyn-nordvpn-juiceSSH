@@ -47,7 +47,7 @@
 #define SQLITE_VERSION 3024000
 
 #ifndef SQLITE_DEFAULT_SECTOR_SIZE
-# define SQLITE_DEFAULT_SECTOR_SIZE 512
+# define SQLITE_DEFAULT_SECTOR_SIZE 4096
 #endif
 
 #ifndef TAG
@@ -419,7 +419,7 @@ static int ndkFileControl(sqlite3_file *, int, void *)
 }
 
 /*
- * sqlite3_file.xSectorSize - use same value as in os_unix.c
+ * sqlite3_file.xSectorSize - use same value as in sqlite3.c
  */
 static int ndkFileSectorSize(sqlite3_file *)
 {
