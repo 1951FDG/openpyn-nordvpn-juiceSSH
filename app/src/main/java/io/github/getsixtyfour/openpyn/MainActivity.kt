@@ -39,6 +39,8 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
+// import de.blinkt.openvpn.core.VPNAuthenticationHandler
+// import de.blinkt.openvpn.core.VPNLaunchHelper.startOpenVPNService
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.map.MapFragment
 import io.github.getsixtyfour.openpyn.utilities.Toaster
@@ -67,6 +69,7 @@ import org.jetbrains.anko.onComplete
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
+// import ua.pp.msk.openvpnstatus.net.ManagementConnection
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -114,6 +117,19 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         if (isJuiceSSHInstalled(this)) {
             if (hasPermission(PERMISSION_READ) && hasPermission(PERMISSION_OPEN_SESSIONS)) onPermissionsGranted()
         }
+        // run {
+        //     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        //     val editor = preferences.edit()
+        //
+        //     editor.putString("pref_management_address", "10.0.2.2")
+        //     editor.putInt("pref_management_port", 7015)
+        //     editor.apply()
+        //     val connection = ManagementConnection.getInstance()
+        //     val handler = VPNAuthenticationHandler(this)
+        //     connection.setUsernamePasswordHandler(handler)
+        //
+        //     startOpenVPNService(this)
+        // }
     }
 
     override fun onResume() {
