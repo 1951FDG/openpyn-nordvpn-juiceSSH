@@ -323,7 +323,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 case "RSA_SIGN":
                     throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
                 default:
-                    LOGGER.warn("Got unrecognized argument: {}", argument);
+                    LOGGER.error("Got unrecognized argument: {}", argument);
                     break;
             }
         } else if (line.startsWith(Strings.SUCCESS_PREFIX)) {
@@ -333,7 +333,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             LOGGER.error(line);
             //throw new IOException("Stream closed");
         } else {
-            LOGGER.warn("Got unrecognized line: {}", line);
+            LOGGER.error("Got unrecognized line: {}", line);
         }
     }
 

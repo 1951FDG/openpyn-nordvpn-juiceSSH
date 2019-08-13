@@ -178,7 +178,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             ut = calendar;
         } catch (ParseException ex) {
             String msg = "Cannot parse update time string";
-            LOGGER.info(msg, ex);
+            LOGGER.error(msg, ex);
             throw new OpenVpnParseException(msg, ex);
         }
         return ut;

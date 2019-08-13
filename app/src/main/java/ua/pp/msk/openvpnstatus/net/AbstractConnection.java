@@ -64,7 +64,7 @@ abstract class AbstractConnection implements Closeable {
     }
 
     private void connect() throws IOException {
-        LOGGER.warn("CONNECTING TO {}:{}", mHost, mPort);
+        LOGGER.info("connecting to {}:{}", mHost, mPort);
         mSocket = new Socket(mHost, mPort);
         InputStreamReader in = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
         mBufferedReader = new BufferedReader(in, DEFAULT_CHAR_BUFFER_SIZE);
