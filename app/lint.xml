@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="all">
+        <ignore path="src/main/java/org/sqlite/database" />
+        <ignore path="src/main/java/io/requery/android/database" />
+        <ignore path="src/main/java/com/almworks/sqlite4java" />
+        <ignore path="src/main/java/org/javolution/util/stripped" />
+    </issue>
+</lint>

@@ -105,6 +105,7 @@ android {
         xmlReport false
         abortOnError false
         baseline file("lint-baseline.xml")
+        lintConfig file("lint.xml")
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
