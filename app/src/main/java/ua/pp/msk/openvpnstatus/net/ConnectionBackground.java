@@ -2,7 +2,6 @@ package ua.pp.msk.openvpnstatus.net;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Closeable;
 import java.io.IOException;
 
 import ua.pp.msk.openvpnstatus.api.Status;
@@ -12,10 +11,12 @@ import ua.pp.msk.openvpnstatus.exceptions.OpenVpnParseException;
  * @author 1951FDG
  */
 
-//@WorkerThread
-public interface ConnectionBackground extends Closeable, Runnable {
+//@WorkerThread // todo all the methods below should be called on background thread
+public interface ConnectionBackground extends Runnable {
 
     void connect(@NotNull String host, @NotNull Integer port) throws IOException;
+
+    void disconnect();
 
     @NotNull
     String executeCommand(@NotNull String command) throws IOException;

@@ -41,7 +41,6 @@ abstract class AbstractConnection implements Closeable {
 
     @Override
     public void close() throws IOException {
-        LOGGER.warn("DISCONNECTING");
         if (mBufferedReader != null) {
             mBufferedReader.close();
         }
@@ -51,6 +50,16 @@ abstract class AbstractConnection implements Closeable {
         }
         if (mSocket != null) {
             mSocket.close();
+        }
+    }
+
+    public void closeQuietly() {
+        try {
+            close();
+        } catch (IOException e) {
+            // ignore
+            // todo remove line
+            LOGGER.warn(e.getMessage(), e);
         }
     }
 
@@ -78,6 +87,11 @@ abstract class AbstractConnection implements Closeable {
         mHost = host;
         mPort = port;
         connect();
+    }
+
+    public void disconnect() {
+        LOGGER.info("disconnecting");
+        closeQuietly();
     }
 
     public String getHost() {

@@ -2,6 +2,7 @@ package ua.pp.msk.openvpnstatus.net;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +60,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private boolean isRunning = false;
 
+    private ConnectionListener mConnectionListener;
+
     private ConnectionStatus mLastLevel = ConnectionStatus.LEVEL_NOT_CONNECTED;
 
     private UsernamePasswordHandler mUsernamePasswordHandler;
@@ -94,9 +97,17 @@ public final class ManagementConnection extends AbstractConnection implements Co
         mStateManager.addListener(Objects.requireNonNull(listener));
     }
 
+    // todo safe split
     @Override
     public void connect(@NotNull String host, @NotNull Integer port) throws IOException {
-        super.connect(host, port);
+        if (!isConnected()) {
+            try {
+                super.connect(host, port);
+                onConnected();
+            } catch (IllegalArgumentException | IOException e) {
+                onConnectError(e);
+            }
+        }
         {
             String result = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
             String[] lines = result.split(System.lineSeparator());
@@ -105,6 +116,12 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 processState(argument);
             }
         }
+    }
+
+    @Override
+    public void disconnect() {
+        super.disconnect();
+        onDisconnected();
     }
 
     @NotNull
@@ -202,31 +219,27 @@ public final class ManagementConnection extends AbstractConnection implements Co
             } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
                 LOGGER.error("Could not parse string", e);
             }
-            LOGGER.warn("TERMINATED");
-            try {
-                close();
-            } catch (IOException e) {
-                // Ignore close error on already closed socket
-                String message = e.getMessage();
-                LOGGER.warn(message, e);
-            }
+            LOGGER.info("TERMINATED");
+            disconnect();
         }
         isRunning = false;
     }
 
     @Override
-    public void setUsernamePasswordHandler(@NotNull UsernamePasswordHandler handler) {
+    public void setConnectionListener(@Nullable ConnectionListener connectionListener) {
+        mConnectionListener = connectionListener;
+    }
+
+    @Override
+    public void setUsernamePasswordHandler(@Nullable UsernamePasswordHandler handler) {
         mUsernamePasswordHandler = handler;
     }
 
     @Override
     public void stopOpenVPN() throws IOException {
-        if (!isConnected()) {
-            return;
-        }
         managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, "SIGTERM"));
         if (!isRunning) {
-            close();
+            disconnect();
         }
     }
 
@@ -240,6 +253,31 @@ public final class ManagementConnection extends AbstractConnection implements Co
         out.flush();
     }
 
+    private void onConnectError(@NotNull Throwable e) {
+        LOGGER.error(e.getMessage());
+        ConnectionListener listener = mConnectionListener;
+        if (listener != null) {
+            listener.onConnectError(e);
+        }
+    }
+
+    private void onConnected() {
+        LOGGER.info("connected");
+        ConnectionListener listener = mConnectionListener;
+        if (listener != null) {
+            listener.onConnected();
+        }
+    }
+
+    private void onDisconnected() {
+        LOGGER.info("disconnected");
+        ConnectionListener listener = mConnectionListener;
+        if (listener != null) {
+            listener.onDisconnected();
+        }
+    }
+
+    //todo see all magic characters, cosntants
     @SuppressWarnings({ "IfStatementWithTooManyBranches", "OverlyComplexMethod", "OverlyLongMethod", "SpellCheckingInspection",
             "SwitchStatementWithTooManyBranches" })
     private void parseInput(String line) throws IOException {

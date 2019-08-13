@@ -47,6 +47,8 @@ public interface Connection extends ConnectionBackground {
 
     void removeStateListener(@NotNull StateListener listener);
 
-    void setUsernamePasswordHandler(@NotNull UsernamePasswordHandler handler);
+    void setConnectionListener(@Nullable ConnectionListener connectionListener);
+
+    void setUsernamePasswordHandler(@NotNull UsernamePasswordHandler handler); // todo notnull?
     //endregion OpenVpnConnection
 }

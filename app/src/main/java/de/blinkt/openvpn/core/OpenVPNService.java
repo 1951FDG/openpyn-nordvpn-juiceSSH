@@ -26,11 +26,8 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.ServiceCompat;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Locale;
 
 import de.blinkt.openvpn.activities.DisconnectVPN;
@@ -44,6 +41,7 @@ import ua.pp.msk.openvpnstatus.listeners.LogManager.LogListener;
 import ua.pp.msk.openvpnstatus.listeners.StateManager.State;
 import ua.pp.msk.openvpnstatus.listeners.StateManager.StateListener;
 import ua.pp.msk.openvpnstatus.net.Connection;
+import ua.pp.msk.openvpnstatus.net.ConnectionListener;
 import ua.pp.msk.openvpnstatus.net.ManagementConnection;
 
 /**
@@ -51,8 +49,9 @@ import ua.pp.msk.openvpnstatus.net.ManagementConnection;
  * @author 1951FDG
  */
 
-@SuppressWarnings("OverlyComplexClass")
-public final class OpenVPNService extends Service implements LogListener, StateListener, ByteCountListener, IOpenVPNServiceInternal {
+@SuppressWarnings({ "OverlyComplexClass", "ClassWithTooManyDependencies" })
+public final class OpenVPNService extends Service implements LogListener, StateListener, ByteCountListener, IOpenVPNServiceInternal,
+        ConnectionListener {
 
     @NonNls
     public static final String ACTION_VPN_STATUS = "de.blinkt.openvpn.action.VPN_STATUS";
@@ -80,9 +79,9 @@ public final class OpenVPNService extends Service implements LogListener, StateL
 
     private static final String TAG = "OpenVPNService";
 
-    private String mHost = "127.0.0.1";
+    private static final String DEFAULT_REMOTE_SERVER = "127.0.0.1";
 
-    private Integer mPort = 23;
+    private static final int DEFAULT_REMOTE_PORT = 23;
 
     private final IBinder mBinder = new IOpenVPNServiceInternal.Stub() {
         @Override
@@ -113,10 +112,10 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             connection.addByteCountListener(this);
             connection.addLogListener(this);
             connection.addStateListener(this);
+            connection.setConnectionListener(this);
         }
     }
 
-    @SuppressWarnings("Convert2Lambda")
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         if ((intent != null) && START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
@@ -130,49 +129,32 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         }
 
         mNotificationAlwaysVisible = intent.getBooleanExtra(EXTRA_ALWAYS_SHOW_NOTIFICATION, true);
-        mHost = (intent.getStringExtra(EXTRA_HOST) != null) ? intent.getStringExtra(EXTRA_HOST) : mHost;
-        mPort = intent.getIntExtra(EXTRA_PORT, mPort);
-        Log.i(TAG, "Starting OpenVPN Service");
+
+        String host = (intent.getStringExtra(EXTRA_HOST) != null) ? intent.getStringExtra(EXTRA_HOST) : DEFAULT_REMOTE_SERVER;
+        int port = intent.getIntExtra(EXTRA_PORT, DEFAULT_REMOTE_PORT);
+
         // Always show notification here to avoid problem with startForeground timeout
         {
             String text = getString(R.string.vpn_launch_title);
             String title = getString(R.string.notifcation_title, getString(R.string.state_disconnected));
             showNotification(title, text, text, NOTIFICATION_CHANNEL_NEW_STATUS_ID, 0L, ConnectionStatus.LEVEL_NOT_CONNECTED);
         }
-        // Connect to the Management Interface in a background thread
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Open the Management Interface
-                try {
-                    Connection connection = ManagementConnection.getInstance();
-                    connection.connect(mHost, mPort);
-                    // start a background thread that handles incoming messages of the management socket
-                    Thread mSocketManagerThread = new Thread(connection, "OpenVPNManagementThread");
-                    mSocketManagerThread.start();
-                    Log.i(TAG, "started Socket Thread");
-                } catch (IllegalArgumentException e) {
-                    Log.e(TAG, e.getMessage());
-                    endVpnService();
-                } catch (RuntimeException e) {
-                    Log.e(TAG, e.getMessage());
-                    endVpnService();
-                } catch (UnknownHostException e) {
-                    Log.e(TAG, e.getMessage());
-                    endVpnService();
-                } catch (SocketException e) {
-                    Log.e(TAG, e.getMessage());
-                    endVpnService();
-                } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
-                    endVpnService();
-                } catch (Exception e) {
-                    Log.e(TAG, "unknown exception thrown");
-                    Log.e(TAG, e.getMessage());
-                    endVpnService();
-                }
+        // todo inner class, check thread killed handler to end service
+        // Connect to the management interface in a background thread
+        Thread thread = new Thread(() -> {
+            try {
+                Connection connection = ManagementConnection.getInstance();
+                connection.connect(host, port);
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage());
+            } catch (Exception e) {
+                Log.e(TAG, "unknown exception thrown");
+                Log.e(TAG, e.getMessage());
             }
-        }).start();
+        });
+        thread.start();
+
+        Log.i(TAG, "Starting OpenVPN Service");
         return Service.START_REDELIVER_INTENT;
     }
 
@@ -193,6 +175,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             connection.removeByteCountListener(this);
             connection.removeLogListener(this);
             connection.removeStateListener(this);
+            connection.setConnectionListener(null);
         }
     }
 
@@ -216,9 +199,29 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             showNotification(title, text, null, NOTIFICATION_CHANNEL_BG_ID, mConnectTime, ConnectionStatus.LEVEL_CONNECTED);
         }
     }
+// todo check wich thread these run on
+    @Override
+    public void onConnectError(@NonNull Throwable e) {
+        // TODO
+        endVpnService();
+    }
 
     @Override
-    public void onLog(@NotNull LogManager.Log log) {
+    public void onConnected() {
+        // Start a background thread that handles incoming messages of the management interface
+        Connection connection = ManagementConnection.getInstance();
+        Thread thread = new Thread(connection, "OpenVPNManagementThread");
+        thread.start();
+        Log.i(TAG, "Starting OpenVPN Management");
+    }
+
+    @Override
+    public void onDisconnected() {
+        endVpnService();
+    }
+
+    @Override
+    public void onLog(@NonNull LogManager.Log log) {
         LogLevel value = log.getLevel();
         switch (value) {
             case ERROR:
@@ -284,11 +287,12 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             }
             showNotification(title, text, tickerText, NOTIFICATION_CHANNEL_NEW_STATUS_ID, 0L, level);
         }
-        if ((level == ConnectionStatus.LEVEL_NOT_CONNECTED) || (level == ConnectionStatus.LEVEL_AUTH_FAILED)) {
-            endVpnService();
-        }
+        // todo test implications
+        // if ((level == ConnectionStatus.LEVEL_NOT_CONNECTED) || (level == ConnectionStatus.LEVEL_AUTH_FAILED)) {
+        //     endVpnService();
+        // }
     }
-
+    // todo test implications
     public boolean stopVPN(boolean replaceConnection) {
         boolean result = false;
         try {
@@ -321,7 +325,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
                     NotificationManagerCompat.IMPORTANCE_MIN);
             channel.setDescription(getString(R.string.channel_description_background));
             channel.enableLights(false);
-            channel.setLightColor(Color.DKGRAY);
+            channel.setLightColor(Color.DKGRAY); //todo why setcolor
             mNotificationManager.createNotificationChannel(channel);
         }
         // Connection status change messages

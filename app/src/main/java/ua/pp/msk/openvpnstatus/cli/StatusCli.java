@@ -57,10 +57,12 @@ public final class StatusCli {
         } catch (ParseException ex) {
             LOGGER.error("Cannot parse arguments", ex);
         }
-        assert host != null;
-        try (Connection conn = ManagementConnection.getInstance()) {
+
+        try {
+            Connection conn = ManagementConnection.getInstance();
             conn.connect(host, port);
             Status status = conn.getOpenVPNStatus();
+            conn.disconnect();
             System.out.println("OpenVPN status: " + status);
         } catch (OpenVpnParseException | IOException ex) {
             LOGGER.error("Cannot get OpenVPN status.", ex);
