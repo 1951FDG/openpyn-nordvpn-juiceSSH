@@ -230,6 +230,7 @@ This app uses (modified) code from several open source projects.
 -   [Detekt](https://github.com/arturbosch/detekt)
 -   [Fastlane](https://fastlane.tools/)
 -   [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
+-   [JSON Schema Tool](https://jsonschema.net/)
 -   [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 -   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 -   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
