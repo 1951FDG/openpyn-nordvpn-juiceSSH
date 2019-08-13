@@ -15,6 +15,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
@@ -34,7 +35,7 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
 
         private final WeakReference<IOpenVPNServiceInternal> mService;
 
-        private stopVPNTask(IOpenVPNServiceInternal service) {
+        stopVPNTask(IOpenVPNServiceInternal service) {
             mService = new WeakReference<>(service);
         }
 
@@ -59,12 +60,12 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mService = IOpenVPNServiceInternal.Stub.asInterface(service);
+            setService(IOpenVPNServiceInternal.Stub.asInterface(service));
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            mService = null;
+            setService(null);
         }
     };
 
@@ -83,17 +84,27 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
         unbindService(mConnection);
     }
 
+    @Nullable
+    public IOpenVPNServiceInternal getService() {
+        return mService;
+    }
+
+    public void setService(@Nullable IOpenVPNServiceInternal service) {
+        mService = service;
+    }
+
     @Override
-    public void onCancel(DialogInterface dialog) {
+    public void onCancel(@NonNull DialogInterface dialog) {
         finish();
     }
 
     @Override
-    public void onClick(DialogInterface dialog, int which) {
+    public void onClick(@NonNull DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             if (mService != null) {
                 Runnable target = new stopVPNTask(mService);
-                new Thread(target).start();
+                Thread thread = new Thread(target);
+                thread.start();
             }
         }
         finish();

@@ -83,6 +83,7 @@ public final class StringUtils {
      * @param cs the CharSequence to escape values in, may be null
      * @return String with escaped values, {@code null} if null string input
      */
+    @SuppressWarnings("MagicCharacter")
     @Nullable
     public static String escapeOpenVPN(@Nullable CharSequence cs) {
         if (cs == null) {
@@ -119,6 +120,7 @@ public final class StringUtils {
      * @param out the StringBuilder to receive the escaped string
      * @param cs  the CharSequence to escape values in, may be null
      */
+    @SuppressWarnings("MagicCharacter")
     private static void escapeOpenVPNStyleString(StringBuilder out, CharSequence cs) {
         int sz = cs.length();
         for (int i = 0; i < sz; i++) {

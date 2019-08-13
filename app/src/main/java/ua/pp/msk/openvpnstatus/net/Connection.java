@@ -16,6 +16,7 @@ import ua.pp.msk.openvpnstatus.listeners.StateManager.StateListener;
  * @author 1951FDG
  */
 
+@SuppressWarnings("unused")
 public interface Connection extends ConnectionBackground {
 
     @Nullable

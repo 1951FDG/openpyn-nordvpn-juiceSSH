@@ -3,6 +3,7 @@ package ua.pp.msk.openvpnstatus.listeners;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ua.pp.msk.openvpnstatus.core.LogLevel;
 
@@ -54,8 +55,8 @@ public class LogManager {
 
     private Log mLog;
 
-    public LogManager(@NotNull List<LogListener> list) {
-        logListener = list;
+    public LogManager() {
+        logListener = new CopyOnWriteArrayList<>();
     }
 
     public void addListener(@NotNull LogListener listener) {

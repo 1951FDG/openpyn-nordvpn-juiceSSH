@@ -10,7 +10,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import ua.pp.msk.openvpnstatus.api.Status;
 import ua.pp.msk.openvpnstatus.core.ConnectionStatus;
@@ -34,7 +33,7 @@ import ua.pp.msk.openvpnstatus.utils.StringUtils;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "Singleton", "OverlyCoupledClass" })
+@SuppressWarnings({ "Singleton", "OverlyCoupledClass", "OverlyComplexClass", "ClassWithTooManyDependencies" })
 public final class ManagementConnection extends AbstractConnection implements Connection {
 
     private static volatile ManagementConnection mInstance = null;
@@ -52,11 +51,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
     @NonNls
     public static final String STREAM_CLOSED = "Stream closed";
 
-    private final ByteCountManager mByteCountManager = new ByteCountManager(new CopyOnWriteArrayList<>());
+    private final ByteCountManager mByteCountManager = new ByteCountManager();
 
-    private final LogManager mLogManager = new LogManager(new CopyOnWriteArrayList<>());
+    private final LogManager mLogManager = new LogManager();
 
-    private final StateManager mStateManager = new StateManager(new CopyOnWriteArrayList<>());
+    private final StateManager mStateManager = new StateManager();
 
     private boolean isRunning = false;
 
@@ -371,8 +370,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
             return;
         }
         if (argument.startsWith(Strings.NEED_PREFIX)) {
-            int p1 = argument.indexOf('\'');
-            int p2 = argument.indexOf('\'', p1 + 1);
+            char ch = '\'';
+            int p1 = argument.indexOf(ch);
+            int p2 = argument.indexOf(ch, p1 + 1);
             @NonNls String type = argument.substring(p1 + 1, p2);
             LOGGER.info("OpenVPN requires Authentication type {}", type);
             String handlerUsername = null;

@@ -6,6 +6,7 @@
 package ua.pp.msk.openvpnstatus.implementation;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -77,19 +78,22 @@ public class OpenVpnClient implements Client {
         DateFormat df = DateFormat.getInstance();
         return "OpenVpnClient{" + "Common name: " + mCommonName + ", real IP address: " + mIpAddress.getHostString() + ", source port: "
                 + mIpAddress.getPort() + ", received bytes: " + mReceivedBytes + ", sent bytes: " + mSentBytes + ", connected since: " + df
-                .format(connectedSince.getTime()) + '}';
+                .format(connectedSince.getTime()) + "}";
     }
 
+    @Nullable
     @Override
     public String getCommonName() {
         return mCommonName;
     }
 
+    @Nullable
     @Override
     public Calendar getConnectedSince() {
         return (Calendar) connectedSince.clone();
     }
 
+    @Nullable
     @Override
     public InetSocketAddress getIpAddress() {
         return mIpAddress;

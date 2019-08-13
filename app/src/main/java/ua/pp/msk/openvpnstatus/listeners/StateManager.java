@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author 1951FDG
@@ -78,8 +79,8 @@ public class StateManager {
 
     private State mState;
 
-    public StateManager(@NotNull List<StateListener> list) {
-        stateListener = list;
+    public StateManager() {
+        stateListener = new CopyOnWriteArrayList<>();
     }
 
     public void addListener(@NotNull StateListener listener) {

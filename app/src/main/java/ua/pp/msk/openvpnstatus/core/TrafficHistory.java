@@ -8,9 +8,11 @@ package ua.pp.msk.openvpnstatus.core;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Arne Schwabe
@@ -101,18 +103,18 @@ public class TrafficHistory implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public LinkedList<TrafficDataPoint> getHours() {
-        return hours;
+    public List<TrafficDataPoint> getHours() {
+        return Collections.unmodifiableList(hours);
     }
 
     @SuppressWarnings("unused")
-    public LinkedList<TrafficDataPoint> getMinutes() {
-        return minutes;
+    public List<TrafficDataPoint> getMinutes() {
+        return Collections.unmodifiableList(minutes);
     }
 
     @SuppressWarnings("unused")
-    public LinkedList<TrafficDataPoint> getSeconds() {
-        return seconds;
+    public List<TrafficDataPoint> getSeconds() {
+        return Collections.unmodifiableList(seconds);
     }
 
     @SuppressWarnings("unused")

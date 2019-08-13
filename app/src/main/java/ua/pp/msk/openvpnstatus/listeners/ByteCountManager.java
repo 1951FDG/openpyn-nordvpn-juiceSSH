@@ -3,6 +3,7 @@ package ua.pp.msk.openvpnstatus.listeners;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ua.pp.msk.openvpnstatus.core.TrafficHistory;
 
@@ -48,8 +49,8 @@ public class ByteCountManager {
 
     private ByteCount mByteCount;
 
-    public ByteCountManager(@NotNull List<ByteCountListener> list) {
-        mByteCountListeners = list;
+    public ByteCountManager() {
+        mByteCountListeners = new CopyOnWriteArrayList<>();
     }
 
     public void addListener(@NotNull ByteCountListener listener) {

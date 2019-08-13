@@ -21,10 +21,10 @@ public interface ConnectionBackground extends Closeable, Runnable {
     String executeCommand(@NotNull String command) throws IOException;
 
     @NotNull
-    String getOpenVPNVersion() throws IOException;
+    Status getOpenVPNStatus() throws OpenVpnParseException, IOException;
 
     @NotNull
-    Status getOpenVPNStatus() throws OpenVpnParseException, IOException;
+    String getOpenVPNVersion() throws IOException;
 
     void stopOpenVPN() throws IOException;
 }

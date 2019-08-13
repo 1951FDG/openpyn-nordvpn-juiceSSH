@@ -5,6 +5,8 @@
  */
 package ua.pp.msk.openvpnstatus.api;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.net.InetSocketAddress;
 import java.util.Calendar;
 
@@ -12,13 +14,16 @@ import java.util.Calendar;
  * @author Maksym Shkolnyi aka maskimko
  */
 
-@SuppressWarnings("UseOfObsoleteDateTimeApi")
+@SuppressWarnings({ "UseOfObsoleteDateTimeApi", "unused" })
 public interface Client {
 
+    @Nullable
     String getCommonName();
 
+    @Nullable
     Calendar getConnectedSince();
 
+    @Nullable
     InetSocketAddress getIpAddress();
 
     long getReceivedBytes();

@@ -6,7 +6,6 @@
 package de.blinkt.openvpn.core;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.PendingIntent;
@@ -129,6 +128,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         if (intent == null) {
             throw new IllegalArgumentException("intent can't be null");
         }
+
         mNotificationAlwaysVisible = intent.getBooleanExtra(EXTRA_ALWAYS_SHOW_NOTIFICATION, true);
         mHost = (intent.getStringExtra(EXTRA_HOST) != null) ? intent.getStringExtra(EXTRA_HOST) : mHost;
         mPort = intent.getIntExtra(EXTRA_PORT, mPort);
@@ -301,7 +301,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         return result;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private void addVpnActionsToNotification(Builder builder) {
         Intent intent = new Intent(this, DisconnectVPN.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -311,7 +311,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
     }
 
     @SuppressLint("WrongConstant")
-    @TargetApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.O)
     private void createNotificationChannels() {
         NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(getBaseContext());
         // Background message

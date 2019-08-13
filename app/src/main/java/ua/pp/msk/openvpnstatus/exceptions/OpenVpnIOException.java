@@ -5,6 +5,8 @@
  */
 package ua.pp.msk.openvpnstatus.exceptions;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author Maksym Shkolnyi aka maskimko
  */
@@ -17,11 +19,11 @@ public class OpenVpnIOException extends Exception {
     public OpenVpnIOException() {
     }
 
-    public OpenVpnIOException(String message) {
+    public OpenVpnIOException(@NotNull String message) {
         super(message);
     }
 
-    public OpenVpnIOException(String message, Throwable cause) {
+    public OpenVpnIOException(@NotNull String message, @NotNull Throwable cause) {
         super(message, cause);
     }
 }

@@ -54,15 +54,16 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
         sb.append(System.lineSeparator());
         sb.append("Client List:");
         sb.append(System.lineSeparator());
+        char ch = '\t';
         for (Client client : clientList) {
-            sb.append('\t');
+            sb.append(ch);
             sb.append(client);
             sb.append(System.lineSeparator());
         }
         sb.append("Routes list:");
         sb.append(System.lineSeparator());
         for (Route route : routeSet) {
-            sb.append('\t');
+            sb.append(ch);
             sb.append(route);
             sb.append(System.lineSeparator());
         }
@@ -81,13 +82,14 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
         return Collections.unmodifiableSet(routeSet);
     }
 
+    @NotNull
     @Override
     public Calendar getUpdateTime() {
         return (Calendar) updatedAt.clone();
     }
 
     @Override
-    public void setCommandOutput(String output) throws OpenVpnParseException {
+    public void setCommandOutput(@NotNull String output) throws OpenVpnParseException {
         LOGGER.info("Parsing: {}{}", System.lineSeparator(), output);
         super.setCommandOutput(output);
     }
@@ -95,7 +97,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
     @SuppressWarnings({ "AssignmentToForLoopParameter", "ValueOfIncrementOrDecrementUsed", "MethodCallInLoopCondition", "ChainedMethodCall",
             "OverlyComplexMethod" })
     @Override
-    public void setCommandOutput(String[] lines) throws OpenVpnParseException {
+    public void setCommandOutput(@NotNull String[] lines) throws OpenVpnParseException {
         String msg = "Cannot parse OpenVPN status. Wrong lines sequence.";
         int length = lines.length;
         for (int i = 0; i < length; i++) {

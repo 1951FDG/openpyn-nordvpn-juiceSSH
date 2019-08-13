@@ -15,7 +15,7 @@ import java.util.Set;
  * @author Maksym Shkolnyi aka maskimko
  */
 
-@SuppressWarnings("UseOfObsoleteDateTimeApi")
+@SuppressWarnings({ "UseOfObsoleteDateTimeApi", "ConstantDeclaredInInterface" })
 public interface Status {
 
     @SuppressWarnings("SpellCheckingInspection")
@@ -27,5 +27,6 @@ public interface Status {
     @NotNull
     Set<Route> getRoutes();
 
+    @NotNull
     Calendar getUpdateTime();
 }

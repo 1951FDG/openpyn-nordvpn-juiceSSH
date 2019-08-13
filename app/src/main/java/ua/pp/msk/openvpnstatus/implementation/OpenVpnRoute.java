@@ -6,6 +6,7 @@
 package ua.pp.msk.openvpnstatus.implementation;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -104,24 +105,28 @@ public class OpenVpnRoute implements Route {
         DateFormat df = DateFormat.getInstance();
         return "OpenVpnRoute{" + "Virtual IP address " + mVirtualIpAddress.getHostAddress() + ", common name: " + mCommonName
                 + ", real IP address: " + mRealIpAddress + ", source port: " + mRealIpAddress.getPort() + ", last reference: " + df
-                .format(mLastRef.getTime()) + '}';
+                .format(mLastRef.getTime()) + "}";
     }
 
+    @Nullable
     @Override
     public String getCommonName() {
         return mCommonName;
     }
 
+    @Nullable
     @Override
     public Calendar getLastRef() {
         return (Calendar) mLastRef.clone();
     }
 
+    @Nullable
     @Override
     public InetSocketAddress getRealIpAddress() {
         return mRealIpAddress;
     }
 
+    @Nullable
     @Override
     public InetAddress getVirtualIpAddress() {
         return mVirtualIpAddress;
