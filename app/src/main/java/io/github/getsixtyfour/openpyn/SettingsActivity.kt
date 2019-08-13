@@ -40,7 +40,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         super.onCreate(savedInstanceState)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if (onIsHidingHeaders()) {
+        /*if (onIsHidingHeaders()) {
             setContentView(R.layout.content_preference)
             val initialFragment: String? = intent.getStringExtra(EXTRA_SHOW_FRAGMENT)
             val initialArguments: Bundle? = intent.getBundleExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS)
@@ -50,15 +50,18 @@ class SettingsActivity : PreferenceActivityCompat() {
             }
 
             initialFragment?.let { startPreferenceFragment(it, initialArguments) }
-        }
+        }*/
     }
 
     /**
      * This method stops fragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
      */
-    override fun isValidFragment(fragmentName: String?): Boolean {
-        return (SettingsSyncPreferenceFragment::class.java.name == fragmentName || ApiSyncPreferenceFragment::class.java.name == fragmentName || AboutSyncPreferenceFragment::class.java.name == fragmentName)
+    override fun isValidFragment(fragmentName: String?): Boolean = when (fragmentName) {
+        SettingsSyncPreferenceFragment::class.java.name -> true
+        ApiSyncPreferenceFragment::class.java.name -> true
+        AboutSyncPreferenceFragment::class.java.name -> true
+        else -> false
     }
 
     /**
@@ -71,16 +74,14 @@ class SettingsActivity : PreferenceActivityCompat() {
      *
      * @param target The list in which to place the headers.
      */
-    override fun onBuildHeaders(target: List<Header>) {
+    override fun onBuildHeaders(target: MutableList<Header>) {
         loadHeadersFromResource(R.xml.pref_headers, target)
     }
 
     /**
      * Called to determine if the activity should run in multi-pane mode.
      */
-    override fun onIsMultiPane(): Boolean {
-        return isXLargeTablet(this)
-    }
+    override fun onIsMultiPane(): Boolean = isXLargeTablet(this)
 
     /**
      * {@inheritDoc}
@@ -94,13 +95,11 @@ class SettingsActivity : PreferenceActivityCompat() {
         }
         return super.onOptionsItemSelected(item)
     }
-
+    /*
     /**
      * Called to determine whether the header list should be hidden.
      */
-    private fun onIsHidingHeaders(): Boolean {
-        return intent.getBooleanExtra(EXTRA_NO_HEADERS, false)
-    }
+    private fun onIsHidingHeaders(): Boolean = intent.getBooleanExtra(EXTRA_NO_HEADERS, false)
 
     /**
      * Start a new fragment.
@@ -113,7 +112,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         val fragment = fragmentManager.fragmentFactory.instantiate(classLoader, fragmentName)
         fragment.arguments = args
         fragmentManager.beginTransaction().replace(R.id.prefs, fragment).commitAllowingStateLoss()
-    }
+    }*/
 
     /**
      * This fragment shows General settings preferences only.
@@ -157,9 +156,7 @@ class SettingsActivity : PreferenceActivityCompat() {
             super.onViewCreated(view, savedInstanceState)
         }
 
-        override fun getCallbackFragment(): PreferenceFragmentCompat {
-            return this
-        }
+        override fun getCallbackFragment(): PreferenceFragmentCompat = this
     }
 
     /**
@@ -188,9 +185,7 @@ class SettingsActivity : PreferenceActivityCompat() {
             super.onViewCreated(view, savedInstanceState)
         }
 
-        override fun getCallbackFragment(): PreferenceFragmentCompat {
-            return this
-        }
+        override fun getCallbackFragment(): PreferenceFragmentCompat = this
     }
 
     /**
@@ -368,19 +363,19 @@ class SettingsActivity : PreferenceActivityCompat() {
          * the activity to display a specific fragment that the user has navigated
          * to.
          */
-        const val EXTRA_NO_HEADERS: String = ":android:no_headers"
+        // const val EXTRA_NO_HEADERS: String = ":android:no_headers"
         /**
          * When starting this activity, the invoking Intent can contain this extra
          * string to specify which fragment should be initially displayed.
          */
-        const val EXTRA_SHOW_FRAGMENT: String = ":android:show_fragment"
+        // const val EXTRA_SHOW_FRAGMENT: String = ":android:show_fragment"
         /**
          * When starting this activity and using {@link #EXTRA_SHOW_FRAGMENT},
          * this extra can also be specified to supply a Bundle of arguments to pass
          * to that fragment when it is instantiated during the initial creation
          * of PreferenceActivityCompat.
          */
-        const val EXTRA_SHOW_FRAGMENT_ARGUMENTS: String = ":android:show_fragment_args"
+        // const val EXTRA_SHOW_FRAGMENT_ARGUMENTS: String = ":android:show_fragment_args"
         /**
          * A preference value change listener that updates the preference's summary
          * to reflect its new value.
