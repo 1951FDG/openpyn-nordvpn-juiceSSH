@@ -25,7 +25,7 @@ class LazyMarkerStorage(key: String) : MyStorage<LazyMarker>(key) {
                 return LatLng(value.getValue("lat"), value.getValue("long"))
             }
         }).build()
-        val type = Types.newParameterizedType(List::class.java, LazyMarker::class.java)
-        return moshi.adapter(type)
+        val listType = Types.newParameterizedType(List::class.java, LazyMarker::class.java)
+        return moshi.adapter(listType)
     }
 }

@@ -40,9 +40,13 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
         private boolean mClosest;
 
+        private boolean mCallback;
+
         private long mDelay;
 
         private LatLng mTarget;
+
+        private Object mTag;
 
         public Animation(@NonNull CameraUpdate cameraUpdate) {
             mCameraUpdate = cameraUpdate;
@@ -57,6 +61,15 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
             return mDelay;
         }
 
+        @Nullable
+        public Object getTag() {
+            return mTag;
+        }
+
+        public boolean getCallback() {
+            return mCallback;
+        }
+
         public void setDelay(long delay) {
             mDelay = delay;
         }
@@ -64,6 +77,14 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         @Nullable
         public LatLng getTarget() {
             return mTarget;
+        }
+
+        public void setCallback(boolean callback) {
+            mCallback = callback;
+        }
+
+        public void setTag(@Nullable Object tag) {
+            mTag = tag;
         }
 
         public void setTarget(@Nullable LatLng target) {
@@ -168,6 +189,8 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
     private boolean mIsZoomGestureEnabled;
 
+    private boolean mAnimating;
+
     public static void startAnimation(@NonNull GoogleMap googleMap, @NonNull Animation animation,
                                       @Nullable GoogleMap.CancelableCallback cancelableCallback) {
         if (animation.isAnimate()) {
@@ -182,24 +205,14 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
     }
 
     public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull OnCameraIdleListener onCameraIdleListener) {
-        mCameraUpdates = new ArrayList<>();
-        mMap = googleMap;
-        mOnCameraIdleListener = onCameraIdleListener;
+        this(googleMap, new ArrayList<>(), onCameraIdleListener);
     }
 
     public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull ArrayList<Animation> cameraUpdates,
                                 @NonNull OnCameraIdleListener onCameraIdleListener) {
-        mCameraUpdates = cameraUpdates;
         mMap = googleMap;
-        mOnCameraIdleListener = onCameraIdleListener;
-    }
-
-    public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull ArrayList<Animation> cameraUpdates,
-                                @Nullable AnimatorListener animatorListener, @NonNull OnCameraIdleListener onCameraIdleListener) {
         mCameraUpdates = cameraUpdates;
-        mMap = googleMap;
         mOnCameraIdleListener = onCameraIdleListener;
-        mAnimatorListener = animatorListener;
     }
 
     public void add(@NonNull Animation animation) {
@@ -227,6 +240,10 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         return mAnimatorListener;
     }
 
+    public boolean isAnimating() {
+        return mAnimating;
+    }
+
     public void setAnimatorListener(@Nullable AnimatorListener animatorListener) {
         mAnimatorListener = animatorListener;
     }
@@ -245,7 +262,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
             onAnimationEnd();
         } else {
             Animation animation = mCameraUpdates.remove(0);
-            if (animation.isClosest()) {
+            if (animation.getCallback()) {
                 mCancelableCallback.setAnimation(animation);
                 mCancelableCallback.setAnimatorListener(mAnimatorListener);
                 if (animation.getDelay() == 0L) {
@@ -275,6 +292,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         settings.setTiltGesturesEnabled(mIsTiltGestureEnabled);
         settings.setZoomControlsEnabled(mIsZoomControlsEnabled);
         settings.setZoomGesturesEnabled(mIsZoomGestureEnabled);
+        mAnimating = false;
     }
 
     private void onAnimationStart() {
@@ -288,6 +306,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         settings.setZoomControlsEnabled(false);
         settings.setZoomGesturesEnabled(false);
         mMap.setOnCameraIdleListener(this);
+        mAnimating = true;
     }
 
     private void setUiSettings() {

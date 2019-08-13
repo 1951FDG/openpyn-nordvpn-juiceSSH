@@ -26,7 +26,7 @@
         tools:visibility="visible" />
 
     <com.mayurrokade.minibar.MinibarView
-        android:id="@+id/minibarView"
+        android:id="@+id/minibar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal|center_vertical"

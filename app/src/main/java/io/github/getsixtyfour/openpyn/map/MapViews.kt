@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.fragment_map.view.fab1
 import kotlinx.android.synthetic.main.fragment_map.view.fab2
 import kotlinx.android.synthetic.main.fragment_map.view.fab3
 import kotlinx.android.synthetic.main.fragment_map.view.map
-import kotlinx.android.synthetic.main.fragment_map.view.minibarView
+import kotlinx.android.synthetic.main.fragment_map.view.minibar
 
 /**
  * @author 1951FDG
@@ -23,12 +23,14 @@ class MapViews : ActionViews<MapViewsAction>() {
     private val fab2 by lazy { rootView.fab2 }
     private val fab3 by lazy { rootView.fab3 }
     private val map by lazy { rootView.map }
-    private val minibarView by lazy { rootView.minibarView }
+    private val minibarView by lazy { rootView.minibar }
+
+    //todo inner classes
     override fun onCreated() {
         // todo decouple
         (screen.hostActivity as? MainActivity)?.getSnackProgressBarManager()?.setViewsToMove(arrayOf(fab0, fab1))
 
-        fab0.setOnClickListener { viewsAction.toggleCommand(fab0) }
+        fab0.setOnClickListener { viewsAction.toggleCommand(fab0) } // todo check
 
         fab1.setOnClickListener { viewsAction.updateMasterMarker() }
 
@@ -37,37 +39,14 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab3.setOnClickListener { viewsAction.toggleFavoriteMarker() }
     }
 
-    override fun onStarted() {
-        super.onStarted()
-        map?.onStart()
-    }
-
-    override fun onResumed() {
-        super.onResumed()
-        map?.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        map?.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        map?.onStop()
-    }
-
     override fun onDestroy() {
-        super.onDestroy()
-        map?.onDestroy()
+        fab0.setOnClickListener(null)
 
-        fab0.setOnClickListener { null }
+        fab1.setOnClickListener(null)
 
-        fab1.setOnClickListener { null }
+        fab2.setOnClickListener(null)
 
-        fab2.setOnClickListener { null }
-
-        fab3.setOnClickListener { null }
+        fab3.setOnClickListener(null)
     }
 
     fun callConnectFabOnClick() {
@@ -99,10 +78,7 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab0.isClickable = clickable
         fab1.isClickable = clickable
         fab2.isClickable = clickable
-    }
-
-    fun setClickableLocationFab(clickable: Boolean) {
-        fab1.isClickable = clickable
+        fab3.isClickable = clickable
     }
 
     fun showAllFabs() {

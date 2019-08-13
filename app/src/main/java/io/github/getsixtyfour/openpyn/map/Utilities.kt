@@ -1,29 +1,24 @@
 package io.github.getsixtyfour.openpyn.map
 
-import android.Manifest.permission
 import android.R.color
+import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Location
 import android.view.animation.AccelerateInterpolator
-import androidx.annotation.MainThread
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
+import com.androidmapsextensions.lazy.LazyMarker.OnMarkerCreateListener
 import com.antoniocarlon.map.CameraUpdateAnimator.Animation
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition.Builder
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.Tasks
 import com.mayurrokade.minibar.UserMessage
-import com.vdurmont.emoji.EmojiFlagManager
 import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
@@ -53,15 +48,12 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.HashSet
 import java.util.Locale
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 import kotlin.math.pow
 
-private const val TASK_TIMEOUT: Long = 500
+// private const val TASK_TIMEOUT: Long = 500
 
 @Suppress("ComplexMethod", "MagicNumber", "unused")
-internal fun showThreats(context: Context, jsonObj: JSONObject) {
+internal fun showThreats(context: Activity, jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
     Log.info(threats.toString())
 
@@ -208,7 +200,7 @@ internal fun showThreats(context: Context, jsonObj: JSONObject) {
 }
 
 fun showPrintArray(
-    context: Context, countries: ArrayList<MultiSelectable>, hashSet: HashSet<CharSequence>
+    context: Context, countries: List<MultiSelectable>, hashSet: HashSet<CharSequence>
 ): HashSet<CharSequence> {
     val length = hashSet.size
     val defaultSelectedIdsList = ArrayList<Int>(length)
@@ -255,7 +247,7 @@ fun showPrintArray(
 fun fileBackedTileProvider(): MapBoxOfflineTileProvider {
     // Use a file backed SQLite database
     val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-    Log.info(tileProvider.toString())
+    Log.debug(tileProvider.toString())
     return tileProvider
 }
 
@@ -263,7 +255,7 @@ fun fileBackedTileProvider(): MapBoxOfflineTileProvider {
 fun memoryBackedTileProvider(): MapBoxOfflineTileProvider {
     // Use a memory backed SQLite database
     val tileProvider = MapBoxOfflineTileProvider(null, "file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-    Log.info(tileProvider.toString())
+    Log.debug(tileProvider.toString())
     return tileProvider
 }
 
@@ -278,10 +270,10 @@ private fun netflix(flag: CharSequence?): Boolean = when (flag) {
     else -> false
 }
 
-private fun parseToUnicode(emojiManager: EmojiFlagManager, input: CharSequence): CharSequence {
+private fun parseToUnicode(countries: List<MultiSelectable>, input: CharSequence): CharSequence {
     // Replace the aliases by their unicode
     var result = input
-    val emoji = emojiManager.getForAlias(input)
+    val emoji = countries.find { (it as? MultiSelectModelExtra)?.tag == input } as? MultiSelectModelExtra
     if (emoji != null) {
         result = emoji.unicode
     }
@@ -290,9 +282,9 @@ private fun parseToUnicode(emojiManager: EmojiFlagManager, input: CharSequence):
 }
 
 private fun lazyMarker(
-    googleMap: GoogleMap, favorites: ArrayList<LazyMarker>?, options: MarkerOptions, flag: CharSequence?, callback: OnLevelChangeCallback
+    listener: OnMarkerCreateListener, favorites: ArrayList<LazyMarker>?, options: MarkerOptions, flag: CharSequence?, callback: OnLevelChangeCallback
 ): LazyMarker {
-    val marker = LazyMarker(googleMap, options, flag, null)
+    val marker = LazyMarker(options, flag, listener)
     favorites?.let {
         val index = it.indexOf(marker)
         if (index >= 0) {
@@ -339,7 +331,6 @@ private fun getFLag(countryBoundaries: CountryBoundaries?, lon: Double, lat: Dou
     return getFlag(ids)
 }
 
-@MainThread
 @Suppress("ComplexMethod")
 fun getCurrentPosition(
     context: Context,
@@ -355,7 +346,8 @@ fun getCurrentPosition(
         jsonObj != null -> {
             val lat = jsonObj.getDouble(LAT)
             val lon = jsonObj.getDouble(LONG)
-            val flag = jsonObj.getString("flag")
+            val flag = jsonObj.getString(FLAG)
+            Log.debug("is in $flag")
             latLng = latLng(jsonArr, flags, flag, lat, lon)
         }
         jsonArr != null -> lastLocation?.let {
@@ -364,6 +356,7 @@ fun getCurrentPosition(
             val flag = getFLag(countryBoundaries, lon, lat)
             latLng = latLng(jsonArr, flags, flag, lat, lon)
         }
+/*
         ContextCompat.checkSelfPermission(
             context, permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED -> {
@@ -384,8 +377,9 @@ fun getCurrentPosition(
                 Log.error(e.toString())
             }
         }
+*/
     }
-
+    Log.debug(latLng.toString())
     return latLng
 }
 
@@ -410,12 +404,11 @@ fun createCameraUpdates(): ArrayList<Animation> {
     return cameraUpdates
 }
 
-// todo icondescriptor
 fun createMarkers(
     context: Context,
     jsonArray: JSONArray,
-    emojiManager: EmojiFlagManager,
-    googleMap: GoogleMap,
+    countries: List<MultiSelectable>,
+    listener: OnMarkerCreateListener,
     favorites: ArrayList<LazyMarker>?,
     callback: OnLevelChangeCallback
 ): Pair<HashSet<CharSequence>, HashMap<LatLng, LazyMarker>> {
@@ -468,7 +461,7 @@ fun createMarkers(
         //     continue
         // }
         val country = res.getString(COUNTRY)
-        val emoji = parseToUnicode(emojiManager, flag)
+        val emoji = parseToUnicode(countries, flag)
         val location = res.getJSONObject(LOCATION)
         val latLng = LatLng(location.getDouble(LAT), location.getDouble(LONG))
         val options = MarkerOptions().apply {
@@ -480,7 +473,7 @@ fun createMarkers(
         }
 
         flags.add(flag)
-        markers[latLng] = lazyMarker(googleMap, favorites, options, flag, callback)
+        markers[latLng] = lazyMarker(listener, favorites, options, flag, callback)
     }
 
     return Pair(flags, markers)
@@ -503,7 +496,7 @@ internal fun createUserMessage(
     }
 }
 
-internal fun getCurrentFlags(countries: ArrayList<MultiSelectable>, selectedIds: ArrayList<Int>): HashSet<CharSequence> {
+internal fun getCurrentFlags(countries: List<MultiSelectable>, selectedIds: ArrayList<Int>): HashSet<CharSequence> {
     val currentFlags = HashSet<CharSequence>(selectedIds.size)
     countries.forEach {
         (it as? MultiSelectModelExtra)?.let { selectable ->

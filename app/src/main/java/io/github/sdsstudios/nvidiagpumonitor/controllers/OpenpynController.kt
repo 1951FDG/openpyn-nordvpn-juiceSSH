@@ -60,6 +60,11 @@ class OpenpynController(
     override fun onOutputLine(line: String) {
         info(line)
 
+        when {
+            line.startsWith("Killing the running openvpn", true) -> mActivityExecuteCommandListener?.onDisconnect()
+            line.startsWith("CONNECTING TO SERVER", true) -> mActivityExecuteCommandListener?.onConnect()
+        }
+
         mActivitySessionExecuteListener?.onOutputLine(line)
 
         buffer.append(line)
@@ -193,7 +198,6 @@ class OpenpynController(
         info(command)
 
         if (super.start(pluginClient, sessionId, sessionKey)) {
-            mActivityExecuteCommandListener?.onConnect()
             return true
         }
         return false
@@ -207,7 +211,6 @@ class OpenpynController(
         info(stopcommand)
 
         if (super.kill(pluginClient, sessionId, sessionKey)) {
-            mActivityExecuteCommandListener?.onDisconnect()
             return true
         }
         return false

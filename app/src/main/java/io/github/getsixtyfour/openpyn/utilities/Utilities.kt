@@ -10,6 +10,7 @@ import android.content.res.Resources.NotFoundException
 import android.location.Location
 import android.net.Uri
 import android.text.SpannableString
+import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -18,10 +19,24 @@ import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.maps.model.LatLng
+import com.jayrave.moshi.pristineModels.PristineModelsJsonAdapterFactory
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi.Builder
+import com.squareup.moshi.ToJson
+import com.squareup.moshi.Types
 import de.jupf.staticlog.Log
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.security.SecurityManager
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.android.Android
+import io.ktor.client.features.DefaultRequest
+import io.ktor.client.request.get
+import io.ktor.client.response.HttpResponse
+import io.ktor.client.response.readText
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.withTimeout
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -80,72 +95,29 @@ fun juiceSSHInstall(activity: Activity) {
 }
 
 @Suppress("MagicNumber")
-fun countryList(context: Context, resId: Int): ArrayList<MultiSelectable> {
-    // TODO change preferences to use tag instead of id, dynamic creation? with valid indexes
-    val array: Array<CharSequence> = context.resources.getTextArray(resId)
-    var i = 0
-    return arrayListOf(
-        MultiSelectModelExtra(0, SpannableString(array[i++]), R.drawable.ic_albania_40dp, "al"),
-        MultiSelectModelExtra(1, SpannableString(array[i++]), R.drawable.ic_argentina_40dp, "ar"),
-        MultiSelectModelExtra(2, SpannableString(array[i++]), R.drawable.ic_australia_40dp, "au"),
-        MultiSelectModelExtra(3, SpannableString(array[i++]), R.drawable.ic_austria_40dp, "at"),
-        MultiSelectModelExtra(5, SpannableString(array[i++]), R.drawable.ic_belgium_40dp, "be"),
-        MultiSelectModelExtra(6, SpannableString(array[i++]), R.drawable.ic_bosnia_and_herzegovina_40dp, "ba"),
-        MultiSelectModelExtra(7, SpannableString(array[i++]), R.drawable.ic_brazil_40dp, "br"),
-        MultiSelectModelExtra(8, SpannableString(array[i++]), R.drawable.ic_bulgaria_40dp, "bg"),
-        MultiSelectModelExtra(9, SpannableString(array[i++]), R.drawable.ic_canada_40dp, "ca"),
-        MultiSelectModelExtra(10, SpannableString(array[i++]), R.drawable.ic_chile_40dp, "cl"),
-        MultiSelectModelExtra(11, SpannableString(array[i++]), R.drawable.ic_costa_rica_40dp, "cr"),
-        MultiSelectModelExtra(12, SpannableString(array[i++]), R.drawable.ic_croatia_40dp, "hr"),
-        MultiSelectModelExtra(13, SpannableString(array[i++]), R.drawable.ic_cyprus_40dp, "cy"),
-        MultiSelectModelExtra(14, SpannableString(array[i++]), R.drawable.ic_czech_republic_40dp, "cz"),
-        MultiSelectModelExtra(15, SpannableString(array[i++]), R.drawable.ic_denmark_40dp, "dk"),
-        MultiSelectModelExtra(16, SpannableString(array[i++]), R.drawable.ic_egypt_40dp, "eg"),
-        MultiSelectModelExtra(17, SpannableString(array[i++]), R.drawable.ic_estonia_40dp, "ee"),
-        MultiSelectModelExtra(18, SpannableString(array[i++]), R.drawable.ic_finland_40dp, "fi"),
-        MultiSelectModelExtra(19, SpannableString(array[i++]), R.drawable.ic_france_40dp, "fr"),
-        MultiSelectModelExtra(20, SpannableString(array[i++]), R.drawable.ic_georgia_40dp, "ge"),
-        MultiSelectModelExtra(21, SpannableString(array[i++]), R.drawable.ic_germany_40dp, "de"),
-        MultiSelectModelExtra(22, SpannableString(array[i++]), R.drawable.ic_greece_40dp, "gr"),
-        MultiSelectModelExtra(23, SpannableString(array[i++]), R.drawable.ic_hong_kong_40dp, "hk"),
-        MultiSelectModelExtra(24, SpannableString(array[i++]), R.drawable.ic_hungary_40dp, "hu"),
-        MultiSelectModelExtra(25, SpannableString(array[i++]), R.drawable.ic_iceland_40dp, "is"),
-        MultiSelectModelExtra(26, SpannableString(array[i++]), R.drawable.ic_india_40dp, "in"),
-        MultiSelectModelExtra(27, SpannableString(array[i++]), R.drawable.ic_indonesia_40dp, "id"),
-        MultiSelectModelExtra(28, SpannableString(array[i++]), R.drawable.ic_ireland_40dp, "ie"),
-        MultiSelectModelExtra(29, SpannableString(array[i++]), R.drawable.ic_israel_40dp, "il"),
-        MultiSelectModelExtra(30, SpannableString(array[i++]), R.drawable.ic_italy_40dp, "it"),
-        MultiSelectModelExtra(31, SpannableString(array[i++]), R.drawable.ic_japan_40dp, "jp"),
-        MultiSelectModelExtra(32, SpannableString(array[i++]), R.drawable.ic_latvia_40dp, "lv"),
-        MultiSelectModelExtra(33, SpannableString(array[i++]), R.drawable.ic_luxembourg_40dp, "lu"),
-        MultiSelectModelExtra(35, SpannableString(array[i++]), R.drawable.ic_malaysia_40dp, "my"),
-        MultiSelectModelExtra(36, SpannableString(array[i++]), R.drawable.ic_mexico_40dp, "mx"),
-        MultiSelectModelExtra(37, SpannableString(array[i++]), R.drawable.ic_moldova_40dp, "md"),
-        MultiSelectModelExtra(38, SpannableString(array[i++]), R.drawable.ic_netherlands_40dp, "nl"),
-        MultiSelectModelExtra(39, SpannableString(array[i++]), R.drawable.ic_new_zealand_40dp, "nz"),
-        MultiSelectModelExtra(34, SpannableString(array[i++]), R.drawable.ic_republic_of_macedonia_40dp, "mk"),
-        MultiSelectModelExtra(40, SpannableString(array[i++]), R.drawable.ic_norway_40dp, "no"),
-        MultiSelectModelExtra(41, SpannableString(array[i++]), R.drawable.ic_poland_40dp, "pl"),
-        MultiSelectModelExtra(42, SpannableString(array[i++]), R.drawable.ic_portugal_40dp, "pt"),
-        MultiSelectModelExtra(43, SpannableString(array[i++]), R.drawable.ic_romania_40dp, "ro"),
-        MultiSelectModelExtra(45, SpannableString(array[i++]), R.drawable.ic_serbia_40dp, "rs"),
-        MultiSelectModelExtra(46, SpannableString(array[i++]), R.drawable.ic_singapore_40dp, "sg"),
-        MultiSelectModelExtra(47, SpannableString(array[i++]), R.drawable.ic_slovakia_40dp, "sk"),
-        MultiSelectModelExtra(48, SpannableString(array[i++]), R.drawable.ic_slovenia_40dp, "si"),
-        MultiSelectModelExtra(49, SpannableString(array[i++]), R.drawable.ic_south_africa_40dp, "za"),
-        MultiSelectModelExtra(50, SpannableString(array[i++]), R.drawable.ic_south_korea_40dp, "kr"),
-        MultiSelectModelExtra(51, SpannableString(array[i++]), R.drawable.ic_spain_40dp, "es"),
-        MultiSelectModelExtra(52, SpannableString(array[i++]), R.drawable.ic_sweden_40dp, "se"),
-        MultiSelectModelExtra(53, SpannableString(array[i++]), R.drawable.ic_switzerland_40dp, "ch"),
-        MultiSelectModelExtra(54, SpannableString(array[i++]), R.drawable.ic_taiwan_40dp, "tw"),
-        MultiSelectModelExtra(55, SpannableString(array[i++]), R.drawable.ic_thailand_40dp, "th"),
-        MultiSelectModelExtra(56, SpannableString(array[i++]), R.drawable.ic_turkey_40dp, "tr"),
-        MultiSelectModelExtra(57, SpannableString(array[i++]), R.drawable.ic_ukraine_40dp, "ua"),
-        MultiSelectModelExtra(58, SpannableString(array[i++]), R.drawable.ic_united_arab_emirates_40dp, "ae"),
-        MultiSelectModelExtra(59, SpannableString(array[i++]), R.drawable.ic_united_kingdom_40dp, "gb"),
-        MultiSelectModelExtra(60, SpannableString(array[i++]), R.drawable.ic_united_states_of_america_40dp, "us"),
-        MultiSelectModelExtra(61, SpannableString(array[i++]), R.drawable.ic_vietnam_40dp, "vn")
-    )
+fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
+    val json = context.resources.openRawResource(id).bufferedReader().use{ it.readText()}
+
+    val factory = PristineModelsJsonAdapterFactory.Builder()
+        .add(MultiSelectModelExtra::class.java, MultiSelectMapper())
+        .build()
+
+    val moshi = Builder().add(factory).add(object {
+        @ToJson
+        @Suppress("unused")
+        fun toJson(value: CharSequence): String {
+            return value.toString()
+        }
+        @FromJson
+        @Suppress("unused")
+        fun fromJson(value: String): CharSequence {
+            return SpannableString(value)
+        }
+    }).build()
+
+    val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
+    val adapter: JsonAdapter<List<MultiSelectModelExtra>> = moshi.adapter(listType)
+    return adapter.nonNull().fromJson(json).orEmpty()
 }
 
 fun logDifference(set: Set<CharSequence>, string: CharSequence) {
@@ -204,7 +176,7 @@ private fun copyRawResourceToFile(context: Context, id: Int, file: File) {
 
 @SuppressLint("WrongThread")
 @WorkerThread
-fun createGeoJson(context: Context): JSONObject? {
+suspend fun createGeoJson(context: Context): JSONObject? {
     if (NetworkInfo.getInstance().isOnline()) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val geo = preferences.getBoolean("pref_geo", true)
@@ -214,21 +186,67 @@ fun createGeoJson(context: Context): JSONObject? {
         val ipstack = preferences.getString("pref_api_ipstack", "")
 
         if (geo) {
-            var key: String? = null
+            var server = "http://ip-api.com/json/?fields=8403" // http://ip-api.com/json/?fields=country,countryCode,city,lat,lon,query
+            var type = 0
+            var token: String? = null
             when (api) {
                 "ipdata" -> {
-                    key = ipdata
+                    type = 1
+                    token = ipdata
                 }
                 "ipinfo" -> {
-                    key = ipinfo
+                    type = 2
+                    token = ipinfo
                 }
                 "ipstack" -> {
-                    key = ipstack
+                    type = 3
+                    token = ipstack
                 }
             }
-            if (key != null && key.isNotEmpty()) key = SecurityManager.getInstance(context).decryptString(key)
+            if (token != null && token.isNotEmpty()) token = SecurityManager.getInstance(context).decryptString(token)
+            val fields = "fields=country_name,country_code,city,latitude,longitude,ip"
+            when (type) {
+                1 -> {
+                    if (token != null && token.isNotEmpty()) {
+                        server = "https://api.ipdata.co?api-key=$token&$fields"
+                    }
+                }
+                2 -> {
+                    server = when {
+                        token != null && token.isNotEmpty() -> "https://ipinfo.io/geo?token=$token"
+                        else -> "https://ipinfo.io/geo"
+                    }
+                }
+                3 -> {
+                    if (token != null && token.isNotEmpty()) {
+                        server = "http://api.ipstack.com/check?access_key=$token&$fields"
+                    }
+                }
+            }
 
-            return createJson2(api, key)
+            var jsonObject: JSONObject? = null
+
+            val client = HttpClient(Android) {
+                install(DefaultRequest) {
+                    headers.append("Accept", "application/json")
+                }
+            }
+
+            try {
+                withTimeout(600) {
+                    val response = client.get<HttpResponse>(server)
+                    val json = response.readText()
+                    jsonObject = JSONObject(json)
+                }
+            } catch (exception: TimeoutCancellationException) {
+                exception.message?.let { Log.error(it) }
+            } finally {
+                Log.debug(jsonObject.toString())
+            }
+
+            client.close()
+
+            return jsonObject?.let { createJson2(type, it) } ?: jsonObject
         }
     }
 
@@ -241,16 +259,15 @@ fun getDefaultLatLng(): LatLng {
 }
 
 fun getLatLng(flag: CharSequence, latLng: LatLng, jsonArr: JSONArray): LatLng {
-    Log.info(latLng.toString())
     val latLngList = arrayListOf<LatLng>()
     var match = false
 
     loop@ for (res in jsonArr) {
-        val pass = flag == res.getString("flag")
+        val pass = flag == res.getString(FLAG)
 
         if (pass) {
-            val location = res.getJSONObject("location")
-            val element = LatLng(location.getDouble("lat"), location.getDouble("long"))
+            val location = res.getJSONObject(LOCATION)
+            val element = LatLng(location.getDouble(LAT), location.getDouble(LONG))
 
             match = element == latLng
             when {

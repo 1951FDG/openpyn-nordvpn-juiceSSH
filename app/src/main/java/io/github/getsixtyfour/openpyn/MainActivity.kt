@@ -6,12 +6,10 @@ import android.content.res.Resources
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,8 +23,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
@@ -61,9 +57,10 @@ import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.mainlayout
 import kotlinx.android.synthetic.main.activity_main.spinnerConnectionList
 import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.onComplete
@@ -73,11 +70,14 @@ import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.Locale
 
 class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback, OnClickListener,
-    OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener, OnSessionStartedListener {
+    OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener, OnSessionStartedListener,
+    CoroutineScope by MainScope() {
 
     private var dialog: MorphDialog? = null
+    // todo check value
     private val mConnectionListAdapter by lazy {
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
     }
@@ -90,32 +90,26 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         ).withExplicitAgeConfirmation(true).withForceSelection(true).withShowPaidOrFreeInfoText(false)
     }
     private lateinit var mSnackProgressBarManager: SnackProgressBarManager
-    private val handler = Handler()
-    private val runnable = Runnable {
-        val fragment = getCurrentNavigationFragment() as? MapFragment
-        fragment?.controlTower?.updateMasterMarker(true)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
 
-        showGDPRIfNecessary()
-
         setContentView(R.layout.activity_main)
+
+        showGDPRIfNecessary()
 
         setProgressToolBar(toolbar)
 
         setSnackBarManager()
 
-        setDefaultPreferences()
-        val api = GoogleApiAvailability.getInstance()
-
-        when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
-            ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, RESULT_OK, null)
-            //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
-            else -> error(api.getErrorString(errorCode))
-        }
+        // val api = GoogleApiAvailability.getInstance()
+        //
+        // when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
+        //     ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, RESULT_OK, null)
+        //     //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
+        //     else -> error(api.getErrorString(errorCode))
+        // }
 
         if (isJuiceSSHInstalled(this)) {
             if (hasPermission(PERMISSION_READ) && hasPermission(PERMISSION_OPEN_SESSIONS)) onPermissionsGranted()
@@ -145,7 +139,6 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         super.onDestroy()
 
         mConnectionManager?.onDestroy()
-        handler.removeCallbacksAndMessages(null)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -155,11 +148,11 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
             mConnectionManager?.gotActivityResult(requestCode, resultCode, data)
         }
 
-        if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
-            if (resultCode == RESULT_OK) {
-                // TODO
-            }
-        }
+        // if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
+        //     if (resultCode == RESULT_OK) {
+        //         // TODO
+        //     }
+        // }
 
         MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)
     }
@@ -245,7 +238,8 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         fun element(location: Coordinate?, flag: String, server: String, country: String): String = when {
             flag.isNotEmpty() -> {
                 val name = getEntryForValue(flag, R.array.pref_country_entries, R.array.pref_country_values)
-                if (location != null) "$name at ${location.latitude}, ${location.longitude}" else name
+                // Enforce Locale to English for double to string conversion
+                if (location != null) "%s at %.7f, %.7f".format(Locale.ENGLISH, name, location.latitude, location.longitude) else name
             }
             server.isNotEmpty() -> {
                 "server $server.nordvpn.com"
@@ -304,17 +298,20 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
     }
 
     override fun onConnect() {
-        toolbar.showProgress(true)
+        toolbar.hideProgress(true)
+
+        val fragment = getCurrentNavigationFragment() as? MapFragment
+        fragment?.controlTower?.updateMasterMarkerWithDelay(true, 10000)
     }
 
     @Suppress("MagicNumber")
     override fun onDisconnect() {
-        toolbar.showProgress(true)
+        toolbar.hideProgress(true)
 
-        handler.postDelayed(runnable, 10000)
+        val fragment = getCurrentNavigationFragment() as? MapFragment
+        fragment?.controlTower?.updateMasterMarkerWithDelay(true, 10000)
     }
 
-    @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
         val fragment = getCurrentNavigationFragment() as? OnCommandExecuteListener
         return fragment?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
@@ -340,16 +337,12 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         }
     }
 
-    @Suppress("MagicNumber")
     override fun onOutputLine(line: String) {
-        if (line.startsWith("CONNECTING TO SERVER", true)) {
-            toolbar.hideProgress(true)
-
-            handler.postDelayed(runnable, 10000)
-        }
     }
 
     override fun onSessionFinished() {
+        toolbar.hideProgress(true)
+
         info("onSessionFinished")
         val fragment = getCurrentNavigationFragment() as? OnSessionFinishedListener
 
@@ -360,6 +353,8 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
+        toolbar.showProgress(true)
+
         info("onSessionStarted")
         val fragment = getCurrentNavigationFragment() as? OnSessionStartedListener
 
@@ -530,6 +525,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
+    // todo inner class
     private fun setSnackBarManager() {
         fun snackProgressBar(
             type: Int, message: String, action: String, onActionClickListener: OnActionClickListener
@@ -537,7 +533,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
             return SnackProgressBar(type, message).setAction(action, onActionClickListener)
         }
 
-        mSnackProgressBarManager = SnackProgressBarManager(mainlayout)
+        mSnackProgressBarManager = SnackProgressBarManager(mainlayout, this)
         val type = SnackProgressBar.TYPE_NORMAL
         val action = getString(android.R.string.ok)
 
@@ -558,14 +554,9 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         )
     }
 
-    private fun setDefaultPreferences() {
-        PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
-        PreferenceManager.setDefaultValues(this, R.xml.pref_api, true)
-    }
-
     companion object {
         private const val PERMISSION_REQUEST_CODE = 23
-        private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
+        // private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
         private const val SNACK_BAR_JUICESSH = 1
         private const val SNACK_BAR_PERMISSIONS = 0
     }

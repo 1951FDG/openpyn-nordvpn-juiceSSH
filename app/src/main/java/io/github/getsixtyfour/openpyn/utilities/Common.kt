@@ -96,97 +96,62 @@ fun generateXML() {
     }
 }
 
-@WorkerThread
 @Suppress("MagicNumber")
-fun createJson2(value: String?, token: String?): JSONObject? {
-    var server = "http://ip-api.com/json"
+fun createJson2(type: Int, content: JSONObject): JSONObject? {
+    var flag = ""
+    var country = ""
+    var city = ""
+    var lat = 0.0
+    var lon = 0.0
+    var ip = ""
+    var threat: JSONObject? = null
 
-    when {
-        value.equals("ipdata", true) -> {
-            if (token != null && token.isNotEmpty()) {
-                server = "https://api.ipdata.co?api-key=$token"
-            }
+    when (type) {
+        0 -> {
+            flag = content.optString("countryCode")
+            country = content.optString("country")
+            city = content.optString("city")
+            lat = content.optDouble("lat", 0.0)
+            lon = content.optDouble("lon", 0.0)
+            ip = content.optString("query")
         }
-        value.equals("ipinfo", true) -> {
-            server = when {
-                token != null && token.isNotEmpty() -> "https://ipinfo.io/json?token=$token"
-                else -> "https://ipinfo.io/json"
-            }
+        1 -> {
+            flag = content.optString("country_code")
+            country = content.optString("country_name")
+            city = content.optString("city")
+            lat = content.optDouble("latitude", 0.0)
+            lon = content.optDouble("longitude", 0.0)
+            ip = content.optString("ip")
+
+            threat = content.optJSONObject("threat")
         }
-        value.equals("ipstack", true) -> {
-            if (token != null && token.isNotEmpty()) {
-                server = "http://api.ipstack.com/check?access_key=$token"
-            }
+        2 -> {
+            flag = content.optString("country")
+            city = content.optString("city")
+            lat = java.lang.Double.valueOf(content.optString("loc").split(",")[0])
+            lon = java.lang.Double.valueOf(content.optString("loc").split(",")[1])
+            ip = content.optString("ip")
+        }
+        3 -> {
+            flag = content.optString("country_code")
+            country = content.optString("country_name")
+            city = content.optString("city")
+            lat = content.optDouble("latitude", 0.0)
+            lon = content.optDouble("longitude", 0.0)
+            ip = content.optString("ip")
         }
     }
-    val timeout = 500
-    val timeoutRead = 500
-    // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    val (_, _, result) = server.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
-    when (result) {
-        is Result.Failure -> {
-            Log.error(result.getException().toString())
-        }
-        is Result.Success -> {
-            val content = result.get().obj()
-            //Log.debug(content.toString())
-            var flag = ""
-            var country = ""
-            var city = ""
-            var lat = 0.0
-            var lon = 0.0
-            var ip = ""
-            var threat: JSONObject? = null
 
-            when {
-                server.startsWith("http://ip-api.com", true) -> {
-                    flag = content.optString("countryCode")
-                    country = content.optString("country")
-                    city = content.optString("city")
-                    lat = content.optDouble("lat", 0.0)
-                    lon = content.optDouble("lon", 0.0)
-                    ip = content.optString("query")
-                }
-                server.startsWith("https://api.ipdata.co", true) -> {
-                    flag = content.optString("country_code")
-                    country = content.optString("country_server")
-                    city = content.optString("city")
-                    lat = content.optDouble("latitude", 0.0)
-                    lon = content.optDouble("longitude", 0.0)
-                    ip = content.optString("ip")
+    if (flag.isNotEmpty() && city.isNotEmpty() && lat != 0.0 && lon != 0.0 && ip.isNotEmpty()) {
+        return JSONObject().apply {
+            put(FLAG, flag.toLowerCase(Locale.ROOT))
+            put(COUNTRY, country)
+            put(CITY, city)
+            put(LAT, lat)
+            put(LONG, lon)
+            put(IP, ip)
 
-                    threat = content.optJSONObject("threat")
-                }
-                server.startsWith("https://ipinfo.io", true) -> {
-                    flag = content.optString("country")
-                    city = content.optString("city")
-                    lat = java.lang.Double.valueOf(content.optString("loc").split(",")[0])
-                    lon = java.lang.Double.valueOf(content.optString("loc").split(",")[1])
-                    ip = content.optString("ip")
-                }
-                server.startsWith("http://api.ipstack.com", true) -> {
-                    flag = content.optString("country_code")
-                    country = content.optString("country_name")
-                    city = content.optString("city")
-                    lat = content.optDouble("latitude", 0.0)
-                    lon = content.optDouble("longitude", 0.0)
-                    ip = content.optString("ip")
-                }
-            }
-
-            if (flag.isNotEmpty() && city.isNotEmpty() && lat != 0.0 && lon != 0.0 && ip.isNotEmpty()) {
-                Log.debug("is in $flag")
-                return JSONObject().apply {
-                    put(FLAG, flag.toLowerCase(Locale.ROOT))
-                    put(COUNTRY, country)
-                    put(CITY, city)
-                    put(LAT, lat)
-                    put(LONG, lon)
-                    put(IP, ip)
-
-                    putOpt(THREAT, threat)
-                }
-            }
+            putOpt(THREAT, threat)
         }
     }
 

@@ -3,23 +3,76 @@ package io.github.getsixtyfour.openpyn.utilities;
 import androidx.annotation.NonNull;
 
 import com.abdeveloper.library.MultiSelectModel;
-import com.abdeveloper.library.MultiSelectable;
 
-public class MultiSelectModelExtra extends MultiSelectModel implements MultiSelectable {
+import org.jetbrains.annotations.NotNull;
 
-    private CharSequence tag;
+import java.lang.reflect.Field;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    public MultiSelectModelExtra(final int id, @NonNull final CharSequence name, final int resId, @NonNull String tag) {
+import io.github.getsixtyfour.openpyn.R;
+
+@SuppressWarnings("TransientFieldInNonSerializableClass")
+public class MultiSelectModelExtra extends MultiSelectModel {
+
+    private static final Pattern COMPILE = Pattern.compile(" ");
+
+    @SuppressWarnings("FieldNotUsedInToString")
+    private transient int mInt;
+
+    private String mTag;
+
+    private String mUnicode;
+
+    public MultiSelectModelExtra(int id, @NonNull CharSequence name, int resId, @NonNull String tag, @NonNull String unicode) {
         super(id, name, resId);
-        this.tag = tag;
+        mTag = tag;
+        mUnicode = unicode;
+    }
+
+    @NotNull
+    @SuppressWarnings("MagicCharacter")
+    @Override
+    public String toString() {
+        return "MultiSelectModel{" + "id=" + getId() + ", name=" + getName() + ", resId=" + getResId() + ", mTag='" + mTag + '\''
+                + ", mUnicode='" + mUnicode + '\'' + ", start=" + getStart() + ", end=" + getEnd() + '}';
+    }
+
+    @Override
+    public int getResId() {
+        if (mInt == 0) {
+            int drawableId = 0;
+            try {
+                Class res = R.drawable.class;
+                CharSequence charSequence = getName();
+                Matcher matcher = COMPILE.matcher(charSequence.toString());
+                String s = matcher.replaceAll("_");
+                String name = String.format("ic_%s_40dp", s.toLowerCase(Locale.ROOT));
+                Field field = res.getField(name);
+                drawableId = field.getInt(null);
+            } catch (IllegalAccessException | NoSuchFieldException ignored) {
+            }
+            mInt = drawableId;
+        }
+        return mInt;
     }
 
     @NonNull
-    public CharSequence getTag() {
-        return tag;
+    public String getTag() {
+        return mTag;
     }
 
-    public void setTag(@NonNull CharSequence charSequence) {
-        tag = charSequence;
+    public void setTag(@NonNull String charSequence) {
+        mTag = charSequence;
+    }
+
+    @NonNull
+    public String getUnicode() {
+        return mUnicode;
+    }
+
+    public void setUnicode(@NonNull String unicode) {
+        mUnicode = unicode;
     }
 }

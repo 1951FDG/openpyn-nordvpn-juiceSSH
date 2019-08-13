@@ -3,27 +3,34 @@ package io.github.getsixtyfour.openpyn.map
 import android.content.Context
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.annotation.MainThread
+import android.widget.ImageView
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
+import com.androidmapsextensions.lazy.LazyMarker.OnMarkerCreateListener
 import com.antoniocarlon.map.CameraUpdateAnimator
 import com.antoniocarlon.map.CameraUpdateAnimator.Animation
 import com.antoniocarlon.map.CameraUpdateAnimator.AnimatorListener
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
+import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.TileOverlayOptions
 import com.naver.android.svc.annotation.ControlTower
 import com.naver.android.svc.annotation.RequireScreen
 import com.naver.android.svc.annotation.RequireViews
-import com.vdurmont.emoji.EmojiFlagManager
+import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.utilities.LazyMarkerStorage
@@ -32,85 +39,144 @@ import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener
 import io.github.getsixtyfour.openpyn.utilities.countryList
 import io.github.getsixtyfour.openpyn.utilities.createGeoJson
 import io.github.getsixtyfour.openpyn.utilities.jsonArray
+import io.github.getsixtyfour.openpyn.utilities.logException
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.channels.map
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.coroutines.experimental.asReference
-import org.jetbrains.anko.debug
 import org.jetbrains.anko.info
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashSet
+import kotlinx.android.synthetic.main.fragment_map.view.map
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * @author 1951FDG
  */
+@ObsoleteCoroutinesApi
+@ExperimentalCoroutinesApi
 @ControlTower
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)
-class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback,
-    GoogleMap.OnCameraIdleListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener,
-    OnLevelChangeCallback, SubmitCallbackListener, MapViewsAction, AnimatorListener, OnCommandExecuteListener,
+class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, OnMapLoadedCallback,
+    OnCameraIdleListener, OnMapClickListener, OnMarkerClickListener, OnInfoWindowClickListener,
+    SubmitCallbackListener, MapViewsAction, AnimatorListener, OnCommandExecuteListener,
     CoroutineScope by MainScope() {
+    private val map by lazy { views.rootView.map }
+
+    private val mHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
+        GlobalScope.launch(Main) {
+            screen.toolBar?.hideProgress(true)
+        }
+        exception.printStackTrace()
+        Log.error("Caught $exception")
+        logException(exception)
+    }
+
+    private val applicationContext: Context
+        get() = screen.requireContext().applicationContext
 
     private lateinit var markers: HashMap<LatLng, LazyMarker>
     private lateinit var flags: HashSet<CharSequence>
-    private lateinit var mMap: GoogleMap
+    private lateinit var mAnimations: ArrayList<Animation>
+    private var mMap: GoogleMap? = null
     private var mCameraUpdateAnimator: CameraUpdateAnimator? = null
 
-    override fun onConnect() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    private val mMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
+    //set by async
+    private lateinit var mCountries: List<MultiSelectable>
+    private var mCountryBoundaries: CountryBoundaries? = null
+    private lateinit var mFavorites: ArrayList<LazyMarker>
+    private lateinit var mJsonArray: JSONArray
+    private var mTileProvider: MapBoxOfflineTileProvider? = null
 
-    private lateinit var iconDescriptor0: BitmapDescriptor
-    private lateinit var iconDescriptor1: BitmapDescriptor
-    private lateinit var iconDescriptor10: BitmapDescriptor
-
-    override fun onDisconnect() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private val mSendChannel = actor<Context>(coroutineContext, Channel.RENDEZVOUS) {
+        channel.map(IO) { createGeoJson(it) }.consumeEach { animateCamera(it) }
     }
 
     override fun onCreated() {
-        super.onCreated()
         loadData()
     }
 
-    private val lazyMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
-    //set by async
-    private lateinit var mCountries: ArrayList<MultiSelectable>
-    private var mCountryBoundaries: CountryBoundaries? = null
-    private var mEmojiFlagManager: EmojiFlagManager? = null
-    private lateinit var mFavorites: ArrayList<LazyMarker>
-    private lateinit var mJsonArray: JSONArray
-    private lateinit var mRawResourceStyle: MapStyleOptions
-    private lateinit var mTileProvider: MapBoxOfflineTileProvider
+    override fun onStarted() {
+        mMap?.let { map.onStart() }
+    }
+
+    override fun onResumed() {
+        mMap?.let { map.onResume() }
+    }
+
+    override fun onPause() {
+        mMap?.let { map.onPause() }
+    }
+
+    override fun onStop() {
+        mMap?.let { map.onStop() }
+    }
 
     override fun onDestroy() {
-        super.onDestroy()
+        mMap?.let { map.onDestroy() }
         mCameraUpdateAnimator?.onDestroy()
+        mCameraUpdateAnimator?.animatorListener = null
+        mSendChannel.close()
+        mTileProvider?.close()
         cancel()
-        // mTileProvider?.close()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        mMap?.let {
+            // todo get rid of asReference..., check all this invocations
+            onMarkerCreateListener.setMap(it)
+            it.addTileOverlay(TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false))
+            it.setMaxZoomPreference(mTileProvider!!.maximumZoom)
+            it.setMinZoomPreference(mTileProvider!!.minimumZoom)
+            it.setOnInfoWindowClickListener(this)
+            it.setOnMapClickListener(this)
+            it.setOnMarkerClickListener(this)
+            it.setOnMapLoadedCallback(this)
+
+            // todo
+            //val params = fab1.layoutParams as ConstraintLayout.LayoutParams
+            //it.setPadding(0, 0, 0, params.height + params.bottomMargin)
+
+            it.uiSettings?.isScrollGesturesEnabled = true
+            it.uiSettings?.isZoomGesturesEnabled = true
+
+            mCameraUpdateAnimator = CameraUpdateAnimator(it, mAnimations, this)
+            mCameraUpdateAnimator?.animatorListener = this
+
+            // Load map
+            views.showMap()
+            map.onResume()
+        }
     }
 
     override fun onMapLoaded() {
         mCameraUpdateAnimator?.execute()
-
-        debug(mMap.minZoomLevel)
-        debug(mMap.maxZoomLevel)
     }
 
     override fun onCameraIdle() {
-        val bounds = mMap.projection.visibleRegion.latLngBounds
+        val bounds = mMap!!.projection.visibleRegion.latLngBounds
 
         markers.forEach { (key, value) ->
             if (bounds.contains(key) && flags.contains(value.tag)) {
@@ -119,7 +185,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, G
                 if (value.isVisible) value.isVisible = false
 
                 if (value.zIndex == 1.0f) {
-                    value.setLevel(value.level, this)
+                    value.setLevel(value.level, onLevelChangeCallback)
 
                     views.hideFavoriteFab()
                 }
@@ -127,54 +193,36 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, G
         }
     }
 
-    override fun onMapClick(point: LatLng?) {
+    override fun onMapClick(point: LatLng) {
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
-            it.setLevel(it.level, this)
+            it.setLevel(it.level, onLevelChangeCallback)
 
             views.hideFavoriteFab()
         }
     }
 
-    override fun onMarkerClick(marker: Marker?): Boolean {
-        marker?.let {
-            if (marker.zIndex == 1.0f) {
-                views.callConnectFabOnClick()
-            } else {
-                markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
-                    it.setLevel(it.level, this)
-                }
+    override fun onMarkerClick(marker: Marker): Boolean {
+        if (marker.zIndex == 1.0f) {
+            views.callConnectFabOnClick()
+        } else {
+            markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+                it.setLevel(it.level, onLevelChangeCallback)
+            }
 
-                markers[marker.position]?.let {
-                    it.zIndex = 1.0f
-                    it.setIcon(iconDescriptor10)
+            markers[marker.position]?.let {
+                it.zIndex = 1.0f
+                it.setIcon(mDescriptor10)
 
-                    views.toggleFavoriteFab(it.level == 1)
-                }
+                views.toggleFavoriteFab(it.level == 1)
             }
         }
 
         return false
     }
 
-    override fun onInfoWindowClick(marker: Marker?) {
-        marker?.let {
-            if (marker.zIndex == 1.0f) {
-                views.callConnectFabOnClick()
-            }
-        }
-    }
-
-    @Suppress("MagicNumber")
-    override fun onLevelChange(marker: LazyMarker, level: Int) {
-        when (level) {
-            0 -> {
-                marker.zIndex = 0f
-                marker.setIcon(iconDescriptor0)
-            }
-            1 -> {
-                marker.zIndex = level / 10.toFloat()
-                marker.setIcon(iconDescriptor1)
-            }
+    override fun onInfoWindowClick(marker: Marker) {
+        if (marker.zIndex == 1.0f) {
+            views.callConnectFabOnClick()
         }
     }
 
@@ -190,7 +238,11 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, G
     }
 
     override fun showCountryFilterDialog() {
-        PrintArray.show("pref_country_values", screen.requireActivity(), this)
+        mCameraUpdateAnimator?.let {
+            if (!it.isAnimating) {
+                PrintArray.show("pref_country_values", screen.requireActivity(), this)
+            }
+        }
     }
 
     override fun toggleCommand(v: View?) {
@@ -202,21 +254,27 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, G
             when (it.level) {
                 0 -> {
                     it.setLevel(1, null)
-                    lazyMarkerStorage.addFavorite(screen.requireContext(), it)
+                    mMarkerStorage.addFavorite(applicationContext, it)
                 }
                 1 -> {
                     it.setLevel(0, null)
-                    lazyMarkerStorage.removeFavorite(screen.requireContext(), it)
+                    mMarkerStorage.removeFavorite(applicationContext, it)
                 }
             }
             views.toggleFavoriteFab((it.level == 1))
         }
     }
 
-    @MainThread
     override fun updateMasterMarker(show: Boolean) {
-        views.setClickableLocationFab(false)
-        loadData2()
+        mSendChannel.offer(applicationContext)
+    }
+
+    fun updateMasterMarkerWithDelay(show: Boolean, delayMillis: Long) {
+        launch {
+            // ui thread
+            delay(delayMillis)
+            updateMasterMarker(show)
+        }
     }
 
     override fun onAnimationStart() {
@@ -228,20 +286,29 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, G
     }
 
     override fun onAnimationFinish(animation: Animation) {
-        views.fakeLayoutAllFabs()
-        markers[animation.target]?.let {
-            if (flags.contains(it.tag)) {
-                it.zIndex = 1.0f
-                it.setIcon(iconDescriptor10)
+        if (animation.isClosest) {
 
-                if (!it.isVisible) it.isVisible = true
-                if (!it.isInfoWindowShown) it.showInfoWindow()
+            views.fakeLayoutAllFabs()
+            markers[animation.target]?.let {
+                if (flags.contains(it.tag)) {
+                    it.zIndex = 1.0f
+                    it.setIcon(mDescriptor10)
 
-                views.toggleFavoriteFab(it.level == 1)
+                    if (!it.isVisible) it.isVisible = true
+                    if (!it.isInfoWindowShown) it.showInfoWindow()
+
+                    views.toggleFavoriteFab(it.level == 1)
+                }
+            }
+
+            views.showAllFabs()
+        } else {
+            (animation.tag as? JSONObject)?.let {
+                //todo test threats
+                showThreats(activity!!, it)
+                views.showMiniBar(createUserMessage(context!!, it).build())
             }
         }
-
-        views.showAllFabs()
     }
 
     override fun onAnimationCancel(animation: Animation) {
@@ -261,7 +328,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, G
             views.showFavoriteFab()
         }
 
-        mMap.let {
+        mMap?.let {
             it.setOnInfoWindowClickListener(this)
             it.setOnMapClickListener(this)
             it.setOnMarkerClickListener(this)
@@ -280,7 +347,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, G
             if (it.isInfoWindowShown) it.hideInfoWindow()
             views.hideFavoriteFab()
         }
-        mMap.let {
+        mMap?.let {
             it.setOnInfoWindowClickListener(null)
             it.setOnMapClickListener(null)
             it.setOnMarkerClickListener { true }
@@ -295,7 +362,6 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, G
         views.toggleConnectFab(false)
     }
 
-    @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
         var pair: Pair<Coordinate?, String> = Pair(null, "")
 
@@ -312,98 +378,131 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, G
         return pair
     }
 
-    private fun loadData() = launch {
+    override fun onConnect() {
+        TODO("not implemented")
+    }
+
+    override fun onDisconnect() {
+        TODO("not implemented")
+    }
+
+    private fun loadData() = launch(mHandler) {
         // ui thread
         screen.toolBar?.showProgress(true)
-        val ref = screen.requireContext().applicationContext.asReference()
+        val ref = applicationContext.asReference()
+        val mapView = views.findViewById<MapView>(R.id.map)
+
         // background thread
-        val countries = async(IO) { countryList(ref(), R.array.pref_country_entries) }
+        val countries = async(IO) { countryList(ref(), R.raw.emojis) }
         val countryBoundaries = async(IO) { getCountryBoundaries(ref()) }
-        val emojiManager = async(IO) { EmojiFlagManager().load(PATH) }
         val favorites = async(IO) { LazyMarkerStorage(FAVORITE_KEY).loadFavorites(ref()) }
         val jsonArray = async(IO) { jsonArray(ref(), R.raw.nordvpn, ".json") }
+        val tileProvider = async(IO) { fileBackedTileProvider() }
         val jsonObj = async(IO) { createGeoJson(ref()) }
-        val rawResourceStyle = async(IO) { MapStyleOptions.loadRawResourceStyle(ref(), R.raw.style_json) }
-        val tileProvider = async(IO) { memoryBackedTileProvider() }
+        val map = async(Main) { mapView?.onCreate(null) }
+
         // ui thread
         mCountries = countries.await()
         mTileProvider = tileProvider.await()
         mCountryBoundaries = countryBoundaries.await()
-        mEmojiFlagManager = emojiManager.await()
         mFavorites = favorites.await()
         mJsonArray = jsonArray.await()
-        mRawResourceStyle = rawResourceStyle.await()
-        val result = jsonObj.await()
+        map.await()
+
+        // Show data in UI
         screen.toolBar?.hideProgress(true)
-        showData(ref(), result)
+        showData(jsonObj.await())
     }
 
-    private fun loadData2() = launch {
-        // ui thread
-        screen.toolBar?.showProgress(true)
-        val ref = screen.requireContext().asReference()
-        // background thread
-        val result = async(IO) { createGeoJson(ref()) }.await()
-        // ui thread
-        screen.toolBar?.hideProgress(true)
-        showData2(ref(), result)
-    }
-
-    private fun showData(context: Context, jsonObj: JSONObject?) {
-        mMap.let {
-            iconDescriptor0 = BitmapDescriptorFactory.fromResource(R.drawable.map1)
-            iconDescriptor1 = BitmapDescriptorFactory.fromResource(R.drawable.map2)
-            iconDescriptor10 = BitmapDescriptorFactory.fromResource(R.drawable.map0)
-            val location = screen.lastLocation
-            val (hashSet, hashMap) = createMarkers(context, mJsonArray, mEmojiFlagManager!!, it, mFavorites, this)
-            flags = showPrintArray(context, mCountries, hashSet)
-            markers = hashMap
-
-            mCameraUpdateAnimator = CameraUpdateAnimator(it, createCameraUpdates(), this, this)
-            val latLng = getCurrentPosition(context, mCountryBoundaries, location, flags, jsonObj, mJsonArray)
-            val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
-                isAnimate = true
-                isClosest = true
-                target = latLng
-            }
-            mCameraUpdateAnimator?.add(animation)
-
-            it.addTileOverlay(TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false))
-
-            it.setMapStyle(mRawResourceStyle)
-            it.mapType = GoogleMap.MAP_TYPE_NORMAL
-            it.setMaxZoomPreference(mTileProvider.maximumZoom)
-            it.setMinZoomPreference(mTileProvider.minimumZoom)
-            it.setOnInfoWindowClickListener(this)
-            it.setOnMapClickListener(this)
-            it.setOnMarkerClickListener(this)
-            it.setOnMapLoadedCallback(this)
-            // todo
-            //val params = fab1.layoutParams as ConstraintLayout.LayoutParams
-            //it.setPadding(0, 0, 0, params.height + params.bottomMargin)
-            it.uiSettings?.isScrollGesturesEnabled = true
-            it.uiSettings?.isZoomGesturesEnabled = true
-            // Load map
-            views.showMap()
+    private suspend fun showData(jsonObj: JSONObject?) {
+        val ref = applicationContext.asReference()
+        // todo use current context or not?
+        val (hashSet, hashMap) = withContext(Default) {
+            createMarkers(ref(), mJsonArray, mCountries, onMarkerCreateListener, mFavorites, onLevelChangeCallback)
         }
-    }
-
-    private fun showData2(context: Context, jsonObj: JSONObject?) {
-        val latLng = getCurrentPosition(context, mCountryBoundaries, screen.lastLocation, flags, jsonObj)
+        flags = withContext(Default) { showPrintArray(ref(), mCountries, hashSet) }
+        markers = hashMap
+        mAnimations = createCameraUpdates()
+        val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, screen.lastLocation, flags, jsonObj, mJsonArray)
         val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
+            callback = true
             isAnimate = true
+            isClosest = true
+            tag = jsonObj
             target = latLng
         }
-        mCameraUpdateAnimator?.add(animation)
-        mCameraUpdateAnimator?.execute()
-        jsonObj?.let {
-            // showThreats(context, it)
-            views.showMiniBar(createUserMessage(context, it).build())
+        mAnimations.add(animation)
+        val mapView = views.findViewById<MapView>(R.id.map)
+        val watermark = mapView?.findViewWithTag<ImageView>("GoogleWatermark")
+
+        if (watermark != null) {
+            watermark.visibility = View.INVISIBLE
+            /*
+            val params = watermark.layoutParams as RelativeLayout.LayoutParams
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0)
+            params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+            */
+        }
+        mapView?.getMapAsync(this)
+    }
+
+    private fun animateCamera(jsonObj: JSONObject?, closest: Boolean = false, execute: Boolean = true) {
+        // check if not already animating
+        mCameraUpdateAnimator?.let {
+            if (!it.isAnimating) {
+                val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, screen.lastLocation, flags, jsonObj, mJsonArray)
+                val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
+                    callback = true
+                    isAnimate = true
+                    isClosest = closest
+                    tag = jsonObj
+                    target = latLng
+                }
+                it.add(animation)
+                // Execute the animation
+                if (execute) it.execute()
+            }
         }
     }
 
     companion object {
         private const val FAVORITE_KEY = "pref_favorites"
-        private const val PATH = "/assets/emojis.json"
+        internal val mDescriptor0: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map1) }
+        internal val mDescriptor1: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map2) }
+        internal val mDescriptor10: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map0) }
+        val onLevelChangeCallback: OnLevelChangeCallback = OnLevelChangeCallback { marker, level ->
+            when (level) {
+                0 -> {
+                    marker.zIndex = 0f
+                    marker.setIcon(mDescriptor0)
+                }
+                1 -> {
+                    marker.zIndex = level / 10.toFloat()
+                    marker.setIcon(mDescriptor1)
+                }
+            }
+        }
+        val onMarkerCreateListener: OnMarkerCreateListener1 = OnMarkerCreateListener1()
+
+        class OnMarkerCreateListener1 : OnMarkerCreateListener {
+            private lateinit var map: GoogleMap
+
+            fun setMap(googleMap: GoogleMap) {
+
+                this.map = googleMap
+            }
+
+            override fun onMarkerCreate(options: MarkerOptions, tag: Any?): Marker {
+                val marker = map.addMarker(options)
+                if (tag != null) {
+                    marker.tag = tag
+                }
+                return marker
+            }
+        }
     }
 }
