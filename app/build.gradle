@@ -154,9 +154,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     // Logger
     implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
-    implementation 'org.slf4j:slf4j-api:1.7.26'
-    debugImplementation 'org.slf4j:slf4j-android:1.7.26'
-    testImplementation 'org.slf4j:slf4j-simple:1.7.26'
+    implementation "org.slf4j:slf4j-api:$slf4j_version"
+    debugImplementation "org.slf4j:slf4j-android:$slf4j_version"
+    testImplementation "org.slf4j:slf4j-simple:$slf4j_version"
     // Google Play Services
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
