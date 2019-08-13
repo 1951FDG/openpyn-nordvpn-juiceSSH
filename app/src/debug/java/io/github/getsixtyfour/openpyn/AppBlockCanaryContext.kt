@@ -1,19 +1,11 @@
 package io.github.getsixtyfour.openpyn
 
+import android.content.Context
+import android.util.Log
 import com.github.moduth.blockcanary.BlockCanaryContext
+import com.github.moduth.blockcanary.internal.BlockInfo
 
 class AppBlockCanaryContext : BlockCanaryContext() {
-    override fun provideQualifier(): String {
-        return BuildConfig.VERSION_CODE.toString() + "_" + BuildConfig.VERSION_NAME + "_YYB"
-    }
-
-    override fun provideUid(): String {
-        return "87224330"
-    }
-
-    override fun provideNetworkType(): String {
-        return "4G"
-    }
 
     override fun provideMonitorDuration(): Int {
         return 9999
@@ -24,14 +16,17 @@ class AppBlockCanaryContext : BlockCanaryContext() {
     }
 
     override fun displayNotification(): Boolean {
-        return true
-    }
-
-    override fun concernPackages(): List<String> {
-        return super.provideWhiteList()
+        return BuildConfig.DEBUG
     }
 
     override fun provideWhiteList(): List<String> {
-        return super.provideWhiteList()
+        return emptyList()
+    }
+
+    override fun onBlock(context: Context?, blockInfo: BlockInfo?) {
+        super.onBlock(context, blockInfo)
+        val e = blockInfo?.buildException()
+        e?.printStackTrace()
+        Log.e("block", blockInfo.toString())
     }
 }
