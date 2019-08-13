@@ -44,8 +44,6 @@
 #include <jni.h>
 #include <cstring>
 
-#define SQLITE_VERSION 3024000
-
 #ifndef SQLITE_DEFAULT_SECTOR_SIZE
 # define SQLITE_DEFAULT_SECTOR_SIZE 4096
 #endif
@@ -543,13 +541,18 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 	{
 		return -1;
 	}
+/*
 
-	INFO("sqlite thread safe %d", sqlite3_threadsafe());
-	int version = sqlite3_libversion_number();
+	int rc;
+	if ( (rc = sqlite3_config(SQLITE_CONFIG_SINGLETHREAD)) != SQLITE_OK ) {
+		ERROR("Can not config sqlite3 threads: sqlite3_config returned %d.", rc);
+	} else {
+		VERBOSE("SUCCESS: sqlite3_config returned %d.", rc);
+	}
+
+*/
 	const char *version_str = sqlite3_libversion();
-	INFO("found sqlite library version %s", version_str);
-	if (version < SQLITE_VERSION) { WARN("sqlite version %s is older than 3.24.0!", version_str); }
-	if (version > SQLITE_VERSION) { WARN("sqlite version %s is newer than 3.24.0!", version_str); }
+	VERBOSE("found sqlite library version %s thread safe %d", version_str, sqlite3_threadsafe());
 
 	jclass cActivityThread = env->FindClass("android/app/ActivityThread");
 	if (cActivityThread == JNI_FALSE) { return JNI_ERR; }
@@ -589,7 +592,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 	AAssetManager *assetMgr = AAssetManager_fromJava(env, assetManager);
 	assert(assetMgr != nullptr);
 
-	DEBUG("enabling sqlite3ndk");
+	VERBOSE("enabling sqlite3ndk");
 	if (sqlite3_ndk_init(
 		assetMgr,
 		SQLITE_NDK_VFS_NAME,
