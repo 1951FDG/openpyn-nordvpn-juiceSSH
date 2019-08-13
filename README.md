@@ -157,6 +157,7 @@ To compile and run the project you'll need:
 -   [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 -   [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 -   [Kotlin](https://github.com/JetBrains/kotlin)
+-   [Ktor](https://github.com/ktorio/ktor)
 -   [LeakCanary](https://github.com/square/leakcanary)
 -   [material-about-library](https://github.com/daniel-stoneuk/material-about-library)
 -   [Minibar](https://github.com/mayuroks/minibar)
