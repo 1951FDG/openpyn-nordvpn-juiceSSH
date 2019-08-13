@@ -52,14 +52,14 @@
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
-    <style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">
-        <item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>
-    </style>
+    <!--<style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">-->
+        <!--<item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>-->
+    <!--</style>-->
 
-    <style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">
-        <item name="android:background">?android:attr/colorBackground</item>
-        <item name="android:cacheColorHint">?android:attr/colorBackground</item>
-    </style>
+    <!--<style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">-->
+        <!--<item name="android:background">?android:attr/colorBackground</item>-->
+        <!--<item name="android:cacheColorHint">?android:attr/colorBackground</item>-->
+    <!--</style>-->
 
     <style name="MorphDialog.Custom.Light" parent="MorphDialog.Base.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -67,14 +67,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="ToolbarProgress" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:indeterminate">true</item>
-        <item name="mpb_indeterminateTint">?android:attr/colorAccent</item>
-        <item name="mpb_progressStyle">horizontal</item>
-        <item name="mpb_progressTint">?android:attr/colorAccent</item>
-        <item name="mpb_showProgressBackground">false</item>
-        <item name="mpb_useIntrinsicPadding">false</item>
-    </style>
+    <!--<style name="ToolbarProgress" parent="android:Widget.ProgressBar.Horizontal">-->
+        <!--<item name="android:indeterminate">true</item>-->
+        <!--<item name="mpb_indeterminateTint">?android:attr/colorAccent</item>-->
+        <!--<item name="mpb_progressStyle">horizontal</item>-->
+        <!--<item name="mpb_progressTint">?android:attr/colorAccent</item>-->
+        <!--<item name="mpb_showProgressBackground">false</item>-->
+        <!--<item name="mpb_useIntrinsicPadding">false</item>-->
+    <!--</style>-->
 
     <style name="blinkt.dialog" parent="android:Theme.DeviceDefault.Light.Dialog" />
 

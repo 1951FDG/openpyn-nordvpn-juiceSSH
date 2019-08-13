@@ -20,18 +20,6 @@
 
     <string name="multi_select_dialog_hint">Search</string>
 
-    <!-- Card Titles -->
-    <string name="title_temp" tools:keep="@string/title_temp">Temperature</string>
-    <string name="title_fan_speed" tools:keep="@string/title_fan_speed">Fan Speed</string>
-    <string name="title_clocks" tools:keep="@string/title_clocks">Clocks</string>
-    <string name="title_graphics_clock" tools:keep="@string/title_graphics_clock">Graphics</string>
-    <string name="title_video_clock" tools:keep="@string/title_video_clock">Video</string>
-    <string name="title_memory_clock" tools:keep="@string/title_memory_clock">Memory</string>
-    <string name="title_power" tools:keep="@string/title_power">Power</string>
-    <string name="title_memory" tools:keep="@string/title_memory">Memory</string>
-    <string name="title_mem_free" tools:keep="@string/title_mem_free">Free</string>
-    <string name="title_mem_used" tools:keep="@string/title_mem_used">Used</string>
-
     <string name="error_must_install_juicessh">Must install the JuiceSSH app!</string>
     <string name="error_must_have_atleast_one_server">Must have at least one server!</string>
     <string name="title_activity_settings">Settings</string>
@@ -338,7 +326,6 @@
     <string name="egab_version">Version</string>
     <string name="egab_author">Author</string>
     <string name="egab_share">Share</string>
-    <string name="egab_license">License</string>
     <string name="egab_licenses">Open Source Licenses</string>
     <string name="egab_changelog">Changelog</string>
     <string name="egab_submit_issue">Report a Problem</string>

@@ -36,43 +36,15 @@ class ConnectionManager(
         const val JUICESSH_REQUEST_CODE: Int = 345
     }
 
-//    val powerUsage = MutableLiveData<Int>()
-//    val temperature = MutableLiveData<Int>()
-//    val fanSpeed = MutableLiveData<Int>()
-//    val freeMemory = MutableLiveData<Int>()
-//    val usedMemory = MutableLiveData<Int>()
-//    val graphicsClock = MutableLiveData<Int>()
-//    val videoClock = MutableLiveData<Int>()
-//    val memoryClock = MutableLiveData<Int>()
     private val openpyn = MutableLiveData<Int>()
     private var mSessionKey = ""
     private var mSessionId = 0
     private val mClient = PluginClient()
     private val mCtx: Context = ctx.applicationContext
-//    private val mPowerController = PowerController(mCtx, powerUsage)
-//    private val mTempController = TempController(mCtx, temperature)
-//    private val mFanSpeedController = FanSpeedController(mCtx, fanSpeed)
-//    private val mFreeMemController = FreeMemController(mCtx, freeMemory)
-//    private val mUsedMemController = UsedMemController(mCtx, usedMemory)
-//    private val mGraphicsClockController = GraphicsClockController(mCtx, graphicsClock)
-//    private val mVideoClockController = VideoClockController(mCtx, videoClock)
-//    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
     private val mOpenpynController = OpenpynController(
-        mCtx,
-        openpyn,
-        mActivitySessionExecuteListener,
-        mActivityCommandExecuteListener,
-        mActivityOnOutputLineListener
+        mCtx, openpyn, mActivitySessionExecuteListener, mActivityCommandExecuteListener, mActivityOnOutputLineListener
     )
     private val mControllers = listOf(
-//            mPowerController,
-//            mTempController,
-//            mFanSpeedController,
-//            mFreeMemController,
-//            mUsedMemController,
-//            mGraphicsClockController,
-//            mVideoClockController,
-//            mMemoryClockController,
         mOpenpynController
     )
 
