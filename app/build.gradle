@@ -216,7 +216,7 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.firebase:firebase-core:17.0.1'
     // Debug
-    debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:slave-SNAPSHOT'
+    debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:1.6.4'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
     // Test
