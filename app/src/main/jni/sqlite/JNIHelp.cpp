@@ -288,13 +288,20 @@ void jniLogException(C_JNIEnv* env, int priority, const char* tag, jthrowable ex
     __android_log_write(priority, tag, trace.c_str());
 }
 
-const char* jniStrError(int errnum, char* buf, size_t buflen) {
-#if 1
-    // Note: glibc has a nonstandard strerror_r that returns char* rather than POSIX's int.
-    // char *strerror_r(int errnum, char *buf, size_t n);
-    return strerror_r(errnum, buf, buflen);
-#else
-    int rc = strerror_r(errnum, buf, buflen);
+// Note: glibc has a nonstandard strerror_r that returns char* rather than POSIX's int.
+// char *strerror_r(int errnum, char *buf, size_t n);
+//
+// Some versions of bionic support the glibc style call. Since the set of defines that determine
+// which version is used is byzantine in its complexity we will just use this C++ template hack to
+// select the correct jniStrError implementation based on the libc being used.
+namespace impl {
+using GNUStrError = char* (*)(int,char*,size_t);
+using POSIXStrError = int (*)(int,char*,size_t);
+inline const char* realJniStrError(GNUStrError func, int errnum, char* buf, size_t buflen) {
+    return func(errnum, buf, buflen);
+}
+inline const char* realJniStrError(POSIXStrError func, int errnum, char* buf, size_t buflen) {
+    int rc = func(errnum, buf, buflen);
     if (rc != 0) {
         // (POSIX only guarantees a value other than 0. The safest
         // way to implement this function is to use C++ and overload on the
@@ -302,6 +309,16 @@ const char* jniStrError(int errnum, char* buf, size_t buflen) {
         snprintf(buf, buflen, "errno %d", errnum);
     }
     return buf;
+}
+}  // namespace impl
+const char* jniStrError(int errnum, char* buf, size_t buflen) {
+#ifdef _WIN32
+    strerror_s(buf, buflen, errnum);
+  return buf;
+#else
+    // The magic of C++ overloading selects the correct implementation based on the declared type of
+    // strerror_r. The inline will ensure that we don't have any indirect calls.
+    return impl::realJniStrError(strerror_r, errnum, buf, buflen);
 #endif
 }
 
