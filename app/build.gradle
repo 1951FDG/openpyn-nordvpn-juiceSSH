@@ -48,11 +48,11 @@ if (keystorePropertiesFile.isFile()) {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "io.github.getsixtyfour.openpyn"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
