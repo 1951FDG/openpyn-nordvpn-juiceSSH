@@ -58,8 +58,8 @@ public class ConnectionTest {
     }
 
     @AfterClass
-    public static void tearDownClass() throws IOException {
-        connection.close();
+    public static void tearDownClass() {
+        connection.disconnect();
     }
 
     /**
