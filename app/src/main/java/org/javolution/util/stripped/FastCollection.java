@@ -67,6 +67,7 @@ import java.util.*;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @version 5.4.5, March 23, 2010
  */
+@SuppressWarnings({ "unchecked" })
 public abstract class FastCollection <E>  implements
         Collection <E>  {
 

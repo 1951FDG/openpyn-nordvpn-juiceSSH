@@ -26,6 +26,7 @@ import java.util.Comparator;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @version 5.3, April 23, 2009
  */
+@SuppressWarnings({ "unchecked" })
 public abstract class FastComparator <T>  implements Comparator <T> {
 
    public static boolean _Rehash = isPoorSystemHash();

@@ -108,6 +108,7 @@ import java.util.logging.Logger;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle </a>
  * @version 5.2, September 11, 2007
  */
+@SuppressWarnings({ "unchecked" })
 public class FastMap<K, V> implements Map<K, V> {
   public static final Logger logger = Logger.getLogger("javolution.util");
 

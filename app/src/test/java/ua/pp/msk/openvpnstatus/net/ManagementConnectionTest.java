@@ -165,7 +165,7 @@ public class ManagementConnectionTest {
     }
 
     @SuppressWarnings({ "SameParameterValue", "ThrowInsideCatchBlockWhichIgnoresCaughtException" })
-    private static void invokeStaticMethod(Class targetClass, String methodName, Class[] argClasses, Object[] argObjects)
+    private static void invokeStaticMethod(Class<?> targetClass, String methodName, Class[] argClasses, Object[] argObjects)
             throws InvocationTargetException {
         try {
             Method method = targetClass.getDeclaredMethod(methodName, argClasses);
