@@ -24,15 +24,11 @@ buildscript {
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.6'
         classpath 'com.google.android.gms:strict-version-matcher-plugin:1.2.0'
         classpath 'gradle.plugin.com.github.konifar.gradle:plugin:0.3.3'
-
+        classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.0-RC16'
+        classpath "com.gladed.androidgitversion:gradle-android-git-version:0.4.9"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
-}
-
-plugins {
-    id("io.gitlab.arturbosch.detekt").version("1.0.0-RC16")
-    id("com.gladed.androidgitversion").version("0.4.9")
 }
 
 allprojects {
