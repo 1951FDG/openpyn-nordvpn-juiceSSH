@@ -44,14 +44,24 @@ allprojects {
     apply plugin: 'idea'
 
     idea.module {
-        excludeDirs += file("app/src/main/java/org/sqlite")
-        excludeDirs += file("app/src/main/java/io/requery")
+        excludeDirs += file(".gitattributes")
+        excludeDirs += file("Gemfile")
+        excludeDirs += file("Gemfile.lock")
+        excludeDirs += file("LICENSE")
+        excludeDirs += file("mapfile.xml")
+
+        excludeDirs += file("app/.cxx")
+        excludeDirs += file("app/.externalNativeBuild")
         excludeDirs += file("app/src/main/java/com/almworks")
+        excludeDirs += file("app/src/main/java/io/requery")
         excludeDirs += file("app/src/main/java/org/javolution")
-        excludeDirs += file("app/src/main/jni/sqlite")
-        excludeDirs += file("app/src/main/jni/sqlite-android")
-        excludeDirs += file("app/src/main/jni/sqlite4java")
+        excludeDirs += file("app/src/main/java/org/sqlite")
+        excludeDirs += file("app/src/main/jni")
         excludeDirs += file("app/src/main/obj")
+
+        excludeDirs += file("config/detekt")
+
+        excludeDirs += file("fastlane")
         excludeDirs += file("svg")
         excludeDirs += file("tiles")
         excludeDirs += file("world")
