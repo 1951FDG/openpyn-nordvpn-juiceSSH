@@ -46,6 +46,7 @@ public class AboutConfig {
     public String shareMessage;
     public String sharingTitle;
 
+    @SuppressWarnings("UtilityClass")
     private static final class SingletonHolder {
 
         public static final AboutConfig HOLDER_INSTANCE = new AboutConfig();

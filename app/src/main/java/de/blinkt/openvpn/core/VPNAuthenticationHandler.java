@@ -20,14 +20,12 @@ public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
     @NonNull
     public static String getHost(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        //noinspection ConstantConditions
         return preferences.getString(Constants.PREF_MANAGEMENT_ADDRESS, Constants.DEF_HOST);
     }
 
     @NonNull
     public static String getPassword(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        //noinspection ConstantConditions
         return preferences.getString(Constants.PREF_MANAGEMENT_PASSWORD, Constants.DEF_PASSWORD);
     }
 
@@ -40,7 +38,6 @@ public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
     @NonNull
     public static String getUserName(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        //noinspection ConstantConditions
         return preferences.getString(Constants.PREF_MANAGEMENT_USERNAME, Constants.DEF_USER_NAME);
     }
 

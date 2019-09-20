@@ -131,6 +131,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         if (!isConnected()) {
             throw new IOException(SOCKET_IS_NOT_CONNECTED);
         }
+        // todo measure number of chars during usages
         StringBuilder sb = new StringBuilder(256);
         BufferedReader in = getBufferedReader();
         BufferedWriter out = getBufferedWriter();
@@ -368,10 +369,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 logLevel = LogLevel.INFO;
                 break;
             case "F":
-                // F -- fatal error
-                logLevel = LogLevel.ERROR;
-                break;
             case "N":
+                // F -- fatal error
                 // N -- non-fatal error
                 logLevel = LogLevel.ERROR;
                 break;

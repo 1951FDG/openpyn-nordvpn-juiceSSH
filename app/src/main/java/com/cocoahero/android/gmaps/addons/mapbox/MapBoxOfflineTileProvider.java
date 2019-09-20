@@ -290,6 +290,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
         }
     }
 
+    @Nullable
     private String getStringValue(@NonNull String key) {
         String sql = "SELECT value FROM metadata WHERE name = ?";
         String[] bindArgs = { key };
@@ -298,6 +299,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
         }
     }
 
+    @Nullable
     private String getSQliteVersion() {
         String sql = "SELECT sqlite_version() AS sqlite_version";
         //return DatabaseUtils.stringForQuery(mDatabase, sql, null); // sqliteX

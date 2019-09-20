@@ -34,7 +34,7 @@ public final class StatusCli {
     }
 
     public static void main(String[] args) {
-        String host = null;
+        String host = "";
         Integer port = 0;
         try {
             Options opts = new Options();

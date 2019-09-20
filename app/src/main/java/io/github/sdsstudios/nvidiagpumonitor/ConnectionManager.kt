@@ -103,7 +103,7 @@ class ConnectionManager(
                 Thread.sleep(5000)
                 mClient.disconnect(mSessionId, mSessionKey)
             } catch (e: ServiceNotConnectedException) {
-                mCtx.longToast(R.string.error_couldnt_connect_to_service)
+                mCtx.longToast(R.string.error_could_not_connect_to_service)
             }
         }).start()
     }
@@ -113,7 +113,7 @@ class ConnectionManager(
             try {
                 mClient.connect(activity, uuid, this, JUICESSH_REQUEST_CODE)
             } catch (e: ServiceNotConnectedException) {
-                mCtx.longToast(R.string.error_couldnt_connect_to_service)
+                mCtx.longToast(R.string.error_could_not_connect_to_service)
             }
         }).start()
     }

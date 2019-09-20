@@ -36,8 +36,6 @@ abstract class MyStorage<T>(val key: String) {
         val index = arrayList.indexOf(value)
         if (index == -1) {
             arrayList.add(value)
-        } else {
-            //arrayList[index] = value
         }
         storeFavorites(context, arrayList)
     }

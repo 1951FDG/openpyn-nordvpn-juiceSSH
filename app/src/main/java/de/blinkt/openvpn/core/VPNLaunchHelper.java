@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 /**
@@ -31,6 +32,7 @@ public final class VPNLaunchHelper {
     private VPNLaunchHelper() {
     }
 
+    @Nullable
     private static Intent getStartServiceIntent(Context context) {
         Intent intent = new Intent(context, OpenVPNService.class);
         PackageManager packageManager = context.getPackageManager();

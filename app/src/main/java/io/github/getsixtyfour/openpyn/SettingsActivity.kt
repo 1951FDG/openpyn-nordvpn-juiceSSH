@@ -435,7 +435,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         fun startAboutFragment(activity: Activity) {
             //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
             val intent = Intent(activity, SettingsActivity::class.java).apply {
-                putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.AboutSyncPreferenceFragment::class.java.name)
+                putExtra(EXTRA_SHOW_FRAGMENT, AboutSyncPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
             ContextCompat.startActivity(activity, intent, null)
@@ -444,7 +444,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         fun startSettingsFragment(activity: Activity) {
             //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
             val intent = Intent(activity, SettingsActivity::class.java).apply {
-                putExtra(EXTRA_SHOW_FRAGMENT, SettingsActivity.SettingsSyncPreferenceFragment::class.java.name)
+                putExtra(EXTRA_SHOW_FRAGMENT, SettingsSyncPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
             ContextCompat.startActivity(activity, intent, null)

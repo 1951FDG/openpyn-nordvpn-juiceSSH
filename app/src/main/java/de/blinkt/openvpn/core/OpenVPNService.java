@@ -136,7 +136,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         // Always show notification here to avoid problem with startForeground timeout
         {
             String text = getString(R.string.vpn_launch_title);
-            String title = getString(R.string.notifcation_title, getString(R.string.state_disconnected));
+            String title = getString(R.string.notification_title, getString(R.string.state_disconnected));
             showNotification(title, text, text, NOTIFICATION_CHANNEL_NEW_STATUS_ID, 0L, ConnectionStatus.LEVEL_NOT_CONNECTED);
         }
         // todo inner class, check thread killed handler to end service
@@ -194,12 +194,12 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             String sDiffIn = humanReadableByteCount(resources, diffIn / byteCountInterval, true);
             String sOut = humanReadableByteCount(resources, out, false);
             String sDiffOut = humanReadableByteCount(resources, diffOut / byteCountInterval, true);
-            String text = getString(R.string.statusline_bytecount, sIn, sDiffIn, sOut, sDiffOut);
-            String title = getString(R.string.notifcation_title, getString(R.string.state_connected));
+            String text = getString(R.string.status_line_byte_count, sIn, sDiffIn, sOut, sDiffOut);
+            String title = getString(R.string.notification_title, getString(R.string.state_connected));
             showNotification(title, text, null, NOTIFICATION_CHANNEL_BG_ID, mConnectTime, ConnectionStatus.LEVEL_CONNECTED);
         }
     }
-// todo check wich thread these run on
+// todo check which thread these run on
     @Override
     public void onConnectError(@NonNull Throwable e) {
         // TODO
@@ -266,7 +266,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
                 mDisplayByteCount = false;
             }
             String tickerText = getString(getLocalizedState(name));
-            String title = getString(R.string.notifcation_title, tickerText);
+            String title = getString(R.string.notification_title, tickerText);
             String text = message;
             // (x) optional address of remote server (OpenVPN 2.1 or higher)
             // (y) optional port of remote server (OpenVPN 2.4 or higher)
@@ -325,7 +325,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
                     NotificationManagerCompat.IMPORTANCE_MIN);
             channel.setDescription(getString(R.string.channel_description_background));
             channel.enableLights(false);
-            channel.setLightColor(Color.DKGRAY); //todo why setcolor
+            channel.setLightColor(Color.DKGRAY); //todo why set color
             mNotificationManager.createNotificationChannel(channel);
         }
         // Connection status change messages
@@ -389,7 +389,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         startForeground(notificationId, notification);
     }
 
-    @SuppressWarnings({ "MethodWithMultipleReturnPoints", "UnnecessaryDefault" })
+    @SuppressWarnings({ "MethodWithMultipleReturnPoints" })
     private static int getIconByConnectionStatus(ConnectionStatus level) {
         switch (level) {
             case LEVEL_AUTH_FAILED:

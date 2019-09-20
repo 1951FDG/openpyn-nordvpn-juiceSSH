@@ -56,7 +56,7 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import kotlinx.android.synthetic.main.activity_main.mainlayout
+import kotlinx.android.synthetic.main.activity_main.container
 import kotlinx.android.synthetic.main.activity_main.spinnerConnectionList
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.coroutines.CoroutineScope
@@ -299,7 +299,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
             } else {
                 MorphDialog.Builder(this, v).apply {
                     title("Error")
-                    content(R.string.error_must_have_atleast_one_server)
+                    content(R.string.error_must_have_at_least_one_server)
                     positiveText(android.R.string.ok)
                     show()
                 }
@@ -549,7 +549,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
             return SnackProgressBar(type, message).setAction(action, onActionClickListener)
         }
 
-        mSnackProgressBarManager = SnackProgressBarManager(mainlayout, this)
+        mSnackProgressBarManager = SnackProgressBarManager(container, this)
         val type = SnackProgressBar.TYPE_NORMAL
         val action = getString(android.R.string.ok)
 
