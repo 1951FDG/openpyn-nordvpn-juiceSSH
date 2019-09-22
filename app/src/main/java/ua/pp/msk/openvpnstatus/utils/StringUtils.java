@@ -76,6 +76,22 @@ public final class StringUtils {
     }
 
     /**
+     * <p>Returns either the passed in CharSequence, or if the CharSequence is
+     * whitespace, empty ("") or {@code null}, the value of {@code defaultStr}.</p>
+     *
+     * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
+     *
+     * @param <T> the specific kind of CharSequence
+     * @param str the CharSequence to check, may be null
+     * @param defaultStr  the default CharSequence to return
+     * @return the passed in CharSequence, or the default
+     */
+    @Nullable
+    public static <T extends CharSequence> T defaultIfBlank(@Nullable T str, @Nullable T defaultStr) {
+        return isBlank(str) ? defaultStr : str;
+    }
+
+    /**
      * <p>Escapes the characters in a {@code String} using Command Parsing rules.</p>
      *
      * <p>Deals correctly with double quotes and backslashes.</p>

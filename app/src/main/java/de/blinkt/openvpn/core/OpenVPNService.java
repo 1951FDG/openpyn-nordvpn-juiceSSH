@@ -43,6 +43,7 @@ import ua.pp.msk.openvpnstatus.listeners.StateManager.StateListener;
 import ua.pp.msk.openvpnstatus.net.Connection;
 import ua.pp.msk.openvpnstatus.net.ConnectionListener;
 import ua.pp.msk.openvpnstatus.net.ManagementConnection;
+import ua.pp.msk.openvpnstatus.utils.StringUtils;
 
 /**
  * @author Arne Schwabe
@@ -130,7 +131,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
 
         mNotificationAlwaysVisible = intent.getBooleanExtra(EXTRA_ALWAYS_SHOW_NOTIFICATION, true);
 
-        String host = (intent.getStringExtra(EXTRA_HOST) != null) ? intent.getStringExtra(EXTRA_HOST) : DEFAULT_REMOTE_SERVER;
+        String host = StringUtils.defaultIfBlank(intent.getStringExtra(EXTRA_HOST), DEFAULT_REMOTE_SERVER);
         int port = intent.getIntExtra(EXTRA_PORT, DEFAULT_REMOTE_PORT);
 
         // Always show notification here to avoid problem with startForeground timeout
@@ -389,7 +390,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         startForeground(notificationId, notification);
     }
 
-    @SuppressWarnings({ "MethodWithMultipleReturnPoints" })
+    @SuppressWarnings("MethodWithMultipleReturnPoints")
     private static int getIconByConnectionStatus(ConnectionStatus level) {
         switch (level) {
             case LEVEL_AUTH_FAILED:
