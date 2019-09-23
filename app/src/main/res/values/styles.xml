@@ -5,7 +5,7 @@
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 
-    <style name="Base.V21.Theme.AppTheme" parent="Theme.AppCompat.Light">
+    <style name="Base.V21.Theme.AppTheme" parent="Theme.MaterialComponents.Light.Bridge">
         <!-- Original AppCompat attributes. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -25,7 +25,7 @@
 
     </style>
 
-    <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.AppCompat.Light">
+    <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.MaterialComponents.Light.Bridge">
         <!-- Original AppCompat attributes. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
