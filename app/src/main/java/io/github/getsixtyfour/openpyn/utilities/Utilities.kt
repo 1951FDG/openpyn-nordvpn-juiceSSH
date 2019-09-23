@@ -239,7 +239,9 @@ suspend fun createGeoJson(context: Context): JSONObject? {
                     jsonObject = JSONObject(json)
                 }
             } catch (exception: TimeoutCancellationException) {
-                exception.message?.let { Log.error(it) }
+                exception.message?.let { Log.info(it) }
+            } catch (cause: Throwable) {
+                cause.message?.let { Log.error(it) }
             } finally {
                 Log.debug(jsonObject.toString())
             }
