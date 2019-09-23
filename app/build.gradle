@@ -36,13 +36,16 @@ android {
                 cppFlags ""
             }
         }
+        resConfigs "en"
     }
     buildTypes {
         release {
             ndk {
                 abiFilters 'x86', 'armeabi-v7a', 'arm64-v8a', 'x86_64'
             }
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'proguard-rules-release.pro'
         }
         debug {
             // Comment next two lines to run "fastlane beta"
