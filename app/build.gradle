@@ -144,45 +144,59 @@ configurations {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'src/main/libs')
+
+    // 1951FDG
+    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:v3.3'
+    implementation('com.github.1951FDG:ProgressToolbar:1.0.6') {
+        exclude group: 'me.zhanghai.android.materialprogressbar'
+    }
+    implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.15'
+    debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:slave-SNAPSHOT'
+
     // Android
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation 'androidx.preference:preference:1.1.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'net.mm2d:preference:0.2.1'
+    implementation 'androidx.sqlite:sqlite:2.0.1'
+
     // Anko
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
     implementation "org.jetbrains.anko:anko-design:$anko_version"
-    //implementation "org.jetbrains.anko:anko-sdk21-listeners:$anko_version"
+
     // Anko Layouts
     implementation "org.jetbrains.anko:anko-sdk21:$anko_version"
+
+    // Architecture
+    implementation 'com.naver.android.svc:svc:1.0.0'
+    kapt 'com.naver.android.svc:svc-compiler:1.0.0'
+
     // Coroutines
-    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.1'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-io-jvm:$kotlinx_io_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.1'
-    // Emoji
-    //implementation 'com.vdurmont:emoji-java:5.1.1'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-io-jvm:$kotlinx_io_version"
+
+    // Crashlytics
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
+
+    // GDPR
+    implementation 'com.github.MFlisar:GDPRDialog:1.4.1'
+
     // Geocoder
     implementation 'de.westnordost:countryboundaries:1.5'
-    // JSON
-    implementation 'com.squareup.moshi:moshi:1.8.0'
-    implementation 'com.jayrave:moshi-pristine-models:1.0.0'
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    // Logger
-    implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
-    implementation "org.slf4j:slf4j-api:$slf4j_version"
-    debugImplementation "org.slf4j:slf4j-android:$slf4j_version"
-    testImplementation "org.slf4j:slf4j-simple:$slf4j_version"
+
     // Google Play Services
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    // Google Maps SDK for Android v.3.0.0 BETA
-    //implementation name:'maps-sdk-3.0.0-beta', ext:'aar'
-    //implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    // Networking
-    implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.15'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+
+    // Google Material Design
+    implementation 'com.google.android.material:material:1.0.0'
+
+    // HTTP Client
     implementation "com.github.kittinunf.fuel:fuel-android:$fuel_version"
     implementation "com.github.kittinunf.fuel:fuel-json:$fuel_version"
     implementation("io.ktor:ktor-client-android:$ktor_version") {
@@ -195,35 +209,42 @@ dependencies {
         exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-common'
         exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-jdk8'
     }
+
+    // JSON
+    implementation 'com.jayrave:moshi-pristine-models:1.0.0'
+    implementation 'com.squareup.moshi:moshi:1.8.0'
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    // LeakCanary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
+    // Logger
+    implementation "org.slf4j:slf4j-api:$slf4j_version"
+    implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
+    debugImplementation "org.slf4j:slf4j-android:$slf4j_version"
+    testImplementation "org.slf4j:slf4j-simple:$slf4j_version"
+
+    // Preference
+    implementation 'net.mm2d:preference:0.2.1'
+
     // UI
     implementation('com.afollestad.material-dialogs:core:0.9.6.0') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
-    implementation('com.github.1951FDG:Android-Multi-Select-Dialog:v3.3')
-    implementation('com.github.1951FDG:ProgressToolbar:1.0.6') {
-        exclude group: 'me.zhanghai.android.materialprogressbar'
-    }
     implementation 'com.github.AdityaAnand1:Morphing-Material-Dialogs:0.0.4'
+    implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'com.github.mayuroks:minibar:0.2.0'
     implementation 'com.github.tingyik90:snackprogressbar:6.1.1'
-//    implementation('com.github.armcha:ElasticView:0.2.0') {
-//        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
-//    }
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
-    implementation 'com.github.GrenderG:Toasty:1.4.2'
-    // Crashlytics
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.google.firebase:firebase-core:17.2.0'
-    // Debug
-    debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:slave-SNAPSHOT'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
     // Test
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation('com.schibsted.spain:barista:3.2.0') {
         exclude group: 'androidx.test.espresso'
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
@@ -233,19 +254,23 @@ dependencies {
         exclude group: 'androidx.test.espresso'
         exclude group: 'com.android.support.test.uiautomator'
     }
-    // Architecture
-    implementation 'com.naver.android.svc:svc:1.0.0'
-    kapt 'com.naver.android.svc:svc-compiler:1.0.0'
-    // Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    // GDPR
-    implementation 'com.github.MFlisar:GDPRDialog:1.4.1'
-    // KTX
-    implementation 'androidx.core:core-ktx:1.1.0'
+    testImplementation 'junit:junit:4.12'
 
+    //noinspection GradleDependency
     implementation 'commons-cli:commons-cli:1.4'
-    implementation 'androidx.sqlite:sqlite:2.0.1'
+
+    // Anko
+    //implementation "org.jetbrains.anko:anko-sdk21-listeners:$anko_version"
+
+    // Emoji
+    //implementation 'com.vdurmont:emoji-java:5.1.1'
+
+    // Google Maps SDK for Android v.3.0.0 BETA
+    //implementation name:'maps-sdk-3.0.0-beta', ext:'aar'
+    //implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+
+    // UI
+    //implementation 'com.github.armcha:ElasticView:0.2.0'
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
