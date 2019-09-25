@@ -158,13 +158,13 @@ object PrintArray {
         }
 
         MultiSelectDialog().apply {
-            hint(context.getString(hint))
-            title(context.getString(title))
+            setHint(context.getString(hint))
+            setTitle(context.getString(title))
             setMinSelectionLimit(1)
             setMaxSelectionLimit(items.size)
-            preSelectIDsList(checkedItems)
-            multiSelectList(items)
-            onSubmit(object : MultiSelectDialog.SubmitCallbackListener {
+            setPreSelectIDsList(checkedItems)
+            setMultiSelectList(items)
+            setSubmitListener(object : MultiSelectDialog.SubmitCallbackListener {
                 override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
                     if (save(selectedIds)) checkedItemsList = selectedIds
                     listener.onSelected(selectedIds, selectedNames, dataString)
