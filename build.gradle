@@ -45,27 +45,27 @@ allprojects {
     apply plugin: 'idea'
 
     idea.module {
-        excludeDirs += file(".gitattributes")
-        excludeDirs += file("Gemfile")
-        excludeDirs += file("Gemfile.lock")
-        excludeDirs += file("LICENSE")
-        excludeDirs += file("mapfile.xml")
+        excludeDirs += file('.gitattributes')
+        excludeDirs += file('Gemfile')
+        excludeDirs += file('Gemfile.lock')
+        excludeDirs += file('LICENSE')
+        excludeDirs += file('mapfile.xml')
 
-        excludeDirs += file("app/.cxx")
-        excludeDirs += file("app/.externalNativeBuild")
-        excludeDirs += file("app/src/main/java/com/almworks")
-        excludeDirs += file("app/src/main/java/io/requery")
-        excludeDirs += file("app/src/main/java/org/javolution")
-        excludeDirs += file("app/src/main/java/org/sqlite")
-        excludeDirs += file("app/src/main/jni")
-        excludeDirs += file("app/src/main/obj")
+        excludeDirs += file('app/.cxx')
+        excludeDirs += file('app/.externalNativeBuild')
+        excludeDirs += file('app/src/main/java/com/almworks')
+        excludeDirs += file('app/src/main/java/io/requery')
+        excludeDirs += file('app/src/main/java/org/javolution')
+        excludeDirs += file('app/src/main/java/org/sqlite')
+        excludeDirs += file('app/src/main/jni')
+        excludeDirs += file('app/src/main/obj')
 
-        excludeDirs += file("config/detekt")
+        excludeDirs += file('config/detekt')
 
-        excludeDirs += file("fastlane")
-        excludeDirs += file("svg")
-        excludeDirs += file("tiles")
-        excludeDirs += file("world")
+        excludeDirs += file('fastlane')
+        excludeDirs += file('svg')
+        excludeDirs += file('tiles')
+        excludeDirs += file('world')
     }
 
     apply plugin: 'nebula.lint'
@@ -79,7 +79,7 @@ allprojects {
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+            options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
         }
     }
 }
@@ -91,10 +91,10 @@ task clean(type: Delete) {
 task unzip(type: Copy) {
     from zipTree("${project.rootDir}/sqlite-android-3240000/sqlite-android-3240000.aar")
     into "${project.rootDir}/app/src/main/jniLibs/"
-    include "jni/*/*.so"
+    include 'jni/*/*.so'
 
     eachFile { details ->
-        details.setRelativePath new RelativePath(true, details.path - "jni/")
+        details.setRelativePath new RelativePath(true, details.path - 'jni/')
     }
 
     includeEmptyDirs = false
@@ -103,9 +103,9 @@ task unzip(type: Copy) {
 task unzip2(type: Copy) {
     from zipTree("${project.rootDir}/sqlite-android-3240000/sqlite-android-3240000.aar")
     into "${project.rootDir}/app/src/main/libs/"
-    include "classes.jar"
+    include 'classes.jar'
 
     eachFile { details ->
-        details.setRelativePath new RelativePath(true, "libsqliteX.jar")
+        details.setRelativePath new RelativePath(true, 'libsqliteX.jar')
     }
 }

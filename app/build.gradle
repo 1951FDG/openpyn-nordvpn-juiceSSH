@@ -25,18 +25,18 @@ apply plugin: 'io.gitlab.arturbosch.detekt'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "io.github.getsixtyfour.openpyn"
+        applicationId 'io.github.getsixtyfour.openpyn'
         minSdkVersion 21
         targetSdkVersion 29
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         externalNativeBuild {
             cmake {
-                cppFlags ""
+                cppFlags ''
             }
         }
-        resConfigs "en"
+        resConfigs 'en'
     }
     buildTypes {
         release {
@@ -61,8 +61,8 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path "src/main/cpp/CMakeLists.txt"
-            version "3.10.2"
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.10.2'
         }
     }
     aaptOptions {
@@ -78,10 +78,10 @@ android {
     lintOptions {
         // check 'Registered', 'VectorPath', 'DuplicateStrings', 'UnknownNullness', 'UnusedResources', 'UnusedIds'
         abortOnError false
-        baseline file("lint-baseline.xml")
+        baseline file('lint-baseline.xml')
         checkAllWarnings true
         disable 'GoogleAppIndexingWarning'
-        lintConfig file("lint.xml")
+        lintConfig file('lint.xml')
         xmlReport false
     }
     packagingOptions {
@@ -103,14 +103,14 @@ android {
 }
 
 androidGitVersion {
-    format = "%tag%%-count%%-commit%%-branch%%-dirty%"
+    format = '%tag%%-count%%-commit%%-branch%%-dirty%'
 }
 
 detekt {
-    toolVersion = "1.1.0"
-    input = files("src/main/java")
+    toolVersion = '1.1.0'
+    input = files('src/main/java')
     config = files("$rootDir/config/detekt/detekt.yml")
-    filters = ".*/resources/.*,.*/build/.*"
+    filters = '.*/resources/.*,.*/build/.*'
     reports {
         xml {
             enabled = false
@@ -295,15 +295,15 @@ dependencies {
     //implementation 'com.github.armcha:ElasticView:0.2.0'
 }
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystorePropertiesFile = rootProject.file('keystore.properties')
 if (keystorePropertiesFile.isFile()) {
     def keystoreProperties = new Properties()
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-    android.signingConfigs.create("release", {
+    android.signingConfigs.create('release', {
         keyAlias keystoreProperties['keyAlias']
         keyPassword keystoreProperties['keyPassword']
         storeFile file(keystoreProperties['storeFile'])
         storePassword keystoreProperties['storePassword']
     })
-    android.buildTypes["release"].signingConfig = android.signingConfigs["release"]
+    android.buildTypes['release'].signingConfig = android.signingConfigs['release']
 }
