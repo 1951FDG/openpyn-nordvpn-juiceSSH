@@ -51,7 +51,6 @@ import java.util.Locale
 import kotlin.math.pow
 
 // private const val TASK_TIMEOUT: Long = 500
-
 @Suppress("ComplexMethod", "MagicNumber", "unused")
 internal fun showThreats(context: Activity, jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
@@ -282,7 +281,11 @@ private fun parseToUnicode(countries: List<MultiSelectable>, input: CharSequence
 }
 
 private fun lazyMarker(
-    listener: OnMarkerCreateListener, favorites: ArrayList<LazyMarker>?, options: MarkerOptions, flag: CharSequence?, callback: OnLevelChangeCallback
+    listener: OnMarkerCreateListener,
+    favorites: ArrayList<LazyMarker>?,
+    options: MarkerOptions,
+    flag: CharSequence?,
+    callback: OnLevelChangeCallback
 ): LazyMarker {
     val marker = LazyMarker(options, flag, listener)
     favorites?.let {
