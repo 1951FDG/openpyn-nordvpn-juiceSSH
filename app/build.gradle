@@ -127,19 +127,28 @@ dexcount {
     enabled = false
 }
 
-configurations.all {
-    resolutionStrategy {
-        failOnVersionConflict()
-        preferProjectModules()
-    }
-}
-
 configurations {
     implementation {
         exclude group: 'org.jetbrains.kotlinx', module: 'atomicfu'
-        exclude group: 'org.jetbrains.kotlinx', module: 'atomicfu-common'
         exclude group: 'org.json', module: 'json'
     }
+
+    /*debugAndroidTestCompileClasspath {
+        exclude group: 'androidx.annotation'
+        exclude group: 'androidx.appcompat'
+        exclude group: 'androidx.collection'
+        exclude group: 'androidx.core'
+        exclude group: 'androidx.fragment'
+        exclude group: 'androidx.lifecycle'
+        exclude group: 'androidx.recyclerview'
+        exclude group: 'androidx.savedstate'
+        exclude group: 'androidx.transition'
+        exclude group: 'com.google.firebase', module: 'firebase-common'
+
+        resolutionStrategy {
+            failOnVersionConflict()
+        }
+    }*/
 }
 
 dependencies {
@@ -163,19 +172,22 @@ dependencies {
 
     // Anko
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
-    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
+    implementation("org.jetbrains.anko:anko-coroutines:$anko_version") {
+        transitive = false
+    }
     implementation "org.jetbrains.anko:anko-design:$anko_version"
 
     // Anko Layouts
     implementation "org.jetbrains.anko:anko-sdk21:$anko_version"
 
     // Architecture
-    implementation 'com.naver.android.svc:svc:1.0.0'
+    implementation('com.naver.android.svc:svc:1.0.0') {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    }
     kapt 'com.naver.android.svc:svc-compiler:1.0.0'
 
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-io-jvm:$kotlinx_io_version"
 
     // Crashlytics
@@ -200,35 +212,43 @@ dependencies {
     implementation "com.github.kittinunf.fuel:fuel-android:$fuel_version"
     implementation "com.github.kittinunf.fuel:fuel-json:$fuel_version"
     implementation("io.ktor:ktor-client-android:$ktor_version") {
+        exclude group: 'io.ktor', module: 'ktor-http-cio-jvm'
         exclude group: 'org.jetbrains.kotlin'
-        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-io'
-        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-io-jvm'
-        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-io'
-        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core'
-        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-io-jvm'
-        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-common'
-        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-jdk8'
+        exclude group: 'org.jetbrains.kotlinx'
+        exclude group: 'org.slf4j', module: 'slf4j-api'
     }
 
     // JSON
-    implementation 'com.jayrave:moshi-pristine-models:1.0.0'
+    implementation('com.jayrave:moshi-pristine-models:1.0.0') {
+        transitive = false
+    }
     implementation 'com.squareup.moshi:moshi:1.8.0'
 
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation('org.jetbrains.kotlin:kotlin-reflect') {
+        force = true
+    }
+    implementation('org.jetbrains.kotlin:kotlin-stdlib') {
+        force = true
+    }
+    implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8') {
+        force = true
+    }
 
     // LeakCanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 
     // Logger
-    implementation "org.slf4j:slf4j-api:$slf4j_version"
     implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
+    implementation "org.slf4j:slf4j-api:$slf4j_version"
     debugImplementation "org.slf4j:slf4j-android:$slf4j_version"
     testImplementation "org.slf4j:slf4j-simple:$slf4j_version"
 
     // Preference
-    implementation 'net.mm2d:preference:0.2.1'
+    implementation('net.mm2d:preference:0.2.1') {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    }
 
     // UI
     implementation('com.afollestad.material-dialogs:core:0.9.6.0') {
@@ -237,7 +257,9 @@ dependencies {
     implementation 'com.github.AdityaAnand1:Morphing-Material-Dialogs:0.0.4'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'com.github.mayuroks:minibar:0.2.0'
-    implementation 'com.github.tingyik90:snackprogressbar:6.1.1'
+    implementation('com.github.tingyik90:snackprogressbar:6.1.1') {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
+    }
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
 
     // Test
