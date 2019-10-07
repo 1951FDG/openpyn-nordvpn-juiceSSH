@@ -255,7 +255,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onConnectError(@NotNull Throwable e) {
-        LOGGER.error(e.getMessage());
+        LOGGER.error(e.toString());
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onConnectError(e);

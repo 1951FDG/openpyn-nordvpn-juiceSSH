@@ -147,10 +147,10 @@ public final class OpenVPNService extends Service implements LogListener, StateL
                 Connection connection = ManagementConnection.getInstance();
                 connection.connect(host, port);
             } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, e.toString());
             } catch (Exception e) {
                 Log.e(TAG, "unknown exception thrown");
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, e.toString());
             }
         });
         thread.start();
@@ -301,7 +301,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             connection.stopOpenVPN();
             result = true;
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, e.toString());
         }
         return result;
     }
