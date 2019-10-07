@@ -24,6 +24,7 @@ console-reports:
   #  - 'ComplexityReport'
   #  - 'NotificationReport'
   #  - 'FindingsReport'
+     - 'FileBasedFindingsReport'
   #  - 'BuildFailureReport'
 
 comments:
@@ -146,6 +147,7 @@ exceptions:
     active: false
   ReturnFromFinally:
     active: false
+    ignoreLabeled: false
   SwallowedException:
     active: false
     ignoredExceptionTypes: 'InterruptedException,NumberFormatException,ParseException,MalformedURLException'
@@ -377,6 +379,8 @@ performance:
 
 potential-bugs:
   active: true
+  Deprecation:
+    active: false
   DuplicateCaseInWhenExpression:
     active: true
   EqualsAlwaysReturnsTrueOrFalse:
@@ -385,6 +389,8 @@ potential-bugs:
     active: true
   ExplicitGarbageCollectionCall:
     active: true
+  HasPlatformType:
+    active: false
   InvalidRange:
     active: false
   IteratorHasNextCallsNextMethod:
@@ -434,9 +440,11 @@ style:
   ForbiddenComment:
     active: true
     values: 'TODO:,FIXME:,STOPSHIP:'
+    allowedPatterns: ""
   ForbiddenImport:
     active: false
     imports: ''
+    forbiddenPatterns: ""
   ForbiddenVoid:
     active: false
     ignoreOverridden: false
@@ -445,6 +453,7 @@ style:
     active: false
     ignoreOverridableFunction: true
     excludedFunctions: 'describeContents'
+    excludeAnnotatedFunction: "dagger.Provides"
   LibraryCodeMustSpecifyReturnType:
     active: false
   LoopWithTooManyJumpStatements:
@@ -490,6 +499,8 @@ style:
     active: false
   ProtectedMemberInFinalClass:
     active: false
+  RedundantExplicitType:
+    active: false
   RedundantVisibilityModifierRule:
     active: false
   ReturnCount:
@@ -498,6 +509,7 @@ style:
     excludedFunctions: "equals"
     excludeLabeled: false
     excludeReturnFromLambda: true
+    excludeGuardClauses: false
   SafeCast:
     active: true
   SerialVersionUIDInSerializableClass:
@@ -532,11 +544,16 @@ style:
   UnusedPrivateMember:
     active: false
     allowedNames: "(_|ignored|expected|serialVersionUID)"
+  UseArrayLiteralsInAnnotations:
+    active: false
   UseCheckOrError:
     active: false
   UseDataClass:
     active: false
     excludeAnnotatedClasses: ""
+    allowVars: false
+  UseIfInsteadOfWhen:
+    active: false
   UseRequire:
     active: false
   UselessCallOnNotNull:
