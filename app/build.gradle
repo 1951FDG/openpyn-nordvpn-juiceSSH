@@ -212,7 +212,6 @@ dependencies {
     implementation "com.github.kittinunf.fuel:fuel-android:$fuel_version"
     implementation "com.github.kittinunf.fuel:fuel-json:$fuel_version"
     implementation("io.ktor:ktor-client-android:$ktor_version") {
-        exclude group: 'io.ktor', module: 'ktor-http-cio-jvm'
         exclude group: 'org.jetbrains.kotlin'
         exclude group: 'org.jetbrains.kotlinx'
         exclude group: 'org.slf4j', module: 'slf4j-api'

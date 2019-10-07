@@ -71,8 +71,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 /**
  * @author 1951FDG
  */
-@ObsoleteCoroutinesApi
-@ExperimentalCoroutinesApi
 @ControlTower
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)
@@ -108,6 +106,8 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
     private lateinit var mJsonArray: JSONArray
     private var mTileProvider: MapBoxOfflineTileProvider? = null
 
+    @ObsoleteCoroutinesApi
+    @ExperimentalCoroutinesApi
     private val mSendChannel = actor<Context>(coroutineContext, Channel.RENDEZVOUS) {
         channel.map(IO) { createGeoJson(it) }.consumeEach { animateCamera(it) }
     }
@@ -132,6 +132,8 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
         mMap?.let { map.onStop() }
     }
 
+    @ObsoleteCoroutinesApi
+    @ExperimentalCoroutinesApi
     override fun onDestroy() {
         mMap?.let { map.onDestroy() }
         mCameraUpdateAnimator?.onDestroy()
@@ -265,6 +267,8 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
         }
     }
 
+    @ObsoleteCoroutinesApi
+    @ExperimentalCoroutinesApi
     override fun updateMasterMarker(show: Boolean) {
         mSendChannel.offer(applicationContext)
     }
