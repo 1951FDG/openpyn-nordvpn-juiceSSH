@@ -145,7 +145,7 @@ To compile and run the project you'll need:
 -   [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
 -   [Anko](https://github.com/Kotlin/anko)
 -   [Barista](https://github.com/SchibstedSpain/Barista)
--   [BlockCanary](https://github.com/markzhai/AndroidPerformanceMonitor)
+-   [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
 -   [countryboundaries](https://github.com/westnordost/countryboundaries)
 -   [ElasticView](https://github.com/armcha/ElasticView)
 -   [emoji-java](https://github.com/vdurmont/emoji-java)
@@ -163,11 +163,15 @@ To compile and run the project you'll need:
 -   [Moshi](https://github.com/square/moshi)
 -   [Moshi: Pristine Models](https://github.com/jayrave/moshi-pristine-models)
 -   [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
+-   [PreferenceActivityCompat](https://github.com/ohmae/preference-activity-compat)
 -   [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
 -   [Result](https://github.com/kittinunf/Result)
+-   [SLF4J](https://github.com/qos-ch/slf4j)
 -   [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
 -   [SQLite](https://sqlite.org/android/doc/trunk/www/install.wiki)
 -   [StaticLog](https://github.com/jupf/staticlog)
+-   [SVC](https://github.com/BansookNam/svc)
+-   [Toasty](https://github.com/GrenderG/Toasty)
 
 ## Feedback
 
