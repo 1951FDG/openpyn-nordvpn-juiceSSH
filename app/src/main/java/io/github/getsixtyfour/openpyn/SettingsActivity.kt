@@ -398,7 +398,7 @@ class SettingsActivity : PreferenceActivityCompat() {
                         preference.key.equals("pref_api_ipdata", true) -> preference.summary = "Available (SSL)"
                         preference.key.equals("pref_api_ipinfo", true) -> preference.summary = "Available (SSL)"
                         preference.key.startsWith("pref_api", true) -> preference.summary = "Available"
-                        preference.key.equals("pref_server", true) && !validate(stringValue) -> {
+                        preference.key.equals("pref_server", true) && !validate(preference, stringValue) -> {
                             return@OnPreferenceChangeListener false
                         }
                         else -> preference.summary = stringValue
@@ -451,17 +451,13 @@ class SettingsActivity : PreferenceActivityCompat() {
         }
 
         @Suppress("WeakerAccess")
-        fun validate(str: String): Boolean {
+        fun validate(preference: Preference, str: String): Boolean {
             val regex = Regex("""^[a-z]{2}\d{1,4}$""")
             if (regex.matches(str)) {
-                return hashSetOf(
-                    "al", "ar", "au", "at", "az", "be", "ba", "br", "bg", "ca", "cl",
-                    "cr", "hr", "cy", "cz", "dk", "ee", "fi", "fr", "ge", "de",
-                    "gr", "hk", "hu", "is", "in", "id", "ie", "il", "it", "jp", "lv",
-                    "lu", "mk", "my", "mx", "md", "nl", "nz", "no", "pl", "pt", "ro",
-                    "ru", "rs", "sg", "sk", "si", "za", "kr", "es", "se", "ch", "tw",
-                    "th", "tr", "ua", "ae", "uk", "us", "vn"
-                ).contains(str.take(2))
+                val set = preference.context.resources.getTextArray(R.array.pref_country_values).toHashSet().apply {
+                    add("uk")
+                }
+                return set.contains(str.take(2))
             }
 
             return false
