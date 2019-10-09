@@ -370,6 +370,9 @@
     },
     "categories": [
       {
+        "name": "Dedicated IP"
+      },
+      {
         "name": "Double VPN"
       },
       {
@@ -426,6 +429,9 @@
       "long": 13.4
     },
     "categories": [
+      {
+        "name": "Obfuscated Servers"
+      },
       {
         "name": "P2P"
       },
@@ -708,9 +714,6 @@
         "name": "Obfuscated Servers"
       },
       {
-        "name": "Onion Over VPN"
-      },
-      {
         "name": "P2P"
       },
       {
@@ -960,7 +963,7 @@
         "name": "Double VPN"
       },
       {
-        "name": "Onion Over VPN"
+        "name": "Obfuscated Servers"
       },
       {
         "name": "P2P"
@@ -978,9 +981,6 @@
       "long": 121.525
     },
     "categories": [
-      {
-        "name": "Double VPN"
-      },
       {
         "name": "Standard VPN servers"
       }
@@ -1070,25 +1070,6 @@
     ]
   },
   {
-    "flag": "gb",
-    "country": "United Kingdom",
-    "location": {
-      "lat": 53.5,
-      "long": -2.216667
-    },
-    "categories": [
-      {
-        "name": "Obfuscated Servers"
-      },
-      {
-        "name": "P2P"
-      },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
     "flag": "us",
     "country": "United States",
     "location": {
@@ -1113,22 +1094,6 @@
     "location": {
       "lat": 29.9544444,
       "long": -90.075
-    },
-    "categories": [
-      {
-        "name": "P2P"
-      },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
-    "flag": "us",
-    "country": "United States",
-    "location": {
-      "lat": 32.2986111,
-      "long": -90.1847222
     },
     "categories": [
       {
@@ -1232,26 +1197,13 @@
     "flag": "us",
     "country": "United States",
     "location": {
-      "lat": 36.175,
-      "long": -115.1363889
-    },
-    "categories": [
-      {
-        "name": "P2P"
-      },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
-    "flag": "us",
-    "country": "United States",
-    "location": {
       "lat": 37.7698135,
       "long": -122.4660005
     },
     "categories": [
+      {
+        "name": "Obfuscated Servers"
+      },
       {
         "name": "P2P"
       },
