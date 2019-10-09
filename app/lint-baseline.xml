@@ -201,17 +201,6 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.drawable.ic_egypt_40dp` appears to be unused"
-        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/ic_egypt_40dp.xml"
-            line="1"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.drawable.ic_estonia_40dp` appears to be unused"
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">

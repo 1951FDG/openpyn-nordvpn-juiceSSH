@@ -330,19 +330,6 @@
     ]
   },
   {
-    "flag": "eg",
-    "country": "Egypt",
-    "location": {
-      "lat": 30.05,
-      "long": 31.25
-    },
-    "categories": [
-      {
-        "name": "Obfuscated Servers"
-      }
-    ]
-  },
-  {
     "flag": "ee",
     "country": "Estonia",
     "location": {

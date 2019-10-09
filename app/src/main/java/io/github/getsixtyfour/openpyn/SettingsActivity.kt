@@ -456,7 +456,7 @@ class SettingsActivity : PreferenceActivityCompat() {
             if (regex.matches(str)) {
                 return hashSetOf(
                     "al", "ar", "au", "at", "az", "be", "ba", "br", "bg", "ca", "cl",
-                    "cr", "hr", "cy", "cz", "dk", "eg", "ee", "fi", "fr", "ge", "de",
+                    "cr", "hr", "cy", "cz", "dk", "ee", "fi", "fr", "ge", "de",
                     "gr", "hk", "hu", "is", "in", "id", "ie", "il", "it", "jp", "lv",
                     "lu", "mk", "my", "mx", "md", "nl", "nz", "no", "pl", "pt", "ro",
                     "ru", "rs", "sg", "sk", "si", "za", "kr", "es", "se", "ch", "tw",
