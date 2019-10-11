@@ -1,0 +1,12 @@
+---
+exclude_paths:
+  - '**.json'
+  - '**.lock'
+  - '**.xml'
+  - '**.yml'
+  - 'app/src/main/java/com/almworks/**'
+  - 'app/src/main/java/io/requery/**'
+  - 'app/src/main/java/org/javolution/**'
+  - 'app/src/main/java/org/sqlite/**'
+  - 'app/src/main/jni/**'
+  - 'fastlane/**'
