@@ -36,12 +36,10 @@ class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
     fun getConnectionId(position: Int): UUID? {
         var id: UUID? = null
 
-        if (cursor != null) {
-            if (cursor.moveToPosition(position)) {
-                val idIndex = cursor.getColumnIndex(PluginContract.Connections.COLUMN_ID)
-                if (idIndex > -1) {
-                    id = UUID.fromString(cursor.getString(idIndex))
-                }
+        if (cursor != null && cursor.moveToPosition(position)) {
+            val idIndex = cursor.getColumnIndex(PluginContract.Connections.COLUMN_ID)
+            if (idIndex > -1) {
+                id = UUID.fromString(cursor.getString(idIndex))
             }
         }
 

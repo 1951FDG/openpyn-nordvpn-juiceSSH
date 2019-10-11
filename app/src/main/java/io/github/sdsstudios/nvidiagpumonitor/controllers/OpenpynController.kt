@@ -48,6 +48,10 @@ class OpenpynController(
                 info("Terminated")
                 return
             }
+            -1 -> {
+                info("Terminated \"abnormal\"")
+                info(command)
+            }
         }
 
         mActivitySessionExecuteListener?.onCompleted(exitCode)
@@ -55,6 +59,11 @@ class OpenpynController(
 
     override fun onOutputLine(line: String) {
         info(line)
+
+        when {
+            line.startsWith("Killing the running openvpn", true) -> mActivityExecuteCommandListener?.onDisconnect()
+            line.startsWith("CONNECTING TO SERVER", true) -> mActivityExecuteCommandListener?.onConnect()
+        }
 
         mActivitySessionExecuteListener?.onOutputLine(line)
 
@@ -129,11 +138,9 @@ class OpenpynController(
         val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
         val netflix = preferences.getBoolean("pref_netflix", false)
         test = preferences.getBoolean("pref_test", false)
-        //val internally_allowed = args.internally_allowed
         val patch = preferences.getBoolean("pref_skip_dns_patch", false)
         val silent = preferences.getBoolean("pref_silent", false)
         nvram = preferences.getBoolean("pref_nvram", false)
-        //val openvpn_options = args.openvpn_options
         val openvpn = "--syslog openpyn"
         val options = StringBuilder("openpyn")
 
@@ -191,7 +198,6 @@ class OpenpynController(
         info(command)
 
         if (super.start(pluginClient, sessionId, sessionKey)) {
-            mActivityExecuteCommandListener?.onConnect()
             return true
         }
         return false
@@ -205,7 +211,6 @@ class OpenpynController(
         info(stopcommand)
 
         if (super.kill(pluginClient, sessionId, sessionKey)) {
-            mActivityExecuteCommandListener?.onDisconnect()
             return true
         }
         return false

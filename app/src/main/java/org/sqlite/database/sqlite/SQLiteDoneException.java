@@ -26,7 +26,6 @@ package org.sqlite.database.sqlite;
  * SQLiteStatement#simpleQueryForString} or {@link
  * SQLiteStatement#simpleQueryForLong}) does not get one.
  */
-@SuppressWarnings("ALL")
 public class SQLiteDoneException extends SQLiteException {
     public SQLiteDoneException() {}
 

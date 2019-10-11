@@ -7,7 +7,7 @@
         android:id="@+id/action_generate"
         android:orderInCategory="96"
         android:title="Generate XML"
-        app:showAsAction="ifRoom"
+        app:showAsAction="never"
         tools:ignore="HardcodedText" />
     <item
         android:id="@+id/action_github"

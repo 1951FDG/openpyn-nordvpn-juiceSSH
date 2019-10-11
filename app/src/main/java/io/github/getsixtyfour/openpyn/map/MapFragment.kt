@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.naver.android.svc.annotation.RequireControlTower
 import com.naver.android.svc.annotation.RequireViews
@@ -13,7 +11,8 @@ import com.naver.android.svc.annotation.SvcFragment
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.getsixtyfour.openpyn.R
-import kotlinx.android.synthetic.main.fragment_map.map
+import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
+import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
@@ -25,39 +24,29 @@ import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 @SvcFragment
 @RequireViews(MapViews::class)
 @RequireControlTower(MapControlTower::class)
-class MapFragment : SVC_MapFragment(),
-    AnkoLogger,
-    OnSessionStartedListener,
-    OnSessionFinishedListener {
+class MapFragment : SVC_MapFragment(), AnkoLogger, OnSessionStartedListener, OnSessionFinishedListener, OnCommandExecuteListener {
+
+    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
+        return controlTower.positionAndFlagForSelectedMarker()
+    }
+
+    override fun onConnect() {
+        TODO("not implemented")
+    }
+
+    override fun onDisconnect() {
+        TODO("not implemented")
+    }
 
     var lastLocation: Location? = null
-    val toolBar: ProgressToolbar?
-        get() = requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
+    val toolBar: ProgressToolbar? by lazy {
+        requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION)
         requestPermissions(permissions, PERMISSION_REQUEST_CODE)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        map?.getMapAsync(controlTower)
-        map?.onCreate(savedInstanceState)
-        val watermark = map?.findViewWithTag<ImageView>("GoogleWatermark")
-
-        if (watermark != null) {
-            watermark.visibility = View.INVISIBLE
-            /*
-            val params = watermark.layoutParams as RelativeLayout.LayoutParams
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
-            params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
-            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0)
-            params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
-            */
-        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -66,14 +55,13 @@ class MapFragment : SVC_MapFragment(),
         }
 
         fun getLastLocation() {
-            FusedLocationProviderClient(requireActivity()).lastLocation
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        lastLocation = it.result
-                    } else {
-                        error(it.exception)
-                    }
+            FusedLocationProviderClient(requireActivity()).lastLocation.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    lastLocation = it.result
+                } else {
+                    error(it.exception)
                 }
+            }
         }
 
         if (requestCode == PERMISSION_REQUEST_CODE) {
@@ -81,36 +69,6 @@ class MapFragment : SVC_MapFragment(),
                 getLastLocation()
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        map?.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        map?.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        map?.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        map?.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        map?.onDestroy()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        map?.onLowMemory()
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {

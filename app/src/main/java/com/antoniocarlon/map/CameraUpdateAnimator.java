@@ -18,93 +18,234 @@ package com.antoniocarlon.map;
 
 import android.os.Handler;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import androidx.annotation.NonNull;
+import java.util.Collection;
 
 public class CameraUpdateAnimator implements OnCameraIdleListener {
-    @SuppressWarnings("WeakerAccess")
-    final GoogleMap mMap;
+
+    public static class Animation {
+
+        private final CameraUpdate mCameraUpdate;
+
+        private boolean mAnimate;
+
+        private boolean mClosest;
+
+        private boolean mCallback;
+
+        private long mDelay;
+
+        private LatLng mTarget;
+
+        private Object mTag;
+
+        public Animation(@NonNull CameraUpdate cameraUpdate) {
+            mCameraUpdate = cameraUpdate;
+        }
+
+        @NonNull
+        public CameraUpdate getCameraUpdate() {
+            return mCameraUpdate;
+        }
+
+        public long getDelay() {
+            return mDelay;
+        }
+
+        @Nullable
+        public Object getTag() {
+            return mTag;
+        }
+
+        public boolean getCallback() {
+            return mCallback;
+        }
+
+        public void setDelay(long delay) {
+            mDelay = delay;
+        }
+
+        @Nullable
+        public LatLng getTarget() {
+            return mTarget;
+        }
+
+        public void setCallback(boolean callback) {
+            mCallback = callback;
+        }
+
+        public void setTag(@Nullable Object tag) {
+            mTag = tag;
+        }
+
+        public void setTarget(@Nullable LatLng target) {
+            mTarget = target;
+        }
+
+        public boolean isAnimate() {
+            return mAnimate;
+        }
+
+        public void setAnimate(boolean animate) {
+            mAnimate = animate;
+        }
+
+        public boolean isClosest() {
+            return mClosest;
+        }
+
+        public void setClosest(boolean closest) {
+            mClosest = closest;
+        }
+    }
+
+    private static class CancelableCallback implements GoogleMap.CancelableCallback {
+
+        private Animation mAnimation;
+
+        private AnimatorListener mAnimatorListener;
+
+        CancelableCallback() {
+        }
+
+        @Override
+        public void onCancel() {
+            if (mAnimatorListener != null) {
+                mAnimatorListener.onAnimationCancel(mAnimation);
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            if (mAnimatorListener != null) {
+                mAnimatorListener.onAnimationFinish(mAnimation);
+            }
+        }
+
+        public void setAnimation(Animation animation) {
+            mAnimation = animation;
+        }
+
+        public void setAnimatorListener(AnimatorListener animatorListener) {
+            mAnimatorListener = animatorListener;
+        }
+    }
+
+    public interface AnimatorListener {
+
+        /**
+         * <p>Notifies the start of the animation.</p>
+         */
+        void onAnimationStart();
+
+        /**
+         * <p>Notifies the end of the animation.</p>
+         */
+        void onAnimationEnd();
+
+        /**
+         * <p>Notifies the finishing of the animation.</p>
+         *
+         * @param animation The animation which was finished.
+         */
+        void onAnimationFinish(@NonNull Animation animation);
+
+        /**
+         * <p>Notifies the cancellation of the animation.</p>
+         *
+         * @param animation The animation which was canceled.
+         */
+        void onAnimationCancel(@NonNull Animation animation);
+    }
+
+    private final ArrayList<Animation> mCameraUpdates;
+
+    private final CancelableCallback mCancelableCallback = new CancelableCallback();
+
+    private final Handler mHandler = new Handler();
+
+    private final GoogleMap mMap;
+
     private final OnCameraIdleListener mOnCameraIdleListener;
-    private final List<Animation> cameraUpdates = new ArrayList<>();
+
+    private AnimatorListener mAnimatorListener;
+
     private boolean mIsRotateGestureEnabled;
+
     private boolean mIsScrollGestureEnabled;
+
     private boolean mIsTiltGestureEnabled;
+
     private boolean mIsZoomControlsEnabled;
+
     private boolean mIsZoomGestureEnabled;
 
-    public CameraUpdateAnimator(@NonNull GoogleMap map,
+    private boolean mAnimating;
+
+    public static void startAnimation(@NonNull GoogleMap googleMap, @NonNull Animation animation,
+                                      @Nullable GoogleMap.CancelableCallback cancelableCallback) {
+        if (animation.isAnimate()) {
+            if (cancelableCallback != null) {
+                googleMap.animateCamera(animation.getCameraUpdate(), cancelableCallback);
+            } else {
+                googleMap.animateCamera(animation.getCameraUpdate());
+            }
+        } else {
+            googleMap.moveCamera(animation.getCameraUpdate());
+        }
+    }
+
+    public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull OnCameraIdleListener onCameraIdleListener) {
+        this(googleMap, new ArrayList<>(), onCameraIdleListener);
+    }
+
+    public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull ArrayList<Animation> cameraUpdates,
                                 @NonNull OnCameraIdleListener onCameraIdleListener) {
-        mMap = map;
+        mMap = googleMap;
+        mCameraUpdates = cameraUpdates;
         mOnCameraIdleListener = onCameraIdleListener;
     }
 
-    public void add(@NonNull CameraUpdate cameraUpdate, boolean animate, long delay) {
-        cameraUpdates.add(new Animation(cameraUpdate, animate, delay, null));
+    public void add(@NonNull Animation animation) {
+        mCameraUpdates.add(animation);
     }
 
-    public void add(@NonNull CameraUpdate cameraUpdate, boolean animate, long delay, @NonNull CancelableCallback cancelableCallback) {
-        cameraUpdates.add(new Animation(cameraUpdate, animate, delay, cancelableCallback));
+    public void addAll(@NonNull Collection<? extends Animation> animations) {
+        mCameraUpdates.addAll(animations);
     }
 
-    @SuppressWarnings("unused")
     public void clear() {
-        cameraUpdates.clear();
+        mCameraUpdates.clear();
     }
 
     public void execute() {
-        UiSettings settings = mMap.getUiSettings();
-        mIsRotateGestureEnabled = settings.isRotateGesturesEnabled();
-        mIsScrollGestureEnabled = settings.isScrollGesturesEnabled();
-        mIsTiltGestureEnabled = settings.isTiltGesturesEnabled();
-        mIsZoomControlsEnabled = settings.isZoomControlsEnabled();
-        mIsZoomGestureEnabled = settings.isZoomGesturesEnabled();
-
-        settings.setRotateGesturesEnabled(false);
-        settings.setScrollGesturesEnabled(false);
-        settings.setTiltGesturesEnabled(false);
-        settings.setZoomControlsEnabled(false);
-        settings.setZoomGesturesEnabled(false);
-
-        mMap.setOnCameraIdleListener(this);
-        executeNext();
+        if (!mCameraUpdates.isEmpty()) {
+            setUiSettings();
+            onAnimationStart();
+            executeNext();
+        }
     }
 
-    private void executeNext() {
-        if (cameraUpdates.isEmpty()) {
-            mOnCameraIdleListener.onCameraIdle();
-            mMap.setOnCameraIdleListener(mOnCameraIdleListener);
-            UiSettings settings = mMap.getUiSettings();
-            settings.setRotateGesturesEnabled(mIsRotateGestureEnabled);
-            settings.setScrollGesturesEnabled(mIsScrollGestureEnabled);
-            settings.setTiltGesturesEnabled(mIsTiltGestureEnabled);
-            settings.setZoomControlsEnabled(mIsZoomControlsEnabled);
-            settings.setZoomGesturesEnabled(mIsZoomGestureEnabled);
-        } else {
-            Animation animation = cameraUpdates.remove(0);
+    @Nullable
+    public AnimatorListener getAnimatorListener() {
+        return mAnimatorListener;
+    }
 
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    if (animation.mAnimate) {
-                        if (animation.mCancelableCallback != null) {
-                            mMap.animateCamera(animation.mCameraUpdate, animation.mCancelableCallback);
-                        } else {
-                            mMap.animateCamera(animation.mCameraUpdate);
-                        }
-                    } else {
-                        mMap.moveCamera(animation.mCameraUpdate);
-                    }
-                }
-            }, animation.mDelay);
-        }
+    public boolean isAnimating() {
+        return mAnimating;
+    }
+
+    public void setAnimatorListener(@Nullable AnimatorListener animatorListener) {
+        mAnimatorListener = animatorListener;
     }
 
     @Override
@@ -112,17 +253,68 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         executeNext();
     }
 
-    private static class Animation {
-        final CameraUpdate mCameraUpdate;
-        final boolean mAnimate;
-        final long mDelay;
-        final CancelableCallback mCancelableCallback;
+    public void onDestroy() {
+        mHandler.removeCallbacksAndMessages(null);
+    }
 
-        Animation(CameraUpdate cameraUpdate, boolean animate, long delay, CancelableCallback cancelableCallback) {
-            mCameraUpdate = cameraUpdate;
-            mAnimate = animate;
-            mDelay = delay;
-            mCancelableCallback = cancelableCallback;
+    private void executeNext() {
+        if (mCameraUpdates.isEmpty()) {
+            onAnimationEnd();
+        } else {
+            Animation animation = mCameraUpdates.remove(0);
+            if (animation.getCallback()) {
+                mCancelableCallback.setAnimation(animation);
+                mCancelableCallback.setAnimatorListener(mAnimatorListener);
+                if (animation.getDelay() == 0L) {
+                    startAnimation(mMap, animation, mCancelableCallback);
+                } else {
+                    mHandler.postDelayed(() -> startAnimation(mMap, animation, mCancelableCallback), animation.getDelay());
+                }
+            } else {
+                if (animation.getDelay() == 0L) {
+                    startAnimation(mMap, animation, null);
+                } else {
+                    mHandler.postDelayed(() -> startAnimation(mMap, animation, null), animation.getDelay());
+                }
+            }
         }
+    }
+
+    private void onAnimationEnd() {
+        mOnCameraIdleListener.onCameraIdle();
+        if (mAnimatorListener != null) {
+            mAnimatorListener.onAnimationEnd();
+        }
+        mMap.setOnCameraIdleListener(mOnCameraIdleListener);
+        UiSettings settings = mMap.getUiSettings();
+        settings.setRotateGesturesEnabled(mIsRotateGestureEnabled);
+        settings.setScrollGesturesEnabled(mIsScrollGestureEnabled);
+        settings.setTiltGesturesEnabled(mIsTiltGestureEnabled);
+        settings.setZoomControlsEnabled(mIsZoomControlsEnabled);
+        settings.setZoomGesturesEnabled(mIsZoomGestureEnabled);
+        mAnimating = false;
+    }
+
+    private void onAnimationStart() {
+        if (mAnimatorListener != null) {
+            mAnimatorListener.onAnimationStart();
+        }
+        UiSettings settings = mMap.getUiSettings();
+        settings.setRotateGesturesEnabled(false);
+        settings.setScrollGesturesEnabled(false);
+        settings.setTiltGesturesEnabled(false);
+        settings.setZoomControlsEnabled(false);
+        settings.setZoomGesturesEnabled(false);
+        mMap.setOnCameraIdleListener(this);
+        mAnimating = true;
+    }
+
+    private void setUiSettings() {
+        UiSettings settings = mMap.getUiSettings();
+        mIsRotateGestureEnabled = settings.isRotateGesturesEnabled();
+        mIsScrollGestureEnabled = settings.isScrollGesturesEnabled();
+        mIsTiltGestureEnabled = settings.isTiltGesturesEnabled();
+        mIsZoomControlsEnabled = settings.isZoomControlsEnabled();
+        mIsZoomGestureEnabled = settings.isZoomGesturesEnabled();
     }
 }

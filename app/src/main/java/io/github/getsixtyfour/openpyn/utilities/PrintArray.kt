@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.Size
 import androidx.appcompat.app.AlertDialog.Builder
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
+import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectDialog
 import com.abdeveloper.library.MultiSelectable
 
@@ -20,8 +21,8 @@ object PrintArray {
     private var positiveTitle = android.R.string.ok
     private var negativeTitle = android.R.string.cancel
     private var neutralTitle = android.R.string.selectAll
-    private var itemsList: ArrayList<MultiSelectable>? = null
-    var checkedItemsList: ArrayList<Int>? = null
+    private lateinit var itemsList: ArrayList<MultiSelectable>
+    lateinit var checkedItemsList: ArrayList<Int>
     const val delimiter: String = "‚‗‚"
 
     fun setHint(hint: Int): PrintArray {
@@ -65,13 +66,11 @@ object PrintArray {
     }
 
     // AlertDialog
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     fun show(
-        @Size(min = 1) key: String,
-        items: Array<CharSequence>,
-        checkedItems: BooleanArray,
-        context: Context,
-        prefs: SharedPreferences?
+        @Size(min = 1) key: String, items: Array<CharSequence>, checkedItems: BooleanArray, context: Context
     ) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
         fun save(selectedItems: ArrayList<Boolean>): Boolean {
             return when {
                 prefs != null -> putListBoolean(key, selectedItems, prefs).commit()
@@ -102,13 +101,11 @@ object PrintArray {
     }
 
     // AlertDialog
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     fun show(
-        @Size(min = 1) key: String,
-        items: ArrayList<String>,
-        checkedItems: ArrayList<Boolean>,
-        context: Context,
-        prefs: SharedPreferences?
+        @Size(min = 1) key: String, items: ArrayList<String>, checkedItems: ArrayList<Boolean>, context: Context
     ) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
         fun save(selectedItems: ArrayList<Boolean>): Boolean {
             return when {
                 prefs != null -> putListBoolean(key, selectedItems, prefs).commit()
@@ -140,23 +137,19 @@ object PrintArray {
 
     // MultiSelectDialog
     fun show(
-        @Size(min = 1) key: String,
-        context: AppCompatActivity,
-        prefs: SharedPreferences?,
-        listener: SubmitCallbackListener
+        @Size(min = 1) key: String, context: FragmentActivity, listener: SubmitCallbackListener
     ) {
-        show(key, checkNotNull(itemsList), checkNotNull(checkedItemsList), context, prefs, listener)
+        show(key, itemsList, checkedItemsList, context, listener)
     }
 
     // MultiSelectDialog
     fun show(
-        @Size(min = 1) key: String,
-        items: ArrayList<MultiSelectable>,
+        @Size(min = 1) key: String, items: ArrayList<MultiSelectable>,
         checkedItems: ArrayList<Int>,
-        context: AppCompatActivity,
-        prefs: SharedPreferences?,
+        context: FragmentActivity,
         listener: SubmitCallbackListener
     ) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
         fun save(selectedItems: ArrayList<Int>): Boolean {
             return when {
                 prefs != null -> putListInt(key, selectedItems, prefs).commit()
@@ -165,13 +158,13 @@ object PrintArray {
         }
 
         MultiSelectDialog().apply {
-            hint(context.getString(hint))
-            title(context.getString(title))
+            setHint(context.getString(hint))
+            setTitle(context.getString(title))
             setMinSelectionLimit(1)
             setMaxSelectionLimit(items.size)
-            preSelectIDsList(checkedItems)
-            multiSelectList(items)
-            onSubmit(object : MultiSelectDialog.SubmitCallbackListener {
+            setPreSelectIDsList(checkedItems)
+            setMultiSelectList(items)
+            setSubmitListener(object : MultiSelectDialog.SubmitCallbackListener {
                 override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
                     if (save(selectedIds)) checkedItemsList = selectedIds
                     listener.onSelected(selectedIds, selectedNames, dataString)

@@ -1,0 +1,49 @@
+<html>
+<body>
+<h3>
+  <strong>sqlite4java</strong> is a minimalistic Java wrapper for <a href="http://sqlite.org">SQLite RDBMS</a>, aiming
+  to provide high-performance, low-garbage interface for desktop Java applications.
+</h3>
+<p>
+  <strong>sqlite4java</strong> is shipped with pre-compiled binaries for Windows, Linux and Mac OS X; the binaries
+  contain the SQLite database code and additional wrapper code.
+</p>
+<p>
+  To start using <strong>sqlite4java</strong>, you only need to place <code>sqlite4java.jar</code> and
+  platform-dependent binaries into a directory in the CLASSPATH. (Binaries should be in the same directory
+  as the jar file.)
+</p>
+<p>
+  To check SQLite version and library version, you can just run the jar file: <code>java -jar sqlite4java.jar</code>
+</p>
+<p>
+  <strong>sqlite4java</strong> is built using JDK 1.6. 
+</p>
+<p>
+  Note on SQL used: SQL should contain characters from ASCII character table. If you need to insert or search for
+  Unicode data, you need to bind it using statement parameters.
+</p>
+<p>
+  Main classes are {@link com.almworks.sqlite4java.SQLiteConnection} and {@link SQLiteStatement}.
+  A simple example:
+  <pre>
+    SQLiteConnection db = new SQLiteConnection(new File("/tmp/database"));
+    db.open(true);
+    ...
+    SQLiteStatement st = db.prepare("SELECT order_id FROM orders WHERE quantity >= ?");
+    try {
+      st.bind(1, minimumQuantity);
+      while (st.step()) {
+        orders.add(st.columnLong(0));
+      }
+    } finally {
+      st.dispose();
+    }
+    ...
+    db.close();
+  </pre>
+<p>
+  See <a href="http://code.google.com/p/sqlite4java/">http://code.google.com/p/sqlite4java</a> for more information.
+</p>
+</body>
+</html>

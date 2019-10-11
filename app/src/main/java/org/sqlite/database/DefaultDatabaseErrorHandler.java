@@ -46,7 +46,6 @@ import android.util.Pair;
  * If null is specified for the DatabaseErrorHandler param in the above calls, this class is used
  * as the default {@link DatabaseErrorHandler}.
  */
-@SuppressWarnings("ALL")
 public final class DefaultDatabaseErrorHandler implements DatabaseErrorHandler {
 
     private static final String TAG = "DefaultDatabaseErrorHandler";

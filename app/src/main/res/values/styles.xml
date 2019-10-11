@@ -5,7 +5,15 @@
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 
-    <style name="Base.V21.Theme.AppTheme" parent="Theme.AppCompat.Light" />
+    <style name="Base.V21.Theme.AppTheme" parent="Theme.MaterialComponents.Light.Bridge">
+        <!-- Original AppCompat attributes. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorButtonNormal">@color/colorAccent</item>
+
+    </style>
 
     <style name="Base.Theme.AppTheme" parent="Base.V21.Theme.AppTheme" />
 
@@ -15,6 +23,9 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
+    </style>
+
+    <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.MaterialComponents.Light.Bridge">
         <!-- Original AppCompat attributes. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -24,48 +35,31 @@
 
     </style>
 
-    <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.AppCompat.Light" />
-
     <style name="Base.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings" />
 
+    <!--https://issuetracker.google.com/issues/68454482-->
+    <!--https://android.googlesource.com/platform/frameworks/base/+/android-8.0.0_r1/services/core/java/com/android/server/am/ActivityRecord.java-->
+    <!--android-8.0: Only fullscreen opaque activities can request orientation-->
+    <!--Do not use windowIsTranslucent!-->
     <style name="AppTheme.Settings" parent="Base.Theme.AppTheme.Settings">
-        <item name="android:windowEnterTransition">@transition/fade_in</item>
-        <item name="android:windowIsTranslucent">true</item>
+        <!--<item name="android:windowEnterTransition">@transition/fade_in</item>-->
 
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>
+        <!--<item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>-->
 
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
-
-        <!-- Original AppCompat attributes. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="colorButtonNormal">@color/colorAccent</item>
-
     </style>
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
-    <!--<style name="Base.V21.Theme.AppTheme.About" parent="Theme.Mal.Light" />-->
-
-    <!--<style name="Base.Theme.AppTheme.About" parent="Base.V21.Theme.AppTheme.About" />-->
-
-    <!--<style name="AppTheme.About" parent="Base.Theme.AppTheme.About">-->
-    <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-    <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-    <!--<item name="colorAccent">@color/colorAccent</item>-->
+    <!--<style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">-->
+        <!--<item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>-->
     <!--</style>-->
 
-    <style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">
-        <item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>
-    </style>
-
-    <style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:cacheColorHint">@color/colorPrimary</item>
-    </style>
+    <!--<style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">-->
+        <!--<item name="android:background">?android:attr/colorBackground</item>-->
+        <!--<item name="android:cacheColorHint">?android:attr/colorBackground</item>-->
+    <!--</style>-->
 
     <style name="MorphDialog.Custom.Light" parent="MorphDialog.Base.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -73,20 +67,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MinibarViewCustom" parent="MinibarView">
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:textSize">16sp</item>
-    </style>
+    <!--<style name="ToolbarProgress" parent="android:Widget.ProgressBar.Horizontal">-->
+        <!--<item name="android:indeterminate">true</item>-->
+        <!--<item name="mpb_indeterminateTint">?android:attr/colorAccent</item>-->
+        <!--<item name="mpb_progressStyle">horizontal</item>-->
+        <!--<item name="mpb_progressTint">?android:attr/colorAccent</item>-->
+        <!--<item name="mpb_showProgressBackground">false</item>-->
+        <!--<item name="mpb_useIntrinsicPadding">false</item>-->
+    <!--</style>-->
 
-    <style name="ToolbarProgress" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:indeterminate">true</item>
-        <item name="mpb_indeterminateTint">?android:attr/colorAccent</item>
-        <item name="mpb_progressStyle">horizontal</item>
-        <item name="mpb_progressTint">?android:attr/colorAccent</item>
-        <item name="mpb_showProgressBackground">false</item>
-        <item name="mpb_useIntrinsicPadding">false</item>
-    </style>
+    <style name="blinkt.dialog" parent="android:Theme.DeviceDefault.Light.Dialog" />
 
 </resources>

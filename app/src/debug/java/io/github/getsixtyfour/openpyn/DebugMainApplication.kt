@@ -3,6 +3,7 @@ package io.github.getsixtyfour.openpyn
 import com.github.moduth.blockcanary.BlockCanary
 import com.squareup.leakcanary.LeakCanary
 
+@Suppress("unused")
 class DebugMainApplication : MainApplication() {
     override fun installBlockCanary() {
         BlockCanary.install(this, AppBlockCanaryContext()).start()

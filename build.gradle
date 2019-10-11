@@ -1,59 +1,85 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.anko_version = '0.10.7'
-    ext.kotlin_version = '1.3.30'
+    ext.anko_version = '0.10.8'
+    ext.fuel_version = '2.2.1'
+    ext.kotlin_version = '1.3.50'
+    ext.kotlinx_io_version = '0.1.15'
+    ext.ktor_version = '1.2.5'
+    ext.nav_version = '2.2.0-alpha03'
+    ext.slf4j_version = '1.7.28'
     repositories {
         google()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath 'com.android.tools.build:gradle:3.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'io.fabric.tools:gradle:1.28.1'
-        //classpath 'com.google.gms:google-services:4.2.0'
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.9.4'
-        classpath 'com.netflix.nebula:gradle-lint-plugin:11.4.4'
+        classpath 'io.fabric.tools:gradle:1.31.1'
+        classpath 'com.google.android.gms:oss-licenses-plugin:0.9.5'
+        classpath 'com.netflix.nebula:gradle-lint-plugin:14.2.5'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.6'
+        classpath 'com.google.android.gms:strict-version-matcher-plugin:1.2.0'
+        classpath 'gradle.plugin.com.github.konifar.gradle:plugin:0.3.3'
+        classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.1.0'
+        classpath 'com.gladed.androidgitversion:gradle-android-git-version:0.4.10'
+        //classpath 'com.google.gms:google-services:4.2.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
-plugins {
-    id("io.gitlab.arturbosch.detekt").version("1.0.0-RC12")
-    id("com.gladed.androidgitversion").version("0.4.9")
-}
-
 allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+    apply plugin: 'idea'
+
+    idea.module {
+        excludeDirs += file('.gitattributes')
+        excludeDirs += file('Gemfile')
+        excludeDirs += file('Gemfile.lock')
+        excludeDirs += file('LICENSE')
+        excludeDirs += file('mapfile.xml')
+
+        excludeDirs += file('app/.cxx')
+        excludeDirs += file('app/.externalNativeBuild')
+        excludeDirs += file('app/src/main/java/com/almworks')
+        excludeDirs += file('app/src/main/java/io/requery')
+        excludeDirs += file('app/src/main/java/org/javolution')
+        excludeDirs += file('app/src/main/java/org/sqlite')
+        excludeDirs += file('app/src/main/jni')
+        excludeDirs += file('app/src/main/obj')
+
+        excludeDirs += file('config/detekt')
+
+        excludeDirs += file('fastlane')
+        excludeDirs += file('svg')
+        excludeDirs += file('tiles')
+        excludeDirs += file('world')
+    }
+
     apply plugin: 'nebula.lint'
+
     gradleLint {
         alwaysRun = false
         autoLintAfterFailure = false
         criticalRules = ['unused-dependency']
         rules = ['archaic-wrapper', 'unused-dependency', 'duplicate-dependency-class', 'minimum-dependency-version', 'overridden-dependency-version', 'unused-exclude-by-dep']
     }
-    repositories {
-        google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
-    }
-
-    apply plugin: 'idea'
-
-    idea.module {
-        excludeDirs += file("app/src/main/jni/sqlite")
-        excludeDirs += file("app/src/main/obj")
-        excludeDirs += file("svg")
-        excludeDirs += file("tiles")
-        excludeDirs += file("world")
-    }
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:deprecation"
+            options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
         }
     }
 }
@@ -65,10 +91,10 @@ task clean(type: Delete) {
 task unzip(type: Copy) {
     from zipTree("${project.rootDir}/sqlite-android-3240000/sqlite-android-3240000.aar")
     into "${project.rootDir}/app/src/main/jniLibs/"
-    include "jni/*/*.so"
+    include 'jni/*/*.so'
 
     eachFile { details ->
-        details.setRelativePath new RelativePath(true, details.path - "jni/")
+        details.setRelativePath new RelativePath(true, details.path - 'jni/')
     }
 
     includeEmptyDirs = false
@@ -77,9 +103,9 @@ task unzip(type: Copy) {
 task unzip2(type: Copy) {
     from zipTree("${project.rootDir}/sqlite-android-3240000/sqlite-android-3240000.aar")
     into "${project.rootDir}/app/src/main/libs/"
-    include "classes.jar"
+    include 'classes.jar'
 
     eachFile { details ->
-        details.setRelativePath new RelativePath(true, "libsqliteX.jar")
+        details.setRelativePath new RelativePath(true, 'libsqliteX.jar')
     }
 }

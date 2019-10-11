@@ -18,24 +18,26 @@ package com.androidmapsextensions.lazy;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.gms.maps.GoogleMap;
+
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.Objects;
 
 public class LazyMarker {
 
     @FunctionalInterface
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     public interface OnMarkerCreateListener {
 
-        void onMarkerCreate(@NonNull LazyMarker marker);
+        @NonNull
+        Marker onMarkerCreate(@NonNull MarkerOptions options, @Nullable Object aTag);
     }
 
     @FunctionalInterface
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     public interface OnLevelChangeCallback {
 
         void onLevelChange(@NonNull LazyMarker marker, int level);
@@ -43,39 +45,38 @@ public class LazyMarker {
 
     private int level;
 
+    @Nullable
     @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient OnMarkerCreateListener listener;
 
-    private final LatLng location;
+    private LatLng location;
 
-    @SuppressWarnings("TransientFieldInNonSerializableClass")
-    private transient GoogleMap map;
-
+    @Nullable
     @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient Marker marker;
 
     @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient MarkerOptions markerOptions;
 
+    @Nullable
     private Object tag;
 
     @SuppressWarnings("unused")
-    public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options) {
-        this(googleMap, options, null, null);
+    public LazyMarker(@NonNull MarkerOptions options) {
+        this(options, null, null);
     }
 
     @SuppressWarnings("unused")
-    public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options, @Nullable Object aTag) {
-        this(googleMap, options, aTag, null);
+    public LazyMarker(@NonNull MarkerOptions options, @Nullable Object aTag) {
+        this(options, aTag, null);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options, @Nullable Object aTag,
+    public LazyMarker(@NonNull MarkerOptions options, @Nullable Object aTag,
                       @Nullable OnMarkerCreateListener markerCreateListener) {
         if (options.isVisible()) {
-            createMarker(googleMap, options, aTag, markerCreateListener);
+            createMarker(options, aTag, markerCreateListener);
         } else {
-            map = googleMap;
             markerOptions = copy(options);
             listener = markerCreateListener;
         }
@@ -102,7 +103,7 @@ public class LazyMarker {
     @NonNull
     @Override
     public String toString() {
-        return "LazyMarker{" + "tag=" + tag + ", level=" + level + ", location=" + location + '}';
+        return "LazyMarker{" + "tag=" + tag + ", level=" + level + ", location=" + location + "}";
     }
 
     public float getAlpha() {
@@ -122,9 +123,11 @@ public class LazyMarker {
     }
 
     @NonNull
-    @Deprecated
     public String getId() {
         createMarker();
+        if (marker == null) {
+            throw new AssertionError();
+        }
         return marker.getId();
     }
 
@@ -143,6 +146,7 @@ public class LazyMarker {
     }
 
     public void setPosition(@NonNull LatLng position) {
+        location = position;
         if (marker != null) {
             marker.setPosition(position);
         } else {
@@ -296,10 +300,6 @@ public class LazyMarker {
         if (marker != null) {
             marker.remove();
             marker = null;
-        } else {
-            map = null;
-            markerOptions = null;
-            listener = null;
         }
     }
 
@@ -342,20 +342,15 @@ public class LazyMarker {
 
     private void createMarker() {
         if (marker == null) {
-            createMarker(map, markerOptions, tag, listener);
-            map = null;
+            createMarker(markerOptions, tag, listener);
             markerOptions = null;
             listener = null;
         }
     }
 
-    private void createMarker(GoogleMap googleMap, MarkerOptions options, Object aTag, OnMarkerCreateListener markerCreateListener) {
-        marker = googleMap.addMarker(options);
-        if (aTag != null) {
-            marker.setTag(aTag);
-        }
+    private void createMarker(MarkerOptions options, Object aTag, OnMarkerCreateListener markerCreateListener) {
         if (markerCreateListener != null) {
-            markerCreateListener.onMarkerCreate(this);
+            marker = markerCreateListener.onMarkerCreate(options, aTag);
         }
     }
 

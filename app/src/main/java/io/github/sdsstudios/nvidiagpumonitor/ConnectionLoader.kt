@@ -6,25 +6,21 @@ import android.net.Uri
 import android.util.Log
 import androidx.loader.content.CursorLoader
 
-class ConnectionLoader : CursorLoader {
-
-    constructor(context: Context) : super(context)
-
-    constructor(
-        context: Context,
-        uri: Uri,
-        projection: Array<String>?,
-        selection: String?,
-        selectionArgs: Array<String>?,
-        sortOrder: String?
-    ) : super(context, uri, projection, selection, selectionArgs, sortOrder)
+class ConnectionLoader(
+    context: Context,
+    uri: Uri,
+    projection: Array<String>?,
+    selection: String?,
+    selectionArgs: Array<String>?,
+    sortOrder: String?
+) : CursorLoader(context, uri, projection, selection, selectionArgs, sortOrder) {
 
     override fun loadInBackground(): Cursor? {
         var cursor: Cursor? = null
         try {
             cursor = super.loadInBackground()
         } catch (e: IllegalStateException) {
-            Log.e(e.javaClass.name, e.message)
+            e.message?.let { Log.e(e.javaClass.name, it) }
         }
 
         return cursor

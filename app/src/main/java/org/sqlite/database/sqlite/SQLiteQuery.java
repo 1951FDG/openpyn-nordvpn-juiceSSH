@@ -32,7 +32,6 @@ import android.util.Log;
  * This class is not thread-safe.
  * </p>
  */
-@SuppressWarnings("ALL")
 public final class SQLiteQuery extends SQLiteProgram {
     private static final String TAG = "SQLiteQuery";
 

@@ -1,9 +1,14 @@
 package io.github.getsixtyfour.openpyn
 
 import android.app.Application
+import android.content.Context
+import android.os.Build
+import android.util.Log
+import androidx.preference.PreferenceManager
 import com.ariascode.networkutility.NetworkInfo
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
+import com.google.android.gms.maps.MapsInitializer
 import com.michaelflisar.gdprdialog.GDPR
 import com.squareup.leakcanary.LeakCanary
 import io.github.getsixtyfour.openpyn.utilities.logException
@@ -11,6 +16,13 @@ import io.github.getsixtyfour.openpyn.utilities.logException
 open class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        // System.setProperty("kotlinx.coroutines.fast.service.loader", "false")
+
+        MapsInitializer.initialize(this) //todo check value
+
+        setDefaultPreferences(this)
+
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
@@ -18,9 +30,17 @@ open class MainApplication : Application() {
         }
 
         NetworkInfo.getInstance(this)
+        val sdkInt = Build.VERSION.SDK_INT
+        if ((Build.VERSION_CODES.O..Build.VERSION_CODES.P).contains(sdkInt)) {
+            Log.d(
+                "Application",
+                "Ignoring LeakCanary on Android $sdkInt due to an Android bug. See https://github.com/square/leakcanary/issues/1081"
+            )
+        } else {
+            installLeakCanary()
+        }
 
         installBlockCanary()
-        installLeakCanary()
         populateAboutConfig()
         GDPR.getInstance().init(this)
     }
@@ -33,6 +53,7 @@ open class MainApplication : Application() {
         // no-op, LeakCanary is disabled in production.
     }
 
+    //todo inner class
     private fun populateAboutConfig() {
         val versionName = BuildConfig.VERSION_NAME
         val versionCode = BuildConfig.VERSION_CODE
@@ -66,5 +87,10 @@ open class MainApplication : Application() {
         // share
         aboutConfig.shareMessage = ""
         aboutConfig.sharingTitle = "Share"
+    }
+
+    private fun setDefaultPreferences(context: Context) {
+        PreferenceManager.setDefaultValues(context, R.xml.pref_settings, false)
+        PreferenceManager.setDefaultValues(context, R.xml.pref_api, true)
     }
 }

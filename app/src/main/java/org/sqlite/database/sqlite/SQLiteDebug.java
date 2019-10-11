@@ -31,7 +31,6 @@ import android.util.Printer;
  *
  * {@hide}
  */
-@SuppressWarnings("ALL")
 public final class SQLiteDebug {
     private static native void nativeGetPagerStats(PagerStats stats);
 

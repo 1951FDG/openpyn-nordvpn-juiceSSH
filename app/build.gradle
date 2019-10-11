@@ -1,21 +1,116 @@
 apply plugin: 'com.android.application'
+
 apply plugin: 'kotlin-android'
+
 apply plugin: 'kotlin-android-extensions'
+
 apply plugin: 'kotlin-kapt'
-apply plugin: 'io.fabric'
-//apply plugin: 'com.google.gms.google-services'
+
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
+
+apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
+
 apply plugin: 'com.getkeepsafe.dexcount'
 
+apply plugin: 'com.github.konifar.gradle.unused-resources-remover'
+
+apply plugin: 'com.gladed.androidgitversion'
+
+apply plugin: 'io.fabric'
+
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+//apply plugin: 'com.google.gms.google-services'
+
+android {
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId 'io.github.getsixtyfour.openpyn'
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode androidGitVersion.code()
+        versionName androidGitVersion.name()
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
+            }
+        }
+        resConfigs 'en'
+    }
+    buildTypes {
+        release {
+            ndk {
+                abiFilters 'x86', 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+            }
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'proguard-rules-release.pro'
+        }
+        debug {
+            // Comment next two lines to run "fastlane beta"
+            ext.alwaysUpdateBuildId = false
+            ext.enableCrashlytics = false
+            ndk {
+                abiFilters 'arm64-v8a', 'x86_64'
+            }
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.10.2'
+        }
+    }
+    aaptOptions {
+        noCompress 'mbtiles'
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    lintOptions {
+        // check 'Registered', 'VectorPath', 'DuplicateStrings', 'UnknownNullness', 'UnusedResources', 'UnusedIds'
+        abortOnError false
+        baseline file('lint-baseline.xml')
+        checkAllWarnings true
+        disable 'GoogleAppIndexingWarning'
+        lintConfig file('lint.xml')
+        xmlReport false
+    }
+    packagingOptions {
+        exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
+        exclude 'META-INF/kotlinx-coroutines-io.kotlin_module'
+        exclude 'META-INF/kotlinx-io.kotlin_module'
+        exclude 'lib/arm64-v8a/libsqliteX.so'
+        exclude 'lib/armeabi-v7a/libsqliteX.so'
+        exclude 'lib/x86/libsqliteX.so'
+        exclude 'lib/x86_64/libsqliteX.so'
+        exclude 'lib/arm64-v8a/libsqlite4java-android.so'
+        exclude 'lib/armeabi-v7a/libsqlite4java-android.so'
+        exclude 'lib/x86/libsqlite4java-android.so'
+        exclude 'lib/x86_64/libsqlite4java-android.so'
+    }
+    testOptions {
+        animationsDisabled = true
+    }
+}
+
 androidGitVersion {
-    format = "%tag%%-count%%-commit%%-branch%%-dirty%"
+    format = '%tag%%-count%%-commit%%-branch%%-dirty%'
 }
 
 detekt {
-    toolVersion = "1.0.0-RC12"
-    input = files("src/main/java")
-    config = files("$rootDir/default-detekt-config.yml")
-    filters = ".*/resources/.*,.*/build/.*"
+    toolVersion = '1.1.0'
+    input = files('src/main/java')
+    config = files("$rootDir/config/detekt/detekt.yml")
+    filters = '.*/resources/.*,.*/build/.*'
     reports {
         xml {
             enabled = false
@@ -32,166 +127,182 @@ dexcount {
     enabled = false
 }
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-if (keystorePropertiesFile.isFile()) {
-    def keystoreProperties = new Properties()
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-    android.signingConfigs.create("release", {
-        keyAlias keystoreProperties['keyAlias']
-        keyPassword keystoreProperties['keyPassword']
-        storeFile file(keystoreProperties['storeFile'])
-        storePassword keystoreProperties['storePassword']
-    })
-    android.buildTypes["release"].signingConfig = android.signingConfigs["release"]
-}
+configurations {
+    implementation {
+        exclude group: 'org.jetbrains.kotlinx', module: 'atomicfu'
+        exclude group: 'org.json', module: 'json'
+    }
 
-android {
-    compileSdkVersion 28
-    defaultConfig {
-        applicationId "io.github.getsixtyfour.openpyn"
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode androidGitVersion.code()
-        versionName androidGitVersion.name()
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        externalNativeBuild {
-            cmake {
-                cppFlags ""
-                arguments "-DANDROID_STL=c++_shared"
-            }
-        }
-    }
-    packagingOptions {
-        exclude 'META-INF/atomicfu.kotlin_module'
-    }
-    buildTypes {
-        release {
-            ndk {
-                abiFilters 'x86', 'armeabi-v7a', 'arm64-v8a', 'x86_64'
-            }
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            // Comment next two lines to run "fastlane beta"
-            ext.alwaysUpdateBuildId = false
-            ext.enableCrashlytics = false
-            ndk {
-                abiFilters 'arm64-v8a'
-            }
-        }
-    }
-    aaptOptions {
-        noCompress 'mbtiles'
-    }
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
-            version "3.10.2"
-        }
-    }
-    lintOptions {
-        disable 'GoogleAppIndexingWarning', 'MissingRegistered', 'UnusedIds', 'UnusedResources'
-        checkAllWarnings true
-        xmlReport false
-        abortOnError false
-        baseline file("lint-baseline.xml")
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    dataBinding {
-        enabled = true
-    }
-    testOptions {
-        animationsDisabled = true
-    }
-}
+    /*debugAndroidTestCompileClasspath {
+        exclude group: 'androidx.annotation'
+        exclude group: 'androidx.appcompat'
+        exclude group: 'androidx.collection'
+        exclude group: 'androidx.core'
+        exclude group: 'androidx.fragment'
+        exclude group: 'androidx.lifecycle'
+        exclude group: 'androidx.recyclerview'
+        exclude group: 'androidx.savedstate'
+        exclude group: 'androidx.transition'
+        exclude group: 'com.google.firebase', module: 'firebase-common'
 
-configurations.all {
-    resolutionStrategy {
-        failOnVersionConflict()
-        preferProjectModules()
-    }
+        resolutionStrategy {
+            failOnVersionConflict()
+        }
+    }*/
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'src/main/libs')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // 1951FDG
+    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:v3.4'
+    implementation('com.github.1951FDG:ProgressToolbar:1.0.7') {
+        exclude group: 'me.zhanghai.android.materialprogressbar'
+    }
+    implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.16'
+    debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:slave-SNAPSHOT'
+
     // Android
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
-    implementation 'androidx.preference:preference:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation 'androidx.preference:preference:1.1.0'
+    implementation 'androidx.sqlite:sqlite:2.0.1'
+
     // Anko
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    implementation("org.jetbrains.anko:anko-coroutines:$anko_version") {
+        transitive = false
+    }
     implementation "org.jetbrains.anko:anko-design:$anko_version"
-    //implementation "org.jetbrains.anko:anko-sdk21-listeners:$anko_version"
+
     // Anko Layouts
     implementation "org.jetbrains.anko:anko-sdk21:$anko_version"
-    // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.0'
-    // Emoji
-    implementation('com.vdurmont:emoji-java:4.0.0') {
-        exclude group: 'org.json', module: 'json'
+
+    // Architecture
+    implementation('com.naver.android.svc:svc:1.0.0') {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
     }
+    kapt 'com.naver.android.svc:svc-compiler:1.0.0'
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-io-jvm:$kotlinx_io_version"
+
+    // Crashlytics
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
+
+    // GDPR
+    implementation 'com.github.MFlisar:GDPRDialog:1.4.1'
+
     // Geocoder
     implementation 'de.westnordost:countryboundaries:1.5'
+
+    // Google Play Services
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+
+    // Google Material Design
+    implementation 'com.google.android.material:material:1.0.0'
+
+    // HTTP Client
+    implementation "com.github.kittinunf.fuel:fuel-android:$fuel_version"
+    implementation "com.github.kittinunf.fuel:fuel-json:$fuel_version"
+    implementation("io.ktor:ktor-client-android:$ktor_version") {
+        exclude group: 'org.jetbrains.kotlin'
+        exclude group: 'org.jetbrains.kotlinx'
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+
     // JSON
+    implementation('com.jayrave:moshi-pristine-models:1.0.0') {
+        transitive = false
+    }
     implementation 'com.squareup.moshi:moshi:1.8.0'
+
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation('org.jetbrains.kotlin:kotlin-reflect') {
+        force = true
+    }
+    implementation('org.jetbrains.kotlin:kotlin-stdlib') {
+        force = true
+    }
+    implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8') {
+        force = true
+    }
+
+    // LeakCanary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
     // Logger
     implementation 'io.github.jupf.staticlog:staticlog:2.2.0'
-    // Google Play Services
-    implementation 'com.google.android.gms:play-services-oss-licenses:16.0.2'
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-maps:16.1.0'
-    // Networking
-    implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.14'
-    implementation 'com.github.kittinunf.fuel:fuel-android:1.13.0'
+    implementation "org.slf4j:slf4j-api:$slf4j_version"
+    debugImplementation "org.slf4j:slf4j-android:$slf4j_version"
+    testImplementation "org.slf4j:slf4j-simple:$slf4j_version"
+
+    // Preference
+    implementation('net.mm2d:preference:0.2.1') {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    }
+
     // UI
     implementation('com.afollestad.material-dialogs:core:0.9.6.0') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
-    implementation('com.github.1951FDG:Android-Multi-Select-Dialog:v3.3')
-    implementation('com.github.1951FDG:ProgressToolbar:1.0.5') {
-        exclude group: 'me.zhanghai.android.materialprogressbar'
-    }
     implementation 'com.github.AdityaAnand1:Morphing-Material-Dialogs:0.0.4'
+    implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'com.github.mayuroks:minibar:0.2.0'
-    implementation 'com.github.tingyik90:snackprogressbar:5.0'
-//    implementation('com.github.armcha:ElasticView:0.2.0') {
-//        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
-//    }
+    implementation('com.github.tingyik90:snackprogressbar:6.1.1') {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
+    }
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
-    implementation 'com.github.GrenderG:Toasty:1.3.1'
-    // Crashlytics
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
-    implementation 'com.google.firebase:firebase-core:16.0.8'
-    // Debug
-    debugImplementation 'com.github.markzhai:blockcanary-android:1.5.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
     // Test
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
-    androidTestImplementation('com.schibsted.spain:barista:2.7.0') {
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation('com.schibsted.spain:barista:3.2.0') {
         exclude group: 'androidx.test.espresso'
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
     }
     androidTestImplementation('tools.fastlane:screengrab:1.2.0') {
         exclude group: 'androidx.test'
         exclude group: 'androidx.test.espresso'
+        exclude group: 'com.android.support.test.uiautomator'
     }
-    // Architecture
-    implementation 'com.naver.android.svc:svc:1.0.0'
-    kapt 'com.naver.android.svc:svc-compiler:1.0.0'
-    // Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.1.0-alpha02"
-    implementation "androidx.navigation:navigation-ui-ktx:2.1.0-alpha02"
-    // GDPR
-    implementation 'com.github.MFlisar:GDPRDialog:1.3.1'
-    // KTX
-    implementation 'androidx.core:core-ktx:1.0.1'
+
+    //noinspection GradleDependency
+    implementation 'commons-cli:commons-cli:1.4'
+
+    // Anko
+    //implementation "org.jetbrains.anko:anko-sdk21-listeners:$anko_version"
+
+    // Emoji
+    //implementation 'com.vdurmont:emoji-java:5.1.1'
+
+    // Google Maps SDK for Android v.3.0.0 BETA
+    //implementation name:'maps-sdk-3.0.0-beta', ext:'aar'
+    //implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+
+    // UI
+    //implementation 'com.github.armcha:ElasticView:0.2.0'
+}
+
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+if (keystorePropertiesFile.isFile()) {
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    android.signingConfigs.create('release', {
+        keyAlias keystoreProperties['keyAlias']
+        keyPassword keystoreProperties['keyPassword']
+        storeFile file(keystoreProperties['storeFile'])
+        storePassword keystoreProperties['storePassword']
+    })
+    android.buildTypes['release'].signingConfig = android.signingConfigs['release']
 }

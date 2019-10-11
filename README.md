@@ -64,8 +64,6 @@ JuiceSSH supports the use of plugins, which allowed me to create this fantastic 
 
 -   On app start, it will use a smart location, to determine the closest country
 
--   A floating action button (FAB), to determine current location based on the current public IP address
-
 -   Uses Geolocation APIs to determine the current location based on the current public IP address
     -   <http://ip-api.com/>, <https://ipdata.co/>, <https://ipinfo.io/>, <https://ipstack.com/>
 
@@ -119,14 +117,12 @@ Please use my `test` branch of [Openpyn](https://github.com/1951FDG/openpyn-nord
 To compile and run the project you'll need:
 
 -   [Android Studio 3.3 or higher](https://developer.android.com/studio/)
-    -   Android `9 (API level 28)`
-    -   Android SDK Build-Tools `28.0.3`
+    -   Android `10 (API level 29)`
+    -   Android SDK Build-Tools `29.0.2`
     -   CMake `v3.10.2`
     -   Android SDK Platform-Tools
     -   Android SDK Tools
     -   NDK
-    -   Android Support Repository
-    -   Google repository
 
 
 -   Maps SDK for Android
@@ -149,26 +145,33 @@ To compile and run the project you'll need:
 -   [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
 -   [Anko](https://github.com/Kotlin/anko)
 -   [Barista](https://github.com/SchibstedSpain/Barista)
--   [BlockCanary](https://github.com/markzhai/AndroidPerformanceMonitor)
+-   [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
 -   [countryboundaries](https://github.com/westnordost/countryboundaries)
 -   [ElasticView](https://github.com/armcha/ElasticView)
 -   [emoji-java](https://github.com/vdurmont/emoji-java)
 -   [Fuel](https://github.com/kittinunf/Fuel)
 -   [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
+-   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
 -   [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 -   [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 -   [Kotlin](https://github.com/JetBrains/kotlin)
+-   [Ktor](https://github.com/ktorio/ktor)
 -   [LeakCanary](https://github.com/square/leakcanary)
 -   [material-about-library](https://github.com/daniel-stoneuk/material-about-library)
 -   [Minibar](https://github.com/mayuroks/minibar)
 -   [Morphing Material Dialogs](https://github.com/AdityaAnand1/Morphing-Material-Dialogs)
 -   [Moshi](https://github.com/square/moshi)
+-   [Moshi: Pristine Models](https://github.com/jayrave/moshi-pristine-models)
 -   [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
+-   [PreferenceActivityCompat](https://github.com/ohmae/preference-activity-compat)
 -   [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
 -   [Result](https://github.com/kittinunf/Result)
+-   [SLF4J](https://github.com/qos-ch/slf4j)
 -   [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
 -   [SQLite](https://sqlite.org/android/doc/trunk/www/install.wiki)
 -   [StaticLog](https://github.com/jupf/staticlog)
+-   [SVC](https://github.com/BansookNam/svc)
+-   [Toasty](https://github.com/GrenderG/Toasty)
 
 ## Feedback
 
@@ -222,21 +225,24 @@ This app uses (modified) code from several open source projects.
 -   [AX2J](http://ax2j.sickworm.com/)
 -   [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 -   [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
+-   [Android Sorter Plugin](https://github.com/cuongloveit/AndroidSorter)
 -   [Android Studio](https://developer.android.com/studio/)
 -   [Atom](https://atom.io/)
 -   [Codacy](https://www.codacy.com/)
 -   [DB Browser for SQLite](http://sqlitebrowser.org/)
+-   [Dependabot](https://dependabot.com/)
 -   [Detekt](https://github.com/arturbosch/detekt)
 -   [Fastlane](https://fastlane.tools/)
 -   [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
+-   [JSON Schema Tool](https://jsonschema.net/)
 -   [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 -   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 -   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 -   [Regex101](https://regex101.com/)
 -   [Snyk](https://snyk.io/)
+-   [SonarLint](https://www.sonarlint.org/)
 -   [Sourcetree](https://www.sourcetreeapp.com/)
 -   [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
--   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
 
 ## Attributions
 

@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
  * This is a convience class that helps build SQL queries to be sent to
  * {@link SQLiteDatabase} objects.
  */
-@SuppressWarnings("ALL")
 public class SQLiteQueryBuilder
 {
     private static final String TAG = "SQLiteQueryBuilder";

@@ -2,6 +2,7 @@ package io.errorlab.widget;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.customview.view.AbsSavedState;
 
 class CheckedSavedState extends AbsSavedState {

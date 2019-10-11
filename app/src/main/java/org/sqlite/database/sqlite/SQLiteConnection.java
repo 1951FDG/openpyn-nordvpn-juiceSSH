@@ -87,7 +87,6 @@ import java.util.Map;
  *
  * @hide
  */
-@SuppressWarnings("ALL")
 public final class SQLiteConnection implements CancellationSignal.OnCancelListener {
     private static final String TAG = "SQLiteConnection";
     private static final boolean DEBUG = false;
@@ -217,11 +216,12 @@ public final class SQLiteConnection implements CancellationSignal.OnCancelListen
 
         setPageSize();
         setForeignKeyModeFromConfiguration();
-        setWalModeFromConfiguration();
         setJournalSizeLimit();
         setAutoCheckpointInterval();
-        setLocaleFromConfiguration();
-
+        if( !nativeHasCodec() ){
+            setWalModeFromConfiguration();
+            setLocaleFromConfiguration();
+        }
         // Register custom functions.
         final int functionCount = mConfiguration.customFunctions.size();
         for (int i = 0; i < functionCount; i++) {

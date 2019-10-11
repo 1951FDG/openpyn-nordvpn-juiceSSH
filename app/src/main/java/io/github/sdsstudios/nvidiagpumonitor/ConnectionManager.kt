@@ -24,6 +24,7 @@ import java.util.UUID
 @MainThread
 class ConnectionManager(
     ctx: Context,
+    private val onClientStartedListener: OnClientStartedListener,
     private val mActivitySessionStartedListener: OnSessionStartedListener,
     private val mActivitySessionFinishedListener: OnSessionFinishedListener,
     mActivitySessionExecuteListener: OnSessionExecuteListener?,
@@ -35,43 +36,15 @@ class ConnectionManager(
         const val JUICESSH_REQUEST_CODE: Int = 345
     }
 
-//    val powerUsage = MutableLiveData<Int>()
-//    val temperature = MutableLiveData<Int>()
-//    val fanSpeed = MutableLiveData<Int>()
-//    val freeMemory = MutableLiveData<Int>()
-//    val usedMemory = MutableLiveData<Int>()
-//    val graphicsClock = MutableLiveData<Int>()
-//    val videoClock = MutableLiveData<Int>()
-//    val memoryClock = MutableLiveData<Int>()
     private val openpyn = MutableLiveData<Int>()
     private var mSessionKey = ""
     private var mSessionId = 0
     private val mClient = PluginClient()
     private val mCtx: Context = ctx.applicationContext
-//    private val mPowerController = PowerController(mCtx, powerUsage)
-//    private val mTempController = TempController(mCtx, temperature)
-//    private val mFanSpeedController = FanSpeedController(mCtx, fanSpeed)
-//    private val mFreeMemController = FreeMemController(mCtx, freeMemory)
-//    private val mUsedMemController = UsedMemController(mCtx, usedMemory)
-//    private val mGraphicsClockController = GraphicsClockController(mCtx, graphicsClock)
-//    private val mVideoClockController = VideoClockController(mCtx, videoClock)
-//    private val mMemoryClockController = MemoryClockController(mCtx, memoryClock)
     private val mOpenpynController = OpenpynController(
-        mCtx,
-        openpyn,
-        mActivitySessionExecuteListener,
-        mActivityCommandExecuteListener,
-        mActivityOnOutputLineListener
+        mCtx, openpyn, mActivitySessionExecuteListener, mActivityCommandExecuteListener, mActivityOnOutputLineListener
     )
     private val mControllers = listOf(
-//            mPowerController,
-//            mTempController,
-//            mFanSpeedController,
-//            mFreeMemController,
-//            mUsedMemController,
-//            mGraphicsClockController,
-//            mVideoClockController,
-//            mMemoryClockController,
         mOpenpynController
     )
 
@@ -107,7 +80,7 @@ class ConnectionManager(
         if (isConnected()) disconnect() else connect(uuid, activity)
     }
 
-    fun startClient(onClientStartedListener: OnClientStartedListener) {
+    fun startClient() {
         mClient.start(mCtx, onClientStartedListener)
     }
 
@@ -130,7 +103,7 @@ class ConnectionManager(
                 Thread.sleep(5000)
                 mClient.disconnect(mSessionId, mSessionKey)
             } catch (e: ServiceNotConnectedException) {
-                mCtx.longToast(R.string.error_couldnt_connect_to_service)
+                mCtx.longToast(R.string.error_could_not_connect_to_service)
             }
         }).start()
     }
@@ -140,7 +113,7 @@ class ConnectionManager(
             try {
                 mClient.connect(activity, uuid, this, JUICESSH_REQUEST_CODE)
             } catch (e: ServiceNotConnectedException) {
-                mCtx.longToast(R.string.error_couldnt_connect_to_service)
+                mCtx.longToast(R.string.error_could_not_connect_to_service)
             }
         }).start()
     }

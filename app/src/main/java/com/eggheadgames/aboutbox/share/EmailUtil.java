@@ -7,9 +7,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+
 import com.eggheadgames.aboutbox.AboutConfig;
 
+@SuppressWarnings("UtilityClass")
 public final class EmailUtil {
 
     private EmailUtil() {
@@ -19,7 +23,7 @@ public final class EmailUtil {
     public static void contactUs(@NonNull Activity activity) {
         AboutConfig config = AboutConfig.getInstance();
 
-        final Uri mailto = Uri.fromParts("mailto", config.emailAddress, null);
+        Uri mailto = Uri.fromParts("mailto", config.emailAddress, null);
 
         String emailBody = config.emailBody;
         if (TextUtils.isEmpty(emailBody)) {
@@ -28,16 +32,14 @@ public final class EmailUtil {
             deviceInfo += "\n Android version: " + VERSION.RELEASE + " (" + VERSION.SDK_INT + ")";
             deviceInfo += "\n Device: " + Build.MODEL + " (" + Build.PRODUCT + ")";
             deviceInfo += "\n Platform: " + platformName(config.buildType);
-
-            emailBody = config.emailBodyPrompt + "\n\n\n\n\n"
-                    + "---------------------------" + deviceInfo;
+            emailBody = config.emailBodyPrompt + "\n\n\n\n\n" + "---------------------------" + deviceInfo;
         }
 
         try {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, mailto);
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, config.emailSubject);
             emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
-            activity.startActivity(Intent.createChooser(emailIntent, "Send email..."));
+            ContextCompat.startActivity(activity, Intent.createChooser(emailIntent, "Send email..."), null);
         } catch (ActivityNotFoundException e) {
             if (config.analytics != null) {
                 config.analytics.logException(e, false);

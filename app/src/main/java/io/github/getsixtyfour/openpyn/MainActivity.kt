@@ -6,14 +6,13 @@ import android.content.res.Resources
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager
 import androidx.navigation.fragment.NavHostFragment
@@ -24,8 +23,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
@@ -42,6 +39,8 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
+// import de.blinkt.openvpn.core.VPNAuthenticationHandler
+// import de.blinkt.openvpn.core.VPNLaunchHelper.startOpenVPNService
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.map.MapFragment
 import io.github.getsixtyfour.openpyn.utilities.Toaster
@@ -49,6 +48,7 @@ import io.github.getsixtyfour.openpyn.utilities.createJson
 import io.github.getsixtyfour.openpyn.utilities.isJuiceSSHInstalled
 import io.github.getsixtyfour.openpyn.utilities.juiceSSHInstall
 import io.github.getsixtyfour.openpyn.utilities.logException
+import io.github.getsixtyfour.openpyn.utilities.stringifyJsonArray
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
@@ -56,87 +56,97 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import kotlinx.android.synthetic.main.activity_main.mainlayout
+import kotlinx.android.synthetic.main.activity_main.container
 import kotlinx.android.synthetic.main.activity_main.spinnerConnectionList
 import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.onComplete
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
+// import ua.pp.msk.openvpnstatus.net.ManagementConnection
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.Locale
 
-class MainActivity : AppCompatActivity(),
-    AnkoLogger,
-    ConnectionListLoaderFinishedCallback,
-    GDPR.IGDPRCallback,
-    OnClickListener,
-    OnClientStartedListener,
-    OnCommandExecuteListener,
-    OnSessionExecuteListener,
-    OnSessionFinishedListener,
-    OnSessionStartedListener {
+class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback, OnClickListener,
+    OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener, OnSessionStartedListener,
+    CoroutineScope by MainScope() {
+
     private var dialog: MorphDialog? = null
-
+    // todo check value
     private val mConnectionListAdapter by lazy {
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
     }
     private var mConnectionManager: ConnectionManager? = null
     private val mSetup by lazy {
-        GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)
-            .withExplicitAgeConfirmation(true)
-            .withForceSelection(true)
-            .withShowPaidOrFreeInfoText(false)
+        GDPRSetup(
+            GDPRDefinitions.FABRIC_CRASHLYTICS,
+            GDPRDefinitions.FIREBASE_CRASH,
+            GDPRDefinitions.FIREBASE_ANALYTICS
+        ).withExplicitAgeConfirmation(true).withForceSelection(true).withShowPaidOrFreeInfoText(false)
     }
-    private var snackProgressBarManager: SnackProgressBarManager? = null
+    private lateinit var mSnackProgressBarManager: SnackProgressBarManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
 
-        showGDPRIfNecessary()
-
         setContentView(R.layout.activity_main)
+
+        showGDPRIfNecessary()
 
         setProgressToolBar(toolbar)
 
         setSnackBarManager()
 
-        setDefaultPreferences()
-        val api = GoogleApiAvailability.getInstance()
-        val errorCode = api.isGooglePlayServicesAvailable(this)
-
-        when (errorCode) {
-            ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, AppCompatActivity.RESULT_OK, null)
-            //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
-            else -> error(api.getErrorString(errorCode))
-        }
+        // val api = GoogleApiAvailability.getInstance()
+        //
+        // when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
+        //     ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, RESULT_OK, null)
+        //     //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
+        //     else -> error(api.getErrorString(errorCode))
+        // }
 
         if (isJuiceSSHInstalled(this)) {
             if (hasPermission(PERMISSION_READ) && hasPermission(PERMISSION_OPEN_SESSIONS)) onPermissionsGranted()
         }
+        // run {
+        //     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        //     val editor = preferences.edit()
+        //
+        //     editor.putString("pref_management_address", "10.0.2.2")
+        //     editor.putInt("pref_management_port", 7015)
+        //     editor.apply()
+        //     val connection = ManagementConnection.getInstance()
+        //     val handler = VPNAuthenticationHandler(this)
+        //     connection.setUsernamePasswordHandler(handler)
+        //
+        //     startOpenVPNService(this)
+        // }
     }
 
     override fun onResume() {
         super.onResume()
-        val snackProgressBar = snackProgressBarManager?.getLastShown()
+        val snackProgressBar = mSnackProgressBarManager.getLastShown()
 
         if (isJuiceSSHInstalled(this)) {
             if (hasPermission(PERMISSION_READ) && hasPermission(PERMISSION_OPEN_SESSIONS)) return
 
             when (snackProgressBar) {
-                null -> snackProgressBarManager?.show(SNACK_BAR_PERMISSIONS, SnackProgressBarManager.LENGTH_INDEFINITE)
-                else -> snackProgressBarManager?.getSnackProgressBar(SNACK_BAR_PERMISSIONS)?.let { snackProgressBarManager?.updateTo(it) }
+                null -> mSnackProgressBarManager.show(SNACK_BAR_PERMISSIONS, SnackProgressBarManager.LENGTH_INDEFINITE)
+                else -> mSnackProgressBarManager.getSnackProgressBar(SNACK_BAR_PERMISSIONS)?.let { mSnackProgressBarManager.updateTo(it) }
             }
         } else {
             when (snackProgressBar) {
-                null -> snackProgressBarManager?.show(SNACK_BAR_JUICESSH, SnackProgressBarManager.LENGTH_INDEFINITE)
-                else -> snackProgressBarManager?.getSnackProgressBar(SNACK_BAR_JUICESSH)?.let { snackProgressBarManager?.updateTo(it) }
+                null -> mSnackProgressBarManager.show(SNACK_BAR_JUICESSH, SnackProgressBarManager.LENGTH_INDEFINITE)
+                else -> mSnackProgressBarManager.getSnackProgressBar(SNACK_BAR_JUICESSH)?.let { mSnackProgressBarManager.updateTo(it) }
             }
         }
     }
@@ -154,11 +164,11 @@ class MainActivity : AppCompatActivity(),
             mConnectionManager?.gotActivityResult(requestCode, resultCode, data)
         }
 
-        if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
-            if (resultCode == AppCompatActivity.RESULT_OK) {
-                // TODO
-            }
-        }
+        // if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
+        //     if (resultCode == RESULT_OK) {
+        //         // TODO
+        //     }
+        // }
 
         MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)
     }
@@ -182,8 +192,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        return when (id) {
+        return when (item.itemId) {
             R.id.action_settings -> {
                 onSettingsItemSelected(item)
                 true
@@ -245,7 +254,8 @@ class MainActivity : AppCompatActivity(),
         fun element(location: Coordinate?, flag: String, server: String, country: String): String = when {
             flag.isNotEmpty() -> {
                 val name = getEntryForValue(flag, R.array.pref_country_entries, R.array.pref_country_values)
-                if (location != null) "$name at ${location?.latitude}, ${location?.longitude}" else name
+                // Enforce Locale to English for double to string conversion
+                if (location != null) "%s at %.7f, %.7f".format(Locale.ENGLISH, name, location.latitude, location.longitude) else name
             }
             server.isNotEmpty() -> {
                 "server $server.nordvpn.com"
@@ -268,7 +278,6 @@ class MainActivity : AppCompatActivity(),
             val server: String = preferences.getString("pref_server", "")!!
             val country: String = preferences.getString("pref_country", "")!!
             val content = "Are you sure you want to connect to ${element(location, flag, server, country)}"
-
             val builder = MorphDialog.Builder(this, v).apply {
                 title("VPN Connection")
                 content(content)
@@ -290,7 +299,7 @@ class MainActivity : AppCompatActivity(),
             } else {
                 MorphDialog.Builder(this, v).apply {
                     title("Error")
-                    content(R.string.error_must_have_atleast_one_server)
+                    content(R.string.error_must_have_at_least_one_server)
                     positiveText(android.R.string.ok)
                     show()
                 }
@@ -305,26 +314,28 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onConnect() {
-        toolbar.showProgress(true)
+        toolbar.hideProgress(true)
+
+        val fragment = getCurrentNavigationFragment() as? MapFragment
+        fragment?.controlTower?.updateMasterMarkerWithDelay(true, 10000)
     }
 
     @Suppress("MagicNumber")
     override fun onDisconnect() {
-        toolbar.showProgress(true)
+        toolbar.hideProgress(true)
 
-        Handler().postDelayed({
-            val fragment = getCurrentNavigationFragment() as? MapFragment
-            fragment?.controlTower?.updateMasterMarker(true)
-        }, 10000)
+        val fragment = getCurrentNavigationFragment() as? MapFragment
+        fragment?.controlTower?.updateMasterMarkerWithDelay(true, 10000)
     }
 
-    @MainThread
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        val fragment = getCurrentNavigationFragment() as? MapFragment
-        return fragment?.controlTower?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
+        val fragment = getCurrentNavigationFragment() as? OnCommandExecuteListener
+        return fragment?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
     }
 
     override fun onError(error: Int, reason: String) {
+        toolbar.hideProgress(true)
+
         longToast(reason)
     }
 
@@ -336,27 +347,19 @@ class MainActivity : AppCompatActivity(),
             0 -> {
                 info("Success")
             }
-            1 -> {
+            -1, 1 -> {
                 info("Failure")
             }
         }
     }
 
-    @Suppress("MagicNumber")
     override fun onOutputLine(line: String) {
-        if (line.startsWith("CONNECTING TO SERVER", true)) {
-            toolbar.hideProgress(true)
-
-            Handler().postDelayed({
-                val fragment = getCurrentNavigationFragment() as? MapFragment
-                fragment?.controlTower?.updateMasterMarker(true)
-            }, 10000)
-        }
     }
 
     override fun onSessionFinished() {
-        info("onSessionFinished")
         toolbar.hideProgress(true)
+
+        info("onSessionFinished")
         val fragment = getCurrentNavigationFragment() as? OnSessionFinishedListener
 
         fragment?.onSessionFinished()
@@ -366,6 +369,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
+        toolbar.showProgress(true)
+
         info("onSessionStarted")
         val fragment = getCurrentNavigationFragment() as? OnSessionStartedListener
 
@@ -384,15 +389,23 @@ class MainActivity : AppCompatActivity(),
 
     private fun getCurrentNavigationFragment(): Fragment? {
         val navHostFragment = supportFragmentManager.primaryNavigationFragment as? NavHostFragment
-        return navHostFragment?.childFragmentManager?.primaryNavigationFragment
+        val host = navHostFragment?.host
+        if (host == null) {
+            logException(IllegalStateException("Fragment $navHostFragment has not been attached yet."))
+        }
+
+        return when (host) {
+            null -> null
+            else -> navHostFragment.childFragmentManager.primaryNavigationFragment
+        }
     }
 
     fun getSnackProgressBarManager(): SnackProgressBarManager? {
-        return snackProgressBarManager
+        return mSnackProgressBarManager
     }
 
     private fun hasPermission(permission: String): Boolean {
-        return ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun onPermissionsGranted() {
@@ -401,6 +414,7 @@ class MainActivity : AppCompatActivity(),
 
         mConnectionManager = ConnectionManager(
             ctx = this,
+            onClientStartedListener = this,
             mActivitySessionStartedListener = this,
             mActivitySessionFinishedListener = this,
             mActivitySessionExecuteListener = this,
@@ -441,14 +455,14 @@ class MainActivity : AppCompatActivity(),
         })
         */
 
-        mConnectionManager?.startClient(this)
+        mConnectionManager?.startClient()
     }
 
     fun requestPermissions() {
         ActivityCompat.requestPermissions(this, arrayOf(PERMISSION_READ, PERMISSION_OPEN_SESSIONS), PERMISSION_REQUEST_CODE)
     }
 
-    fun showGDPRIfNecessary() {
+    private fun showGDPRIfNecessary() {
         val debug = BuildConfig.DEBUG
         if (!debug) {
             GDPR.getInstance().checkIfNeedsToBeShown(this, mSetup)
@@ -456,13 +470,13 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun onAboutItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
-        AboutActivity.launch(this)
+        SettingsActivity.startAboutFragment(this)
     }
 
     private fun onGitHubItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
         val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-        ActivityCompat.startActivity(this, intent, null)
+        ContextCompat.startActivity(this, intent, null)
     }
 
     private fun onRefreshItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
@@ -471,16 +485,22 @@ class MainActivity : AppCompatActivity(),
         toolbar.showProgress(true)
 
         doAsync {
+            val debug = BuildConfig.DEBUG
             var jsonArray: JSONArray? = null
-
+            var json: String? = null
+            var thrown = true
             if (NetworkInfo.getInstance().isOnline()) {
                 jsonArray = createJson()
             }
-            var thrown = true
 
             if (jsonArray != null) {
-                val json = jsonArray.toString()
+                json = when {
+                    debug -> stringifyJsonArray(jsonArray)
+                    else -> jsonArray.toString()
+                }
+            }
 
+            if (json != null) {
                 try {
                     val child = resources.getResourceEntryName(R.raw.nordvpn) + ".json"
                     val file = File(getExternalFilesDir(null), child)
@@ -500,28 +520,17 @@ class MainActivity : AppCompatActivity(),
                 toolbar.hideProgress(true)
 
                 if (!thrown) {
-                    MaterialDialog.Builder(it)
-                        .title("Warning")
-                        .content(R.string.warning_must_restart_app)
-                        .positiveText(android.R.string.ok)
+                    MaterialDialog.Builder(it).title("Warning").content(R.string.warning_must_restart_app).positiveText(android.R.string.ok)
                         .show()
                 }
             }
 
-            onComplete {
-            }
+            onComplete {}
         }
     }
 
     private fun onSettingsItemSelected(@Suppress("UNUSED_PARAMETER") item: MenuItem) {
-        /*
-        startActivity<SettingsActivity>(
-                EXTRA_SHOW_FRAGMENT to SettingsActivity.SettingsSyncPreferenceFragment::class.java.name,
-                EXTRA_NO_HEADERS to true
-        )
-        */
-
-        SettingsActivity.launch(this)
+        SettingsActivity.startSettingsFragment(this)
     }
 
     private fun setProgressToolBar(toolbar: ProgressToolbar) {
@@ -532,55 +541,36 @@ class MainActivity : AppCompatActivity(),
         supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
+    // todo inner class
     private fun setSnackBarManager() {
-        fun snackProgressBar(
-            type: Int,
-            message: String,
-            action: String,
-            onActionClickListener: OnActionClickListener
-        ): SnackProgressBar {
+        fun snackProgressBar(type: Int, message: String, action: String, onActionClickListener: OnActionClickListener): SnackProgressBar {
             return SnackProgressBar(type, message).setAction(action, onActionClickListener)
         }
 
-        snackProgressBarManager = SnackProgressBarManager(mainlayout)
+        mSnackProgressBarManager = SnackProgressBarManager(container, this)
         val type = SnackProgressBar.TYPE_NORMAL
         val action = getString(android.R.string.ok)
 
-        snackProgressBarManager?.put(
-            snackProgressBar(
-                type,
-                getString(R.string.error_must_enable_permissions),
-                action,
-                object : OnActionClickListener {
-                    override fun onActionClick() {
-                        requestPermissions()
-                    }
-                }),
-            SNACK_BAR_PERMISSIONS
+        mSnackProgressBarManager.put(
+            snackProgressBar(type, getString(R.string.error_must_enable_permissions), action, object : OnActionClickListener {
+                override fun onActionClick() {
+                    requestPermissions()
+                }
+            }), SNACK_BAR_PERMISSIONS
         )
 
-        snackProgressBarManager?.put(
-            snackProgressBar(
-                type,
-                getString(R.string.error_must_install_juicessh),
-                action,
-                object : OnActionClickListener {
-                    override fun onActionClick() {
-                        juiceSSHInstall(this@MainActivity)
-                    }
-                }),
-            SNACK_BAR_JUICESSH
+        mSnackProgressBarManager.put(
+            snackProgressBar(type, getString(R.string.error_must_install_juicessh), action, object : OnActionClickListener {
+                override fun onActionClick() {
+                    juiceSSHInstall(this@MainActivity)
+                }
+            }), SNACK_BAR_JUICESSH
         )
-    }
-
-    private fun setDefaultPreferences() {
-        PreferenceManager.setDefaultValues(this, R.xml.pref_settings, false)
-        PreferenceManager.setDefaultValues(this, R.xml.pref_api, true)
     }
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 23
-        private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
+        // private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
         private const val SNACK_BAR_JUICESSH = 1
         private const val SNACK_BAR_PERMISSIONS = 0
     }

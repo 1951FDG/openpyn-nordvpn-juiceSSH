@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.preference.PreferenceManager
 import com.squareup.moshi.JsonAdapter
 
-abstract class MyStorage(val key: String) {
-    private val jsonAdapter by lazy { jsonAdapter() }
+abstract class MyStorage<T>(val key: String) {
+    abstract val jsonAdapter: JsonAdapter<List<T>>
 
     @Suppress("WeakerAccess")
-    fun storeFavorites(context: Context, arrayList: ArrayList<Any>) {
+    fun storeFavorites(context: Context, arrayList: ArrayList<T>) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val string = jsonAdapter.toJson(arrayList)
         preferences.edit().apply {
@@ -18,7 +18,7 @@ abstract class MyStorage(val key: String) {
     }
 
     @Suppress("WeakerAccess")
-    fun loadFavorites(context: Context): ArrayList<Any> {
+    fun loadFavorites(context: Context): ArrayList<T> {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val string = preferences.getString(key, null)
         if (string != null) {
@@ -31,20 +31,16 @@ abstract class MyStorage(val key: String) {
         return ArrayList()
     }
 
-    abstract fun jsonAdapter(): JsonAdapter<List<Any>>
-
-    fun addFavorite(context: Context, value: Any) {
+    fun addFavorite(context: Context, value: T) {
         val arrayList = loadFavorites(context)
         val index = arrayList.indexOf(value)
         if (index == -1) {
             arrayList.add(value)
-        } else {
-            //arrayList[index] = value
         }
         storeFavorites(context, arrayList)
     }
 
-    fun removeFavorite(context: Context, value: Any) {
+    fun removeFavorite(context: Context, value: T) {
         val arrayList = loadFavorites(context)
         if (arrayList.isNotEmpty()) {
             arrayList.remove(value)

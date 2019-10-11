@@ -68,7 +68,6 @@ import java.util.WeakHashMap;
  * to the current locale.
  * </p>
  */
-@SuppressWarnings("ALL")
 public final class SQLiteDatabase extends SQLiteClosable {
     private static final String TAG = "SQLiteDatabase";
 

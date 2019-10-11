@@ -46,9 +46,6 @@ class MainActivityTest {
 
     @Rule
     @JvmField
-    var mActivityTestRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
-    @Rule
-    @JvmField
     var mGrantPermissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(
             PERMISSION_READ,
@@ -68,6 +65,9 @@ class MainActivityTest {
     @Rule
     @JvmField
     var localeTestRule: LocaleTestRule = LocaleTestRule()
+    @Rule
+    @JvmField
+    var mActivityTestRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java, true, false)
 
     companion object {
         @BeforeClass
@@ -98,6 +98,8 @@ class MainActivityTest {
 
     @Test
     fun testTakeScreenshot() {
+        mActivityTestRule.launchActivity(null)
+
         val appContext = getInstrumentation().targetContext.applicationContext
         val screenshotStrategy = UiAutomatorScreenshotStrategy()
 
@@ -137,7 +139,7 @@ class MainActivityTest {
         val overflowMenuButton = onView(
             allOf(
                 withContentDescription("More options"),
-                childAtPosition(childAtPosition(withId(R.id.toolbar), 1), 2),
+                childAtPosition(childAtPosition(withId(R.id.toolbar), 1), 1),
                 isDisplayed()
             )
         )

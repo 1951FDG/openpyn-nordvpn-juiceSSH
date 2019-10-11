@@ -1,0 +1,63 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "title": "The Root Schema",
+  "items": {
+    "$id": "#/items",
+    "type": "object",
+    "title": "The Items Schema",
+    "required": [
+      "country",
+      "emoji",
+      "flag",
+      "id"
+    ],
+    "properties": {
+      "country": {
+        "$id": "#/properties/country",
+        "type": "string",
+        "title": "The Country Schema",
+        "default": "",
+        "examples": [
+          "United States"
+        ],
+        "minLength": 4,
+        "pattern": "^[a-zA-z]+([\\s][a-zA-Z]+)*$"
+      },
+      "emoji": {
+        "$id": "#/properties/emoji",
+        "type": "string",
+        "title": "The Emoji Schema",
+        "default": "",
+        "examples": [
+          "\uD83C\uDDFA\uD83C\uDDF8"
+        ],
+        "minLength": 24,
+        "maxLength": 24,
+        "pattern": "^(\\\\u[0-9A-F]{4}){4}$"
+      },
+      "flag": {
+        "$id": "#/properties/flag",
+        "type": "string",
+        "title": "The Flag Schema",
+        "default": "",
+        "examples": [
+          "us"
+        ],
+        "minLength": 2,
+        "maxLength": 2,
+        "pattern": "^([a-z]*)$"
+      },
+      "id": {
+        "$id": "#/properties/id",
+        "type": "integer",
+        "title": "The Id Schema",
+        "default": 0,
+        "examples": [
+          60
+        ]
+      }
+    }
+  }
+}
