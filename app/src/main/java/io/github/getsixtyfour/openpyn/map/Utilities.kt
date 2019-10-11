@@ -506,4 +506,3 @@ internal fun getCurrentFlags(countries: List<MultiSelectable>, selectedIds: Arra
     }
     return currentFlags
 }
-
