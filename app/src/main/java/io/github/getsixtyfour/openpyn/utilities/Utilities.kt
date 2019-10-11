@@ -96,25 +96,21 @@ fun juiceSSHInstall(activity: Activity) {
 
 @Suppress("MagicNumber")
 fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
-    val json = context.resources.openRawResource(id).bufferedReader().use{ it.readText()}
-
-    val factory = PristineModelsJsonAdapterFactory.Builder()
-        .add(MultiSelectModelExtra::class.java, MultiSelectMapper())
-        .build()
-
-    val moshi = Builder().add(factory).add(object {
+    val json = context.resources.openRawResource(id).bufferedReader().use { it.readText() }
+    val factory = PristineModelsJsonAdapterFactory.Builder().also { it.add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
+    val moshi = Builder().add(factory.build()).add(object {
         @ToJson
         @Suppress("unused")
         fun toJson(value: CharSequence): String {
             return value.toString()
         }
+
         @FromJson
         @Suppress("unused")
         fun fromJson(value: String): CharSequence {
             return SpannableString(value)
         }
     }).build()
-
     val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
     val adapter: JsonAdapter<List<MultiSelectModelExtra>> = moshi.adapter(listType)
     return adapter.nonNull().fromJson(json).orEmpty()
@@ -223,9 +219,7 @@ suspend fun createGeoJson(context: Context): JSONObject? {
                     }
                 }
             }
-
             var jsonObject: JSONObject? = null
-
             val client = HttpClient(Android) {
                 install(DefaultRequest) {
                     headers.append("Accept", "application/json")

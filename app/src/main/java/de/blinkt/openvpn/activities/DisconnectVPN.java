@@ -31,11 +31,11 @@ import io.github.getsixtyfour.openpyn.R;
 
 public class DisconnectVPN extends Activity implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
 
-    private static final class stopVPNTask implements Runnable {
+    private static final class StopTask implements Runnable {
 
         private final WeakReference<IOpenVPNServiceInternal> mService;
 
-        stopVPNTask(IOpenVPNServiceInternal service) {
+        StopTask(IOpenVPNServiceInternal service) {
             mService = new WeakReference<>(service);
         }
 
@@ -100,12 +100,10 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
 
     @Override
     public void onClick(@NonNull DialogInterface dialog, int which) {
-        if (which == DialogInterface.BUTTON_POSITIVE) {
-            if (mService != null) {
-                Runnable target = new stopVPNTask(mService);
-                Thread thread = new Thread(target);
-                thread.start();
-            }
+        if ((which == DialogInterface.BUTTON_POSITIVE) && (mService != null)) {
+            Runnable target = new StopTask(mService);
+            Thread thread = new Thread(target);
+            thread.start();
         }
         finish();
     }

@@ -198,9 +198,7 @@ internal fun showThreats(context: Activity, jsonObj: JSONObject) {
     }
 }
 
-fun showPrintArray(
-    context: Context, countries: List<MultiSelectable>, hashSet: HashSet<CharSequence>
-): HashSet<CharSequence> {
+fun showPrintArray(context: Context, countries: List<MultiSelectable>, hashSet: HashSet<CharSequence>): HashSet<CharSequence> {
     val length = hashSet.size
     val defaultSelectedIdsList = ArrayList<Int>(length)
     countries.forEach {
@@ -482,9 +480,7 @@ fun createMarkers(
     return Pair(flags, markers)
 }
 
-internal fun createUserMessage(
-    context: Context, jsonObj: JSONObject
-): UserMessage.Builder {
+internal fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessage.Builder {
     // val country = it.getString(COUNTRY)
     // val lat = it.getDouble(LAT)
     // val lon = it.getDouble(LONG)

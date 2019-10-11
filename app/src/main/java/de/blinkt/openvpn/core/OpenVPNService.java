@@ -272,19 +272,17 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             // (x) optional address of remote server (OpenVPN 2.1 or higher)
             // (y) optional port of remote server (OpenVPN 2.4 or higher)
             // (x) and (y) are shown for ASSIGN_IP and CONNECTED states
-            if (VpnStatus.ASSIGN_IP.equals(name) || VpnStatus.CONNECTED.equals(name)) {
-                if ((address != null) && !address.isEmpty()) {
-                    @NonNls String prefix = null;
-                    if ((port != null) && !port.isEmpty()) {
-                        if ("1194".equals(port)) {
-                            prefix = "UDP";
-                        } else {
-                            prefix = "TCP";
-                        }
-                        prefix += ": ";
+            if ((VpnStatus.ASSIGN_IP.equals(name) || VpnStatus.CONNECTED.equals(name)) && !StringUtils.isBlank(address)) {
+                @NonNls String prefix = null;
+                if ((port != null) && !port.isEmpty()) {
+                    if ("1194".equals(port)) {
+                        prefix = "UDP";
+                    } else {
+                        prefix = "TCP";
                     }
-                    text = prefix + address;
+                    prefix += ": ";
                 }
+                text = prefix + address;
             }
             showNotification(title, text, tickerText, NOTIFICATION_CHANNEL_NEW_STATUS_ID, 0L, level);
         }

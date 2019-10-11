@@ -282,12 +282,12 @@ fun sortJsonArray(jsonArray: JSONArray): JSONArray? {
         array.add(res)
     }
 
-    array.sortWith(compareBy(
-        {it.getString(COUNTRY)},
-        {it.getJSONObject(LOCATION).getDouble(LAT)},
-        {it.getJSONObject(LOCATION).getDouble(LONG)}
-    ))
-
+    array.sortWith(
+        compareBy(
+            { it.getString(COUNTRY) },
+            { it.getJSONObject(LOCATION).getDouble(LAT) },
+            { it.getJSONObject(LOCATION).getDouble(LONG) })
+    )
     val result = JSONArray()
     for (res in array) {
         result.put(res)

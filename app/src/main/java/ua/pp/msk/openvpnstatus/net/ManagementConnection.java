@@ -347,12 +347,10 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void processHold(String argument) throws IOException {
-        if (argument.startsWith(Strings.WAITING_FOR_HOLD_RELEASE_PREFIX)) {
-            // Close connection if AUTH has failed
-            if (mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED) {
-                LOGGER.error("Verification Error");
-                throw new IOException(STREAM_CLOSED);
-            }
+        // Close connection if AUTH has failed
+        if (argument.startsWith(Strings.WAITING_FOR_HOLD_RELEASE_PREFIX) && (mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED)) {
+            LOGGER.error("Verification Error");
+            throw new IOException(STREAM_CLOSED);
         }
     }
 

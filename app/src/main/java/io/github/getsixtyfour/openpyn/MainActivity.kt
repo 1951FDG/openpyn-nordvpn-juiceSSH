@@ -543,9 +543,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
 
     // todo inner class
     private fun setSnackBarManager() {
-        fun snackProgressBar(
-            type: Int, message: String, action: String, onActionClickListener: OnActionClickListener
-        ): SnackProgressBar {
+        fun snackProgressBar(type: Int, message: String, action: String, onActionClickListener: OnActionClickListener): SnackProgressBar {
             return SnackProgressBar(type, message).setAction(action, onActionClickListener)
         }
 
