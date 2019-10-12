@@ -7,7 +7,7 @@
         errorLine1="open class MainApplication : Application() {"
         errorLine2="           ~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/io/github/getsixtyfour/openpyn/MainApplication.kt"
+            file="src/main/kotlin/io/github/getsixtyfour/openpyn/MainApplication.kt"
             line="13"
             column="12"/>
     </issue>

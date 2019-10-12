@@ -55,6 +55,7 @@ allprojects {
         excludeDirs += file('app/.externalNativeBuild')
         excludeDirs += file('app/src/main/java/com/almworks')
         excludeDirs += file('app/src/main/java/io/requery')
+        excludeDirs += file('app/src/main/java/org')
         excludeDirs += file('app/src/main/java/org/javolution')
         excludeDirs += file('app/src/main/java/org/sqlite')
         excludeDirs += file('app/src/main/jni')

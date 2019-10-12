@@ -130,9 +130,9 @@ To compile and run the project you'll need:
 
 ## References
 
--   [MyStorage.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
+-   [MyStorage.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
 
--   [PrintArray.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
+-   [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
     ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
 
 -   [SecurityManager.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
@@ -201,7 +201,7 @@ This app uses (modified) code from several open source projects.
 
 
 -   [Android Network Utility](https://github.com/evert-arias/android-network-utility)
-    -   Modified [NetworkInfo.kt](app/src/main/java/com/ariascode/networkutility/NetworkInfo.kt)
+    -   Modified [NetworkInfo.kt](app/src/main/kotlin/com/ariascode/networkutility/NetworkInfo.kt)
 
 
 -   [Android Google Maps API v2 Add-ons](https://github.com/cocoahero/android-gmaps-addons)
