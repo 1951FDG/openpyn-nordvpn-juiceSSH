@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.security;
+package de.blinkt.openvpn.security;
 
 import android.content.Context;
 import android.util.AttributeSet;

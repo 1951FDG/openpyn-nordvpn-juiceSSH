@@ -135,7 +135,7 @@ To compile and run the project you'll need:
 -   [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
     ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
 
--   [SecurityManager.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
+-   [SecurityManager.java](app/src/main/java/de/blinkt/openvpn/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
     -   [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
     -   [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
     -   [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
