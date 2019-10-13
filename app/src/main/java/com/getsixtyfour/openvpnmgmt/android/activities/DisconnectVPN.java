@@ -3,7 +3,7 @@
  * Distributed under the GNU GPL v2 with additional terms. For full terms see the file doc/LICENSE.txt
  */
 
-package de.blinkt.openvpn.activities;
+package com.getsixtyfour.openvpnmgmt.android.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,8 +20,8 @@ import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 
-import de.blinkt.openvpn.core.IOpenVPNServiceInternal;
-import de.blinkt.openvpn.core.OpenVPNService;
+import com.getsixtyfour.openvpnmgmt.android.core.IOpenVPNServiceInternal;
+import com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService;
 import io.github.getsixtyfour.openpyn.R;
 
 /**

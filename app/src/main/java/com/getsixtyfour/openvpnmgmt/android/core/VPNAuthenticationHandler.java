@@ -1,4 +1,4 @@
-package de.blinkt.openvpn.core;
+package com.getsixtyfour.openvpnmgmt.android.core;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import de.blinkt.openvpn.Constants;
+import com.getsixtyfour.openvpnmgmt.android.Constants;
 import ua.pp.msk.openvpnstatus.net.UsernamePasswordHandler;
 
 /**

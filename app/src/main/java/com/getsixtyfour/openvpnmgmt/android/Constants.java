@@ -1,4 +1,4 @@
-package de.blinkt.openvpn;
+package com.getsixtyfour.openvpnmgmt.android;
 
 /**
  * @author 1951FDG

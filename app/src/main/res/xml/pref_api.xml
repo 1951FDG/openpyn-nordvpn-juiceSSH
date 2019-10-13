@@ -15,19 +15,19 @@
             android:title="@string/pref_geo_client" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_category_api_keys">
-        <de.blinkt.openvpn.security.SecuredEditTextPreference
+        <com.getsixtyfour.openvpnmgmt.android.security.SecuredEditTextPreference
             android:dependency="pref_geo"
             android:key="pref_api_ipdata"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_api_ipdata" />
-        <de.blinkt.openvpn.security.SecuredEditTextPreference
+        <com.getsixtyfour.openvpnmgmt.android.security.SecuredEditTextPreference
             android:dependency="pref_geo"
             android:key="pref_api_ipinfo"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_api_ipinfo" />
-        <de.blinkt.openvpn.security.SecuredEditTextPreference
+        <com.getsixtyfour.openvpnmgmt.android.security.SecuredEditTextPreference
             android:dependency="pref_geo"
             android:key="pref_api_ipstack"
             android:selectAllOnFocus="true"

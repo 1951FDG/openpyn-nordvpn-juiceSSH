@@ -1,4 +1,4 @@
-package de.blinkt.openvpn.security;
+package com.getsixtyfour.openvpnmgmt.android.security;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

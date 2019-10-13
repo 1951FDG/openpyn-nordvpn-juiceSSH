@@ -3,7 +3,7 @@
  * Distributed under the GNU GPL v2 with additional terms. For full terms see the file doc/LICENSE.txt
  */
 
-package de.blinkt.openvpn.core;
+package com.getsixtyfour.openvpnmgmt.android.core;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NonNls;
 import java.io.IOException;
 import java.util.Locale;
 
-import de.blinkt.openvpn.activities.DisconnectVPN;
+import com.getsixtyfour.openvpnmgmt.android.activities.DisconnectVPN;
 import io.github.getsixtyfour.openpyn.R;
 import ua.pp.msk.openvpnstatus.core.ConnectionStatus;
 import ua.pp.msk.openvpnstatus.core.LogLevel;
@@ -55,16 +55,16 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         ConnectionListener {
 
     @NonNls
-    public static final String ACTION_VPN_STATUS = "de.blinkt.openvpn.action.VPN_STATUS";
+    public static final String ACTION_VPN_STATUS = "com.getsixtyfour.openvpnmgmt.android.action.VPN_STATUS";
 
     @NonNls
-    public static final String EXTRA_ALWAYS_SHOW_NOTIFICATION = "de.blinkt.openvpn.extra.NOTIFICATION_ALWAYS_VISIBLE";
+    public static final String EXTRA_ALWAYS_SHOW_NOTIFICATION = "com.getsixtyfour.openvpnmgmt.android.extra.NOTIFICATION_ALWAYS_VISIBLE";
 
     @NonNls
-    public static final String EXTRA_HOST = "de.blinkt.openvpn.extra.HOST";
+    public static final String EXTRA_HOST = "com.getsixtyfour.openvpnmgmt.android.extra.HOST";
 
     @NonNls
-    public static final String EXTRA_PORT = "de.blinkt.openvpn.extra.PORT";
+    public static final String EXTRA_PORT = "com.getsixtyfour.openvpnmgmt.android.extra.PORT";
 
     @NonNls
     public static final String NOTIFICATION_CHANNEL_BG_ID = "openvpn_bg";
@@ -73,10 +73,10 @@ public final class OpenVPNService extends Service implements LogListener, StateL
     public static final String NOTIFICATION_CHANNEL_NEW_STATUS_ID = "openvpn_newstat";
 
     @NonNls
-    public static final String START_SERVICE_NOT_STICKY = "de.blinkt.openvpn.START_SERVICE_NOT_STICKY";
+    public static final String START_SERVICE_NOT_STICKY = "com.getsixtyfour.openvpnmgmt.android.START_SERVICE_NOT_STICKY";
 
     @NonNls
-    public static final String START_SERVICE_STICKY = "de.blinkt.openvpn.START_SERVICE_STICKY";
+    public static final String START_SERVICE_STICKY = "com.getsixtyfour.openvpnmgmt.android.START_SERVICE_STICKY";
 
     private static final String TAG = "OpenVPNService";
 

@@ -58,7 +58,7 @@
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/AppTheme.Settings" />
         <activity
-            android:name="de.blinkt.openvpn.activities.DisconnectVPN"
+            android:name="com.getsixtyfour.openvpnmgmt.android.activities.DisconnectVPN"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:noHistory="true"
@@ -88,7 +88,7 @@
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
 
-        <service android:name="de.blinkt.openvpn.core.OpenVPNService" />
+        <service android:name="com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

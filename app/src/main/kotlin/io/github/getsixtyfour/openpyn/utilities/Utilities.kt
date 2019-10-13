@@ -29,7 +29,7 @@ import com.squareup.moshi.Types
 import de.jupf.staticlog.Log
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.R
-import de.blinkt.openvpn.security.SecurityManager
+import com.getsixtyfour.openvpnmgmt.android.security.SecurityManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.features.DefaultRequest
