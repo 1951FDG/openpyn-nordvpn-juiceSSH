@@ -1,5 +1,6 @@
 package io.github.getsixtyfour.openpyn.utilities
 
+import com.abdeveloper.library.MultiSelectModelExtra
 import com.jayrave.moshi.pristineModels.Mapper
 import com.jayrave.moshi.pristineModels.PropertyExtractor
 import com.jayrave.moshi.pristineModels.Value

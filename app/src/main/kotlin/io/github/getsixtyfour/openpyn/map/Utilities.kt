@@ -7,6 +7,7 @@ import android.location.Location
 import android.view.animation.AccelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
@@ -29,7 +30,6 @@ import io.github.getsixtyfour.openpyn.utilities.IP
 import io.github.getsixtyfour.openpyn.utilities.LAT
 import io.github.getsixtyfour.openpyn.utilities.LOCATION
 import io.github.getsixtyfour.openpyn.utilities.LONG
-import io.github.getsixtyfour.openpyn.utilities.MultiSelectModelExtra
 import io.github.getsixtyfour.openpyn.utilities.PrintArray
 import io.github.getsixtyfour.openpyn.utilities.THREAT
 import io.github.getsixtyfour.openpyn.utilities.getDefaultLatLng

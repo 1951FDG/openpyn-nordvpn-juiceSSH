@@ -14,6 +14,7 @@ import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
