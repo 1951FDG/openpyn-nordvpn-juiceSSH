@@ -2,8 +2,6 @@ package com.abdeveloper.library;
 
 import androidx.annotation.NonNull;
 
-import com.abdeveloper.library.MultiSelectModel;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
