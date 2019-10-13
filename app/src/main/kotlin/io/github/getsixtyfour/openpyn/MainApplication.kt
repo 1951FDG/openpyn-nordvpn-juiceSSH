@@ -5,12 +5,12 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.preference.PreferenceManager
-import com.ariascode.networkutility.NetworkInfo
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
 import com.google.android.gms.maps.MapsInitializer
 import com.michaelflisar.gdprdialog.GDPR
 import com.squareup.leakcanary.LeakCanary
+import io.github.getsixtyfour.openpyn.utilities.NetworkInfo
 import io.github.getsixtyfour.openpyn.utilities.logException
 
 open class MainApplication : Application() {

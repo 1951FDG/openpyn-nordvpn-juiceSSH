@@ -200,10 +200,6 @@ This app uses (modified) code from several open source projects.
     -   Modified [CameraUpdateAnimator.java](app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
 
 
--   [Android Network Utility](https://github.com/evert-arias/android-network-utility)
-    -   Modified [NetworkInfo.kt](app/src/main/kotlin/com/ariascode/networkutility/NetworkInfo.kt)
-
-
 -   [Android Google Maps API v2 Add-ons](https://github.com/cocoahero/android-gmaps-addons)
     -   Modified [MapBoxOfflineTileProvider.java](app/src/main/java/com/cocoahero/android/gmaps/addons/mapbox/MapBoxOfflineTileProvider.java)
 

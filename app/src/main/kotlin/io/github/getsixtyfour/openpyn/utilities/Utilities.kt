@@ -16,8 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
-import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
+import com.getsixtyfour.openvpnmgmt.android.security.SecurityManager
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.maps.model.LatLng
 import com.jayrave.moshi.pristineModels.PristineModelsJsonAdapterFactory
@@ -29,7 +29,6 @@ import com.squareup.moshi.Types
 import de.jupf.staticlog.Log
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.R
-import com.getsixtyfour.openvpnmgmt.android.security.SecurityManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.features.DefaultRequest

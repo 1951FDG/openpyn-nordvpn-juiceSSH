@@ -20,7 +20,6 @@ import androidx.preference.PreferenceManager
 import com.adityaanand.morphdialog.MorphDialog
 import com.adityaanand.morphdialog.utils.MorphDialogAction
 import com.afollestad.materialdialogs.MaterialDialog
-import com.ariascode.networkutility.NetworkInfo
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -43,6 +42,7 @@ import com.tingyik90.snackprogressbar.SnackProgressBarManager
 // import com.getsixtyfour.openvpnmgmt.android.core.VPNLaunchHelper.startOpenVPNService
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.map.MapFragment
+import io.github.getsixtyfour.openpyn.utilities.NetworkInfo
 import io.github.getsixtyfour.openpyn.utilities.Toaster
 import io.github.getsixtyfour.openpyn.utilities.createJson
 import io.github.getsixtyfour.openpyn.utilities.isJuiceSSHInstalled

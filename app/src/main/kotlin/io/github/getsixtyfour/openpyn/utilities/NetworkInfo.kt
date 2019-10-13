@@ -1,12 +1,4 @@
-/*
- * NetworkInfo
- * Utility class that provide information about the device's network connectivity
- * MIT License
- * Copyright (c) 2018 Evert Arias
- *
- */
-
-package com.ariascode.networkutility
+package io.github.getsixtyfour.openpyn.utilities
 
 import android.app.Application
 import android.content.Context
