@@ -32,18 +32,18 @@ import java.util.Locale;
 
 import com.getsixtyfour.openvpnmgmt.android.activities.DisconnectVPN;
 import io.github.getsixtyfour.openpyn.R;
-import ua.pp.msk.openvpnstatus.core.ConnectionStatus;
-import ua.pp.msk.openvpnstatus.core.LogLevel;
-import ua.pp.msk.openvpnstatus.core.VpnStatus;
-import ua.pp.msk.openvpnstatus.listeners.ByteCountManager.ByteCountListener;
-import ua.pp.msk.openvpnstatus.listeners.LogManager;
-import ua.pp.msk.openvpnstatus.listeners.LogManager.LogListener;
-import ua.pp.msk.openvpnstatus.listeners.StateManager.State;
-import ua.pp.msk.openvpnstatus.listeners.StateManager.StateListener;
-import ua.pp.msk.openvpnstatus.net.Connection;
-import ua.pp.msk.openvpnstatus.net.ConnectionListener;
-import ua.pp.msk.openvpnstatus.net.ManagementConnection;
-import ua.pp.msk.openvpnstatus.utils.StringUtils;
+import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
+import com.getsixtyfour.openvpnmgmt.core.LogLevel;
+import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
+import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.ByteCountListener;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.LogListener;
+import com.getsixtyfour.openvpnmgmt.listeners.StateManager.State;
+import com.getsixtyfour.openvpnmgmt.listeners.StateManager.StateListener;
+import com.getsixtyfour.openvpnmgmt.net.Connection;
+import com.getsixtyfour.openvpnmgmt.net.ConnectionListener;
+import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
+import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
 /**
  * @author Arne Schwabe

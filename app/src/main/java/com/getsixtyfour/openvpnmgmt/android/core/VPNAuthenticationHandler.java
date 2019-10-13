@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.getsixtyfour.openvpnmgmt.android.Constants;
-import ua.pp.msk.openvpnstatus.net.UsernamePasswordHandler;
+import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 
 /**
  * @author 1951FDG

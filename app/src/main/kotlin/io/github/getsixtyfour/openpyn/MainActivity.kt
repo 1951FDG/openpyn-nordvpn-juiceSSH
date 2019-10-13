@@ -69,7 +69,7 @@ import org.jetbrains.anko.onComplete
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
-// import ua.pp.msk.openvpnstatus.net.ManagementConnection
+// import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
