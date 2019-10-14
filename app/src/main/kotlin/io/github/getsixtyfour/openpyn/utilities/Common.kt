@@ -6,6 +6,7 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.json.responseJson
 import com.github.kittinunf.result.Result
 import de.jupf.staticlog.Log
+import io.github.getsixtyfour.openpyn.logException
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject

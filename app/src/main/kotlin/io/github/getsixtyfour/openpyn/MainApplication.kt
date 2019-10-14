@@ -11,7 +11,6 @@ import com.google.android.gms.maps.MapsInitializer
 import com.michaelflisar.gdprdialog.GDPR
 import com.squareup.leakcanary.LeakCanary
 import io.github.getsixtyfour.openpyn.utilities.NetworkInfo
-import io.github.getsixtyfour.openpyn.utilities.logException
 
 open class MainApplication : Application() {
     override fun onCreate() {

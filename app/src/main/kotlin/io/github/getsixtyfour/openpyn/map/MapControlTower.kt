@@ -36,10 +36,7 @@ import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.utilities.LazyMarkerStorage
 import io.github.getsixtyfour.openpyn.utilities.PrintArray
 import io.github.getsixtyfour.openpyn.utilities.SubmitCallbackListener
-import io.github.getsixtyfour.openpyn.utilities.countryList
-import io.github.getsixtyfour.openpyn.utilities.createGeoJson
-import io.github.getsixtyfour.openpyn.utilities.jsonArray
-import io.github.getsixtyfour.openpyn.utilities.logException
+import io.github.getsixtyfour.openpyn.logException
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.coroutines.CoroutineExceptionHandler

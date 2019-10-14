@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.afollestad.materialdialogs.MaterialDialog
+import com.crashlytics.android.Crashlytics
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPR.IGDPRCallback
@@ -23,9 +24,9 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSION
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
+import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.utilities.NetworkInfo
 import io.github.getsixtyfour.openpyn.utilities.createJson
-import io.github.getsixtyfour.openpyn.utilities.logException
 import io.github.getsixtyfour.openpyn.utilities.stringifyJsonArray
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete
@@ -196,5 +197,11 @@ fun showSnackProgressBar(manager: SnackProgressBarManager, storeId: Int) {
     when (manager.getLastShown()) {
         null -> manager.show(storeId, SnackProgressBarManager.LENGTH_INDEFINITE)
         else -> manager.getSnackProgressBar(storeId)?.let { manager.updateTo(it) }
+    }
+}
+
+fun logException(throwable: Throwable) {
+    if (Fabric.isInitialized()) {
+        Crashlytics.logException(throwable)
     }
 }
