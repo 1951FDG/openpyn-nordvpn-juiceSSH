@@ -36,6 +36,7 @@ import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.R.array
+import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.utils.CITY
 import io.github.getsixtyfour.openpyn.utils.COUNTRY
 import io.github.getsixtyfour.openpyn.utils.FLAG
@@ -48,7 +49,6 @@ import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.getsixtyfour.openpyn.utils.THREAT
 import io.github.getsixtyfour.openpyn.utils.createJson2
-import io.github.getsixtyfour.openpyn.logException
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.features.DefaultRequest
@@ -291,35 +291,6 @@ private fun netflix(flag: CharSequence?): Boolean = when (flag) {
     else -> false
 }
 
-private fun parseToUnicode(countries: List<MultiSelectable>, input: CharSequence): CharSequence {
-    // Replace the aliases by their unicode
-    var result = input
-    val emoji = countries.find { (it as? MultiSelectModelExtra)?.tag == input } as? MultiSelectModelExtra
-    if (emoji != null) {
-        result = emoji.unicode
-    }
-
-    return result
-}
-
-private fun lazyMarker(
-    listener: OnMarkerCreateListener,
-    favorites: ArrayList<LazyMarker>?,
-    options: MarkerOptions,
-    flag: CharSequence?,
-    callback: OnLevelChangeCallback
-): LazyMarker {
-    val marker = LazyMarker(options, flag, listener)
-    favorites?.let {
-        val index = it.indexOf(marker)
-        if (index >= 0) {
-            marker.setLevel(it[index].level, callback)
-        }
-    }
-
-    return marker
-}
-
 fun getCountryBoundaries(context: Context): CountryBoundaries? {
     try {
         return CountryBoundaries.load(context.assets.open("boundaries.ser"))
@@ -332,30 +303,6 @@ fun getCountryBoundaries(context: Context): CountryBoundaries? {
     return null
 }
 
-private fun latLng(jsonArr: JSONArray?, flags: HashSet<CharSequence>, flag: CharSequence, lat: Double, lon: Double): LatLng = when {
-    jsonArr != null && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
-    else -> LatLng(lat, lon)
-}
-
-private fun getToastString(ids: List<String>?): String = when {
-    ids.isNullOrEmpty() -> "is nowhere"
-    else -> "is in " + ids.joinToString()
-}
-
-private fun getFlag(list: List<String>?): String = when {
-    list != null && list.isNotEmpty() -> list[0].toLowerCase(Locale.ROOT)
-    else -> ""
-}
-
-private fun getFLag(countryBoundaries: CountryBoundaries?, lon: Double, lat: Double): String {
-    var t = System.nanoTime()
-    val ids = countryBoundaries?.getIds(lon, lat)
-    t = System.nanoTime() - t
-    @Suppress("MagicNumber") val i = 1000
-    Log.debug(getToastString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
-    return getFlag(ids)
-}
-
 @Suppress("ComplexMethod")
 fun getCurrentPosition(
     context: Context,
@@ -365,6 +312,74 @@ fun getCurrentPosition(
     jsonObj: JSONObject?,
     jsonArr: JSONArray? = null
 ): LatLng {
+    @Suppress("MagicNumber")
+    fun getDefaultLatLng(): LatLng {
+        return LatLng(51.514125, -0.093689)
+    }
+
+    fun getLatLng(flag: CharSequence, latLng: LatLng, jsonArr: JSONArray): LatLng {
+        val latLngList = arrayListOf<LatLng>()
+        var match = false
+
+        loop@ for (res in jsonArr) {
+            val pass = flag == res.getString(FLAG)
+
+            if (pass) {
+                val location = res.getJSONObject(LOCATION)
+                val element = LatLng(
+                    location.getDouble(LAT), location.getDouble(LONG)
+                )
+
+                match = element == latLng
+                when {
+                    match -> break@loop
+                    else -> latLngList.add(element)
+                }
+            }
+        }
+
+        if (latLngList.isNotEmpty() && !match) {
+            val results = FloatArray(latLngList.size)
+
+            latLngList.withIndex().forEach { (index, it) ->
+                val result = FloatArray(1)
+                Location.distanceBetween(latLng.latitude, latLng.longitude, it.latitude, it.longitude, result)
+                results[index] = result[0]
+            }
+            val result = results.min()
+            if (result != null) {
+                val index = results.indexOf(result)
+                return latLngList[index]
+            }
+        }
+
+        return latLng
+    }
+
+    fun latLng(jsonArr: JSONArray?, flags: HashSet<CharSequence>, flag: CharSequence, lat: Double, lon: Double): LatLng = when {
+        jsonArr != null && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
+        else -> LatLng(lat, lon)
+    }
+
+    fun getToastString(ids: List<String>?): String = when {
+        ids.isNullOrEmpty() -> "is nowhere"
+        else -> "is in " + ids.joinToString()
+    }
+
+    fun getFlag(list: List<String>?): String = when {
+        list != null && list.isNotEmpty() -> list[0].toLowerCase(Locale.ROOT)
+        else -> ""
+    }
+
+    fun getFLag(countryBoundaries: CountryBoundaries?, lon: Double, lat: Double): String {
+        var t = System.nanoTime()
+        val ids = countryBoundaries?.getIds(lon, lat)
+        t = System.nanoTime() - t
+        @Suppress("MagicNumber") val i = 1000
+        Log.debug(getToastString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
+        return getFlag(ids)
+    }
+
     var latLng = getDefaultLatLng()
 
     when {
@@ -437,6 +452,34 @@ fun createMarkers(
     favorites: ArrayList<LazyMarker>?,
     callback: OnLevelChangeCallback
 ): Pair<HashSet<CharSequence>, HashMap<LatLng, LazyMarker>> {
+    fun lazyMarker(
+        listener: OnMarkerCreateListener,
+        favorites: ArrayList<LazyMarker>?,
+        options: MarkerOptions,
+        flag: CharSequence?,
+        callback: OnLevelChangeCallback
+    ): LazyMarker {
+        val marker = LazyMarker(options, flag, listener)
+        favorites?.let {
+            val index = it.indexOf(marker)
+            if (index >= 0) {
+                marker.setLevel(it[index].level, callback)
+            }
+        }
+
+        return marker
+    }
+
+    fun parseToUnicode(countries: List<MultiSelectable>, input: CharSequence): CharSequence {
+        // Replace the aliases by their unicode
+        var result = input
+        val emoji = countries.find { (it as? MultiSelectModelExtra)?.tag == input } as? MultiSelectModelExtra
+        if (emoji != null) {
+            result = emoji.unicode
+        }
+
+        return result
+    }
     // HashSet<E> : MutableSet<E> {
     //     constructor()
     //     constructor(initialCapacity: Int)
@@ -534,10 +577,7 @@ internal fun getCurrentFlags(countries: List<MultiSelectable>, selectedIds: Arra
 @Suppress("MagicNumber")
 fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
     val json = context.resources.openRawResource(id).bufferedReader().use { it.readText() }
-    val factory = PristineModelsJsonAdapterFactory.Builder().also { it.add(
-        MultiSelectModelExtra::class.java,
-        MultiSelectMapper()
-    ) }
+    val factory = PristineModelsJsonAdapterFactory.Builder().also { it.add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
     val moshi = Moshi.Builder().add(factory.build()).add(object {
         @ToJson
         @Suppress("unused")
@@ -551,55 +591,9 @@ fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
             return SpannableString(value)
         }
     }).build()
-    val listType =
-        Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
+    val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
     val adapter: JsonAdapter<List<MultiSelectModelExtra>> = moshi.adapter(listType)
     return adapter.nonNull().fromJson(json).orEmpty()
-}
-
-fun getLatLng(flag: CharSequence, latLng: LatLng, jsonArr: JSONArray): LatLng {
-    val latLngList = arrayListOf<LatLng>()
-    var match = false
-
-    loop@ for (res in jsonArr) {
-        val pass = flag == res.getString(FLAG)
-
-        if (pass) {
-            val location = res.getJSONObject(LOCATION)
-            val element = LatLng(
-                location.getDouble(LAT),
-                location.getDouble(LONG)
-            )
-
-            match = element == latLng
-            when {
-                match -> break@loop
-                else -> latLngList.add(element)
-            }
-        }
-    }
-
-    if (latLngList.isNotEmpty() && !match) {
-        val results = FloatArray(latLngList.size)
-
-        latLngList.withIndex().forEach { (index, it) ->
-            val result = FloatArray(1)
-            Location.distanceBetween(latLng.latitude, latLng.longitude, it.latitude, it.longitude, result)
-            results[index] = result[0]
-        }
-        val result = results.min()
-        if (result != null) {
-            val index = results.indexOf(result)
-            return latLngList[index]
-        }
-    }
-
-    return latLng
-}
-
-@Suppress("MagicNumber")
-fun getDefaultLatLng(): LatLng {
-    return LatLng(51.514125, -0.093689)
 }
 
 private fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, String>>) {
@@ -619,15 +613,15 @@ private fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, String
     }
 }
 
-fun logDifference(set: Set<CharSequence>, string: CharSequence) {
-    set.forEach {
-        val message = "$string $it"
-        logException(Exception(message))
-        Log.error(message)
-    }
-}
-
 fun jsonArray(context: Context, id: Int, ext: String): JSONArray {
+    fun logDifference(set: Set<CharSequence>, string: CharSequence) {
+        set.forEach {
+            val message = "$string $it"
+            logException(Exception(message))
+            Log.error(message)
+        }
+    }
+
     val jsonArray = createJsonArray(context, id, ext)
     val set1 = context.resources.getTextArray(array.pref_country_values).toHashSet()
     val set2 = hashSetOf<CharSequence>()
