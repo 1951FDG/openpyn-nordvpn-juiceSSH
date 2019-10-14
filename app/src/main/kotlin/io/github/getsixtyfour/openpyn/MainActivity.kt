@@ -34,7 +34,7 @@ import com.tingyik90.snackprogressbar.SnackProgressBarManager
 // import com.getsixtyfour.openvpnmgmt.android.core.VPNLaunchHelper.startOpenVPNService
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.map.MapFragment
-import io.github.getsixtyfour.openpyn.utilities.Toaster
+import io.github.getsixtyfour.openpyn.utils.Toaster
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback

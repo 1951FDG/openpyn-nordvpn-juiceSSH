@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.utilities
+package io.github.getsixtyfour.openpyn.utils
 
 import android.util.Xml
 import androidx.annotation.WorkerThread

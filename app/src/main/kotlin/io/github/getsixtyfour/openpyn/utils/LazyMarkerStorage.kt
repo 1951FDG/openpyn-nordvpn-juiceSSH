@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.utilities
+package io.github.getsixtyfour.openpyn.utils
 
 import com.androidmapsextensions.lazy.LazyMarker
 import com.google.android.gms.maps.model.LatLng

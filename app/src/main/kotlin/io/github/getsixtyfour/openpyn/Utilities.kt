@@ -25,9 +25,9 @@ import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import io.fabric.sdk.android.Fabric
-import io.github.getsixtyfour.openpyn.utilities.NetworkInfo
-import io.github.getsixtyfour.openpyn.utilities.createJson
-import io.github.getsixtyfour.openpyn.utilities.stringifyJsonArray
+import io.github.getsixtyfour.openpyn.utils.NetworkInfo
+import io.github.getsixtyfour.openpyn.utils.createJson
+import io.github.getsixtyfour.openpyn.utils.stringifyJsonArray
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete
 import org.jetbrains.anko.uiThread

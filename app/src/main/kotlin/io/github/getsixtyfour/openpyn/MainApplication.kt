@@ -10,7 +10,7 @@ import com.eggheadgames.aboutbox.IAnalytic
 import com.google.android.gms.maps.MapsInitializer
 import com.michaelflisar.gdprdialog.GDPR
 import com.squareup.leakcanary.LeakCanary
-import io.github.getsixtyfour.openpyn.utilities.NetworkInfo
+import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 
 open class MainApplication : Application() {
     override fun onCreate() {
