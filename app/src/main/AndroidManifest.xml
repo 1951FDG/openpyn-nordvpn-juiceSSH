@@ -6,12 +6,6 @@
     <!--<uses-sdk android:minSdkVersion="21" />-->
     <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.READ_CONNECTIONS" />
     <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS" />
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
-    -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application

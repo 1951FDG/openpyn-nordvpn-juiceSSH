@@ -424,7 +424,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
         flags = withContext(Default) { showPrintArray(ref(), mCountries, hashSet) }
         markers = hashMap
         mAnimations = createCameraUpdates()
-        val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, screen.lastLocation, flags, jsonObj, mJsonArray)
+        val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, flags, jsonObj, mJsonArray)
         val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
             callback = true
             isAnimate = true
@@ -455,7 +455,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
         // check if not already animating
         mCameraUpdateAnimator?.let {
             if (!it.isAnimating) {
-                val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, screen.lastLocation, flags, jsonObj, mJsonArray)
+                val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, flags, jsonObj, mJsonArray)
                 val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
                     callback = true
                     isAnimate = true
