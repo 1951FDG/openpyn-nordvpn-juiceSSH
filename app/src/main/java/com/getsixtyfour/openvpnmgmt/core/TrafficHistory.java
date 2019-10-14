@@ -5,9 +5,6 @@
 
 package com.getsixtyfour.openvpnmgmt.core;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,7 +16,7 @@ import java.util.List;
  * @author 1951FDG
  */
 
-public class TrafficHistory implements Parcelable {
+public class TrafficHistory {
 
     @SuppressWarnings("WeakerAccess")
     public static final long PERIODS_TO_KEEP = 5L;
@@ -43,32 +40,6 @@ public class TrafficHistory implements Parcelable {
     public TrafficHistory() {
     }
 
-    @SuppressWarnings("WeakerAccess")
-    TrafficHistory(Parcel source, ClassLoader loader) {
-        source.readList(seconds, loader);
-        source.readList(minutes, loader);
-        source.readList(hours, loader);
-        lastSecondUsedForMinute = source.readParcelable(loader);
-        lastMinuteUsedForHours = source.readParcelable(loader);
-    }
-
-    public static final Creator<TrafficHistory> CREATOR = new ClassLoaderCreator<TrafficHistory>() {
-        @Override
-        public TrafficHistory createFromParcel(Parcel source, ClassLoader loader) {
-            return new TrafficHistory(source, loader);
-        }
-
-        @Override
-        public TrafficHistory createFromParcel(Parcel source) {
-            return new TrafficHistory(source, null);
-        }
-
-        @Override
-        public TrafficHistory[] newArray(int size) {
-            return new TrafficHistory[size];
-        }
-    };
-
     public LastDiff getLastDiff(TrafficDataPoint tdp) {
         TrafficDataPoint newTdp = tdp;
         TrafficDataPoint lastTdp;
@@ -86,20 +57,6 @@ public class TrafficHistory implements Parcelable {
             }
         }
         return new LastDiff(lastTdp, newTdp);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(seconds);
-        dest.writeList(minutes);
-        dest.writeList(hours);
-        dest.writeParcelable(lastSecondUsedForMinute, 0);
-        dest.writeParcelable(lastMinuteUsedForHours, 0);
     }
 
     @SuppressWarnings("unused")
@@ -125,7 +82,7 @@ public class TrafficHistory implements Parcelable {
     }
 
     @SuppressWarnings("PackageVisibleField")
-    private static final class TrafficDataPoint implements Parcelable {
+    private static final class TrafficDataPoint {
 
         final long mTimestamp;
 
@@ -137,36 +94,6 @@ public class TrafficHistory implements Parcelable {
             mIn = inBytes;
             mOut = outBytes;
             mTimestamp = timestamp;
-        }
-
-        TrafficDataPoint(Parcel source) {
-            mTimestamp = source.readLong();
-            mIn = source.readLong();
-            mOut = source.readLong();
-        }
-
-        public static final Creator<TrafficDataPoint> CREATOR = new Creator<TrafficDataPoint>() {
-            @Override
-            public TrafficDataPoint createFromParcel(Parcel source) {
-                return new TrafficDataPoint(source);
-            }
-
-            @Override
-            public TrafficDataPoint[] newArray(int size) {
-                return new TrafficDataPoint[size];
-            }
-        };
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeLong(mTimestamp);
-            dest.writeLong(mIn);
-            dest.writeLong(mOut);
         }
     }
 

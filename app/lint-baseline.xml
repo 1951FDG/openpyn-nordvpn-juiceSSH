@@ -779,17 +779,6 @@
     <issue
         id="UnknownNullness"
         message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
-        errorLine1="    public void writeToParcel(Parcel dest, int flags) {"
-        errorLine2="                              ~~~~~~">
-        <location
-            file="src/main/java/ua/pp/msk/openvpnstatus/core/TrafficHistory.java"
-            line="95"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="UnknownNullness"
-        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
         errorLine1="    public LinkedList&lt;TrafficDataPoint> getHours() {"
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
