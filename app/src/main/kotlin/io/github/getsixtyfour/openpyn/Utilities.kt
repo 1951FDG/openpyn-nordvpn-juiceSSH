@@ -2,6 +2,7 @@ package io.github.getsixtyfour.openpyn
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources.NotFoundException
@@ -13,8 +14,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
+import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.Crashlytics
+import com.eggheadgames.aboutbox.AboutConfig
+import com.eggheadgames.aboutbox.IAnalytic
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPR.IGDPRCallback
@@ -204,4 +208,45 @@ fun logException(throwable: Throwable) {
     if (Fabric.isInitialized()) {
         Crashlytics.logException(throwable)
     }
+}
+
+//todo inner class
+fun populateAboutConfig() {
+    val versionName = BuildConfig.VERSION_NAME
+    val versionCode = BuildConfig.VERSION_CODE
+    val buildType = BuildConfig.BUILD_TYPE.capitalize()
+    val aboutConfig = AboutConfig.getInstance()
+    // general info
+    aboutConfig.appName = "openpyn-nordvpn-juiceSSH"
+    aboutConfig.appIcon = R.mipmap.ic_launcher
+    aboutConfig.version = "$buildType $versionName ($versionCode)"
+    aboutConfig.author = "1951FDG"
+    aboutConfig.companyHtmlPath = "https://github.com/" + aboutConfig.author
+    aboutConfig.webHomePage = aboutConfig.companyHtmlPath + '/' + aboutConfig.appName
+    aboutConfig.buildType = AboutConfig.BuildType.GOOGLE
+    aboutConfig.packageName = BuildConfig.APPLICATION_ID
+    // custom analytics, dialog and share
+    aboutConfig.analytics = object : IAnalytic {
+        override fun logUiEvent(s: String, s1: String) {
+            // handle log events.
+        }
+
+        override fun logException(e: Exception, b: Boolean) {
+            // handle exception events.
+            logException(e)
+        }
+    }
+    // email
+    aboutConfig.emailAddress = "support@1951fdg.com"
+    aboutConfig.emailSubject = ""
+    aboutConfig.emailBody = ""
+    aboutConfig.emailBodyPrompt = ""
+    // share
+    aboutConfig.shareMessage = ""
+    aboutConfig.sharingTitle = "Share"
+}
+
+fun setDefaultPreferences(context: Context) {
+    PreferenceManager.setDefaultValues(context, R.xml.pref_settings, false)
+    PreferenceManager.setDefaultValues(context, R.xml.pref_api, true)
 }
