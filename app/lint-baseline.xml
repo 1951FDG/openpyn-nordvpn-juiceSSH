@@ -760,7 +760,7 @@
         errorLine1="    public LastDiff getLastDiff(TrafficDataPoint tdp) {"
         errorLine2="           ~~~~~~~~">
         <location
-            file="src/main/java/ua/pp/msk/openvpnstatus/core/TrafficHistory.java"
+            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
             line="70"
             column="12"/>
     </issue>
@@ -771,7 +771,7 @@
         errorLine1="    public LastDiff getLastDiff(TrafficDataPoint tdp) {"
         errorLine2="                                ~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/ua/pp/msk/openvpnstatus/core/TrafficHistory.java"
+            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
             line="70"
             column="33"/>
     </issue>
@@ -793,7 +793,7 @@
         errorLine1="    public LinkedList&lt;TrafficDataPoint> getHours() {"
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/ua/pp/msk/openvpnstatus/core/TrafficHistory.java"
+            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
             line="104"
             column="12"/>
     </issue>
@@ -804,7 +804,7 @@
         errorLine1="    public LinkedList&lt;TrafficDataPoint> getMinutes() {"
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/ua/pp/msk/openvpnstatus/core/TrafficHistory.java"
+            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
             line="109"
             column="12"/>
     </issue>
@@ -815,7 +815,7 @@
         errorLine1="    public LinkedList&lt;TrafficDataPoint> getSeconds() {"
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/ua/pp/msk/openvpnstatus/core/TrafficHistory.java"
+            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
             line="114"
             column="12"/>
     </issue>
@@ -826,7 +826,7 @@
         errorLine1="    public static LinkedList&lt;TrafficDataPoint> getDummyList() {"
         errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/java/ua/pp/msk/openvpnstatus/core/TrafficHistory.java"
+            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
             line="119"
             column="19"/>
     </issue>
@@ -837,7 +837,7 @@
         errorLine1="    public LastDiff add(long in, long out) {"
         errorLine2="           ~~~~~~~~">
         <location
-            file="src/main/java/ua/pp/msk/openvpnstatus/core/TrafficHistory.java"
+            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
             line="171"
             column="12"/>
     </issue>
