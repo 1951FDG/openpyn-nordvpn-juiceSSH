@@ -28,7 +28,7 @@ class MapViews : ActionViews<MapViewsAction>() {
     //todo inner classes
     override fun onCreated() {
         // todo decouple
-        (screen.hostActivity as? MainActivity)?.getSnackProgressBarManager()?.setViewsToMove(arrayOf(fab0, fab1))
+        (screen.hostActivity as? MainActivity)?.mSnackProgressBarManager?.setViewsToMove(arrayOf(fab0, fab1))
 
         fab0.setOnClickListener { viewsAction.toggleCommand(fab0) } // todo check
 
