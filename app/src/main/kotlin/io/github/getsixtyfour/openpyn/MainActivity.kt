@@ -1,5 +1,7 @@
 package io.github.getsixtyfour.openpyn
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -9,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.loader.app.LoaderManager
 import androidx.preference.PreferenceManager
@@ -51,6 +54,7 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import org.jetbrains.anko.longToast
 // import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
+import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 
 class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback, OnClickListener,
@@ -83,17 +87,18 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         setProgressToolBar(this, toolbar)
 
         setSnackBarManager(this, mSnackProgressBarManager)
+
         // val api = GoogleApiAvailability.getInstance()
-        //
         // when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
         //     ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, RESULT_OK, null)
         //     //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
         //     else -> error(api.getErrorString(errorCode))
         // }
 
-        if (isJuiceSSHInstalled(this)) {
-            if (hasPermission(PERMISSION_READ) && hasPermission(PERMISSION_OPEN_SESSIONS)) onPermissionsGranted()
-        }
+        // if (isJuiceSSHInstalled(this)) {
+        //     if (hasPermissions(this, PERMISSION_READ, PERMISSION_OPEN_SESSIONS)) onPermissionsGranted(PERMISSION_REQUEST_CODE)
+        // }
+
         // run {
         //     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         //     val editor = preferences.edit()
@@ -112,8 +117,12 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
     override fun onResume() {
         super.onResume()
         if (isJuiceSSHInstalled(this)) {
-            if (hasPermission(PERMISSION_READ) && hasPermission(PERMISSION_OPEN_SESSIONS)) return
-            showSnackProgressBar(mSnackProgressBarManager, SNACK_BAR_PERMISSIONS)
+            if (hasPermissions(this, PERMISSION_READ, PERMISSION_OPEN_SESSIONS)) {
+                mSnackProgressBarManager.dismiss()
+                onPermissionsGranted(PERMISSION_REQUEST_CODE)
+            } else {
+                showSnackProgressBar(mSnackProgressBarManager, SNACK_BAR_PERMISSIONS)
+            }
         } else {
             showSnackProgressBar(mSnackProgressBarManager, SNACK_BAR_JUICESSH)
         }
@@ -131,6 +140,10 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         if (requestCode == JUICESSH_REQUEST_CODE) {
             mConnectionManager?.gotActivityResult(requestCode, resultCode, data)
         }
+
+        // if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+        //
+        // }
 
         // if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
         //     if (resultCode == RESULT_OK) {
@@ -152,11 +165,15 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
             return (index >= 0 && index <= grantResults.lastIndex) && (grantResults[index] == PackageManager.PERMISSION_GRANTED)
         }
 
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (isGranted(1) && isGranted(0)) {
-                onPermissionsGranted()
-            }
+        var granted: Array<String> = emptyArray()
+        var denied: Array<String> = emptyArray()
+        permissions.withIndex().forEach {
+            if (grantResults[it.index] == PackageManager.PERMISSION_GRANTED) granted = granted.plus(it.value)
+            else denied = denied.plus(it.value)
         }
+
+        if (denied.isNotEmpty()) onPermissionsDenied(requestCode, *denied)
+        else if (granted.isNotEmpty()) onPermissionsGranted(requestCode, *granted)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -351,11 +368,14 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         fragment?.onSessionCancelled()
     }
 
-    private fun hasPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+    private fun hasPermissions(context: Context, vararg perms: String): Boolean {
+        return perms.none { ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED }
     }
 
-    private fun onPermissionsGranted() {
+    private fun onPermissionsGranted(requestCode: Int, vararg perms: String) {
+        if (requestCode != PERMISSION_REQUEST_CODE) return
+        if (mConnectionManager != null) return
+
         spinnerConnectionList.adapter = mConnectionListAdapter
         LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
 
@@ -370,6 +390,16 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         )
 
         mConnectionManager?.startClient()
+    }
+
+    private fun onPermissionsDenied(requestCode: Int, vararg perms: String) {
+        if (somePermissionPermanentlyDenied(this, *perms)) {
+            AppSettingsDialog.Builder(this).build().show()
+        }
+    }
+
+    private fun somePermissionPermanentlyDenied(activity: Activity, vararg perms: String): Boolean {
+        return perms.any { !ActivityCompat.shouldShowRequestPermissionRationale(activity, it) }
     }
 
     companion object {
