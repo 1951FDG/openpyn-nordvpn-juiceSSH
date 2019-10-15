@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         ).withExplicitAgeConfirmation(true).withForceSelection(true).withShowPaidOrFreeInfoText(false)
     }
     val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
+    var mAppSettingsDialogShown: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -121,7 +122,9 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
                 mSnackProgressBarManager.dismiss()
                 onPermissionsGranted(PERMISSION_REQUEST_CODE)
             } else {
-                showSnackProgressBar(mSnackProgressBarManager, SNACK_BAR_PERMISSIONS)
+                if (!mAppSettingsDialogShown) {
+                    showSnackProgressBar(mSnackProgressBarManager, SNACK_BAR_PERMISSIONS)
+                }
             }
         } else {
             showSnackProgressBar(mSnackProgressBarManager, SNACK_BAR_JUICESSH)
@@ -141,9 +144,9 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
             mConnectionManager?.gotActivityResult(requestCode, resultCode, data)
         }
 
-        // if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-        //
-        // }
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            mAppSettingsDialogShown = false
+        }
 
         // if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
         //     if (resultCode == RESULT_OK) {
@@ -394,6 +397,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
 
     private fun onPermissionsDenied(requestCode: Int, vararg perms: String) {
         if (somePermissionPermanentlyDenied(this, *perms)) {
+            mAppSettingsDialogShown = true
             AppSettingsDialog.Builder(this).build().show()
         }
     }
