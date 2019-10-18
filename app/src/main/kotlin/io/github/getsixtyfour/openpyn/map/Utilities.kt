@@ -280,17 +280,6 @@ fun memoryBackedTileProvider(): MapBoxOfflineTileProvider {
     return tileProvider
 }
 
-private fun netflix(flag: CharSequence?): Boolean = when (flag) {
-    "us" -> true
-    "ca" -> true
-    "nl" -> true
-    "jp" -> true
-    "gb" -> true
-    "gr" -> true
-    "mx" -> true
-    else -> false
-}
-
 fun getCountryBoundaries(context: Context): CountryBoundaries? {
     try {
         return CountryBoundaries.load(context.assets.open("boundaries.ser"))
@@ -479,6 +468,17 @@ fun createMarkers(
         }
 
         return result
+    }
+
+    fun netflix(flag: CharSequence?): Boolean = when (flag) {
+        "us" -> true
+        "ca" -> true
+        "nl" -> true
+        "jp" -> true
+        "gb" -> true
+        "gr" -> true
+        "mx" -> true
+        else -> false
     }
     // HashSet<E> : MutableSet<E> {
     //     constructor()

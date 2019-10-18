@@ -68,11 +68,17 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
     }
     private var mConnectionManager: ConnectionManager? = null
     private val mSetup by lazy {
-        GDPRSetup(
-            GDPRDefinitions.FABRIC_CRASHLYTICS,
-            GDPRDefinitions.FIREBASE_CRASH,
-            GDPRDefinitions.FIREBASE_ANALYTICS
-        ).withExplicitAgeConfirmation(true).withForceSelection(true).withShowPaidOrFreeInfoText(false)
+        with(
+            GDPRSetup(
+                GDPRDefinitions.FABRIC_CRASHLYTICS,
+                GDPRDefinitions.FIREBASE_CRASH,
+                GDPRDefinitions.FIREBASE_ANALYTICS
+            )
+        ) {
+            withCustomDialogTheme(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
+            withForceSelection(true)
+            withShowPaidOrFreeInfoText(false)
+        }
     }
     val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
     var mAppSettingsDialogShown: Boolean = false
