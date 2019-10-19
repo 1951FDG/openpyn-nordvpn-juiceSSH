@@ -233,6 +233,7 @@ This app uses (modified) code from several open source projects.
 -   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 -   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 -   [Regex101](https://regex101.com/)
+-   [Shape Shifter](https://beta.shapeshifter.design/)
 -   [Snyk](https://snyk.io/)
 -   [SonarLint](https://www.sonarlint.org/)
 -   [Sourcetree](https://www.sourcetreeapp.com/)
