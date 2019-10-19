@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    >
+
+    <LinearLayout
+        android:id="@+id/headers"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/mm2d_pac_side_margin_negative"
+        android:layout_marginLeft="@dimen/mm2d_pac_side_margin"
+        android:layout_marginRight="@dimen/mm2d_pac_side_margin_negative"
+        android:layout_marginStart="@dimen/mm2d_pac_side_margin"
+        android:layout_weight="@integer/mm2d_pac_left_pane_weight"
+        android:background="?android:attr/windowBackground"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/mm2d_pac_header_vertical_padding"
+        android:paddingTop="@dimen/mm2d_pac_header_vertical_padding"
+        tools:ignore="NestedWeights,UnusedAttribute"
+        >
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:cacheColorHint="@android:color/transparent"
+            android:clipToPadding="false"
+            android:divider="@null"
+            android:drawSelectorOnTop="false"
+            android:listPreferredItemHeight="48dp"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            />
+
+        <FrameLayout
+            android:id="@+id/list_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            />
+
+    </LinearLayout>
+
+    <include layout="@layout/mm2d_pac_vertical_divider"/>
+
+    <LinearLayout
+        android:id="@+id/preference_frame"
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="@integer/mm2d_pac_right_pane_weight"
+        android:orientation="vertical"
+        >
+
+        <include layout="@layout/mm2d_pac_breadcrumbs"/>
+
+        <FrameLayout
+            android:id="@+id/preference"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            tools:ignore="NestedWeights"
+            />
+    </LinearLayout>
+</LinearLayout>
