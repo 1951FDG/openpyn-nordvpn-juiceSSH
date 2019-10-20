@@ -1,8 +1,5 @@
 package io.github.getsixtyfour.openpyn.map
 
-import android.content.pm.PackageManager
-import android.location.Location
-import android.os.Bundle
 import com.naver.android.svc.annotation.RequireControlTower
 import com.naver.android.svc.annotation.RequireViews
 import com.naver.android.svc.annotation.SvcFragment
@@ -37,17 +34,6 @@ class MapFragment : SVC_MapFragment(), AnkoLogger, OnSessionStartedListener, OnS
 
     val toolBar: ProgressToolbar? by lazy {
         requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        fun isGranted(index: Int): Boolean {
-            return (index >= 0 && index <= grantResults.lastIndex) && (grantResults[index] == PackageManager.PERMISSION_GRANTED)
-        }
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {

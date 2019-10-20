@@ -46,10 +46,10 @@
             android:title="@string/pref_log_level" />
         <Preference
             android:title="@string/title_activity_apis"
-            app:fragment="io.github.getsixtyfour.openpyn.SettingsActivity$ApiSyncPreferenceFragment" />
+            app:fragment="io.github.getsixtyfour.openpyn.fragment.ApiPreferenceFragment" />
         <Preference
             android:title="@string/title_activity_about"
-            app:fragment="io.github.getsixtyfour.openpyn.SettingsActivity$AboutSyncPreferenceFragment" />
+            app:fragment="io.github.getsixtyfour.openpyn.fragment.AboutPreferenceFragment" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_category_advanced">
         <SwitchPreference

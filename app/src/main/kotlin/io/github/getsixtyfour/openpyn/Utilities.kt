@@ -1,5 +1,6 @@
 package io.github.getsixtyfour.openpyn
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -217,6 +218,7 @@ fun logException(throwable: Throwable) {
 }
 
 //todo inner class
+@SuppressLint("DefaultLocale")
 fun populateAboutConfig() {
     val versionName = BuildConfig.VERSION_NAME
     val versionCode = BuildConfig.VERSION_CODE

@@ -6,25 +6,14 @@ import android.content.Intent
 import android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK
 import android.content.res.Configuration.SCREENLAYOUT_SIZE_XLARGE
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import androidx.preference.PreferenceScreen
-import com.eggheadgames.aboutbox.AboutBoxUtils
-import com.eggheadgames.aboutbox.AboutBoxUtils.openHTMLPage
-import com.eggheadgames.aboutbox.AboutConfig
-import com.eggheadgames.aboutbox.share.EmailUtil
-import com.eggheadgames.aboutbox.share.ShareUtil
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import io.github.getsixtyfour.openpyn.fragment.AboutPreferenceFragment
+import io.github.getsixtyfour.openpyn.fragment.ApiPreferenceFragment
+import io.github.getsixtyfour.openpyn.fragment.SettingsPreferenceFragment
 import kotlinx.android.synthetic.main.mm2d_pac_content.toolbar
 import net.mm2d.preference.Header
 import net.mm2d.preference.PreferenceActivityCompat
@@ -63,9 +52,9 @@ class SettingsActivity : PreferenceActivityCompat() {
      * Make sure to deny any unknown fragments here.
      */
     override fun isValidFragment(fragmentName: String?): Boolean = when (fragmentName) {
-        SettingsSyncPreferenceFragment::class.java.name -> true
-        ApiSyncPreferenceFragment::class.java.name -> true
-        AboutSyncPreferenceFragment::class.java.name -> true
+        SettingsPreferenceFragment::class.java.name -> true
+        ApiPreferenceFragment::class.java.name -> true
+        AboutPreferenceFragment::class.java.name -> true
         else -> false
     }
 
@@ -100,6 +89,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         }
         return super.onOptionsItemSelected(item)
     }
+
     /*
     /**
      * Called to determine whether the header list should be hidden.
@@ -118,271 +108,6 @@ class SettingsActivity : PreferenceActivityCompat() {
         fragment.arguments = args
         fragmentManager.beginTransaction().replace(R.id.prefs, fragment).commitAllowingStateLoss()
     }*/
-
-    /**
-     * This fragment shows General settings preferences only.
-     */
-    class SettingsSyncPreferenceFragment : PreferenceFragmentCompat(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
-
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            return when (item.itemId) {
-                R.id.action_refresh -> {
-                    onRefreshItemSelected(requireActivity(), item)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
-
-        override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-            inflater.inflate(R.menu.menu_settings, menu)
-        }
-
-        override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
-            // Instantiate the new Fragment
-            val activity = requireActivity()
-            val fragmentManager = activity.supportFragmentManager
-            val args = pref.extras
-            val fragment = fragmentManager.fragmentFactory.instantiate(activity.classLoader, pref.fragment)
-            fragment.arguments = args
-            fragment.setTargetFragment(caller, 0)
-            fragmentManager.beginTransaction().replace((view!!.parent as View).id, fragment).addToBackStack(null).commit()
-
-            return true
-        }
-
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setHasOptionsMenu(true)
-
-            findPreference<Preference>("pref_server")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference<Preference>("pref_country")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference<Preference>("pref_max_load")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference<Preference>("pref_top_servers")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference<Preference>("pref_pings")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference<Preference>("pref_log_level")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference<Preference>("pref_nvram_client")?.let { bindPreferenceSummaryToValue(it) }
-        }
-
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            // Load the preferences from an XML resource
-            setPreferencesFromResource(R.xml.pref_settings, rootKey)
-            // setTitle(requireActivity())
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            view.fitsSystemWindows = true
-            setDivider(null)
-            super.onViewCreated(view, savedInstanceState)
-        }
-
-        override fun getCallbackFragment(): PreferenceFragmentCompat = this
-    }
-
-    /**
-     * This fragment shows API settings preferences only.
-     */
-    class ApiSyncPreferenceFragment : PreferenceFragmentCompat() {
-
-        override fun onDetach() {
-            super.onDetach()
-            (activity as? AppCompatActivity)?.supportActionBar?.title = "Settings"
-        }
-
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setHasOptionsMenu(false)
-
-            findPreference<Preference>("pref_geo_client")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference<Preference>("pref_api_ipdata")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference<Preference>("pref_api_ipinfo")?.let { bindPreferenceSummaryToValue(it) }
-            findPreference<Preference>("pref_api_ipstack")?.let { bindPreferenceSummaryToValue(it) }
-        }
-
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            // Load the preferences from an XML resource
-            setPreferencesFromResource(R.xml.pref_api, rootKey)
-            setTitle(requireActivity())
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            view.fitsSystemWindows = true
-            setDivider(null)
-            super.onViewCreated(view, savedInstanceState)
-        }
-
-        override fun getCallbackFragment(): PreferenceFragmentCompat = this
-    }
-
-    /**
-     * This fragment shows About settings preferences only.
-     */
-    class AboutSyncPreferenceFragment : PreferenceFragmentCompat() {
-
-        override fun onDetach() {
-            super.onDetach()
-            (activity as? AppCompatActivity)?.supportActionBar?.title = "Settings"
-        }
-
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setHasOptionsMenu(false)
-        }
-
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            val activity = requireActivity()
-            val root = preferenceManager.createPreferenceScreen(activity)
-            val config = AboutConfig.getInstance()
-
-            root.setTitle(R.string.title_activity_about)
-
-            addAboutPreferences(activity, root, config)
-
-            addSupportPreferences(activity, root, config)
-
-            addOtherPreferences(activity, root, config)
-
-            preferenceScreen = root
-            setTitle(activity)
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            view.fitsSystemWindows = true
-            setDivider(null)
-            super.onViewCreated(view, savedInstanceState)
-        }
-
-        override fun getCallbackFragment(): PreferenceFragmentCompat {
-            return this
-        }
-
-        private fun addAboutPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
-            val category = PreferenceCategory(activity)
-            category.title = activity.getString(R.string.pref_category_about)
-
-            root.addPreference(category)
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_author,
-                config.author,
-                R.drawable.ic_person_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    openHTMLPage(activity, config.companyHtmlPath)
-                    true
-                }
-            ))
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_version,
-                config.version,
-                R.drawable.ic_info_outline_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    openHTMLPage(activity, config.webHomePage)
-                    true
-                }
-            ))
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_changelog,
-                null,
-                R.drawable.ic_history_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    openHTMLPage(activity, config.webHomePage + "/releases")
-                    true
-                }
-            ))
-        }
-
-        private fun addSupportPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
-            val category = PreferenceCategory(activity)
-            category.title = activity.getString(R.string.pref_category_support)
-
-            root.addPreference(category)
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_submit_issue,
-                null,
-                R.drawable.ic_bug_report_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    openHTMLPage(activity, config.webHomePage + "/issues/new")
-                    true
-                }
-            ))
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_contact_support,
-                null,
-                R.drawable.ic_email_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    EmailUtil.contactUs(activity)
-                    true
-                }
-            ))
-        }
-
-        private fun addOtherPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
-            val category = PreferenceCategory(activity)
-            category.title = activity.getString(R.string.pref_category_other)
-
-            root.addPreference(category)
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_leave_review,
-                null,
-                R.drawable.ic_star_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    AboutBoxUtils.openApp(activity, config.buildType, config.packageName)
-                    true
-                }
-            ))
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_share,
-                null,
-                R.drawable.ic_share_black_24dp,
-                Preference.OnPreferenceClickListener {
-                    ShareUtil.share(activity)
-                    true
-                }
-            ))
-
-            category.addPreference(getPreference(
-                activity,
-                R.string.egab_licenses,
-                null,
-                R.drawable.ic_copyleft_green_24dp,
-                Preference.OnPreferenceClickListener {
-                    OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_activity_licenses))
-                    val intent = Intent(activity, OssLicensesMenuActivity::class.java)
-                    ContextCompat.startActivity(activity, intent, null)
-                    true
-                }
-            ))
-        }
-
-        private fun getPreference(
-            context: Context,
-            titleResId: Int?,
-            summary: String?,
-            iconResId: Int?,
-            listener: Preference.OnPreferenceClickListener?
-        ): Preference {
-            val preference = Preference(context)
-            iconResId?.let { preference.icon = ContextCompat.getDrawable(context, it) }
-            titleResId?.let { preference.title = context.getString(it) }
-            summary?.let { preference.summary = it }
-            listener?.let { preference.onPreferenceClickListener = listener }
-            return preference
-        }
-    }
-
     companion object {
 
         /**
@@ -464,7 +189,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         fun startAboutFragment(activity: Activity) {
             //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
             val intent = Intent(activity, SettingsActivity::class.java).apply {
-                putExtra(EXTRA_SHOW_FRAGMENT, AboutSyncPreferenceFragment::class.java.name)
+                putExtra(EXTRA_SHOW_FRAGMENT, AboutPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
             ContextCompat.startActivity(activity, intent, null)
@@ -473,7 +198,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         fun startSettingsFragment(activity: Activity) {
             //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
             val intent = Intent(activity, SettingsActivity::class.java).apply {
-                putExtra(EXTRA_SHOW_FRAGMENT, SettingsSyncPreferenceFragment::class.java.name)
+                putExtra(EXTRA_SHOW_FRAGMENT, SettingsPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
             ContextCompat.startActivity(activity, intent, null)
@@ -490,13 +215,6 @@ class SettingsActivity : PreferenceActivityCompat() {
             }
 
             return false
-        }
-
-        fun PreferenceFragmentCompat.setTitle(activity: FragmentActivity) {
-            val title: CharSequence? = preferenceScreen.title
-            // Set the title of the activity
-            activity.title = title
-            (activity as? AppCompatActivity)?.supportActionBar?.title = title
         }
     }
 }

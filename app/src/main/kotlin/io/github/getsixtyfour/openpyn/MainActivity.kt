@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         }
     }
     val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
-    var mAppSettingsDialogShown: Boolean = false
+    private var mAppSettingsDialogShown: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -170,9 +170,6 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        fun isGranted(index: Int): Boolean {
-            return (index >= 0 && index <= grantResults.lastIndex) && (grantResults[index] == PackageManager.PERMISSION_GRANTED)
-        }
 
         var granted: Array<String> = emptyArray()
         var denied: Array<String> = emptyArray()
