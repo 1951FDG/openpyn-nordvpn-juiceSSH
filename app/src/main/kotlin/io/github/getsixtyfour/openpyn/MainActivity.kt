@@ -191,14 +191,6 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
                 onSettingsItemSelected(this, item)
                 true
             }
-            R.id.action_refresh -> {
-                onRefreshItemSelected(this, item)
-                true
-            }
-            R.id.action_about -> {
-                onAboutItemSelected(this, item)
-                true
-            }
             R.id.action_github -> {
                 onGitHubItemSelected(this, item)
                 true

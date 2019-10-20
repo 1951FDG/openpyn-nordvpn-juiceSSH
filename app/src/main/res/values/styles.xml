@@ -46,11 +46,19 @@
 
         <!--<item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>-->
 
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Licenses" parent="Base.Theme.AppTheme.Settings">
+
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
     </style>
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+    <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar" />
 
     <!--<style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">-->
         <!--<item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>-->

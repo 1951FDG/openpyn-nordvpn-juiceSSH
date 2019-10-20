@@ -6,9 +6,13 @@ import android.content.Intent
 import android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK
 import android.content.res.Configuration.SCREENLAYOUT_SIZE_XLARGE
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -21,6 +25,7 @@ import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import kotlinx.android.synthetic.main.mm2d_pac_content.toolbar
 import net.mm2d.preference.Header
 import net.mm2d.preference.PreferenceActivityCompat
 
@@ -39,7 +44,7 @@ class SettingsActivity : PreferenceActivityCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setProgressToolBar(this, toolbar, showHomeAsUp = true, showTitle = true)
         /*if (onIsHidingHeaders()) {
             setContentView(R.layout.content_preference)
             val initialFragment: String? = intent.getStringExtra(EXTRA_SHOW_FRAGMENT)
@@ -119,6 +124,20 @@ class SettingsActivity : PreferenceActivityCompat() {
      */
     class SettingsSyncPreferenceFragment : PreferenceFragmentCompat(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
+        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.action_refresh -> {
+                    onRefreshItemSelected(requireActivity(), item)
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
+            }
+        }
+
+        override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+            inflater.inflate(R.menu.menu_settings, menu)
+        }
+
         override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
             // Instantiate the new Fragment
             val activity = requireActivity()
@@ -134,7 +153,7 @@ class SettingsActivity : PreferenceActivityCompat() {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            setHasOptionsMenu(false)
+            setHasOptionsMenu(true)
 
             findPreference<Preference>("pref_server")?.let { bindPreferenceSummaryToValue(it) }
             findPreference<Preference>("pref_country")?.let { bindPreferenceSummaryToValue(it) }
@@ -148,6 +167,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             // Load the preferences from an XML resource
             setPreferencesFromResource(R.xml.pref_settings, rootKey)
+            // setTitle(requireActivity())
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -164,6 +184,11 @@ class SettingsActivity : PreferenceActivityCompat() {
      */
     class ApiSyncPreferenceFragment : PreferenceFragmentCompat() {
 
+        override fun onDetach() {
+            super.onDetach()
+            (activity as? AppCompatActivity)?.supportActionBar?.title = "Settings"
+        }
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setHasOptionsMenu(false)
@@ -177,6 +202,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             // Load the preferences from an XML resource
             setPreferencesFromResource(R.xml.pref_api, rootKey)
+            setTitle(requireActivity())
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -192,6 +218,11 @@ class SettingsActivity : PreferenceActivityCompat() {
      * This fragment shows About settings preferences only.
      */
     class AboutSyncPreferenceFragment : PreferenceFragmentCompat() {
+
+        override fun onDetach() {
+            super.onDetach()
+            (activity as? AppCompatActivity)?.supportActionBar?.title = "Settings"
+        }
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -212,9 +243,7 @@ class SettingsActivity : PreferenceActivityCompat() {
             addOtherPreferences(activity, root, config)
 
             preferenceScreen = root
-            val title: CharSequence? = preferenceScreen.title
-            // Set the title of the activity
-            activity.title = title
+            setTitle(activity)
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -461,6 +490,13 @@ class SettingsActivity : PreferenceActivityCompat() {
             }
 
             return false
+        }
+
+        fun PreferenceFragmentCompat.setTitle(activity: FragmentActivity) {
+            val title: CharSequence? = preferenceScreen.title
+            // Set the title of the activity
+            activity.title = title
+            (activity as? AppCompatActivity)?.supportActionBar?.title = title
         }
     }
 }

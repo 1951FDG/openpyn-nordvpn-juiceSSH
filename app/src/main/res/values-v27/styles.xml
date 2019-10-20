@@ -28,4 +28,9 @@
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textColor">#ffbebebe</item>
     </style>
+
+    <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">#ffbebebe</item>
+    </style>
+
 </resources>

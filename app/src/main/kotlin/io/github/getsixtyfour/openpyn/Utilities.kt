@@ -32,9 +32,9 @@ import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.createJson
 import io.github.getsixtyfour.openpyn.utils.stringifyJsonArray
+import org.jetbrains.anko.activityUiThread
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete
-import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 import java.io.File
@@ -65,17 +65,17 @@ fun <T> showGDPRIfNecessary(activity: T, setup: GDPRSetup) where T : AppCompatAc
     }
 }
 
-fun <T : AppCompatActivity> onAboutItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem) {
+fun <T : Activity> onAboutItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
     SettingsActivity.startAboutFragment(activity)
 }
 
-fun <T : AppCompatActivity> onGitHubItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem) {
+fun <T : Activity> onGitHubItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
     val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
     ContextCompat.startActivity(activity, intent, null)
 }
 
-fun <T : AppCompatActivity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem) {
+fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
     //val drawable = item.icon as? Animatable
     //drawable?.start()
     val toolbar = activity.findViewById(R.id.toolbar) as? ProgressToolbar
@@ -112,7 +112,7 @@ fun <T : AppCompatActivity> onRefreshItemSelected(activity: T, @Suppress("UNUSED
             }
         }
 
-        uiThread {
+        activityUiThread {
             //drawable?.stop()
             toolbar?.hideProgress(true)
 
@@ -126,20 +126,26 @@ fun <T : AppCompatActivity> onRefreshItemSelected(activity: T, @Suppress("UNUSED
     }
 }
 
-fun <T : AppCompatActivity> onSettingsItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem) {
+fun <T : Activity> onSettingsItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
     SettingsActivity.startSettingsFragment(activity)
 }
 
-fun <T : AppCompatActivity> setProgressToolBar(activity: T, toolbar: ProgressToolbar) {
+fun <T : AppCompatActivity> setProgressToolBar(
+    activity: T,
+    toolbar: ProgressToolbar,
+    showHomeAsUp: Boolean = false,
+    showTitle: Boolean = false
+) {
     toolbar.hideProgress()
     toolbar.isIndeterminate = true
 
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar?.setDisplayShowTitleEnabled(false)
+    activity.supportActionBar?.setDisplayHomeAsUpEnabled(showHomeAsUp)
+    activity.supportActionBar?.setDisplayShowTitleEnabled(showTitle)
 }
 
 // todo inner class
-fun <T : AppCompatActivity> setSnackBarManager(activity: T, manager: SnackProgressBarManager) {
+fun <T : Activity> setSnackBarManager(activity: T, manager: SnackProgressBarManager) {
     fun snackProgressBar(type: Int, message: String, action: String, onActionClickListener: OnActionClickListener): SnackProgressBar {
         return SnackProgressBar(type, message).setAction(action, onActionClickListener)
     }
@@ -166,14 +172,14 @@ fun <T : AppCompatActivity> setSnackBarManager(activity: T, manager: SnackProgre
     )
 }
 
-fun isJuiceSSHInstalled(activity: Activity): Boolean = try {
+fun <T : Activity> isJuiceSSHInstalled(activity: T): Boolean = try {
     activity.packageManager.getPackageInfo(JUICE_SSH_PACKAGE_NAME, 0)
     true
 } catch (e: NameNotFoundException) {
     false
 }
 
-fun juiceSSHInstall(activity: Activity) {
+fun <T : Activity> juiceSSHInstall(activity: T) {
     fun openURI(uri: Uri, packageName: String? = null) {
         val intent = Intent(Intent.ACTION_VIEW, uri)
         intent.setPackage(packageName)

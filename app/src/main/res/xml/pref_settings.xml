@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/title_activity_settings">
     <PreferenceCategory android:title="@string/pref_category_basic">
         <EditTextPreference
             android:key="pref_server"
@@ -44,8 +45,11 @@
             android:key="pref_log_level"
             android:title="@string/pref_log_level" />
         <Preference
-            android:title="APIs"
+            android:title="@string/title_activity_apis"
             app:fragment="io.github.getsixtyfour.openpyn.SettingsActivity$ApiSyncPreferenceFragment" />
+        <Preference
+            android:title="@string/title_activity_about"
+            app:fragment="io.github.getsixtyfour.openpyn.SettingsActivity$AboutSyncPreferenceFragment" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_category_advanced">
         <SwitchPreference

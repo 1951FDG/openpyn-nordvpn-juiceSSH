@@ -47,10 +47,10 @@
             android:theme="@style/MorphDialog.Custom.Light" />
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
-            android:theme="@style/AppTheme.Settings" />
+            android:theme="@style/AppTheme.Licenses" />
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
-            android:theme="@style/AppTheme.Settings" />
+            android:theme="@style/AppTheme.Licenses" />
         <activity
             android:name="com.getsixtyfour.openvpnmgmt.android.activities.DisconnectVPN"
             android:excludeFromRecents="true"
