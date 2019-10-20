@@ -78,7 +78,7 @@ A lot of components make this app work, I'll cover some of the basics here. Basi
     rm ./app/src/main/assets/world.mbtiles
     python3 ./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/world.mbtiles 4 4 --format webp
 
-After the map is done loading, the NordVPN API is invoked to query all the supported countries, filtering based on preferences such as server type is done here, markers are generated lazily for all the countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the minimum zoom scale specified by the MBTile file. The closest country is determined (based on the current public IP address), if no connection is available, the last know location to Android is used instead. The map then animates to the marker closest to this specific location. After animation completes, only the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
+After the map is done loading, the NordVPN API is invoked to query all the supported countries, filtering based on preferences such as server type is done here, markers are generated lazily for all the countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the minimum zoom scale specified by the MBTile file. The current location is detected based on the public IP address of the client. The map then animates to the marker closest to this location. After animation completes, only the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
 
 ## How to use
 
@@ -130,12 +130,12 @@ To compile and run the project you'll need:
 
 ## References
 
--   [MyStorage.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
+-   [MyStorage.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
 
--   [PrintArray.kt](app/src/main/java/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
+-   [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
     ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
 
--   [SecurityManager.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
+-   [SecurityManager.java](app/src/main/java/com/getsixtyfour/openvpnmgmt/android/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
     -   [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
     -   [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
     -   [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
@@ -147,8 +147,7 @@ To compile and run the project you'll need:
 -   [Barista](https://github.com/SchibstedSpain/Barista)
 -   [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
 -   [countryboundaries](https://github.com/westnordost/countryboundaries)
--   [ElasticView](https://github.com/armcha/ElasticView)
--   [emoji-java](https://github.com/vdurmont/emoji-java)
+-   [EasyPermissions](https://github.com/googlesamples/easypermissions)
 -   [Fuel](https://github.com/kittinunf/Fuel)
 -   [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
 -   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
@@ -157,7 +156,6 @@ To compile and run the project you'll need:
 -   [Kotlin](https://github.com/JetBrains/kotlin)
 -   [Ktor](https://github.com/ktorio/ktor)
 -   [LeakCanary](https://github.com/square/leakcanary)
--   [material-about-library](https://github.com/daniel-stoneuk/material-about-library)
 -   [Minibar](https://github.com/mayuroks/minibar)
 -   [Morphing Material Dialogs](https://github.com/AdityaAnand1/Morphing-Material-Dialogs)
 -   [Moshi](https://github.com/square/moshi)
@@ -168,7 +166,7 @@ To compile and run the project you'll need:
 -   [Result](https://github.com/kittinunf/Result)
 -   [SLF4J](https://github.com/qos-ch/slf4j)
 -   [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
--   [SQLite](https://sqlite.org/android/doc/trunk/www/install.wiki)
+-   [SQLite](https://github.com/requery/sqlite-android)
 -   [StaticLog](https://github.com/jupf/staticlog)
 -   [SVC](https://github.com/BansookNam/svc)
 -   [Toasty](https://github.com/GrenderG/Toasty)
@@ -200,10 +198,6 @@ This app uses (modified) code from several open source projects.
     -   Modified [CameraUpdateAnimator.java](app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
 
 
--   [Android Network Utility](https://github.com/evert-arias/android-network-utility)
-    -   Modified [NetworkInfo.kt](app/src/main/java/com/ariascode/networkutility/NetworkInfo.kt)
-
-
 -   [Android Google Maps API v2 Add-ons](https://github.com/cocoahero/android-gmaps-addons)
     -   Modified [MapBoxOfflineTileProvider.java](app/src/main/java/com/cocoahero/android/gmaps/addons/mapbox/MapBoxOfflineTileProvider.java)
 
@@ -225,7 +219,6 @@ This app uses (modified) code from several open source projects.
 -   [AX2J](http://ax2j.sickworm.com/)
 -   [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 -   [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
--   [Android Sorter Plugin](https://github.com/cuongloveit/AndroidSorter)
 -   [Android Studio](https://developer.android.com/studio/)
 -   [Atom](https://atom.io/)
 -   [Codacy](https://www.codacy.com/)
@@ -235,10 +228,12 @@ This app uses (modified) code from several open source projects.
 -   [Fastlane](https://fastlane.tools/)
 -   [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
 -   [JSON Schema Tool](https://jsonschema.net/)
+-   [Kotlin Code Sorter](https://github.com/longforus/KotlinCodeSorter)
 -   [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 -   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 -   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 -   [Regex101](https://regex101.com/)
+-   [Shape Shifter](https://beta.shapeshifter.design/)
 -   [Snyk](https://snyk.io/)
 -   [SonarLint](https://www.sonarlint.org/)
 -   [Sourcetree](https://www.sourcetreeapp.com/)

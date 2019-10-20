@@ -97,6 +97,10 @@ android {
         exclude 'lib/x86/libsqlite4java-android.so'
         exclude 'lib/x86_64/libsqlite4java-android.so'
     }
+    sourceSets {
+        debug.java.srcDirs += 'src/debug/kotlin'
+        main.java.srcDirs += 'src/main/kotlin'
+    }
     testOptions {
         animationsDisabled = true
     }
@@ -107,8 +111,8 @@ androidGitVersion {
 }
 
 detekt {
-    toolVersion = '1.1.0'
-    input = files('src/main/java')
+    toolVersion = '1.1.1'
+    input = files('src/main/kotlin')
     config = files("$rootDir/config/detekt/detekt.yml")
     filters = '.*/resources/.*,.*/build/.*'
     reports {
@@ -243,6 +247,9 @@ dependencies {
     implementation "org.slf4j:slf4j-api:$slf4j_version"
     debugImplementation "org.slf4j:slf4j-android:$slf4j_version"
     testImplementation "org.slf4j:slf4j-simple:$slf4j_version"
+
+    // Permission
+    implementation 'pub.devrel:easypermissions:3.0.0'
 
     // Preference
     implementation('net.mm2d:preference:0.2.1') {

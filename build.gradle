@@ -6,7 +6,7 @@ buildscript {
     ext.kotlin_version = '1.3.50'
     ext.kotlinx_io_version = '0.1.15'
     ext.ktor_version = '1.2.5'
-    ext.nav_version = '2.2.0-alpha03'
+    ext.nav_version = '2.2.0-beta01'
     ext.slf4j_version = '1.7.28'
     repositories {
         google()
@@ -18,12 +18,12 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'io.fabric.tools:gradle:1.31.1'
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.9.5'
+        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.0'
         classpath 'com.netflix.nebula:gradle-lint-plugin:14.2.5'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.6'
         classpath 'com.google.android.gms:strict-version-matcher-plugin:1.2.0'
         classpath 'gradle.plugin.com.github.konifar.gradle:plugin:0.3.3'
-        classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.1.0'
+        classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.1.1'
         classpath 'com.gladed.androidgitversion:gradle-android-git-version:0.4.10'
         //classpath 'com.google.gms:google-services:4.2.0'
 
@@ -55,6 +55,7 @@ allprojects {
         excludeDirs += file('app/.externalNativeBuild')
         excludeDirs += file('app/src/main/java/com/almworks')
         excludeDirs += file('app/src/main/java/io/requery')
+        excludeDirs += file('app/src/main/java/org')
         excludeDirs += file('app/src/main/java/org/javolution')
         excludeDirs += file('app/src/main/java/org/sqlite')
         excludeDirs += file('app/src/main/jni')
