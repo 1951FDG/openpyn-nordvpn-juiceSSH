@@ -98,7 +98,7 @@ fun generateXML() {
 }
 
 @Suppress("MagicNumber")
-fun createJson2(type: Int, content: JSONObject): JSONObject? {
+fun createJson2(type: String, content: JSONObject): JSONObject? {
     var flag = ""
     var country = ""
     var city = ""
@@ -108,7 +108,7 @@ fun createJson2(type: Int, content: JSONObject): JSONObject? {
     var threat: JSONObject? = null
 
     when (type) {
-        0 -> {
+        "ipapi" -> {
             flag = content.optString("countryCode")
             country = content.optString("country")
             city = content.optString("city")
@@ -116,7 +116,7 @@ fun createJson2(type: Int, content: JSONObject): JSONObject? {
             lon = content.optDouble("lon", 0.0)
             ip = content.optString("query")
         }
-        1 -> {
+        "ipdata" -> {
             flag = content.optString("country_code")
             country = content.optString("country_name")
             city = content.optString("city")
@@ -126,14 +126,14 @@ fun createJson2(type: Int, content: JSONObject): JSONObject? {
 
             threat = content.optJSONObject("threat")
         }
-        2 -> {
+        "ipinfo" -> {
             flag = content.optString("country")
             city = content.optString("city")
             lat = java.lang.Double.valueOf(content.optString("loc").split(",")[0])
             lon = java.lang.Double.valueOf(content.optString("loc").split(",")[1])
             ip = content.optString("ip")
         }
-        3 -> {
+        "ipstack" -> {
             flag = content.optString("country_code")
             country = content.optString("country_name")
             city = content.optString("city")
