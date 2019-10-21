@@ -72,6 +72,9 @@ public final class SecurityManager {
     @NonNull
     @SuppressWarnings("WeakerAccess")
     public String decryptString(@NonNull String stringToDecrypt) {
+        if (stringToDecrypt.isEmpty()) {
+            return stringToDecrypt;
+        }
         String output = stringToDecrypt;
         try {
             byte[] encryptedBytes = Base64.decode(stringToDecrypt, Base64.DEFAULT);
@@ -89,6 +92,9 @@ public final class SecurityManager {
     @NonNull
     @SuppressWarnings("WeakerAccess")
     public String encryptString(@NonNull String stringToEncrypt) {
+        if (stringToEncrypt.isEmpty()) {
+            return stringToEncrypt;
+        }
         String output = stringToEncrypt;
         try {
             byte[] clearText = stringToEncrypt.getBytes(StandardCharsets.UTF_8);
