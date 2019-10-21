@@ -673,49 +673,30 @@ suspend fun createGeoJson(context: Context): JSONObject? {
     if (NetworkInfo.getInstance().isOnline()) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val geo = preferences.getBoolean("pref_geo", true)
-        val api = preferences.getString("pref_geo_client", "")
-        val ipdata = preferences.getString("pref_api_ipdata", "")
-        val ipinfo = preferences.getString("pref_api_ipinfo", "")
-        val ipstack = preferences.getString("pref_api_ipstack", "")
+        val api = preferences.getString("pref_geo_client", "ipapi")!!
+        val ipdata = preferences.getString("pref_api_ipdata", "")!!
+        val ipinfo = preferences.getString("pref_api_ipinfo", "")!!
+        val ipstack = preferences.getString("pref_api_ipstack", "")!!
+        val fields = "fields=country_name,country_code,city,latitude,longitude,ip"
+        var server = "http://ip-api.com/json/?fields=8403" // http://ip-api.com/json/?fields=country,countryCode,city,lat,lon,query
+        val token: String
 
         if (geo) {
-            var server = "http://ip-api.com/json/?fields=8403" // http://ip-api.com/json/?fields=country,countryCode,city,lat,lon,query
-            var type = 0
-            var token: String? = null
             when (api) {
                 "ipdata" -> {
-                    type = 1
-                    token = ipdata
+                    token = SecurityManager.getInstance(context).decryptString(ipdata)
+                    server = "https://api.ipdata.co?api-key=$token&$fields"
                 }
                 "ipinfo" -> {
-                    type = 2
-                    token = ipinfo
-                }
-                "ipstack" -> {
-                    type = 3
-                    token = ipstack
-                }
-            }
-            if (token != null && token.isNotEmpty()) token = SecurityManager.getInstance(
-                context
-            ).decryptString(token)
-            val fields = "fields=country_name,country_code,city,latitude,longitude,ip"
-            when (type) {
-                1 -> {
-                    if (token != null && token.isNotEmpty()) {
-                        server = "https://api.ipdata.co?api-key=$token&$fields"
-                    }
-                }
-                2 -> {
+                    token = SecurityManager.getInstance(context).decryptString(ipinfo)
                     server = when {
-                        token != null && token.isNotEmpty() -> "https://ipinfo.io/geo?token=$token"
+                        token.isNotEmpty() -> "https://ipinfo.io/geo?token=$token"
                         else -> "https://ipinfo.io/geo"
                     }
                 }
-                3 -> {
-                    if (token != null && token.isNotEmpty()) {
-                        server = "http://api.ipstack.com/check?access_key=$token&$fields"
-                    }
+                "ipstack" -> {
+                    token = SecurityManager.getInstance(context).decryptString(ipstack)
+                    server = "http://api.ipstack.com/check?access_key=$token&$fields"
                 }
             }
             var jsonObject: JSONObject? = null
@@ -736,12 +717,12 @@ suspend fun createGeoJson(context: Context): JSONObject? {
             } catch (cause: Throwable) {
                 cause.message?.let { Log.error(it) }
             } finally {
-                Log.debug(jsonObject.toString())
+                Log.debug("$api: ${jsonObject.toString()}")
             }
 
             client.close()
 
-            return jsonObject?.let { createJson2(type, it) } ?: jsonObject
+            return jsonObject?.let { createJson2(api, it) } ?: jsonObject
         }
     }
 
