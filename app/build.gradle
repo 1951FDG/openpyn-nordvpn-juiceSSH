@@ -225,7 +225,7 @@ dependencies {
     implementation('com.jayrave:moshi-pristine-models:1.0.0') {
         transitive = false
     }
-    implementation 'com.squareup.moshi:moshi:1.8.0'
+    implementation 'com.squareup.moshi:moshi:1.9.0'
 
     // Kotlin
     implementation('org.jetbrains.kotlin:kotlin-reflect') {
