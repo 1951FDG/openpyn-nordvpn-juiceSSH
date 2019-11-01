@@ -20,6 +20,8 @@ apply plugin: 'io.fabric'
 
 apply plugin: 'io.gitlab.arturbosch.detekt'
 
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
 //apply plugin: 'com.google.gms.google-services'
 
 android {
