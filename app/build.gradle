@@ -196,7 +196,7 @@ dependencies {
 
     // Crashlytics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.google.firebase:firebase-core:17.2.0'
+    implementation 'com.google.firebase:firebase-core:17.2.1'
 
     // GDPR
     implementation 'com.github.MFlisar:GDPRDialog:1.4.1'
