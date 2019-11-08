@@ -29,10 +29,6 @@
 
     <!-- Strings related to Settings -->
 
-    <string name="pref_header_settings">Settings</string>
-
-    <string name="pref_category_basic">Basics</string>
-
     <string name="pref_server">Server Name</string>
 
     <string name="pref_country">Country</string>
@@ -231,8 +227,6 @@
         <item>5</item>
     </string-array>
 
-    <string name="pref_category_advanced">Advanced</string>
-
     <string name="pref_p2p">P2P</string>
     <string name="pref_description_p2p">Look for \“Peer To Peer\” servers</string>
 
@@ -257,15 +251,15 @@
     <string name="pref_description_test">Simulation only, do not actually connect to the VPN server</string>
 
     <string name="pref_skip_dns_patch">Skip DNS Patching</string>
-    <string name="pref_description_skip_dns_patch">Skips DNS patching, leaves /etc/resolv.conf untouched</string>
+    <string name="pref_description_skip_dns_patch">Leaves /etc/resolv.conf untouched</string>
 
     <string name="pref_force_fw">Enforce Firewall Rules</string>
     <string name="pref_description_force_fw">Drop traffic when tunnel breaks, force disable DNS traffic going to any other interface</string>
 
-    <string name="pref_nvram">NVRAM</string>
-    <string name="pref_description_nvram">Specify client to save configuration to NVRAM (ASUSWRT-Merlin)</string>
+    <string name="pref_nvram">ASUSWRT-Merlin VPN Client</string>
+    <string name="pref_description_nvram">Apply VPN configuration to a client instance</string>
 
-    <string name="pref_nvram_client">NVRAM Client</string>
+    <string name="pref_nvram_client">ASUSWRT-Merlin Client Instance</string>
 
     <string-array name="pref_nvram_client_entries">
         <item>1</item>

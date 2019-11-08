@@ -2,6 +2,6 @@
 <preference-headers xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- These settings headers are only used on tablets. -->
     <header
-        app:fragment="io.github.getsixtyfour.openpyn.SettingsActivity$SettingsSyncPreferenceFragment"
-        app:title="@string/pref_header_settings" />
+        app:fragment="io.github.getsixtyfour.openpyn.SettingsActivity$SettingsPreferenceFragment"
+        app:title="@string/title_activity_settings" />
 </preference-headers>

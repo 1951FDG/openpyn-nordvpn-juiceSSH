@@ -10,10 +10,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.loader.app.LoaderManager
+import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.adityaanand.morphdialog.MorphDialog
 import com.adityaanand.morphdialog.utils.MorphDialogAction
@@ -36,7 +39,9 @@ import com.tingyik90.snackprogressbar.SnackProgressBarManager
 // import com.getsixtyfour.openvpnmgmt.android.core.VPNAuthenticationHandler
 // import com.getsixtyfour.openvpnmgmt.android.core.VPNLaunchHelper.startOpenVPNService
 import io.fabric.sdk.android.Fabric
+import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog
 import io.github.getsixtyfour.openpyn.map.MapFragment
+import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
 import io.github.getsixtyfour.openpyn.utils.Toaster
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
@@ -48,6 +53,7 @@ import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.container
 import kotlinx.android.synthetic.main.activity_main.spinnerConnectionList
 import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.android.synthetic.main.fragment_map.fab0
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import org.jetbrains.anko.AnkoLogger
@@ -57,9 +63,9 @@ import org.jetbrains.anko.longToast
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 
-class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback, OnClickListener,
-    OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener, OnSessionStartedListener,
-    CoroutineScope by MainScope() {
+class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback,
+    OnClickListener, OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener,
+    OnSessionStartedListener, PreferenceDialog.NoticeDialogListener, CoroutineScope by MainScope() {
 
     private var dialog: MorphDialog? = null
     // todo check value
@@ -86,8 +92,6 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_main)
 
         showGDPRIfNecessary(this, mSetup)
 
@@ -249,43 +253,46 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
             else -> ""
         }
 
-        fun toggleConnection(v: FloatingActionButton) {
-            v.isClickable = false
-            val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
-            mConnectionManager?.toggleConnection(uuid!!, this)
-        }
-
-        fun morph(v: FloatingActionButton) {
+        fun message(): String {
             val (location, flag) = this.positionAndFlagForSelectedMarker()
             val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-            val server: String = preferences.getString("pref_server", "")!!
-            val country: String = preferences.getString("pref_country", "")!!
-            val content = "Are you sure you want to connect to ${element(location, flag, server, country)}"
-            val builder = MorphDialog.Builder(this, v).apply {
-                title("VPN Connection")
-                content(content)
-                positiveText(android.R.string.ok)
-                negativeText(android.R.string.cancel)
-                onPositive { _: MorphDialog, _: MorphDialogAction -> toggleConnection(v) }
-            }
+            val server = preferences.getString("pref_server", "")!!
+            val country = preferences.getString("pref_country", "")!!
+            return "Are you sure you want to connect to ${element(location, flag, server, country)}"
+        }
 
-            dialog = builder.show()
+        fun showMessageDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
+            title("VPN Connection")
+            content(message())
+            positiveText(android.R.string.ok)
+            negativeText(android.R.string.cancel)
+            onPositive { _: MorphDialog, _: MorphDialogAction -> toggleConnection(v) }
+            show()
+        }
+
+        fun showWarningDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
+            title("Error")
+            content(R.string.error_must_have_at_least_one_server)
+            positiveText(android.R.string.ok)
+            show()
         }
 
         if (id == R.id.fab0 && v is FloatingActionButton) {
             if (mConnectionListAdapter.count > 0) {
                 if (spinnerConnectionList.isEnabled) {
-                    morph(v)
+                    // dialog = showMessageDialog(v)
+                    val action = MapFragmentDirections.actionMapFragmentToPreferenceDialogFragment(message())
+                    Navigation.findNavController(v).navigate(action)
                 } else {
                     toggleConnection(v)
                 }
             } else {
-                MorphDialog.Builder(this, v).apply {
-                    title("Error")
-                    content(R.string.error_must_have_at_least_one_server)
-                    positiveText(android.R.string.ok)
-                    show()
-                }
+                // showWarningDialog(v)
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Error")
+                builder.setMessage(R.string.error_must_have_at_least_one_server)
+                builder.setPositiveButton(android.R.string.ok, null)
+                builder.show()
             }
         }
     }
@@ -366,6 +373,13 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         fragment?.onSessionCancelled()
     }
 
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        toggleConnection(fab0)
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+    }
+
     private fun hasPermissions(context: Context, vararg perms: String): Boolean {
         return perms.none { ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED }
     }
@@ -399,6 +413,12 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
 
     private fun somePermissionPermanentlyDenied(activity: Activity, vararg perms: String): Boolean {
         return perms.any { !ActivityCompat.shouldShowRequestPermissionRationale(activity, it) }
+    }
+
+    private fun toggleConnection(v: FloatingActionButton) {
+        v.isClickable = false
+        val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
+        mConnectionManager?.toggleConnection(uuid!!, this)
     }
 
     companion object {

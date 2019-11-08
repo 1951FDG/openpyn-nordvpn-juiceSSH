@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/title_activity_settings"
+    app:initialExpandedChildrenCount="5"
+    app:orderingFromXml="true">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_dedicated"
+        android:title="@string/pref_dedicated" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_double"
+        android:title="@string/pref_double" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_anti_ddos"
+        android:title="@string/pref_anti_ddos" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_tor"
+        android:title="@string/pref_tor" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_p2p"
+        android:title="@string/pref_p2p" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_test"
+        android:title="@string/pref_test" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_silent"
+        android:title="@string/pref_silent" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_skip_dns_patch"
+        android:title="@string/pref_skip_dns_patch" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_force_fw"
+        android:title="@string/pref_force_fw" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_nvram"
+        android:title="@string/pref_nvram" />
+</PreferenceScreen>

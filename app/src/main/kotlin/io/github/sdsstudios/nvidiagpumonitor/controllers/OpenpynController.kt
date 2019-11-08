@@ -124,12 +124,12 @@ class OpenpynController(
         }
         val (location, flag) = pair
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
-        val server: String = preferences.getString("pref_server", "")!!
-        val country: String = preferences.getString("pref_country", "")!!
+        val server = preferences.getString("pref_server", "")!!
+        val country = preferences.getString("pref_country", "")!!
         val tcp = preferences.getBoolean("pref_tcp", false)
-        val load: String = preferences.getString("pref_max_load", "")!!
-        val top: String = preferences.getString("pref_top_servers", "")!!
-        val pings: String = preferences.getString("pref_pings", "")!!
+        val load = preferences.getString("pref_max_load", "")!!
+        val top = preferences.getString("pref_top_servers", "")!!
+        val pings = preferences.getString("pref_pings", "")!!
         val rules = preferences.getBoolean("pref_force_fw", false)
         val p2p = preferences.getBoolean("pref_p2p", false)
         val dedicated = preferences.getBoolean("pref_dedicated", false)
