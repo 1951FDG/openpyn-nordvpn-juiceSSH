@@ -161,7 +161,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         category.addPreference(getPreference(
             activity,
-            R.string.egab_licenses,
+            R.string.oss_license_title,
             null,
             R.drawable.ic_copyleft_green_24dp,
             OnPreferenceClickListener {

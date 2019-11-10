@@ -254,7 +254,7 @@ fun showPrintArray(context: Context, countries: List<MultiSelectable>, hashSet: 
     }
 
     PrintArray.apply {
-        setHint(R.string.multi_select_dialog_hint)
+        setHint(R.string.abc_search_hint)
         setTitle(R.string.empty)
         setItems(currentCountries)
         setCheckedItems(currentIds)

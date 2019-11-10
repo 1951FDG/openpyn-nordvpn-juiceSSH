@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Openpyn</string>
-    <string name="action_settings">Settings</string>
     <string name="no_data" tools:keep="@string/no_data">-</string>
 
     <string name="empty" />
     <string name="menu_refresh">Refresh</string>
     <string name="menu_github">GitHub</string>
-    <string name="menu_about">About</string>
 
     <!-- Warning -->
     <string name="warning_must_restart_app">Please restart app for changes to take effect</string>
@@ -245,7 +243,6 @@
     <string name="pref_netflix">Netflix</string>
     <string name="pref_description_netflix">Only look for \“Netflix\” servers</string>
 
-    <string name="pref_category_expert">Expert</string>
 
     <string name="pref_test">Test</string>
     <string name="pref_description_test">Simulation only, do not actually connect to the VPN server</string>
@@ -319,7 +316,6 @@
     <string name="egab_version">Version</string>
     <string name="egab_author">Author</string>
     <string name="egab_share">Share</string>
-    <string name="egab_licenses">Open Source Licenses</string>
     <string name="egab_changelog">Changelog</string>
     <string name="egab_submit_issue">Report a Problem</string>
 
