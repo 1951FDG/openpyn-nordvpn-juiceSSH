@@ -36,8 +36,8 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-// import com.getsixtyfour.openvpnmgmt.android.core.VPNAuthenticationHandler
-// import com.getsixtyfour.openvpnmgmt.android.core.VPNLaunchHelper.startOpenVPNService
+// import com.getsixtyfour.openvpnmgmt.android.VPNAuthenticationHandler
+// import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.startOpenVPNService
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog
 import io.github.getsixtyfour.openpyn.map.MapFragment
