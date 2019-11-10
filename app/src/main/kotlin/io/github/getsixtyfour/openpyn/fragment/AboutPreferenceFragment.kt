@@ -18,8 +18,7 @@ import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import io.github.getsixtyfour.ktextension.setTitle
-import io.github.getsixtyfour.openpyn.R.drawable
-import io.github.getsixtyfour.openpyn.R.string
+import io.github.getsixtyfour.openpyn.R
 
 /**
  * This fragment shows About settings preferences only.
@@ -41,7 +40,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         val root = preferenceManager.createPreferenceScreen(activity)
         val config = AboutConfig.getInstance()
 
-        root.setTitle(string.title_activity_about)
+        root.setTitle(R.string.title_activity_about)
 
         addAboutPreferences(activity, root, config)
 
@@ -65,15 +64,15 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     private fun addAboutPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
         val category = PreferenceCategory(activity)
-        category.title = activity.getString(string.pref_category_about)
+        category.title = activity.getString(R.string.pref_category_about)
 
         root.addPreference(category)
 
         category.addPreference(getPreference(
             activity,
-            string.egab_author,
+            R.string.egab_author,
             config.author,
-            drawable.ic_person_black_24dp,
+            R.drawable.ic_person_black_24dp,
             OnPreferenceClickListener {
                 AboutBoxUtils.openHTMLPage(activity, config.companyHtmlPath)
                 true
@@ -82,9 +81,9 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         category.addPreference(getPreference(
             activity,
-            string.egab_version,
+            R.string.egab_version,
             config.version,
-            drawable.ic_info_outline_black_24dp,
+            R.drawable.ic_info_outline_black_24dp,
             OnPreferenceClickListener {
                 AboutBoxUtils.openHTMLPage(activity, config.webHomePage)
                 true
@@ -93,9 +92,9 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         category.addPreference(getPreference(
             activity,
-            string.egab_changelog,
+            R.string.egab_changelog,
             null,
-            drawable.ic_history_black_24dp,
+            R.drawable.ic_history_black_24dp,
             OnPreferenceClickListener {
                 AboutBoxUtils.openHTMLPage(activity, config.webHomePage + "/releases")
                 true
@@ -105,15 +104,15 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     private fun addSupportPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
         val category = PreferenceCategory(activity)
-        category.title = activity.getString(string.pref_category_support)
+        category.title = activity.getString(R.string.pref_category_support)
 
         root.addPreference(category)
 
         category.addPreference(getPreference(
             activity,
-            string.egab_submit_issue,
+            R.string.egab_submit_issue,
             null,
-            drawable.ic_bug_report_black_24dp,
+            R.drawable.ic_bug_report_black_24dp,
             OnPreferenceClickListener {
                 AboutBoxUtils.openHTMLPage(activity, config.webHomePage + "/issues/new")
                 true
@@ -122,9 +121,9 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         category.addPreference(getPreference(
             activity,
-            string.egab_contact_support,
+            R.string.egab_contact_support,
             null,
-            drawable.ic_email_black_24dp,
+            R.drawable.ic_email_black_24dp,
             OnPreferenceClickListener {
                 EmailUtil.contactUs(activity)
                 true
@@ -134,15 +133,15 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     private fun addOtherPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
         val category = PreferenceCategory(activity)
-        category.title = activity.getString(string.pref_category_other)
+        category.title = activity.getString(R.string.pref_category_other)
 
         root.addPreference(category)
 
         category.addPreference(getPreference(
             activity,
-            string.egab_leave_review,
+            R.string.egab_leave_review,
             null,
-            drawable.ic_star_black_24dp,
+            R.drawable.ic_star_black_24dp,
             OnPreferenceClickListener {
                 AboutBoxUtils.openApp(activity, config.buildType, config.packageName)
                 true
@@ -151,9 +150,9 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         category.addPreference(getPreference(
             activity,
-            string.egab_share,
+            R.string.egab_share,
             null,
-            drawable.ic_share_black_24dp,
+            R.drawable.ic_share_black_24dp,
             OnPreferenceClickListener {
                 ShareUtil.share(activity)
                 true
@@ -162,11 +161,11 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         category.addPreference(getPreference(
             activity,
-            string.egab_licenses,
+            R.string.egab_licenses,
             null,
-            drawable.ic_copyleft_green_24dp,
+            R.drawable.ic_copyleft_green_24dp,
             OnPreferenceClickListener {
-                OssLicensesMenuActivity.setActivityTitle(getString(string.title_activity_licenses))
+                OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_activity_licenses))
                 val intent = Intent(activity, OssLicensesMenuActivity::class.java)
                 ContextCompat.startActivity(activity, intent, null)
                 true

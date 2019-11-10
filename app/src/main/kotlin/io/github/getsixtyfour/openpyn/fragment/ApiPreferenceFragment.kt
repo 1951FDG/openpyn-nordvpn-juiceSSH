@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.getsixtyfour.ktextension.setTitle
-import io.github.getsixtyfour.openpyn.R.xml
+import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.SettingsActivity.Companion
 
 /**
@@ -31,7 +31,7 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         // Load the preferences from an XML resource
-        setPreferencesFromResource(xml.pref_api, rootKey)
+        setPreferencesFromResource(R.xml.pref_api, rootKey)
         setTitle(requireActivity())
     }
 

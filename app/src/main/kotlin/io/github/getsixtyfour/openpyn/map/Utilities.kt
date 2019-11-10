@@ -35,7 +35,6 @@ import com.squareup.moshi.Types
 import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.R.array
 import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.utils.CITY
 import io.github.getsixtyfour.openpyn.utils.COUNTRY
@@ -623,7 +622,7 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray {
     }
 
     val jsonArray = createJsonArray(context, id, ext)
-    val set1 = context.resources.getTextArray(array.pref_country_values).toHashSet()
+    val set1 = context.resources.getTextArray(R.array.pref_country_values).toHashSet()
     val set2 = hashSetOf<CharSequence>()
 
     for (res in jsonArray) {
