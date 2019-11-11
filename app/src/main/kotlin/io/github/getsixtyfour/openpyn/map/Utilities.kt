@@ -349,7 +349,7 @@ fun getCurrentPosition(
         else -> LatLng(lat, lon)
     }
 
-    fun getToastString(ids: List<String>?): String = when {
+    fun getString(ids: List<String>?): String = when {
         ids.isNullOrEmpty() -> "is nowhere"
         else -> "is in " + ids.joinToString()
     }
@@ -364,7 +364,7 @@ fun getCurrentPosition(
         val ids = countryBoundaries?.getIds(lon, lat)
         t = System.nanoTime() - t
         @Suppress("MagicNumber") val i = 1000
-        Log.debug(getToastString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
+        Log.debug(getString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
         return getFlag(ids)
     }
 
@@ -469,16 +469,16 @@ fun createMarkers(
         return result
     }
 
-    fun netflix(flag: CharSequence?): Boolean = when (flag) {
-        "us" -> true
-        "ca" -> true
-        "nl" -> true
-        "jp" -> true
-        "gb" -> true
-        "gr" -> true
-        "mx" -> true
-        else -> false
-    }
+    // fun netflix(flag: CharSequence?): Boolean = when (flag) {
+    //     "us" -> true
+    //     "ca" -> true
+    //     "nl" -> true
+    //     "jp" -> true
+    //     "gb" -> true
+    //     "gr" -> true
+    //     "mx" -> true
+    //     else -> false
+    // }
     // HashSet<E> : MutableSet<E> {
     //     constructor()
     //     constructor(initialCapacity: Int)
