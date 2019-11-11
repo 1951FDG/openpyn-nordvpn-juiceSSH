@@ -51,9 +51,8 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESS
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.container
-import kotlinx.android.synthetic.main.activity_main.spinnerConnectionList
+import kotlinx.android.synthetic.main.activity_main.spinner
 import kotlinx.android.synthetic.main.activity_main.toolbar
-import kotlinx.android.synthetic.main.fragment_map.fab0
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import org.jetbrains.anko.AnkoLogger
@@ -275,7 +274,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
             content(message())
             positiveText(android.R.string.ok)
             negativeText(android.R.string.cancel)
-            onPositive { _: MorphDialog, _: MorphDialogAction -> toggleConnection(v) }
+            onPositive { _: MorphDialog, _: MorphDialogAction -> toggleConnection() }
             show()
         }
 
@@ -286,14 +285,16 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
             show()
         }
 
-        if (id == R.id.fab0 && v is FloatingActionButton) {
+        if (id != R.id.fab0 || v !is FloatingActionButton) return
+
+        mConnectionManager?.let {
             if (mConnectionListAdapter.count > 0) {
-                if (spinnerConnectionList.isEnabled) {
+                if (!it.isConnected()) {
                     // dialog = showMessageDialog(v)
                     val action = MapFragmentDirections.actionMapFragmentToPreferenceDialogFragment(message())
                     Navigation.findNavController(v).navigate(action)
                 } else {
-                    toggleConnection(v)
+                    toggleConnection()
                 }
             } else {
                 // showWarningDialog(v)
@@ -362,7 +363,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
 
         fragment?.onSessionFinished()
 
-        spinnerConnectionList.isEnabled = true
+        spinner.isEnabled = true
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
@@ -373,7 +374,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
 
         fragment?.onSessionStarted(sessionId, sessionKey)
 
-        spinnerConnectionList.isEnabled = false
+        spinner.isEnabled = false
     }
 
     override fun onSessionCancelled() {
@@ -384,7 +385,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
-        toggleConnection(fab0)
+        toggleConnection()
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
@@ -398,7 +399,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         if (requestCode != PERMISSION_REQUEST_CODE) return
         if (mConnectionManager != null) return
 
-        spinnerConnectionList.adapter = mConnectionListAdapter
+        spinner.adapter = mConnectionListAdapter
         LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
 
         mConnectionManager = ConnectionManager(
@@ -425,10 +426,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         return perms.any { !ActivityCompat.shouldShowRequestPermissionRationale(activity, it) }
     }
 
-    private fun toggleConnection(v: FloatingActionButton) {
-        v.isClickable = false
-        val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
-        mConnectionManager?.toggleConnection(uuid!!, this)
+    private fun toggleConnection() {
+        val uuid = mConnectionListAdapter.getConnectionId(spinner.selectedItemPosition)
+        mConnectionManager?.toggleConnection(this, uuid!!)
     }
 
     companion object {

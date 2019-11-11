@@ -33,17 +33,19 @@ import com.naver.android.svc.annotation.RequireViews
 import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
+import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.utils.LazyMarkerStorage
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.getsixtyfour.openpyn.utils.SubmitCallbackListener
-import io.github.getsixtyfour.openpyn.logException
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
+import kotlinx.android.synthetic.main.fragment_map.view.map
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -62,8 +64,6 @@ import org.jetbrains.anko.info
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashSet
-import kotlinx.android.synthetic.main.fragment_map.view.map
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * @author 1951FDG
@@ -71,12 +71,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ControlTower
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)
-class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, OnMapLoadedCallback,
-    OnCameraIdleListener, OnMapClickListener, OnMarkerClickListener, OnInfoWindowClickListener,
-    SubmitCallbackListener, MapViewsAction, AnimatorListener, OnCommandExecuteListener,
-    CoroutineScope by MainScope() {
-    private val map by lazy { views.rootView.map }
+class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, OnMapLoadedCallback, OnCameraIdleListener,
+    OnMapClickListener, OnMarkerClickListener, OnInfoWindowClickListener, SubmitCallbackListener, MapViewsAction, AnimatorListener,
+    OnCommandExecuteListener, CoroutineScope by MainScope() {
 
+    private val map by lazy { views.rootView.map }
     private val mHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         GlobalScope.launch(Main) {
             screen.toolBar?.hideProgress(true)
@@ -288,7 +287,6 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
 
     override fun onAnimationFinish(animation: Animation) {
         if (animation.isClosest) {
-
             views.fakeLayoutAllFabs()
             markers[animation.target]?.let {
                 if (flags.contains(it.tag)) {
@@ -320,7 +318,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
 
     fun onSessionFinished() {
         info("onSessionFinished")
-        views.setClickableConnectFab(true)
+
         views.toggleConnectFab(false)
 
         views.showListAndLocationFab()
@@ -340,7 +338,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
 
     fun onSessionStarted() {
         info("onSessionStarted")
-        views.setClickableConnectFab(true)
+
         views.toggleConnectFab(true)
 
         views.hideListAndLocationFab()
@@ -359,7 +357,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
 
     fun onSessionCancelled() {
         info("onSessionCancelled")
-        views.setClickableConnectFab(true)
+
         views.toggleConnectFab(false)
     }
 
@@ -493,7 +491,6 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
             private lateinit var map: GoogleMap
 
             fun setMap(googleMap: GoogleMap) {
-
                 this.map = googleMap
             }
 

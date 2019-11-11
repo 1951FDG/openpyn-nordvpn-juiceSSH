@@ -23,7 +23,7 @@
             app:ptb_progressHeight="1dp">
 
             <Spinner
-                android:id="@+id/spinnerConnectionList"
+                android:id="@+id/spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="48dp"

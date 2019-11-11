@@ -70,10 +70,6 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab2.hide()
     }
 
-    fun setClickableConnectFab(clickable: Boolean) {
-        fab0.isClickable = clickable
-    }
-
     fun setClickableFabs(clickable: Boolean) {
         fab0.isClickable = clickable
         fab1.isClickable = clickable
