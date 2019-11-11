@@ -21,7 +21,7 @@ import com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "UtilityClass", "ClassWithTooManyTransitiveDependencies" })
+@SuppressWarnings("UtilityClass")
 public final class VPNLaunchHelper {
 
     public static void startOpenVPNService(@NonNull Context context) {

@@ -27,7 +27,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onDetach() {
         super.onDetach()
-        (activity as? AppCompatActivity)?.supportActionBar?.title = "Settings"
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_activity_settings)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +64,6 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     private fun addAboutPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
         val category = PreferenceCategory(activity)
-        category.title = activity.getString(R.string.pref_category_about)
 
         root.addPreference(category)
 

@@ -241,16 +241,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         fun element(location: Coordinate?, flag: String, server: String, country: String): String = when {
             flag.isNotEmpty() -> {
                 val name = getEntryForValue(flag, R.array.pref_country_entries, R.array.pref_country_values)
-                // Enforce Locale to English for double to string conversion
-                if (location != null) "%s at %.7f, %.7f".format(Locale.ENGLISH, name, location.latitude, location.longitude) else name
+                if (location != null) {
+                    // Enforce Locale to English for double to string conversion
+                    val latitude = "%.7f".format(Locale.ENGLISH, location.latitude)
+                    val longitude = "%.7f".format(Locale.ENGLISH, location.longitude)
+                    val string = getString(R.string.at_preposition)
+                    getString(R.string.vpn_location_name, name, string, latitude, longitude)
+                } else {
+                    name
+                }
             }
             server.isNotEmpty() -> {
-                "server $server.nordvpn.com"
+                getString(R.string.vpn_server_name, server)
             }
             country.isNotEmpty() -> {
-                getEntryForValue(country, R.array.pref_country_entries, R.array.pref_country_values)
+                getString(R.string.vpn_country_name, getEntryForValue(country, R.array.pref_country_entries, R.array.pref_country_values))
             }
-            else -> ""
+            else -> {
+                getString(R.string.empty)
+            }
         }
 
         fun message(): String {
@@ -258,11 +267,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
             val preferences = PreferenceManager.getDefaultSharedPreferences(this)
             val server = preferences.getString("pref_server", "")!!
             val country = preferences.getString("pref_country", "")!!
-            return "Are you sure you want to connect to ${element(location, flag, server, country)}"
+            return getString(R.string.vpn_connect_message, element(location, flag, server, country))
         }
 
         fun showMessageDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
-            title("VPN Connection")
+            title(R.string.title_dialog_connect)
             content(message())
             positiveText(android.R.string.ok)
             negativeText(android.R.string.cancel)
@@ -271,7 +280,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         }
 
         fun showWarningDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
-            title("Error")
+            title(R.string.title_dialog_error)
             content(R.string.error_must_have_at_least_one_server)
             positiveText(android.R.string.ok)
             show()
@@ -288,11 +297,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
                 }
             } else {
                 // showWarningDialog(v)
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("Error")
-                builder.setMessage(R.string.error_must_have_at_least_one_server)
-                builder.setPositiveButton(android.R.string.ok, null)
-                builder.show()
+                AlertDialog.Builder(this).apply {
+                    setTitle(R.string.title_dialog_error)
+                    setMessage(R.string.error_must_have_at_least_one_server)
+                    setPositiveButton(android.R.string.ok, null)
+                    show()
+                }
             }
         }
     }

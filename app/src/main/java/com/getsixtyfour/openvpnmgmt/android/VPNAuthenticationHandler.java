@@ -12,6 +12,7 @@ import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
  * @author 1951FDG
  */
 
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
 
     private final Context mContext;

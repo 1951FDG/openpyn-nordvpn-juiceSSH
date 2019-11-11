@@ -16,7 +16,7 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onDetach() {
         super.onDetach()
-        (activity as? AppCompatActivity)?.supportActionBar?.title = "Settings"
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_activity_settings)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -37,13 +37,13 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
 
     private Calendar updatedAt;
 
-    private static final Pattern statsHeader = Pattern.compile("^OpenVPN STATISTICS");
-    private static final Pattern clientsHeader = Pattern.compile("^OpenVPN CLIENT LIST");
-    private static final Pattern updated = Pattern.compile("^Updated,.*");
-    private static final Pattern clientColumns = Pattern.compile("Common Name,Real Address,Bytes Received,Bytes Sent,Connected Since");
-    private static final Pattern routesHeader = Pattern.compile("^ROUTING TABLE");
-    private static final Pattern routesColumns = Pattern.compile("Virtual Address,Common Name,Real Address,Last Ref");
-    private static final Pattern globalStats = Pattern.compile("GLOBAL STATS");
+    private static final Pattern statsHeader = Pattern.compile("^OpenVPN STATISTICS"); //NON-NLS
+    private static final Pattern clientsHeader = Pattern.compile("^OpenVPN CLIENT LIST"); //NON-NLS
+    private static final Pattern updated = Pattern.compile("^Updated,.*"); //NON-NLS
+    private static final Pattern clientColumns = Pattern.compile("Common Name,Real Address,Bytes Received,Bytes Sent,Connected Since"); //NON-NLS
+    private static final Pattern routesHeader = Pattern.compile("^ROUTING TABLE"); //NON-NLS
+    private static final Pattern routesColumns = Pattern.compile("Virtual Address,Common Name,Real Address,Last Ref"); //NON-NLS
+    private static final Pattern globalStats = Pattern.compile("GLOBAL STATS"); //NON-NLS
 
     @NotNull
     @Override
@@ -98,7 +98,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             "OverlyComplexMethod" })
     @Override
     public void setCommandOutput(@NotNull String[] lines) throws OpenVpnParseException {
-        String msg = "Cannot parse OpenVPN status. Wrong lines sequence.";
+        String msg = "Cannot parse OpenVPN status. Wrong lines sequence."; //NON-NLS
         int length = lines.length;
         for (int i = 0; i < length; i++) {
             if (statsHeader.matcher(lines[i]).matches()) {
@@ -177,7 +177,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             calendar.setTime(parsedDate);
             ut = calendar;
         } catch (ParseException ex) {
-            String msg = "Cannot parse update time string";
+            String msg = "Cannot parse update time string"; //NON-NLS
             LOGGER.error(msg, ex);
             throw new OpenVpnParseException(msg, ex);
         }

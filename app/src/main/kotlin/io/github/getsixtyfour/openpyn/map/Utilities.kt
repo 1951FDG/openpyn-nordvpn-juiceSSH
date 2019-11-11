@@ -531,10 +531,11 @@ fun createMarkers(
         val emoji = parseToUnicode(countries, flag)
         val location = res.getJSONObject(LOCATION)
         val latLng = LatLng(location.getDouble(LAT), location.getDouble(LONG))
+        val title = context.getString(R.string.title_marker, emoji, country)
         val options = MarkerOptions().apply {
             flat(true)
             position(latLng)
-            title("$emoji $country")
+            title(title)
             visible(false)
             icon(iconDescriptor)
         }
@@ -553,10 +554,11 @@ internal fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessa
     val city = jsonObj.getString(CITY)
     val flag = jsonObj.getString(FLAG).toUpperCase(Locale.ROOT)
     val ip = jsonObj.getString(IP)
+    val message = context.getString(R.string.vpn_connected_message, city, flag, ip)
     return UserMessage.Builder().apply {
         with(context.applicationContext)
         setBackgroundColor(R.color.accent_material_indigo_200).setTextColor(color.white)
-        setMessage("Connected to $city, $flag ($ip)").setDuration(7000).setShowInterpolator(AccelerateInterpolator())
+        setMessage(message).setDuration(7000).setShowInterpolator(AccelerateInterpolator())
         setDismissInterpolator(AccelerateInterpolator())
     }
 }

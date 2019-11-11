@@ -9,7 +9,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-@SuppressWarnings("UtilityClass")
+@SuppressWarnings({ "UtilityClass", "HardCodedStringLiteral" })
 public final class AboutBoxUtils {
 
     public static final String playStoreAppURI = "https://play.google.com/store/apps/details?id=";

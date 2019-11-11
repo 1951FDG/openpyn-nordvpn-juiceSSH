@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
+import io.github.getsixtyfour.openpyn.R
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.longToast
@@ -64,7 +65,7 @@ abstract class BaseController(
                 return true
             }
         } catch (e: ServiceNotConnectedException) {
-            mCtx.longToast("Tried to execute a command but could not connect to JuiceSSH plugin service")
+            mCtx.longToast(R.string.error_could_not_connect_to_service)
         }
         return false
     }
@@ -88,7 +89,7 @@ abstract class BaseController(
                 return true
             }
         } catch (e: ServiceNotConnectedException) {
-            mCtx.longToast("Tried to execute a command but could not connect to JuiceSSH plugin service")
+            mCtx.longToast(R.string.error_could_not_connect_to_service)
         }
         return false
     }

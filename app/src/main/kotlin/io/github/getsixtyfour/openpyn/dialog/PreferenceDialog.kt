@@ -30,7 +30,7 @@ class PreferenceDialog : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it, theme)
-            builder.setTitle("VPN Connection")
+            builder.setTitle(R.string.title_dialog_connect)
             // Get the layout inflater
             val inflater = LayoutInflater.from(builder.context)
             // Inflate and set the layout for the dialog

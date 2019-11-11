@@ -25,7 +25,7 @@ import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
  * @author Maksym Shkolnyi aka maskimko
  */
 
-@SuppressWarnings({ "UtilityClass", "CallToSystemExit" })
+@SuppressWarnings({ "UtilityClass", "CallToSystemExit", "HardCodedStringLiteral" })
 public final class StatusCli {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusCli.class);

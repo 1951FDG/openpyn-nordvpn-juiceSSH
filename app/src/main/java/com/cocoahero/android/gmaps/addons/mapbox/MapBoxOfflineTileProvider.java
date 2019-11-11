@@ -1,7 +1,6 @@
 package com.cocoahero.android.gmaps.addons.mapbox;
 
 import android.database.Cursor;
-
 import android.util.Log;
 
 import androidx.annotation.MainThread;
@@ -14,6 +13,8 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
+
+import org.jetbrains.annotations.NonNls;
 
 import java.io.Closeable;
 import java.io.File;
@@ -53,6 +54,9 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     // Tile dimension, in pixels.
     private static final int TILE_DIM = 512;
+
+    // sqlite3x, sqliteX, sqlite4java-android
+    private static final String SQLITE = "sqlite3x";
 
     private static final String TAG = "MBTileProvider";
 
@@ -292,7 +296,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     @Nullable
     private String getStringValue(@NonNull String key) {
-        String sql = "SELECT value FROM metadata WHERE name = ?";
+        @NonNls String sql = "SELECT value FROM metadata WHERE name = ?";
         String[] bindArgs = { key };
         try (Cursor cursor = mDatabase.rawQueryWithFactory(null, sql, bindArgs, null, null)) {
             return cursor.moveToPosition(0) ? cursor.getString(0) : null;
@@ -301,7 +305,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     @Nullable
     private String getSQliteVersion() {
-        String sql = "SELECT sqlite_version() AS sqlite_version";
+        @NonNls String sql = "SELECT sqlite_version() AS sqlite_version";
         //return DatabaseUtils.stringForQuery(mDatabase, sql, null); // sqliteX
         try (Cursor cursor = mDatabase.rawQueryWithFactory(null, sql, null, null, null)) {
             return cursor.moveToPosition(0) ? cursor.getString(0) : null;
@@ -347,7 +351,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the newly opened database
      * @throws android.database.SQLException if the database cannot be opened
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
+    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral" })
     private static SQLiteDatabase create(@Nullable CursorFactory factory, @NonNull String path) {
         SQLiteDatabase database = SQLiteDatabase
                 .openDatabase(SQLiteDatabaseConfiguration.MEMORY_DB_PATH, factory, SQLiteDatabase.CREATE_IF_NECESSARY);
@@ -463,8 +467,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     static {
         // sqlite3ndk should be loaded first
         System.loadLibrary("sqlite3ndk");
-        System.loadLibrary("sqlite3x");
-        // System.loadLibrary("sqliteX");
-        // System.loadLibrary("sqlite4java-android");
+        System.loadLibrary(SQLITE);
     }
 }

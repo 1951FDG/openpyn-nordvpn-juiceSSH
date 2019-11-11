@@ -129,7 +129,7 @@ class MainActivityTest {
         val appCompatTextView = onView(
             allOf(
                 withId(R.id.cancel),
-                withText("Cancel"),
+                withText(android.R.string.cancel),
                 isDisplayed()
             )
         )
@@ -149,7 +149,7 @@ class MainActivityTest {
         val appCompatTextView2 = onView(
             allOf(
                 withId(R.id.title),
-                withText("Settings"),
+                withText(R.string.title_activity_settings),
                 childAtPosition(childAtPosition(withId(R.id.content), 0), 0),
                 isDisplayed()
             )
