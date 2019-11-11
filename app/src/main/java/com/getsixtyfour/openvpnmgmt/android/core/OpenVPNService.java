@@ -150,7 +150,7 @@ public final class OpenVPNService extends Service
             } catch (IOException e) {
                 Log.e(TAG, e.toString());
             } catch (Exception e) {
-                Log.e(TAG, "unknown exception thrown");
+                Log.e(TAG, "Unknown exception thrown");
                 Log.e(TAG, e.toString());
             }
         });

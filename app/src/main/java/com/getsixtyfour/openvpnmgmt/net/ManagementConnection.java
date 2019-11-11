@@ -271,7 +271,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onConnected() {
-        LOGGER.info("connected");
+        LOGGER.info("Connected");
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onConnected();
@@ -279,7 +279,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onDisconnected() {
-        LOGGER.info("disconnected");
+        LOGGER.info("Disconnected");
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onDisconnected();
