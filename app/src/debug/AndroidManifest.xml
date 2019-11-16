@@ -3,17 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.github.getsixtyfour.openpyn">
 
-    <!-- Allows for storing and retrieving screenshots -->
+    <!-- Allows for retrieving and storing screenshots -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:remove="android:maxSdkVersion" />
+    <!-- Allows changing locales -->
+    <uses-permission
+        android:name="android.permission.CHANGE_CONFIGURATION"
+        tools:ignore="ProtectedPermissions" />
     <!-- Allows for changing the status bar -->
     <uses-permission
         android:name="android.permission.DUMP"
         tools:ignore="ProtectedPermissions" />
+
     <!-- Indicates the use of the clean status bar feature -->
     <uses-feature android:name="tools.fastlane.screengrab.cleanstatusbar" />
+
     <application
         android:name=".DebugMainApplication"
         tools:replace="android:name" />
