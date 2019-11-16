@@ -1,8 +1,6 @@
 package io.github.getsixtyfour.openpyn
 
 import android.app.Application
-import android.os.Build
-import android.util.Log
 import com.google.android.gms.maps.MapsInitializer
 import com.michaelflisar.gdprdialog.GDPR
 import com.squareup.leakcanary.LeakCanary
@@ -11,9 +9,6 @@ import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 open class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        // System.setProperty("kotlinx.coroutines.fast.service.loader", "false")
-        MapsInitializer.initialize(this) //todo check value
-        setDefaultPreferences(this)
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
@@ -21,20 +16,19 @@ open class MainApplication : Application() {
             return
         }
 
-        NetworkInfo.getInstance(this)
-        val sdkInt = Build.VERSION.SDK_INT
-        if ((Build.VERSION_CODES.O..Build.VERSION_CODES.P).contains(sdkInt)) {
-            Log.d(
-                "Application",
-                "Ignoring LeakCanary on Android $sdkInt due to an Android bug. See https://github.com/square/leakcanary/issues/1081"
-            )
-        } else {
-            installLeakCanary()
-        }
+        MapsInitializer.initialize(this) //todo check value
+        setDefaultPreferences(this)
 
-        installBlockCanary()
+        NetworkInfo.getInstance(this)
+
         populateAboutConfig()
-        GDPR.getInstance().init(this)
+
+        if (!isRunningTest()) {
+            installLeakCanary()
+            installBlockCanary()
+            GDPR.getInstance().init(this)
+        }
+        // System.setProperty("kotlinx.coroutines.fast.service.loader", "false")
     }
 
     protected open fun installBlockCanary() {

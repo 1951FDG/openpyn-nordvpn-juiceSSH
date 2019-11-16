@@ -143,10 +143,7 @@ fun <T : Activity> onSettingsItemSelected(activity: T, @Suppress("UNUSED_PARAMET
 }
 
 fun <T : AppCompatActivity> setProgressToolBar(
-    activity: T,
-    toolbar: ProgressToolbar,
-    showHomeAsUp: Boolean = false,
-    showTitle: Boolean = false
+    activity: T, toolbar: ProgressToolbar, showHomeAsUp: Boolean = false, showTitle: Boolean = false
 ) {
     toolbar.hideProgress()
     toolbar.isIndeterminate = true
@@ -269,4 +266,11 @@ fun setDefaultPreferences(context: Context) {
     PreferenceManager.setDefaultValues(context, R.xml.pref_settings, false)
     PreferenceManager.setDefaultValues(context, R.xml.pref_api, true)
     PreferenceManager.setDefaultValues(context, R.xml.pref_connect, true)
+}
+
+fun isRunningTest(): Boolean = try {
+    Class.forName("androidx.test.espresso.Espresso")
+    true
+} catch (e: ClassNotFoundException) {
+    false
 }
