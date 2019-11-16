@@ -83,8 +83,5 @@
             android:value="false" />
 
         <service android:name="com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService" />
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
     </application>
 </manifest>

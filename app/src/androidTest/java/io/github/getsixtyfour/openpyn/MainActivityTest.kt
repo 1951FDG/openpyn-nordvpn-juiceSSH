@@ -46,14 +46,7 @@ class MainActivityTest {
 
     @Rule
     @JvmField
-    var mGrantPermissionRule: GrantPermissionRule =
-        GrantPermissionRule.grant(
-            PERMISSION_READ,
-            PERMISSION_OPEN_SESSIONS,
-            "android.permission.ACCESS_COARSE_LOCATION",
-            "android.permission.WRITE_EXTERNAL_STORAGE",
-            "android.permission.CHANGE_CONFIGURATION"
-        )
+    var mGrantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(PERMISSION_OPEN_SESSIONS, PERMISSION_READ)
     // Clear all app's SharedPreferences
     @Rule
     @JvmField
