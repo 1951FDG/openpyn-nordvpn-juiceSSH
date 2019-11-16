@@ -280,7 +280,7 @@ dependencies {
         exclude group: 'androidx.test.espresso'
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
     }
-    androidTestImplementation('tools.fastlane:screengrab:2.0.0') {
+    androidTestImplementation('tools.fastlane:screengrab:1.2.0') {
         exclude group: 'androidx.test'
         exclude group: 'androidx.test.espresso'
         exclude group: 'com.android.support.test.uiautomator'
