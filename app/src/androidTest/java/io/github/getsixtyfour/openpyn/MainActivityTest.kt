@@ -232,8 +232,6 @@ class MainActivityTest {
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)
 
-        Screengrab.screenshot("screenshot_05", screenshotStrategy, FileWritingScreenshotCustomCallback(appContext))
-
         appCompatImageButton.perform(click())
 
         BaristaSleepInteractions.sleep(1, TimeUnit.SECONDS)

@@ -96,10 +96,11 @@ After the map is done loading, the NordVPN API is invoked to query all the suppo
 ## Screenshots
 
 <p align="middle">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01.png" width="24%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02.png" width="24%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03.png" width="24%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04.png" width="24%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01_01.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04.png" width="18%">
 </p>
 
 ## Download
