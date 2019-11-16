@@ -161,7 +161,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // 1951FDG
-    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:master-SNAPSHOT'
+    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.5'
     implementation('com.github.1951FDG:ProgressToolbar:1.0.7') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
