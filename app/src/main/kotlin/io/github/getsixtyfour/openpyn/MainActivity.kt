@@ -62,6 +62,8 @@ import org.jetbrains.anko.longToast
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 
+const val DELAY_MILLIS: Long = 10000
+
 class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback,
     OnClickListener, OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener,
     OnSessionStartedListener, PreferenceDialog.NoticeDialogListener, CoroutineScope by MainScope() {
@@ -317,14 +319,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     override fun onConnect() {
         toolbar.hideProgress(true)
         val fragment = getCurrentNavigationFragment(this) as? MapFragment
-        fragment?.controlTower?.updateMasterMarkerWithDelay(true, 10000)
+        fragment?.controlTower?.updateMasterMarkerWithDelay(true, DELAY_MILLIS)
     }
 
     @Suppress("MagicNumber")
     override fun onDisconnect() {
         toolbar.hideProgress(true)
         val fragment = getCurrentNavigationFragment(this) as? MapFragment
-        fragment?.controlTower?.updateMasterMarkerWithDelay(true, 10000)
+        fragment?.controlTower?.updateMasterMarkerWithDelay(true, DELAY_MILLIS)
     }
 
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {

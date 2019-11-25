@@ -73,6 +73,9 @@ import java.util.HashSet
 import java.util.Locale
 import kotlin.math.pow
 
+const val TIME_MILLIS: Long = 600
+const val DURATION: Long = 7000
+
 // private const val TASK_TIMEOUT: Long = 500
 @Suppress("ComplexMethod", "MagicNumber", "unused")
 internal fun showThreats(context: Activity, jsonObj: JSONObject) {
@@ -558,7 +561,7 @@ internal fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessa
     return UserMessage.Builder().apply {
         with(context.applicationContext)
         setBackgroundColor(R.color.accent_material_indigo_200).setTextColor(color.white)
-        setMessage(message).setDuration(7000).setShowInterpolator(AccelerateInterpolator())
+        setMessage(message).setDuration(DURATION).setShowInterpolator(AccelerateInterpolator())
         setDismissInterpolator(AccelerateInterpolator())
     }
 }
@@ -668,6 +671,7 @@ private fun copyRawResourceToFile(context: Context, id: Int, file: File) {
     }
 }
 
+@Suppress("TooGenericExceptionCaught")
 @SuppressLint("WrongThread")
 @WorkerThread
 suspend fun createGeoJson(context: Context): JSONObject? {
@@ -708,7 +712,7 @@ suspend fun createGeoJson(context: Context): JSONObject? {
             }
 
             try {
-                withTimeout(600) {
+                withTimeout(TIME_MILLIS) {
                     val response = client.get<HttpResponse>(server)
                     val json = response.readText()
                     jsonObject = JSONObject(json)
