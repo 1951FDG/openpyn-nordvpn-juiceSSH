@@ -49,7 +49,7 @@ fun generateXML() {
     SERVER.httpGet().responseJson { _, _, result ->
         when (result) {
             is Result.Failure -> {
-                logException(result.getException())
+                result.getException().message?.let { Log.error(it) }
             }
             is Result.Success -> {
                 val mutableMap = mutableMapOf<String, String>()
@@ -189,7 +189,7 @@ fun createJson(): JSONArray? {
     val (_, _, result) = SERVER.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
     when (result) {
         is Result.Failure -> {
-            logException(result.getException())
+            result.getException().message?.let { Log.error(it) }
         }
         is Result.Success -> {
             val jsonObj = JSONObject()
