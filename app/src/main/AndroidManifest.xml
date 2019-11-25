@@ -44,15 +44,18 @@
         </activity>
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Licenses" />
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Licenses" />
         <activity
             android:name="com.getsixtyfour.openvpnmgmt.android.activities.DisconnectVPN"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:noHistory="true"
+            android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/blinkt.dialog" />
         <!--<activity-->
