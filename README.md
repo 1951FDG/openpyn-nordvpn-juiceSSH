@@ -158,7 +158,6 @@ To compile and run the project you'll need:
 -   [Ktor](https://github.com/ktorio/ktor)
 -   [LeakCanary](https://github.com/square/leakcanary)
 -   [Minibar](https://github.com/mayuroks/minibar)
--   [Morphing Material Dialogs](https://github.com/AdityaAnand1/Morphing-Material-Dialogs)
 -   [Moshi](https://github.com/square/moshi)
 -   [Moshi: Pristine Models](https://github.com/jayrave/moshi-pristine-models)
 -   [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
