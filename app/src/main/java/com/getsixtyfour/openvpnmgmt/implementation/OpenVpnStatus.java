@@ -1,5 +1,10 @@
 package com.getsixtyfour.openvpnmgmt.implementation;
 
+import com.getsixtyfour.openvpnmgmt.api.Client;
+import com.getsixtyfour.openvpnmgmt.api.Route;
+import com.getsixtyfour.openvpnmgmt.api.Status;
+import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
+
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +21,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import com.getsixtyfour.openvpnmgmt.api.Client;
-import com.getsixtyfour.openvpnmgmt.api.Route;
-import com.getsixtyfour.openvpnmgmt.api.Status;
-import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
 /**
  * @author Maksym Shkolnyi aka maskimko

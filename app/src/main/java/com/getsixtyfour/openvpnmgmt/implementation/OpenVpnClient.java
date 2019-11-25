@@ -5,6 +5,10 @@
  */
 package com.getsixtyfour.openvpnmgmt.implementation;
 
+import com.getsixtyfour.openvpnmgmt.api.Client;
+import com.getsixtyfour.openvpnmgmt.api.Status;
+import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,10 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import com.getsixtyfour.openvpnmgmt.api.Client;
-import com.getsixtyfour.openvpnmgmt.api.Status;
-import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
