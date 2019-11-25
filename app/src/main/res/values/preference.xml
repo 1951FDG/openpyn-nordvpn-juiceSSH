@@ -199,19 +199,19 @@
     </string-array>
 
     <string name="pref_p2p">P2P</string>
-    <string name="pref_description_p2p">Look for \“Peer To Peer\” servers</string>
+    <!--<string name="pref_description_p2p">Look for \“Peer To Peer\” servers</string>-->
 
     <string name="pref_dedicated">Dedicated IP</string>
-    <string name="pref_description_dedicated">Look for \“Dedicated IP\” servers</string>
+    <!--<string name="pref_description_dedicated">Look for \“Dedicated IP\” servers</string>-->
 
     <string name="pref_double">Double VPN</string>
-    <string name="pref_description_double">Look for \“Double VPN\” servers</string>
+    <!--<string name="pref_description_double">Look for \“Double VPN\” servers</string>-->
 
     <string name="pref_tor">Onion over VPN</string>
-    <string name="pref_description_tor">Look for \“Onion Over VPN\” servers</string>
+    <!--<string name="pref_description_tor">Look for \“Onion Over VPN\” servers</string>-->
 
     <string name="pref_anti_ddos">Obfuscated</string>
-    <string name="pref_description_anti_ddos">Look for \“Obfuscated\” servers</string>
+    <!--<string name="pref_description_anti_ddos">Look for \“Obfuscated\” servers</string>-->
 
     <!--<string name="pref_netflix">Netflix</string>-->
     <!--<string name="pref_description_netflix">Only look for \“Netflix\” servers</string>-->
