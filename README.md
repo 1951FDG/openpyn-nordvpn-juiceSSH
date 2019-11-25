@@ -171,6 +171,7 @@ To compile and run the project you'll need:
 -   [StaticLog](https://github.com/jupf/staticlog)
 -   [SVC](https://github.com/BansookNam/svc)
 -   [Toasty](https://github.com/GrenderG/Toasty)
+-   [Unused Resources Remover for Android](https://github.com/konifar/gradle-unused-resources-remover-plugin)
 
 ## Feedback
 
