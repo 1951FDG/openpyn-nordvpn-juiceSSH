@@ -86,18 +86,15 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     //region Constructors
 
-    @SuppressWarnings("unused")
     public MapBoxOfflineTileProvider(@NonNull File file) {
         this(file.getAbsolutePath());
     }
 
-    @SuppressWarnings({ "WeakerAccess", "unused" })
     public MapBoxOfflineTileProvider(@NonNull String pathToFile) {
         // this(SQLiteDatabase.openDatabase(pathToFile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS));
         this(SQLiteDatabase.openDatabase(pathToFile, null, SQLiteDatabase.OPEN_READONLY));
     }
 
-    @SuppressWarnings({ "LambdaLast", "unused" })
     public MapBoxOfflineTileProvider(@Nullable CursorFactory factory, @NonNull String pathToFile) {
         this(create(factory, pathToFile));
     }
@@ -127,7 +124,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     //region Accessors
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getAttribution() {
         return getStringValue("attribution");
     }
@@ -139,13 +135,11 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * be determined.
      */
     @Nullable
-    @SuppressWarnings("unused")
     public LatLngBounds getBounds() {
         return bounds;
     }
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getDescription() {
         return getStringValue("description");
     }
@@ -156,7 +150,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the maximum zoom level supported or {@link #maximumZoom} if
      * it could not be determined.
      */
-    @SuppressWarnings("unused")
     public float getMaximumZoom() {
         return maximumZoom;
     }
@@ -167,25 +160,21 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the minimum zoom level supported or {@link #minimumZoom} if
      * it could not be determined.
      */
-    @SuppressWarnings("unused")
     public float getMinimumZoom() {
         return minimumZoom;
     }
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getName() {
         return getStringValue("name");
     }
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getType() {
         return getStringValue("template");
     }
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getVersion() {
         return getStringValue("version");
     }
@@ -197,7 +186,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return {@code true} if the requested zoom level is supported by this
      * provider.
      */
-    @SuppressWarnings({ "WeakerAccess", "unused" })
     public boolean isZoomLevelAvailable(float zoom) {
         return (zoom >= minimumZoom) && (zoom <= maximumZoom);
     }
@@ -206,7 +194,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     //region TileProvider
 
-    @SuppressWarnings({ "unused", "ParameterNameDiffersFromOverriddenParameter", "SynchronizedMethod" })
+    @SuppressWarnings({ "ParameterNameDiffersFromOverriddenParameter", "SynchronizedMethod" })
     @Override
     @NonNull
     public synchronized Tile getTile(int x, int y, int zoom) {
@@ -402,8 +390,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @throws IOException      if an I/O error occurs reading from the stream
      * @throws OutOfMemoryError if an array of the required size cannot be allocated
      */
-    @SuppressWarnings({ "unused", "ForLoopWithMissingComponent", "MethodCallInLoopCondition", "NestedAssignment",
-            "ValueOfIncrementOrDecrementUsed" })
+    @SuppressWarnings({ "ForLoopWithMissingComponent", "MethodCallInLoopCondition", "NestedAssignment", "ValueOfIncrementOrDecrementUsed" })
     private static byte[] read(InputStream source, int initialSize) throws IOException {
         int capacity = initialSize;
         byte[] buf = new byte[capacity];

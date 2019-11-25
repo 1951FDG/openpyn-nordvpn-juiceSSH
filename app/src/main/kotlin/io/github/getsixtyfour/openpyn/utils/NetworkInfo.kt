@@ -154,21 +154,18 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     }
 
     // add a listener
-    @Suppress("unused")
     fun addListener(listener: NetworkInfoListener) {
         debug("addListener")
         listeners.add(listener)
     }
 
     // remove a listener
-    @Suppress("unused")
     fun removeListener(listener: NetworkInfoListener) {
         debug("removeListener")
         listeners.remove(listener)
     }
 
     // get current network status
-    @Suppress("unused")
     fun isOnline(): Boolean {
         var ns = this.value
         if (ns == null) {

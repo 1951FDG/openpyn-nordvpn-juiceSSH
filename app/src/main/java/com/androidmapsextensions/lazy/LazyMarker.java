@@ -61,17 +61,14 @@ public class LazyMarker {
     @Nullable
     private Object tag;
 
-    @SuppressWarnings("unused")
     public LazyMarker(@NonNull MarkerOptions options) {
         this(options, null, null);
     }
 
-    @SuppressWarnings("unused")
     public LazyMarker(@NonNull MarkerOptions options, @Nullable Object aTag) {
         this(options, aTag, null);
     }
 
-    @SuppressWarnings("WeakerAccess")
     public LazyMarker(@NonNull MarkerOptions options, @Nullable Object aTag,
                       @Nullable OnMarkerCreateListener markerCreateListener) {
         if (options.isVisible()) {

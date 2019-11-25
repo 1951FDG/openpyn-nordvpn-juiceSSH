@@ -77,7 +77,7 @@ const val TIME_MILLIS: Long = 600
 const val DURATION: Long = 7000
 
 // private const val TASK_TIMEOUT: Long = 500
-@Suppress("ComplexMethod", "MagicNumber", "unused")
+@Suppress("ComplexMethod", "MagicNumber")
 internal fun showThreats(context: Activity, jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
     Log.info(threats.toString())

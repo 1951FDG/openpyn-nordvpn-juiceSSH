@@ -82,7 +82,6 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
         return drawableState;
     }
 
-    @SuppressWarnings("unused")
     public void setOnCheckedChangeListener(@Nullable OnCheckedChangeListener listener) {
         mOnCheckedChangeListener = listener;
     }
