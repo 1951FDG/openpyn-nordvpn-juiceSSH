@@ -78,7 +78,7 @@ const val DURATION: Long = 7000
 
 // private const val TASK_TIMEOUT: Long = 500
 @Suppress("ComplexMethod", "MagicNumber")
-internal fun showThreats(context: Activity, jsonObj: JSONObject) {
+fun showThreats(activity: Activity, jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
     Log.info(threats.toString())
 
@@ -90,137 +90,136 @@ internal fun showThreats(context: Activity, jsonObj: JSONObject) {
         val abuser = threats.getBoolean("is_known_abuser")
         val threat = threats.getBoolean("is_threat")
         val bogon = threats.getBoolean("is_bogon")
-        val color1 = ContextCompat.getColor(context, R.color.colorConnect)
-        val color2 = ContextCompat.getColor(context, R.color.colorDisconnect)
+        val color1 = ContextCompat.getColor(activity, R.color.colorConnect)
+        val color2 = ContextCompat.getColor(activity, R.color.colorDisconnect)
         val fl = 22f
         val weight = 1.0f
-        with(context) {
-            alert {
-                customView = verticalLayout {
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_tor)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (tor) "YES" else "NO"
-                            textColor = if (tor) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_proxy)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (proxy) "YES" else "NO"
-                            textColor = if (proxy) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_anonymous)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (anonymous) "YES" else "NO"
-                            textColor = if (anonymous) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_known_attacker)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (attacker) "YES" else "NO"
-                            textColor = if (attacker) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_known_abuser)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (abuser) "YES" else "NO"
-                            textColor = if (abuser) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_threat)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (threat) "YES" else "NO"
-                            textColor = if (threat) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_bogon)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (bogon) "YES" else "NO"
-                            textColor = if (bogon) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    gravity = android.view.Gravity.CENTER
-                    padding = dip(40)
+        val alert = activity.alert {
+            customView = ctx.verticalLayout {
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_tor)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (tor) "YES" else "NO"
+                        textColor = if (tor) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
                 }
-            }.show()
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_proxy)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (proxy) "YES" else "NO"
+                        textColor = if (proxy) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_anonymous)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (anonymous) "YES" else "NO"
+                        textColor = if (anonymous) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_known_attacker)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (attacker) "YES" else "NO"
+                        textColor = if (attacker) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_known_abuser)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (abuser) "YES" else "NO"
+                        textColor = if (abuser) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_threat)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (threat) "YES" else "NO"
+                        textColor = if (threat) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_bogon)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (bogon) "YES" else "NO"
+                        textColor = if (bogon) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                gravity = android.view.Gravity.CENTER
+                padding = dip(40)
+            }
         }
+        alert.show()
     }
 }
 
@@ -471,7 +470,6 @@ fun createMarkers(
 
         return result
     }
-
     // fun netflix(flag: CharSequence?): Boolean = when (flag) {
     //     "us" -> true
     //     "ca" -> true
@@ -482,9 +480,6 @@ fun createMarkers(
     //     "mx" -> true
     //     else -> false
     // }
-    // HashSet<E> : MutableSet<E> {
-    //     constructor()
-    //     constructor(initialCapacity: Int)
     val length = jsonArray.length()
     val flags = HashSet<CharSequence>(length)
     val markers = HashMap<LatLng, LazyMarker>(length)
@@ -691,6 +686,7 @@ suspend fun createGeoJson(context: Context): JSONObject? {
                 "ipdata" -> {
                     token = SecurityManager.getInstance(context).decryptString(ipdata)
                     server = "https://api.ipdata.co?api-key=$token&$fields"
+                    // server = "https://api.ipdata.co?api-key=$token&$fields,threat"
                 }
                 "ipinfo" -> {
                     token = SecurityManager.getInstance(context).decryptString(ipinfo)

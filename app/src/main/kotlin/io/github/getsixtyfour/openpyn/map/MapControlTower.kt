@@ -303,9 +303,8 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
             views.showAllFabs()
         } else {
             (animation.tag as? JSONObject)?.let {
-                //todo test threats
-                showThreats(activity!!, it)
-                views.showMiniBar(createUserMessage(context!!, it).build())
+                views.showMiniBar(createUserMessage(screen.requireActivity(), it).build())
+                // showThreats(screen.requireActivity(), it)
             }
         }
     }
