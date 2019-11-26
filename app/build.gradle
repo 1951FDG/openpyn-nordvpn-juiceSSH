@@ -178,13 +178,6 @@ dependencies {
     implementation 'androidx.sqlite:sqlite:2.0.1'
 
     // Anko
-    implementation "org.jetbrains.anko:anko-commons:$anko_version"
-    implementation("org.jetbrains.anko:anko-coroutines:$anko_version") {
-        transitive = false
-    }
-    implementation "org.jetbrains.anko:anko-design:$anko_version"
-
-    // Anko Layouts
     implementation "org.jetbrains.anko:anko-sdk21:$anko_version"
 
     // Architecture
@@ -194,7 +187,9 @@ dependencies {
     kapt 'com.naver.android.svc:svc-compiler:1.0.0'
 
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2-1.3.60'
+    implementation("org.jetbrains.anko:anko-coroutines:$anko_version") {
+        transitive = false
+    }
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-io-jvm:$kotlinx_io_version"
 
     // Crashlytics
@@ -216,7 +211,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
 
     // HTTP Client
-    implementation "com.github.kittinunf.fuel:fuel-android:$fuel_version"
     implementation "com.github.kittinunf.fuel:fuel-json:$fuel_version"
     implementation("io.ktor:ktor-client-android:$ktor_version") {
         exclude group: 'org.jetbrains.kotlin'
