@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mapFragment">
+    app:startDestination="@id/mapFragment"
+    tools:ignore="UnusedNavigation">
     <fragment
         android:id="@+id/mapFragment"
         android:name="io.github.getsixtyfour.openpyn.map.MapFragment"
