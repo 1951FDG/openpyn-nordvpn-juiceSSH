@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -57,7 +58,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import org.jetbrains.anko.longToast
 // import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
@@ -77,9 +77,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     private val mSetup by lazy {
         with(
             GDPRSetup(
-                GDPRDefinitions.FABRIC_CRASHLYTICS,
-                GDPRDefinitions.FIREBASE_CRASH,
-                GDPRDefinitions.FIREBASE_ANALYTICS
+                GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS
             )
         ) {
             withCustomDialogTheme(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
@@ -337,13 +335,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     override fun onError(error: Int, reason: String) {
         toolbar.hideProgress(true)
 
-        longToast(reason)
+        Toast.makeText(this, reason, Toast.LENGTH_LONG).show()
     }
 
     override fun onCompleted(exitCode: Int) {
         toolbar.hideProgress(true)
 
-        longToast(exitCode.toString())
+        Toast.makeText(this, exitCode.toString(), Toast.LENGTH_LONG).show()
+
         when (exitCode) {
             0 -> {
                 info("Success")

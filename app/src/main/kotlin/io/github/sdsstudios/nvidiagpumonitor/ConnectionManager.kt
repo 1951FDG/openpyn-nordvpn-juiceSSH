@@ -3,6 +3,7 @@ package io.github.sdsstudios.nvidiagpumonitor
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
 import com.sonelli.juicessh.pluginlibrary.PluginClient
@@ -15,7 +16,6 @@ import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.controllers.OpenpynController
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
-import org.jetbrains.anko.longToast
 import java.util.UUID
 
 /**
@@ -112,7 +112,7 @@ class ConnectionManager(
                 Thread.sleep(5000)
                 mClient.disconnect(mSessionId, mSessionKey)
             } catch (e: ServiceNotConnectedException) {
-                mCtx.longToast(R.string.error_could_not_connect_to_service)
+                Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
             }
         }).start()
     }
@@ -122,7 +122,7 @@ class ConnectionManager(
             try {
                 mClient.connect(activity, uuid, this, JUICESSH_REQUEST_CODE)
             } catch (e: ServiceNotConnectedException) {
-                mCtx.longToast(R.string.error_could_not_connect_to_service)
+                Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
             }
         }).start()
     }

@@ -1,6 +1,7 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import android.content.Context
+import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
@@ -10,15 +11,13 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import io.github.getsixtyfour.openpyn.R
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
-import org.jetbrains.anko.longToast
 
 /**
  * Created by Seth on 05/03/18.
  */
 @MainThread
 abstract class BaseController(
-    protected val mCtx: Context,
-    private val mLiveData: MutableLiveData<Int>
+    protected val mCtx: Context, private val mLiveData: MutableLiveData<Int>
 ) : OnSessionExecuteListener, AnkoLogger {
 
     private var isRunning = false
@@ -57,15 +56,12 @@ abstract class BaseController(
         try {
             if (command.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(
-                    sessionId,
-                    sessionKey,
-                    command,
-                    this@BaseController
+                    sessionId, sessionKey, command, this@BaseController
                 )
                 return true
             }
         } catch (e: ServiceNotConnectedException) {
-            mCtx.longToast(R.string.error_could_not_connect_to_service)
+            Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
         }
         return false
     }
@@ -81,15 +77,12 @@ abstract class BaseController(
         try {
             if (stopcommand.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(
-                    sessionId,
-                    sessionKey,
-                    stopcommand,
-                    this@BaseController
+                    sessionId, sessionKey, stopcommand, this@BaseController
                 )
                 return true
             }
         } catch (e: ServiceNotConnectedException) {
-            mCtx.longToast(R.string.error_could_not_connect_to_service)
+            Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
         }
         return false
     }

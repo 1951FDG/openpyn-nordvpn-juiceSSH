@@ -69,15 +69,7 @@ class OpenpynController(
 
         buffer.append(line)
         val logging = listOf(
-            SPAM,
-            DEBUG,
-            VERBOSE,
-            INFO,
-            NOTICE,
-            WARNING,
-            SUCCESS,
-            ERROR,
-            CRITICAL
+            SPAM, DEBUG, VERBOSE, INFO, NOTICE, WARNING, SUCCESS, ERROR, CRITICAL
         )
 
         @Suppress("MagicNumber")
