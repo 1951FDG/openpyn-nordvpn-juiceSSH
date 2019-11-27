@@ -171,14 +171,14 @@ dependencies {
 
     // Android
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
-    implementation 'androidx.core:core-ktx:1.1.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.sqlite:sqlite:2.0.1'
 
     // Anko
-    implementation "org.jetbrains.anko:anko-sdk21:$anko_version"
+    implementation("org.jetbrains.anko:anko-sdk21:$anko_version") {
+        exclude group: 'org.jetbrains.anko', module: 'anko-commons'
+    }
 
     // Architecture
     implementation('com.naver.android.svc:svc:1.0.0') {
@@ -203,7 +203,6 @@ dependencies {
     implementation 'de.westnordost:countryboundaries:1.5'
 
     // Google Play Services
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
