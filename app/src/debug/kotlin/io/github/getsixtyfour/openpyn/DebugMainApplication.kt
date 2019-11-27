@@ -3,7 +3,6 @@ package io.github.getsixtyfour.openpyn
 import android.os.Build
 import android.util.Log
 import com.github.moduth.blockcanary.BlockCanary
-import com.squareup.leakcanary.LeakCanary
 
 @Suppress("unused")
 class DebugMainApplication : MainApplication() {
@@ -20,7 +19,7 @@ class DebugMainApplication : MainApplication() {
                 "Ignoring LeakCanary on Android $sdkInt due to an Android bug. See https://github.com/square/leakcanary/issues/1081"
             )
         } else {
-            LeakCanary.install(this)
+            // LeakCanary.install(this)
         }
     }
 }

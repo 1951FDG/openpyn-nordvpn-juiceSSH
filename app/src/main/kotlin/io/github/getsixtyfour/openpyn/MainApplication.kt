@@ -3,18 +3,17 @@ package io.github.getsixtyfour.openpyn
 import android.app.Application
 import com.google.android.gms.maps.MapsInitializer
 import com.michaelflisar.gdprdialog.GDPR
-import com.squareup.leakcanary.LeakCanary
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 
 open class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+        /*if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return
-        }
+        }*/
 
         MapsInitializer.initialize(this) //todo check value
         setDefaultPreferences(this)
@@ -24,7 +23,7 @@ open class MainApplication : Application() {
         populateAboutConfig()
 
         if (!isRunningTest()) {
-            installLeakCanary()
+            // installLeakCanary()
             installBlockCanary()
             GDPR.getInstance().init(this)
         }
