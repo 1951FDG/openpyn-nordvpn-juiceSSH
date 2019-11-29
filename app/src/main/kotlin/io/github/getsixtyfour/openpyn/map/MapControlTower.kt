@@ -185,7 +185,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
                 if (value.zIndex == 1.0f) {
                     value.setLevel(value.level, onLevelChangeCallback)
 
-                    views.hideFavoriteFab()
+                    views.hideFavoriteButton()
                 }
             }
         }
@@ -195,7 +195,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             it.setLevel(it.level, onLevelChangeCallback)
 
-            views.hideFavoriteFab()
+            views.hideFavoriteButton()
         }
     }
 
@@ -211,7 +211,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
                 it.zIndex = 1.0f
                 it.setIcon(mDescriptor10)
 
-                views.toggleFavoriteFab(it.level == 1)
+                views.toggleFavoriteButton(it.level == 1)
             }
         }
 
@@ -259,7 +259,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
                     mMarkerStorage.removeFavorite(applicationContext, it)
                 }
             }
-            views.toggleFavoriteFab((it.level == 1))
+            views.toggleFavoriteButton((it.level == 1))
         }
     }
 
@@ -278,16 +278,16 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
     }
 
     override fun onAnimationStart() {
-        views.setClickableFabs(false)
+        views.setClickableButtons(false)
     }
 
     override fun onAnimationEnd() {
-        views.setClickableFabs(true)
+        views.setClickableButtons(true)
     }
 
     override fun onAnimationFinish(animation: Animation) {
         if (animation.isClosest) {
-            views.fakeLayoutAllFabs()
+            views.fakeLayoutButtons()
             markers[animation.target]?.let {
                 if (flags.contains(it.tag)) {
                     it.zIndex = 1.0f
@@ -296,11 +296,11 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
                     if (!it.isVisible) it.isVisible = true
                     if (!it.isInfoWindowShown) it.showInfoWindow()
 
-                    views.toggleFavoriteFab(it.level == 1)
+                    views.toggleFavoriteButton(it.level == 1)
                 }
             }
 
-            views.showAllFabs()
+            views.showAllButtons()
         } else {
             (animation.tag as? JSONObject)?.let {
                 views.showMiniBar(createUserMessage(screen.requireActivity(), it).build())
@@ -318,12 +318,12 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
     fun onSessionFinished() {
         info("onSessionFinished")
 
-        views.toggleConnectFab(false)
+        views.toggleConnectButton(false)
 
-        views.showListAndLocationFab()
+        views.showListAndLocationButton()
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             if (!it.isInfoWindowShown) it.showInfoWindow()
-            views.showFavoriteFab()
+            views.showFavoriteButton()
         }
 
         mMap?.let {
@@ -338,12 +338,12 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
     fun onSessionStarted() {
         info("onSessionStarted")
 
-        views.toggleConnectFab(true)
+        views.toggleConnectButton(true)
 
-        views.hideListAndLocationFab()
+        views.hideListAndLocationButton()
         markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             if (it.isInfoWindowShown) it.hideInfoWindow()
-            views.hideFavoriteFab()
+            views.hideFavoriteButton()
         }
         mMap?.let {
             it.setOnInfoWindowClickListener(null)
@@ -357,7 +357,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
     fun onSessionCancelled() {
         info("onSessionCancelled")
 
-        views.toggleConnectFab(false)
+        views.toggleConnectButton(false)
     }
 
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {

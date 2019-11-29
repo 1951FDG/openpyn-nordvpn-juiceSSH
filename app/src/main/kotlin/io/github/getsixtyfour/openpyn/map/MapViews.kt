@@ -53,7 +53,7 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab0.callOnClick()
     }
 
-    fun fakeLayoutAllFabs() {
+    fun fakeLayoutButtons() {
         val i = 0
         fab0.layout(i, i, i, i)
         fab1.layout(i, i, i, i)
@@ -61,33 +61,33 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab3.layout(i, i, i, i)
     }
 
-    fun hideFavoriteFab() {
+    fun hideFavoriteButton() {
         fab3.hide()
     }
 
-    fun hideListAndLocationFab() {
+    fun hideListAndLocationButton() {
         fab1.hide()
         fab2.hide()
     }
 
-    fun setClickableFabs(clickable: Boolean) {
+    fun setClickableButtons(clickable: Boolean) {
         fab0.isClickable = clickable
         fab1.isClickable = clickable
         fab2.isClickable = clickable
         fab3.isClickable = clickable
     }
 
-    fun showAllFabs() {
+    fun showAllButtons() {
         fab0.show()
         fab1.show()
         fab2.show()
     }
 
-    fun showFavoriteFab() {
+    fun showFavoriteButton() {
         fab3.show()
     }
 
-    fun showListAndLocationFab() {
+    fun showListAndLocationButton() {
         fab1.show()
         fab2.show()
     }
@@ -101,12 +101,12 @@ class MapViews : ActionViews<MapViewsAction>() {
         minibarView.show(userMessage)
     }
 
-    fun toggleConnectFab(checked: Boolean) {
+    fun toggleConnectButton(checked: Boolean) {
         fab0.isChecked = checked
         fab0.show()
     }
 
-    fun toggleFavoriteFab(checked: Boolean) {
+    fun toggleFavoriteButton(checked: Boolean) {
         fab3.isChecked = checked
         fab3.show()
     }

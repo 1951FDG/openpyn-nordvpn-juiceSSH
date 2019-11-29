@@ -50,7 +50,7 @@ class OpenpynController(
             }
             -1 -> {
                 info("Terminated \"abnormal\"")
-                info(command)
+                info(startCommand)
             }
         }
 
@@ -186,8 +186,8 @@ class OpenpynController(
         info(openpyn)
         // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
         // command = "echo \$PATH ; echo \$-"
-        command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; $openpyn"
-        info(command)
+        startCommand = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; $openpyn"
+        info(startCommand)
 
         if (super.start(pluginClient, sessionId, sessionKey)) {
             return true
@@ -196,11 +196,11 @@ class OpenpynController(
     }
 
     override fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
-        stopcommand = when {
+        stopCommand = when {
             test || nvram -> ""
             else -> "sudo openpyn --kill"
         }
-        info(stopcommand)
+        info(stopCommand)
 
         if (super.kill(pluginClient, sessionId, sessionKey)) {
             return true

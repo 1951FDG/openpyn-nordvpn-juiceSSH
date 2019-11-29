@@ -22,8 +22,8 @@ abstract class BaseController(
 
     private var isRunning = false
     abstract val regex: Regex
-    var command: String = ""
-    var stopcommand: String = ""
+    var startCommand: String = ""
+    var stopCommand: String = ""
 
     @Suppress("MagicNumber")
     @CallSuper
@@ -54,9 +54,9 @@ abstract class BaseController(
         isRunning = true
 
         try {
-            if (command.isNotEmpty()) {
+            if (startCommand.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(
-                    sessionId, sessionKey, command, this@BaseController
+                    sessionId, sessionKey, startCommand, this@BaseController
                 )
                 return true
             }
@@ -75,9 +75,9 @@ abstract class BaseController(
         isRunning = true
 
         try {
-            if (stopcommand.isNotEmpty()) {
+            if (stopCommand.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(
-                    sessionId, sessionKey, stopcommand, this@BaseController
+                    sessionId, sessionKey, stopCommand, this@BaseController
                 )
                 return true
             }
