@@ -339,7 +339,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the newly opened database
      * @throws android.database.SQLException if the database cannot be opened
      */
-    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral" })
+    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral", "MethodCallInLoopCondition" })
     private static SQLiteDatabase create(@Nullable CursorFactory factory, @NonNull String path) {
         SQLiteDatabase database = SQLiteDatabase
                 .openDatabase(SQLiteDatabaseConfiguration.MEMORY_DB_PATH, factory, SQLiteDatabase.CREATE_IF_NECESSARY);
@@ -390,7 +390,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @throws IOException      if an I/O error occurs reading from the stream
      * @throws OutOfMemoryError if an array of the required size cannot be allocated
      */
-    @SuppressWarnings({ "ForLoopWithMissingComponent", "MethodCallInLoopCondition", "NestedAssignment", "ValueOfIncrementOrDecrementUsed" })
+    @SuppressWarnings({ "ForLoopWithMissingComponent", "MethodCallInLoopCondition", "NestedAssignment", "ValueOfIncrementOrDecrementUsed",
+            "NumericCastThatLosesPrecision" })
     private static byte[] read(InputStream source, int initialSize) throws IOException {
         int capacity = initialSize;
         byte[] buf = new byte[capacity];

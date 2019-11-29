@@ -20,6 +20,7 @@ public final class EmailUtil {
         // Utility class
     }
 
+    @SuppressWarnings("HardcodedLineSeparator")
     public static void contactUs(@NonNull Activity activity) {
         AboutConfig config = AboutConfig.getInstance();
 
@@ -47,6 +48,7 @@ public final class EmailUtil {
         }
     }
 
+    @SuppressWarnings("MethodWithMultipleReturnPoints")
     private static String platformName(AboutConfig.BuildType buildType) {
         switch (buildType) {
             case GOOGLE:

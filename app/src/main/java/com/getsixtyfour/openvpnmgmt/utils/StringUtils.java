@@ -62,6 +62,7 @@ public final class StringUtils {
      * @param cs the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is null, empty or whitespace only
      */
+    @SuppressWarnings("MethodWithMultipleReturnPoints")
     public static boolean isBlank(@Nullable CharSequence cs) {
         if ((cs == null) || (cs.length() == 0)) {
             return true;
@@ -86,6 +87,7 @@ public final class StringUtils {
      * @param defaultStr  the default CharSequence to return
      * @return the passed in CharSequence, or the default
      */
+    @SuppressWarnings("StandardVariableNames")
     @Nullable
     public static <T extends CharSequence> T defaultIfBlank(@Nullable T str, @Nullable T defaultStr) {
         return isBlank(str) ? defaultStr : str;

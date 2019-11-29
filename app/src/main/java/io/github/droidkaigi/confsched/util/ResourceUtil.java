@@ -24,6 +24,7 @@ public final class ResourceUtil {
         return bitmap;
     }
 
+    @SuppressWarnings({ "MethodWithMultipleReturnPoints", "ChainOfInstanceofChecks" })
     @NonNull
     public static Bitmap getBitmap(@NonNull Context context, @DrawableRes int drawableResId) {
         Drawable drawable = ContextCompat.getDrawable(context, drawableResId);

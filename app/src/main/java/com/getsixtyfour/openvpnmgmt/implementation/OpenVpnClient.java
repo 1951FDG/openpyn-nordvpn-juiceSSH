@@ -42,11 +42,13 @@ public class OpenVpnClient implements Client {
     OpenVpnClient(String s) throws OpenVpnParseException {
         String[] strings = s.split(",");
         if (strings.length != 5) {
+            //noinspection ConstantConditions
             throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_ROUTE_STRING, s, 5));
         }
         try {
             String[] realConnection = strings[1].split(":");
             if (realConnection.length != 2) {
+                //noinspection ConstantConditions
                 throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_REAL_CONNECTION_STRING, strings[2]));
             }
             InetAddress realAddress = InetAddress.getByName(realConnection[0]);

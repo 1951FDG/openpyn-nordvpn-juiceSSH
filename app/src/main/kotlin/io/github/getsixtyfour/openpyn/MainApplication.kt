@@ -33,8 +33,7 @@ open class MainApplication : Application() {
     protected open fun installBlockCanary() {
         // no-op, BlockCanary is disabled in production.
     }
-
-    protected open fun installLeakCanary() {
+    /*protected open fun installLeakCanary() {
         // no-op, LeakCanary is disabled in production.
-    }
+    }*/
 }

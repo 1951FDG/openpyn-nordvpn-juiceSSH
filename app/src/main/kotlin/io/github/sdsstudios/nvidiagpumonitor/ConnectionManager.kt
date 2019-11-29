@@ -82,7 +82,7 @@ class ConnectionManager(
     }
 
     fun toggleConnection(activity: Activity, uuid: UUID) {
-        if (mSessionRunning) return
+        if (isConnectingOrDisconnecting()) return
 
         mSessionRunning = true
 
