@@ -1,7 +1,6 @@
 package io.github.getsixtyfour.openpyn;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import java.io.File;
 

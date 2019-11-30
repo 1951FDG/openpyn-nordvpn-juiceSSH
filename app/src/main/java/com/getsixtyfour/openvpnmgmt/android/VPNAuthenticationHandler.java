@@ -1,4 +1,4 @@
-package com.getsixtyfour.openvpnmgmt.android.core;
+package com.getsixtyfour.openvpnmgmt.android;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,13 +6,13 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import com.getsixtyfour.openvpnmgmt.android.Constants;
 import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 
 /**
  * @author 1951FDG
  */
 
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
 
     private final Context mContext;

@@ -25,13 +25,8 @@ import androidx.core.app.NotificationCompat.Builder;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.ServiceCompat;
 
-import org.jetbrains.annotations.NonNls;
-
-import java.io.IOException;
-import java.util.Locale;
-
 import com.getsixtyfour.openvpnmgmt.android.activities.DisconnectVPN;
-import io.github.getsixtyfour.openpyn.R;
+import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
@@ -45,17 +40,21 @@ import com.getsixtyfour.openvpnmgmt.net.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
+import org.jetbrains.annotations.NonNls;
+
+import java.io.IOException;
+import java.util.Locale;
+
+import io.github.getsixtyfour.openpyn.R;
+
 /**
  * @author Arne Schwabe
  * @author 1951FDG
  */
 
 @SuppressWarnings({ "OverlyComplexClass", "ClassWithTooManyDependencies" })
-public final class OpenVPNService extends Service implements LogListener, StateListener, ByteCountListener, IOpenVPNServiceInternal,
-        ConnectionListener {
-
-    @NonNls
-    public static final String ACTION_VPN_STATUS = "com.getsixtyfour.openvpnmgmt.android.action.VPN_STATUS";
+public final class OpenVPNService extends Service
+        implements LogListener, StateListener, ByteCountListener, IOpenVPNServiceInternal, ConnectionListener {
 
     @NonNls
     public static final String EXTRA_ALWAYS_SHOW_NOTIFICATION = "com.getsixtyfour.openvpnmgmt.android.extra.NOTIFICATION_ALWAYS_VISIBLE";
@@ -83,6 +82,8 @@ public final class OpenVPNService extends Service implements LogListener, StateL
     private static final String DEFAULT_REMOTE_SERVER = "127.0.0.1";
 
     private static final int DEFAULT_REMOTE_PORT = 23;
+
+    private static final String THREAD_NAME = "OpenVPNManagementThread";
 
     private final IBinder mBinder = new IOpenVPNServiceInternal.Stub() {
         @Override
@@ -149,7 +150,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             } catch (IOException e) {
                 Log.e(TAG, e.toString());
             } catch (Exception e) {
-                Log.e(TAG, "unknown exception thrown");
+                Log.e(TAG, "Unknown exception thrown");
                 Log.e(TAG, e.toString());
             }
         });
@@ -163,10 +164,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
     @Override
     public IBinder onBind(@Nullable Intent intent) {
         Log.i(TAG, "onBind");
-        if ((intent != null) && START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
-            return mBinder;
-        }
-        return null;
+        return ((intent != null) && START_SERVICE_NOT_STICKY.equals(intent.getAction())) ? mBinder : null;
     }
 
     @Override
@@ -200,7 +198,8 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             showNotification(title, text, null, NOTIFICATION_CHANNEL_BG_ID, mConnectTime, ConnectionStatus.LEVEL_CONNECTED);
         }
     }
-// todo check which thread these run on
+
+    // todo check which thread these run on
     @Override
     public void onConnectError(@NonNull Throwable e) {
         // TODO
@@ -211,7 +210,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
     public void onConnected() {
         // Start a background thread that handles incoming messages of the management interface
         Connection connection = ManagementConnection.getInstance();
-        Thread thread = new Thread(connection, "OpenVPNManagementThread");
+        Thread thread = new Thread(connection, THREAD_NAME);
         thread.start();
         Log.i(TAG, "Starting OpenVPN Management");
     }
@@ -291,6 +290,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
         //     endVpnService();
         // }
     }
+
     // todo test implications
     public boolean stopVPN(boolean replaceConnection) {
         boolean result = false;
@@ -342,9 +342,9 @@ public final class OpenVPNService extends Service implements LogListener, StateL
     private void doSendBroadcast(String state, String message) {
         // TODO
         Intent intent = new Intent();
-        intent.setAction(ACTION_VPN_STATUS);
-        intent.putExtra("state", state);
-        intent.putExtra("message", message);
+        intent.setAction(IntentConstants.INTENT_ACTION_VPN_STATUS);
+        intent.putExtra(IntentConstants.EXTRA_STATE, state);
+        intent.putExtra(IntentConstants.EXTRA_MESSAGE, message);
         sendBroadcast(intent);
     }
 
@@ -462,7 +462,7 @@ public final class OpenVPNService extends Service implements LogListener, StateL
             exp = 3;
             result /= unit;
         }
-        String roundFormat = "%.0f";
+        @NonNls String roundFormat = "%.0f";
         if (exp != 0) {
             if (result < 1.0F) {
                 roundFormat = "%.2f";

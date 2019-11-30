@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.cursoradapter.widget.CursorAdapter
-import com.sonelli.juicessh.pluginlibrary.PluginContract
+import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections
 import io.github.getsixtyfour.openpyn.R
 import java.util.UUID
 
@@ -25,7 +25,7 @@ class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
     }
 
     override fun bindView(view: View?, context: Context?, cursor: Cursor?) {
-        val nameColumn = cursor!!.getColumnIndex(PluginContract.Connections.COLUMN_NAME)
+        val nameColumn = cursor!!.getColumnIndex(Connections.COLUMN_NAME)
 
         if (nameColumn > -1) {
             val name = cursor.getString(nameColumn)
@@ -37,7 +37,7 @@ class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
         var id: UUID? = null
 
         if (cursor != null && cursor.moveToPosition(position)) {
-            val idIndex = cursor.getColumnIndex(PluginContract.Connections.COLUMN_ID)
+            val idIndex = cursor.getColumnIndex(Connections.COLUMN_ID)
             if (idIndex > -1) {
                 id = UUID.fromString(cursor.getString(idIndex))
             }

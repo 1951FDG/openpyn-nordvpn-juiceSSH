@@ -1,11 +1,11 @@
 package com.getsixtyfour.openvpnmgmt.listeners;
 
+import com.getsixtyfour.openvpnmgmt.core.TrafficHistory;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import com.getsixtyfour.openvpnmgmt.core.TrafficHistory;
 
 /**
  * @author 1951FDG

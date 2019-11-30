@@ -10,10 +10,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.loader.app.LoaderManager
+import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.adityaanand.morphdialog.MorphDialog
 import com.adityaanand.morphdialog.utils.MorphDialogAction
@@ -33,10 +37,12 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-// import com.getsixtyfour.openvpnmgmt.android.core.VPNAuthenticationHandler
-// import com.getsixtyfour.openvpnmgmt.android.core.VPNLaunchHelper.startOpenVPNService
+// import com.getsixtyfour.openvpnmgmt.android.VPNAuthenticationHandler
+// import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.startOpenVPNService
 import io.fabric.sdk.android.Fabric
+import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog
 import io.github.getsixtyfour.openpyn.map.MapFragment
+import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
 import io.github.getsixtyfour.openpyn.utils.Toaster
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
@@ -46,20 +52,21 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESS
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.container
-import kotlinx.android.synthetic.main.activity_main.spinnerConnectionList
+import kotlinx.android.synthetic.main.activity_main.spinner
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import org.jetbrains.anko.longToast
 // import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 
-class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback, OnClickListener,
-    OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener, OnSessionStartedListener,
-    CoroutineScope by MainScope() {
+const val DELAY_MILLIS: Long = 10000
+
+class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback,
+    OnClickListener, OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener,
+    OnSessionStartedListener, PreferenceDialog.NoticeDialogListener, CoroutineScope by MainScope() {
 
     private var dialog: MorphDialog? = null
     // todo check value
@@ -70,9 +77,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
     private val mSetup by lazy {
         with(
             GDPRSetup(
-                GDPRDefinitions.FABRIC_CRASHLYTICS,
-                GDPRDefinitions.FIREBASE_CRASH,
-                GDPRDefinitions.FIREBASE_ANALYTICS
+                GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS
             )
         ) {
             withCustomDialogTheme(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
@@ -86,8 +91,6 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_main)
 
         showGDPRIfNecessary(this, mSetup)
 
@@ -237,53 +240,68 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         fun element(location: Coordinate?, flag: String, server: String, country: String): String = when {
             flag.isNotEmpty() -> {
                 val name = getEntryForValue(flag, R.array.pref_country_entries, R.array.pref_country_values)
-                // Enforce Locale to English for double to string conversion
-                if (location != null) "%s at %.7f, %.7f".format(Locale.ENGLISH, name, location.latitude, location.longitude) else name
+                if (location != null) {
+                    // Enforce Locale to English for double to string conversion
+                    val latitude = "%.7f".format(Locale.ENGLISH, location.latitude)
+                    val longitude = "%.7f".format(Locale.ENGLISH, location.longitude)
+                    val string = getString(R.string.at_preposition)
+                    getString(R.string.vpn_location_name, name, string, latitude, longitude)
+                } else {
+                    name
+                }
             }
             server.isNotEmpty() -> {
-                "server $server.nordvpn.com"
+                getString(R.string.vpn_server_name, server)
             }
             country.isNotEmpty() -> {
-                getEntryForValue(country, R.array.pref_country_entries, R.array.pref_country_values)
+                getString(R.string.vpn_country_name, getEntryForValue(country, R.array.pref_country_entries, R.array.pref_country_values))
             }
-            else -> ""
+            else -> {
+                getString(R.string.empty)
+            }
         }
 
-        fun toggleConnection(v: FloatingActionButton) {
-            v.isClickable = false
-            val uuid = mConnectionListAdapter.getConnectionId(spinnerConnectionList.selectedItemPosition)
-            mConnectionManager?.toggleConnection(uuid!!, this)
-        }
-
-        fun morph(v: FloatingActionButton) {
+        fun message(): String {
             val (location, flag) = this.positionAndFlagForSelectedMarker()
             val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-            val server: String = preferences.getString("pref_server", "")!!
-            val country: String = preferences.getString("pref_country", "")!!
-            val content = "Are you sure you want to connect to ${element(location, flag, server, country)}"
-            val builder = MorphDialog.Builder(this, v).apply {
-                title("VPN Connection")
-                content(content)
-                positiveText(android.R.string.ok)
-                negativeText(android.R.string.cancel)
-                onPositive { _: MorphDialog, _: MorphDialogAction -> toggleConnection(v) }
-            }
-
-            dialog = builder.show()
+            val server = preferences.getString("pref_server", "")!!
+            val country = preferences.getString("pref_country", "")!!
+            return getString(R.string.vpn_connect_message, element(location, flag, server, country))
         }
 
-        if (id == R.id.fab0 && v is FloatingActionButton) {
+        fun showMessageDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
+            title(R.string.title_dialog_connect)
+            content(message())
+            positiveText(android.R.string.ok)
+            negativeText(android.R.string.cancel)
+            onPositive { _: MorphDialog, _: MorphDialogAction -> toggleConnection() }
+            show()
+        }
+
+        fun showWarningDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
+            title(R.string.title_dialog_error)
+            content(R.string.error_must_have_at_least_one_server)
+            positiveText(android.R.string.ok)
+            show()
+        }
+
+        if (id != R.id.fab0 || v !is FloatingActionButton) return
+
+        mConnectionManager?.let {
             if (mConnectionListAdapter.count > 0) {
-                if (spinnerConnectionList.isEnabled) {
-                    morph(v)
+                if (!it.isConnected()) {
+                    // dialog = showMessageDialog(v)
+                    val action = MapFragmentDirections.actionMapFragmentToPreferenceDialogFragment(message())
+                    Navigation.findNavController(v).navigate(action)
                 } else {
-                    toggleConnection(v)
+                    toggleConnection()
                 }
             } else {
-                MorphDialog.Builder(this, v).apply {
-                    title("Error")
-                    content(R.string.error_must_have_at_least_one_server)
-                    positiveText(android.R.string.ok)
+                // showWarningDialog(v)
+                AlertDialog.Builder(this).apply {
+                    setTitle(R.string.title_dialog_error)
+                    setMessage(R.string.error_must_have_at_least_one_server)
+                    setPositiveButton(android.R.string.ok, null)
                     show()
                 }
             }
@@ -299,14 +317,14 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
     override fun onConnect() {
         toolbar.hideProgress(true)
         val fragment = getCurrentNavigationFragment(this) as? MapFragment
-        fragment?.controlTower?.updateMasterMarkerWithDelay(true, 10000)
+        fragment?.controlTower?.updateMasterMarkerWithDelay(true, DELAY_MILLIS)
     }
 
     @Suppress("MagicNumber")
     override fun onDisconnect() {
         toolbar.hideProgress(true)
         val fragment = getCurrentNavigationFragment(this) as? MapFragment
-        fragment?.controlTower?.updateMasterMarkerWithDelay(true, 10000)
+        fragment?.controlTower?.updateMasterMarkerWithDelay(true, DELAY_MILLIS)
     }
 
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
@@ -317,13 +335,14 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
     override fun onError(error: Int, reason: String) {
         toolbar.hideProgress(true)
 
-        longToast(reason)
+        Toast.makeText(this, reason, Toast.LENGTH_LONG).show()
     }
 
     override fun onCompleted(exitCode: Int) {
         toolbar.hideProgress(true)
 
-        longToast(exitCode.toString())
+        Toast.makeText(this, exitCode.toString(), Toast.LENGTH_LONG).show()
+
         when (exitCode) {
             0 -> {
                 info("Success")
@@ -345,7 +364,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
 
         fragment?.onSessionFinished()
 
-        spinnerConnectionList.isEnabled = true
+        spinner.isEnabled = true
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
@@ -356,7 +375,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
 
         fragment?.onSessionStarted(sessionId, sessionKey)
 
-        spinnerConnectionList.isEnabled = false
+        spinner.isEnabled = false
     }
 
     override fun onSessionCancelled() {
@@ -364,6 +383,13 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         val fragment = getCurrentNavigationFragment(this) as? OnSessionStartedListener
 
         fragment?.onSessionCancelled()
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        toggleConnection()
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
     }
 
     private fun hasPermissions(context: Context, vararg perms: String): Boolean {
@@ -374,7 +400,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
         if (requestCode != PERMISSION_REQUEST_CODE) return
         if (mConnectionManager != null) return
 
-        spinnerConnectionList.adapter = mConnectionListAdapter
+        spinner.adapter = mConnectionListAdapter
         LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
 
         mConnectionManager = ConnectionManager(
@@ -399,6 +425,11 @@ class MainActivity : AppCompatActivity(), AnkoLogger, ConnectionListLoaderFinish
 
     private fun somePermissionPermanentlyDenied(activity: Activity, vararg perms: String): Boolean {
         return perms.any { !ActivityCompat.shouldShowRequestPermissionRationale(activity, it) }
+    }
+
+    private fun toggleConnection() {
+        val uuid = mConnectionListAdapter.getConnectionId(spinner.selectedItemPosition)
+        mConnectionManager?.toggleConnection(this, uuid!!)
     }
 
     companion object {

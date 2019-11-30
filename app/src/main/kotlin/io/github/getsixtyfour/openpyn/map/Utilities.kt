@@ -16,11 +16,11 @@ import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
-import com.androidmapsextensions.lazy.LazyMarker.OnMarkerCreateListener
 import com.antoniocarlon.map.CameraUpdateAnimator.Animation
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
 import com.getsixtyfour.openvpnmgmt.android.security.SecurityManager
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition.Builder
 import com.google.android.gms.maps.model.LatLng
@@ -35,7 +35,6 @@ import com.squareup.moshi.Types
 import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.R.array
 import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.utils.CITY
 import io.github.getsixtyfour.openpyn.utils.COUNTRY
@@ -74,9 +73,12 @@ import java.util.HashSet
 import java.util.Locale
 import kotlin.math.pow
 
+const val TIME_MILLIS: Long = 600
+const val DURATION: Long = 7000
+
 // private const val TASK_TIMEOUT: Long = 500
-@Suppress("ComplexMethod", "MagicNumber", "unused")
-internal fun showThreats(context: Activity, jsonObj: JSONObject) {
+@Suppress("ComplexMethod", "MagicNumber")
+fun showThreats(activity: Activity, jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
     Log.info(threats.toString())
 
@@ -88,137 +90,136 @@ internal fun showThreats(context: Activity, jsonObj: JSONObject) {
         val abuser = threats.getBoolean("is_known_abuser")
         val threat = threats.getBoolean("is_threat")
         val bogon = threats.getBoolean("is_bogon")
-        val color1 = ContextCompat.getColor(context, R.color.colorConnect)
-        val color2 = ContextCompat.getColor(context, R.color.colorDisconnect)
+        val color1 = ContextCompat.getColor(activity, R.color.colorConnect)
+        val color2 = ContextCompat.getColor(activity, R.color.colorDisconnect)
         val fl = 22f
         val weight = 1.0f
-        with(context) {
-            alert {
-                customView = verticalLayout {
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_tor)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (tor) "YES" else "NO"
-                            textColor = if (tor) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_proxy)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (proxy) "YES" else "NO"
-                            textColor = if (proxy) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_anonymous)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (anonymous) "YES" else "NO"
-                            textColor = if (anonymous) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_known_attacker)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (attacker) "YES" else "NO"
-                            textColor = if (attacker) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_known_abuser)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (abuser) "YES" else "NO"
-                            textColor = if (abuser) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_threat)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (threat) "YES" else "NO"
-                            textColor = if (threat) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    linearLayout {
-                        textView {
-                            text = getString(R.string.is_bogon)
-                            textSize = fl
-                            gravity = android.view.Gravity.START
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                        textView {
-                            text = if (bogon) "YES" else "NO"
-                            textColor = if (bogon) color2 else color1
-                            textSize = fl
-                            gravity = android.view.Gravity.END
-                        }.lparams(
-                            width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                        ) {}
-                    }
-                    gravity = android.view.Gravity.CENTER
-                    padding = dip(40)
+        val alert = activity.alert {
+            customView = ctx.verticalLayout {
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_tor)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (tor) "YES" else "NO"
+                        textColor = if (tor) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
                 }
-            }.show()
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_proxy)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (proxy) "YES" else "NO"
+                        textColor = if (proxy) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_anonymous)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (anonymous) "YES" else "NO"
+                        textColor = if (anonymous) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_known_attacker)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (attacker) "YES" else "NO"
+                        textColor = if (attacker) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_known_abuser)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (abuser) "YES" else "NO"
+                        textColor = if (abuser) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_threat)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (threat) "YES" else "NO"
+                        textColor = if (threat) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                linearLayout {
+                    textView {
+                        text = ctx.getString(R.string.is_bogon)
+                        textSize = fl
+                        gravity = android.view.Gravity.START
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                    textView {
+                        text = if (bogon) "YES" else "NO"
+                        textColor = if (bogon) color2 else color1
+                        textSize = fl
+                        gravity = android.view.Gravity.END
+                    }.lparams(
+                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
+                    ) {}
+                }
+                gravity = android.view.Gravity.CENTER
+                padding = dip(40)
+            }
         }
+        alert.show()
     }
 }
 
@@ -255,7 +256,7 @@ fun showPrintArray(context: Context, countries: List<MultiSelectable>, hashSet: 
     }
 
     PrintArray.apply {
-        setHint(R.string.multi_select_dialog_hint)
+        setHint(R.string.abc_search_hint)
         setTitle(R.string.empty)
         setItems(currentCountries)
         setCheckedItems(currentIds)
@@ -350,7 +351,7 @@ fun getCurrentPosition(
         else -> LatLng(lat, lon)
     }
 
-    fun getToastString(ids: List<String>?): String = when {
+    fun getString(ids: List<String>?): String = when {
         ids.isNullOrEmpty() -> "is nowhere"
         else -> "is in " + ids.joinToString()
     }
@@ -365,7 +366,7 @@ fun getCurrentPosition(
         val ids = countryBoundaries?.getIds(lon, lat)
         t = System.nanoTime() - t
         @Suppress("MagicNumber") val i = 1000
-        Log.debug(getToastString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
+        Log.debug(getString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
         return getFlag(ids)
     }
 
@@ -437,28 +438,10 @@ fun createMarkers(
     context: Context,
     jsonArray: JSONArray,
     countries: List<MultiSelectable>,
-    listener: OnMarkerCreateListener,
+    map: GoogleMap,
     favorites: ArrayList<LazyMarker>?,
     callback: OnLevelChangeCallback
 ): Pair<HashSet<CharSequence>, HashMap<LatLng, LazyMarker>> {
-    fun lazyMarker(
-        listener: OnMarkerCreateListener,
-        favorites: ArrayList<LazyMarker>?,
-        options: MarkerOptions,
-        flag: CharSequence?,
-        callback: OnLevelChangeCallback
-    ): LazyMarker {
-        val marker = LazyMarker(options, flag, listener)
-        favorites?.let {
-            val index = it.indexOf(marker)
-            if (index >= 0) {
-                marker.setLevel(it[index].level, callback)
-            }
-        }
-
-        return marker
-    }
-
     fun parseToUnicode(countries: List<MultiSelectable>, input: CharSequence): CharSequence {
         // Replace the aliases by their unicode
         var result = input
@@ -469,20 +452,16 @@ fun createMarkers(
 
         return result
     }
-
-    fun netflix(flag: CharSequence?): Boolean = when (flag) {
-        "us" -> true
-        "ca" -> true
-        "nl" -> true
-        "jp" -> true
-        "gb" -> true
-        "gr" -> true
-        "mx" -> true
-        else -> false
-    }
-    // HashSet<E> : MutableSet<E> {
-    //     constructor()
-    //     constructor(initialCapacity: Int)
+    // fun netflix(flag: CharSequence?): Boolean = when (flag) {
+    //     "us" -> true
+    //     "ca" -> true
+    //     "nl" -> true
+    //     "jp" -> true
+    //     "gb" -> true
+    //     "gr" -> true
+    //     "mx" -> true
+    //     else -> false
+    // }
     val length = jsonArray.length()
     val flags = HashSet<CharSequence>(length)
     val markers = HashMap<LatLng, LazyMarker>(length)
@@ -532,16 +511,24 @@ fun createMarkers(
         val emoji = parseToUnicode(countries, flag)
         val location = res.getJSONObject(LOCATION)
         val latLng = LatLng(location.getDouble(LAT), location.getDouble(LONG))
+        val title = context.getString(R.string.title_marker, emoji, country)
         val options = MarkerOptions().apply {
             flat(true)
             position(latLng)
-            title("$emoji $country")
+            title(title)
             visible(false)
             icon(iconDescriptor)
         }
 
         flags.add(flag)
-        markers[latLng] = lazyMarker(listener, favorites, options, flag, callback)
+        val marker = LazyMarker(map, options, flag)
+        favorites?.let {
+            val index = it.indexOf(marker)
+            if (index >= 0) {
+                marker.setLevel(it[index].level, callback)
+            }
+        }
+        markers[latLng] = marker
     }
 
     return Pair(flags, markers)
@@ -554,10 +541,11 @@ internal fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessa
     val city = jsonObj.getString(CITY)
     val flag = jsonObj.getString(FLAG).toUpperCase(Locale.ROOT)
     val ip = jsonObj.getString(IP)
+    val message = context.getString(R.string.vpn_connected_message, city, flag, ip)
     return UserMessage.Builder().apply {
         with(context.applicationContext)
         setBackgroundColor(R.color.accent_material_indigo_200).setTextColor(color.white)
-        setMessage("Connected to $city, $flag ($ip)").setDuration(7000).setShowInterpolator(AccelerateInterpolator())
+        setMessage(message).setDuration(DURATION).setShowInterpolator(AccelerateInterpolator())
         setDismissInterpolator(AccelerateInterpolator())
     }
 }
@@ -623,7 +611,7 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray {
     }
 
     val jsonArray = createJsonArray(context, id, ext)
-    val set1 = context.resources.getTextArray(array.pref_country_values).toHashSet()
+    val set1 = context.resources.getTextArray(R.array.pref_country_values).toHashSet()
     val set2 = hashSetOf<CharSequence>()
 
     for (res in jsonArray) {
@@ -667,6 +655,7 @@ private fun copyRawResourceToFile(context: Context, id: Int, file: File) {
     }
 }
 
+@Suppress("TooGenericExceptionCaught")
 @SuppressLint("WrongThread")
 @WorkerThread
 suspend fun createGeoJson(context: Context): JSONObject? {
@@ -686,6 +675,7 @@ suspend fun createGeoJson(context: Context): JSONObject? {
                 "ipdata" -> {
                     token = SecurityManager.getInstance(context).decryptString(ipdata)
                     server = "https://api.ipdata.co?api-key=$token&$fields"
+                    // server = "https://api.ipdata.co?api-key=$token&$fields,threat"
                 }
                 "ipinfo" -> {
                     token = SecurityManager.getInstance(context).decryptString(ipinfo)
@@ -707,7 +697,7 @@ suspend fun createGeoJson(context: Context): JSONObject? {
             }
 
             try {
-                withTimeout(600) {
+                withTimeout(TIME_MILLIS) {
                     val response = client.get<HttpResponse>(server)
                     val json = response.readText()
                     jsonObject = JSONObject(json)

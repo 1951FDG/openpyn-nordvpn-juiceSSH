@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    tools:context="io.github.getsixtyfour.openpyn.MainActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp">
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="?attr/dialogPreferredPadding"
+            android:paddingLeft="?attr/dialogPreferredPadding"
+            android:paddingEnd="?attr/dialogPreferredPadding"
+            android:paddingRight="?attr/dialogPreferredPadding"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textIsSelectable="false" />
+    </FrameLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:name="io.github.getsixtyfour.openpyn.fragment.ConnectPreferenceFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        tools:layout="@android:layout/preference_list_fragment" />
+
+</LinearLayout>

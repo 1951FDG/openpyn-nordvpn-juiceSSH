@@ -2,6 +2,7 @@ package com.abdeveloper.library;
 
 import androidx.annotation.NonNull;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -46,7 +47,8 @@ public class MultiSelectModelExtra extends MultiSelectModel {
                 CharSequence charSequence = getName();
                 Matcher matcher = COMPILE.matcher(charSequence.toString());
                 String s = matcher.replaceAll("_");
-                String name = String.format("ic_%s_40dp", s.toLowerCase(Locale.ROOT));
+                @NonNls String format = "ic_%s_40dp";
+                String name = String.format(format, s.toLowerCase(Locale.ROOT));
                 Field field = res.getField(name);
                 drawableId = field.getInt(null);
             } catch (IllegalAccessException | NoSuchFieldException ignored) {

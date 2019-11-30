@@ -1,29 +1,29 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import android.content.Context
+import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
+import io.github.getsixtyfour.openpyn.R
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
-import org.jetbrains.anko.longToast
 
 /**
  * Created by Seth on 05/03/18.
  */
 @MainThread
 abstract class BaseController(
-    protected val mCtx: Context,
-    private val mLiveData: MutableLiveData<Int>
+    protected val mCtx: Context, private val mLiveData: MutableLiveData<Int>
 ) : OnSessionExecuteListener, AnkoLogger {
 
     private var isRunning = false
     abstract val regex: Regex
-    var command: String = ""
-    var stopcommand: String = ""
+    var startCommand: String = ""
+    var stopCommand: String = ""
 
     @Suppress("MagicNumber")
     @CallSuper
@@ -54,17 +54,14 @@ abstract class BaseController(
         isRunning = true
 
         try {
-            if (command.isNotEmpty()) {
+            if (startCommand.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(
-                    sessionId,
-                    sessionKey,
-                    command,
-                    this@BaseController
+                    sessionId, sessionKey, startCommand, this@BaseController
                 )
                 return true
             }
         } catch (e: ServiceNotConnectedException) {
-            mCtx.longToast("Tried to execute a command but could not connect to JuiceSSH plugin service")
+            Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
         }
         return false
     }
@@ -78,17 +75,14 @@ abstract class BaseController(
         isRunning = true
 
         try {
-            if (stopcommand.isNotEmpty()) {
+            if (stopCommand.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(
-                    sessionId,
-                    sessionKey,
-                    stopcommand,
-                    this@BaseController
+                    sessionId, sessionKey, stopCommand, this@BaseController
                 )
                 return true
             }
         } catch (e: ServiceNotConnectedException) {
-            mCtx.longToast("Tried to execute a command but could not connect to JuiceSSH plugin service")
+            Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
         }
         return false
     }

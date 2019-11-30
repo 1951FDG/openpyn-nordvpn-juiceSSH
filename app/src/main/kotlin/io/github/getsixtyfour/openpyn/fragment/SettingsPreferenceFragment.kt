@@ -9,7 +9,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.R.xml
 import io.github.getsixtyfour.openpyn.SettingsActivity.Companion
 import io.github.getsixtyfour.openpyn.onRefreshItemSelected
 
@@ -60,7 +59,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStart
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         // Load the preferences from an XML resource
-        setPreferencesFromResource(xml.pref_settings, rootKey)
+        setPreferencesFromResource(R.xml.pref_settings, rootKey)
         // setTitle(requireActivity())
     }
 

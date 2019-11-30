@@ -5,12 +5,12 @@
  */
 package com.getsixtyfour.openvpnmgmt.net;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.ByteCountListener;
 import com.getsixtyfour.openvpnmgmt.listeners.LogManager.LogListener;
 import com.getsixtyfour.openvpnmgmt.listeners.StateManager.StateListener;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author 1951FDG

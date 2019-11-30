@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:title="@string/title_activity_settings">
-    <PreferenceCategory android:title="@string/pref_category_basic">
+    android:key="settings"
+    android:title="@string/title_activity_settings"
+    app:initialExpandedChildrenCount="9">
         <EditTextPreference
             android:key="pref_server"
             android:selectAllOnFocus="true"
@@ -50,8 +51,6 @@
         <Preference
             android:title="@string/title_activity_about"
             app:fragment="io.github.getsixtyfour.openpyn.fragment.AboutPreferenceFragment" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_category_advanced">
         <SwitchPreference
             android:defaultValue="false"
             android:key="pref_test"
@@ -62,44 +61,6 @@
             android:key="pref_silent"
             android:summary="@string/pref_description_silent"
             android:title="@string/pref_silent" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="pref_netflix"
-            android:key="pref_p2p"
-            android:summary="@string/pref_description_p2p"
-            android:title="@string/pref_p2p" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="pref_netflix"
-            android:key="pref_dedicated"
-            android:summary="@string/pref_description_dedicated"
-            android:title="@string/pref_dedicated" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="pref_netflix"
-            android:key="pref_double"
-            android:summary="@string/pref_description_double"
-            android:title="@string/pref_double" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="pref_netflix"
-            android:key="pref_tor"
-            android:summary="@string/pref_description_tor"
-            android:title="@string/pref_tor" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="pref_netflix"
-            android:key="pref_anti_ddos"
-            android:summary="@string/pref_description_anti_ddos"
-            android:title="@string/pref_anti_ddos" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:disableDependentsState="true"
-            android:key="pref_netflix"
-            android:summary="@string/pref_description_netflix"
-            android:title="@string/pref_netflix" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_category_expert">
         <SwitchPreference
             android:defaultValue="false"
             android:key="pref_skip_dns_patch"
@@ -122,5 +83,4 @@
             android:entryValues="@array/pref_nvram_client_values"
             android:key="pref_nvram_client"
             android:title="@string/pref_nvram_client" />
-    </PreferenceCategory>
 </PreferenceScreen>

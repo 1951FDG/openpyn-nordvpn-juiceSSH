@@ -1,9 +1,10 @@
 package io.github.sdsstudios.nvidiagpumonitor
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.annotation.MainThread
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
@@ -15,7 +16,6 @@ import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.controllers.OpenpynController
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
-import org.jetbrains.anko.longToast
 import java.util.UUID
 
 /**
@@ -32,13 +32,10 @@ class ConnectionManager(
     mActivityOnOutputLineListener: OnOutputLineListener?
 ) : OnSessionStartedListener, OnSessionFinishedListener {
 
-    companion object {
-        const val JUICESSH_REQUEST_CODE: Int = 345
-    }
-
     private val openpyn = MutableLiveData<Int>()
     private var mSessionKey = ""
     private var mSessionId = 0
+    private var mSessionRunning = false
     private val mClient = PluginClient()
     private val mCtx: Context = ctx.applicationContext
     private val mOpenpynController = OpenpynController(
@@ -51,6 +48,7 @@ class ConnectionManager(
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
         mSessionId = sessionId
         mSessionKey = sessionKey
+        mSessionRunning = false
 
         mActivitySessionStartedListener.onSessionStarted(sessionId, sessionKey)
 
@@ -62,6 +60,7 @@ class ConnectionManager(
     override fun onSessionFinished() {
         mSessionId = 0
         mSessionKey = ""
+        mSessionRunning = false
 
         mActivitySessionFinishedListener.onSessionFinished()
 
@@ -69,6 +68,8 @@ class ConnectionManager(
     }
 
     override fun onSessionCancelled() {
+        mSessionRunning = false
+
         mActivitySessionStartedListener.onSessionCancelled()
     }
 
@@ -76,8 +77,16 @@ class ConnectionManager(
         return mSessionId > 0
     }
 
-    fun toggleConnection(uuid: UUID, activity: AppCompatActivity) {
-        if (isConnected()) disconnect() else connect(uuid, activity)
+    fun isConnectingOrDisconnecting(): Boolean {
+        return mSessionRunning
+    }
+
+    fun toggleConnection(activity: Activity, uuid: UUID) {
+        if (isConnectingOrDisconnecting()) return
+
+        mSessionRunning = true
+
+        if (isConnected()) disconnect() else connect(activity, uuid)
     }
 
     fun startClient() {
@@ -103,18 +112,22 @@ class ConnectionManager(
                 Thread.sleep(5000)
                 mClient.disconnect(mSessionId, mSessionKey)
             } catch (e: ServiceNotConnectedException) {
-                mCtx.longToast(R.string.error_could_not_connect_to_service)
+                Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
             }
         }).start()
     }
 
-    private fun connect(uuid: UUID, activity: AppCompatActivity) {
+    private fun connect(activity: Activity, uuid: UUID) {
         Thread(Runnable {
             try {
                 mClient.connect(activity, uuid, this, JUICESSH_REQUEST_CODE)
             } catch (e: ServiceNotConnectedException) {
-                mCtx.longToast(R.string.error_could_not_connect_to_service)
+                Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
             }
         }).start()
+    }
+
+    companion object {
+        const val JUICESSH_REQUEST_CODE: Int = 345
     }
 }

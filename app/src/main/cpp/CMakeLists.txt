@@ -22,7 +22,7 @@ add_library(
 
 add_library(
         # Sets the name of the library.
-        sqlite-android-3240000
+        sqlite-android
 
         # Sets the library as a shared library.
         SHARED
@@ -33,7 +33,7 @@ add_library(
 string(TOLOWER ${CMAKE_BUILD_TYPE} BUILD_TYPE)
 set_target_properties(
         # Specifies the target library.
-        sqlite-android-3240000
+        sqlite-android
 
         PROPERTIES IMPORTED_LOCATION
         # Specifies the target location.
@@ -73,4 +73,4 @@ target_link_libraries(
 
         # Links the target library to the libraries
         # included in the NDK.
-        sqlite-android-3240000 ${log-lib} ${android-lib})
+        sqlite-android ${log-lib} ${android-lib})

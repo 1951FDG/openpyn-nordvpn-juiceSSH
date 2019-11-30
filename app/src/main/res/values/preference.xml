@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_server">Server name</string>
+
+    <string name="pref_country">Country</string>
+
+    <string-array name="pref_country_entries">
+        <item>Albania</item>
+        <item>Argentina</item>
+        <item>Australia</item>
+        <item>Austria</item>
+        <item>Belgium</item>
+        <item>Bosnia and Herzegovina</item>
+        <item>Brazil</item>
+        <item>Bulgaria</item>
+        <item>Canada</item>
+        <item>Chile</item>
+        <item>Costa Rica</item>
+        <item>Croatia</item>
+        <item>Cyprus</item>
+        <item>Czech Republic</item>
+        <item>Denmark</item>
+        <item>Estonia</item>
+        <item>Finland</item>
+        <item>France</item>
+        <item>Georgia</item>
+        <item>Germany</item>
+        <item>Greece</item>
+        <item>Hong Kong</item>
+        <item>Hungary</item>
+        <item>Iceland</item>
+        <item>India</item>
+        <item>Indonesia</item>
+        <item>Ireland</item>
+        <item>Israel</item>
+        <item>Italy</item>
+        <item>Japan</item>
+        <item>Latvia</item>
+        <item>Luxembourg</item>
+        <item>Malaysia</item>
+        <item>Mexico</item>
+        <item>Moldova</item>
+        <item>Netherlands</item>
+        <item>New Zealand</item>
+        <item>North Macedonia</item>
+        <item>Norway</item>
+        <item>Poland</item>
+        <item>Portugal</item>
+        <item>Romania</item>
+        <item>Serbia</item>
+        <item>Singapore</item>
+        <item>Slovakia</item>
+        <item>Slovenia</item>
+        <item>South Africa</item>
+        <item>South Korea</item>
+        <item>Spain</item>
+        <item>Sweden</item>
+        <item>Switzerland</item>
+        <item>Taiwan</item>
+        <item>Thailand</item>
+        <item>Turkey</item>
+        <item>Ukraine</item>
+        <item>United Arab Emirates</item>
+        <item>United Kingdom</item>
+        <item>United States</item>
+        <item>Vietnam</item>
+    </string-array>
+
+    <string-array name="pref_country_values">
+        <item>al</item>
+        <item>ar</item>
+        <item>au</item>
+        <item>at</item>
+        <item>be</item>
+        <item>ba</item>
+        <item>br</item>
+        <item>bg</item>
+        <item>ca</item>
+        <item>cl</item>
+        <item>cr</item>
+        <item>hr</item>
+        <item>cy</item>
+        <item>cz</item>
+        <item>dk</item>
+        <item>ee</item>
+        <item>fi</item>
+        <item>fr</item>
+        <item>ge</item>
+        <item>de</item>
+        <item>gr</item>
+        <item>hk</item>
+        <item>hu</item>
+        <item>is</item>
+        <item>in</item>
+        <item>id</item>
+        <item>ie</item>
+        <item>il</item>
+        <item>it</item>
+        <item>jp</item>
+        <item>lv</item>
+        <item>lu</item>
+        <item>my</item>
+        <item>mx</item>
+        <item>md</item>
+        <item>nl</item>
+        <item>nz</item>
+        <item>mk</item>
+        <item>no</item>
+        <item>pl</item>
+        <item>pt</item>
+        <item>ro</item>
+        <item>rs</item>
+        <item>sg</item>
+        <item>sk</item>
+        <item>si</item>
+        <item>za</item>
+        <item>kr</item>
+        <item>es</item>
+        <item>se</item>
+        <item>ch</item>
+        <item>tw</item>
+        <item>th</item>
+        <item>tr</item>
+        <item>ua</item>
+        <item>ae</item>
+        <item>gb</item>
+        <item>us</item>
+        <item>vn</item>
+    </string-array>
+
+    <string name="pref_tcp">TCP</string>
+    <string name="pref_description_tcp">Port 443</string>
+    <string name="pref_description_udp">Port 1194 (UDP)</string>
+
+    <string name="pref_max_load">Max load</string>
+
+    <string-array name="pref_max_load_entries">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+    </string-array>
+
+    <string-array name="pref_max_load_values">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+    </string-array>
+
+    <string name="pref_top_servers">Top servers</string>
+
+    <string-array name="pref_top_servers_entries">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="pref_top_servers_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string name="pref_pings">Pings</string>
+
+    <string-array name="pref_pings_entries">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="pref_pings_values">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string name="pref_p2p">P2P</string>
+    <!--<string name="pref_description_p2p">Look for \“Peer To Peer\” servers</string>-->
+
+    <string name="pref_dedicated">Dedicated IP</string>
+    <!--<string name="pref_description_dedicated">Look for \“Dedicated IP\” servers</string>-->
+
+    <string name="pref_double">Double VPN</string>
+    <!--<string name="pref_description_double">Look for \“Double VPN\” servers</string>-->
+
+    <string name="pref_tor">Onion over VPN</string>
+    <!--<string name="pref_description_tor">Look for \“Onion Over VPN\” servers</string>-->
+
+    <string name="pref_anti_ddos">Obfuscated</string>
+    <!--<string name="pref_description_anti_ddos">Look for \“Obfuscated\” servers</string>-->
+
+    <!--<string name="pref_netflix">Netflix</string>-->
+    <!--<string name="pref_description_netflix">Only look for \“Netflix\” servers</string>-->
+
+    <string name="pref_test">Test</string>
+    <string name="pref_description_test">Simulation only, do not actually connect to the VPN server</string>
+
+    <string name="pref_skip_dns_patch">Skip DNS patching</string>
+    <string name="pref_description_skip_dns_patch">Leaves /etc/resolv.conf untouched</string>
+
+    <string name="pref_force_fw">Enforce firewall rules</string>
+    <string name="pref_description_force_fw">Drop traffic when tunnel breaks, force disable DNS traffic going to any other interface</string>
+
+    <string name="pref_nvram">ASUSWRT-Merlin VPN client</string>
+    <string name="pref_description_nvram">Apply VPN configuration to a client instance</string>
+
+    <string name="pref_nvram_client">ASUSWRT-Merlin client instance</string>
+
+    <string-array name="pref_nvram_client_entries">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="pref_nvram_client_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string name="pref_silent">Silent</string>
+    <string name="pref_description_silent">Do not try to send notifications. Use if \“libnotify\” or \“gi\” are not available</string>
+
+    <string name="is_tor">is_tor</string>
+    <string name="is_proxy">is_proxy</string>
+    <string name="is_anonymous">is_anonymous</string>
+    <string name="is_known_attacker">is_known_attacker</string>
+    <string name="is_known_abuser">is_known_abuser</string>
+    <string name="is_threat">is_threat</string>
+    <string name="is_bogon">is_bogon</string>
+
+    <string name="pref_category_geolocation">Geolocation API</string>
+    <string name="pref_geo">GeoIP</string>
+    <string name="pref_description_geolocation">Specify service to use to determine current location based on public IP address</string>
+
+    <string name="pref_geo_client">GeoIP service</string>
+
+    <string-array name="pref_geo_client_entries">
+        <item>IPApi</item>
+        <item>IPData (requires API Key)</item>
+        <item>IPInfo</item>
+        <item>IPStack (requires API Key)</item>
+    </string-array>
+
+    <string-array name="pref_geo_client_values">
+        <item>ipapi</item>
+        <item>ipdata</item>
+        <item>ipinfo</item>
+        <item>ipstack</item>
+    </string-array>
+
+    <string name="pref_category_api_keys">API keys</string>
+
+    <string name="pref_api_ipdata">IPData</string>
+    <string name="pref_api_ipinfo">IPInfo</string>
+    <string name="pref_api_ipstack">IPStack</string>
+
+    <string name="egab_leave_review">Leave review</string>
+    <string name="egab_contact_support">Contact us</string>
+    <string name="egab_version">Version</string>
+    <string name="egab_author">Author</string>
+    <string name="egab_share">Share</string>
+    <string name="egab_changelog">Changelog</string>
+    <string name="egab_submit_issue">Report a problem</string>
+
+    <string name="pref_log_level">Logging level</string>
+
+    <string-array name="pref_log_level_entries">
+        <item>Spam</item>
+        <item>Debug</item>
+        <item>Verbose</item>
+        <item>Info</item>
+        <item>Notice</item>
+        <item>Warning</item>
+        <item>Success</item>
+        <item>Error</item>
+        <item>Critical</item>
+    </string-array>
+
+    <string-array name="pref_log_level_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>50</item>
+    </string-array>
+
+    <string name="pref_category_support">Support</string>
+    <string name="pref_category_other">Other</string>
+</resources>

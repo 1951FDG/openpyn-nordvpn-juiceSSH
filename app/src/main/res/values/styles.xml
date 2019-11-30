@@ -23,6 +23,8 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>
+
     </style>
 
     <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.MaterialComponents.Light.Bridge">
@@ -44,36 +46,46 @@
     <style name="AppTheme.Settings" parent="Base.Theme.AppTheme.Settings">
         <!--<item name="android:windowEnterTransition">@transition/fade_in</item>-->
 
-        <!--<item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>-->
-
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
     </style>
 
     <style name="AppTheme.Licenses" parent="Base.Theme.AppTheme.Settings">
 
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
+
     </style>
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
     <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar" />
 
-    <!--<style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">-->
+    <style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">
+        <item name="checkBoxPreferenceStyle">@style/Preference.CheckBoxPreference.Material.Custom</item>
         <!--<item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>-->
-    <!--</style>-->
+    </style>
+
+    <style name="Preference.CheckBoxPreference.Material.Custom" parent="@style/Preference.CheckBoxPreference.Material">
+        <item name="android:layout">@layout/abc_preference_material</item>
+        <item name="allowDividerAbove">false</item>
+        <item name="allowDividerBelow">false</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="blinkt.dialog" parent="android:Theme.DeviceDefault.Light.Dialog" />
 
     <!--<style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">-->
         <!--<item name="android:background">?android:attr/colorBackground</item>-->
         <!--<item name="android:cacheColorHint">?android:attr/colorBackground</item>-->
     <!--</style>-->
 
-    <style name="MorphDialog.Custom.Light" parent="MorphDialog.Base.Light">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+    <!--<style name="MorphDialog.Custom.Light" parent="MorphDialog.Base.Light">-->
+        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+    <!--</style>-->
 
     <!--<style name="ToolbarProgress" parent="android:Widget.ProgressBar.Horizontal">-->
         <!--<item name="android:indeterminate">true</item>-->
@@ -83,7 +95,5 @@
         <!--<item name="mpb_showProgressBackground">false</item>-->
         <!--<item name="mpb_useIntrinsicPadding">false</item>-->
     <!--</style>-->
-
-    <style name="blinkt.dialog" parent="android:Theme.DeviceDefault.Light.Dialog" />
 
 </resources>

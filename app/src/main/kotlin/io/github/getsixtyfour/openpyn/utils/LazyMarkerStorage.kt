@@ -16,13 +16,13 @@ class LazyMarkerStorage(key: String) : MyStorage<LazyMarker>(key) {
             @ToJson
             @Suppress("unused")
             fun toJson(value: LatLng): Map<String, Double> {
-                return mapOf("lat" to value.latitude, "long" to value.longitude)
+                return mapOf(LAT to value.latitude, LONG to value.longitude)
             }
 
             @FromJson
             @Suppress("unused")
             fun fromJson(value: Map<String, Double>): LatLng {
-                return LatLng(value.getValue("lat"), value.getValue("long"))
+                return LatLng(value.getValue(LAT), value.getValue(LONG))
             }
         }).build()
         val listType = Types.newParameterizedType(List::class.java, LazyMarker::class.java)

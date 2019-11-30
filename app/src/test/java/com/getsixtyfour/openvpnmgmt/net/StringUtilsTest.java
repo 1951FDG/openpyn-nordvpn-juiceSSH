@@ -1,10 +1,10 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
+import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
+
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
 /**
  * @author 1951FDG

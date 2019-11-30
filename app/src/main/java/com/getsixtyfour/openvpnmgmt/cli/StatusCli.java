@@ -5,6 +5,11 @@
  */
 package com.getsixtyfour.openvpnmgmt.cli;
 
+import com.getsixtyfour.openvpnmgmt.api.Status;
+import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
+import com.getsixtyfour.openvpnmgmt.net.Connection;
+import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -16,16 +21,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import com.getsixtyfour.openvpnmgmt.api.Status;
-import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
-import com.getsixtyfour.openvpnmgmt.net.Connection;
-import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
-
 /**
  * @author Maksym Shkolnyi aka maskimko
  */
 
-@SuppressWarnings({ "UtilityClass", "CallToSystemExit" })
+@SuppressWarnings({ "UtilityClass", "CallToSystemExit", "HardCodedStringLiteral" })
 public final class StatusCli {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusCli.class);

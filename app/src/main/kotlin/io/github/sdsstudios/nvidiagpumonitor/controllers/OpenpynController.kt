@@ -50,7 +50,7 @@ class OpenpynController(
             }
             -1 -> {
                 info("Terminated \"abnormal\"")
-                info(command)
+                info(startCommand)
             }
         }
 
@@ -69,15 +69,7 @@ class OpenpynController(
 
         buffer.append(line)
         val logging = listOf(
-            SPAM,
-            DEBUG,
-            VERBOSE,
-            INFO,
-            NOTICE,
-            WARNING,
-            SUCCESS,
-            ERROR,
-            CRITICAL
+            SPAM, DEBUG, VERBOSE, INFO, NOTICE, WARNING, SUCCESS, ERROR, CRITICAL
         )
 
         @Suppress("MagicNumber")
@@ -124,12 +116,12 @@ class OpenpynController(
         }
         val (location, flag) = pair
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
-        val server: String = preferences.getString("pref_server", "")!!
-        val country: String = preferences.getString("pref_country", "")!!
+        val server = preferences.getString("pref_server", "")!!
+        val country = preferences.getString("pref_country", "")!!
         val tcp = preferences.getBoolean("pref_tcp", false)
-        val load: String = preferences.getString("pref_max_load", "")!!
-        val top: String = preferences.getString("pref_top_servers", "")!!
-        val pings: String = preferences.getString("pref_pings", "")!!
+        val load = preferences.getString("pref_max_load", "")!!
+        val top = preferences.getString("pref_top_servers", "")!!
+        val pings = preferences.getString("pref_pings", "")!!
         val rules = preferences.getBoolean("pref_force_fw", false)
         val p2p = preferences.getBoolean("pref_p2p", false)
         val dedicated = preferences.getBoolean("pref_dedicated", false)
@@ -194,8 +186,8 @@ class OpenpynController(
         info(openpyn)
         // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
         // command = "echo \$PATH ; echo \$-"
-        command = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; $openpyn"
-        info(command)
+        startCommand = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; $openpyn"
+        info(startCommand)
 
         if (super.start(pluginClient, sessionId, sessionKey)) {
             return true
@@ -204,11 +196,11 @@ class OpenpynController(
     }
 
     override fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
-        stopcommand = when {
+        stopCommand = when {
             test || nvram -> ""
             else -> "sudo openpyn --kill"
         }
-        info(stopcommand)
+        info(stopCommand)
 
         if (super.kill(pluginClient, sessionId, sessionKey)) {
             return true

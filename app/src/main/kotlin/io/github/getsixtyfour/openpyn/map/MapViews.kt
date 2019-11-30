@@ -1,6 +1,7 @@
 package io.github.getsixtyfour.openpyn.map
 
 import android.view.View
+import android.widget.ImageView
 import com.mayurrokade.minibar.UserMessage
 import com.naver.android.svc.core.views.ActionViews
 import io.github.getsixtyfour.openpyn.MainActivity
@@ -29,8 +30,8 @@ class MapViews : ActionViews<MapViewsAction>() {
     override fun onCreated() {
         // todo decouple
         (screen.hostActivity as? MainActivity)?.mSnackProgressBarManager?.setViewsToMove(arrayOf(fab0, fab1))
-
-        fab0.setOnClickListener { viewsAction.toggleCommand(fab0) } // todo check
+        // todo check
+        fab0.setOnClickListener { viewsAction.toggleCommand(fab0) }
 
         fab1.setOnClickListener { viewsAction.updateMasterMarker() }
 
@@ -53,7 +54,7 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab0.callOnClick()
     }
 
-    fun fakeLayoutAllFabs() {
+    fun fakeLayoutButtons() {
         val i = 0
         fab0.layout(i, i, i, i)
         fab1.layout(i, i, i, i)
@@ -61,42 +62,52 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab3.layout(i, i, i, i)
     }
 
-    fun hideFavoriteFab() {
+    fun hideFavoriteButton() {
         fab3.hide()
     }
 
-    fun hideListAndLocationFab() {
+    fun hideListAndLocationButton() {
         fab1.hide()
         fab2.hide()
     }
 
-    fun setClickableConnectFab(clickable: Boolean) {
-        fab0.isClickable = clickable
-    }
-
-    fun setClickableFabs(clickable: Boolean) {
+    fun setClickableButtons(clickable: Boolean) {
         fab0.isClickable = clickable
         fab1.isClickable = clickable
         fab2.isClickable = clickable
         fab3.isClickable = clickable
     }
 
-    fun showAllFabs() {
+    fun showAllButtons() {
         fab0.show()
         fab1.show()
         fab2.show()
     }
 
-    fun showFavoriteFab() {
+    fun showFavoriteButton() {
         fab3.show()
     }
 
-    fun showListAndLocationFab() {
+    fun showListAndLocationButton() {
         fab1.show()
         fab2.show()
     }
 
     fun showMap() {
+        val watermark = map.findViewWithTag<ImageView>("GoogleWatermark")
+
+        if (watermark != null) {
+            watermark.visibility = View.INVISIBLE
+            /*
+            val params = watermark.layoutParams as RelativeLayout.LayoutParams
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0)
+            params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+            */
+        }
         map.visibility = View.VISIBLE
     }
 
@@ -105,12 +116,12 @@ class MapViews : ActionViews<MapViewsAction>() {
         minibarView.show(userMessage)
     }
 
-    fun toggleConnectFab(checked: Boolean) {
+    fun toggleConnectButton(checked: Boolean) {
         fab0.isChecked = checked
         fab0.show()
     }
 
-    fun toggleFavoriteFab(checked: Boolean) {
+    fun toggleFavoriteButton(checked: Boolean) {
         fab3.isChecked = checked
         fab3.show()
     }

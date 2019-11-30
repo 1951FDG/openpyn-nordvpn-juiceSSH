@@ -1,5 +1,8 @@
 package io.github.getsixtyfour.openpyn.map
 
+import android.os.Bundle
+import android.view.View
+import com.google.android.gms.maps.MapView
 import com.naver.android.svc.annotation.RequireControlTower
 import com.naver.android.svc.annotation.RequireViews
 import com.naver.android.svc.annotation.SvcFragment
@@ -49,5 +52,13 @@ class MapFragment : SVC_MapFragment(), AnkoLogger, OnSessionStartedListener, OnS
     override fun onSessionFinished() {
         info("onSessionFinished")
         controlTower.onSessionFinished()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val mapView = views.findViewById<MapView>(R.id.map)
+        mapView?.onCreate(savedInstanceState)
+        mapView?.getMapAsync(controlTower)
     }
 }

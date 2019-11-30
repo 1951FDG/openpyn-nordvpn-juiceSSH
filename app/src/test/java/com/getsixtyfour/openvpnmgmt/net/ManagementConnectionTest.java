@@ -5,6 +5,11 @@
  */
 package com.getsixtyfour.openvpnmgmt.net;
 
+import com.getsixtyfour.openvpnmgmt.core.LogLevel;
+import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.ByteCountListener;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.Log;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.LogListener;
+
 import junit.framework.AssertionFailedError;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,11 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import com.getsixtyfour.openvpnmgmt.core.LogLevel;
-import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.ByteCountListener;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.Log;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.LogListener;
 
 /**
  * @author 1951FDG

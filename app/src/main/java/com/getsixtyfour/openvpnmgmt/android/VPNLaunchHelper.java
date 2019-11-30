@@ -3,7 +3,7 @@
  * Distributed under the GNU GPL v2 with additional terms. For full terms see the file doc/LICENSE.txt
  */
 
-package com.getsixtyfour.openvpnmgmt.android.core;
+package com.getsixtyfour.openvpnmgmt.android;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,12 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService;
+
 /**
  * @author Arne Schwabe
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "UtilityClass", "ClassWithTooManyTransitiveDependencies" })
+@SuppressWarnings("UtilityClass")
 public final class VPNLaunchHelper {
 
     public static void startOpenVPNService(@NonNull Context context) {

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources.NotFoundException
 import android.net.Uri
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -16,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
-import com.afollestad.materialdialogs.MaterialDialog
 import com.crashlytics.android.Crashlytics
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
@@ -118,8 +118,19 @@ fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETE
             toolbar?.hideProgress(true)
 
             if (!thrown) {
-                MaterialDialog.Builder(it).title("Warning").content(R.string.warning_must_restart_app).positiveText(android.R.string.ok)
-                    .show()
+                /*MaterialDialog.Builder(it).apply {
+                    title(R.string.title_dialog_warning)
+                    content(R.string.warning_must_restart_app)
+                    positiveText(android.R.string.ok)
+                    show()
+                }*/
+
+                AlertDialog.Builder(it).apply {
+                    setTitle(R.string.title_dialog_warning)
+                    setMessage(R.string.warning_must_restart_app)
+                    setPositiveButton(android.R.string.ok, null)
+                    show()
+                }
             }
         }
 
@@ -257,4 +268,12 @@ fun populateAboutConfig() {
 fun setDefaultPreferences(context: Context) {
     PreferenceManager.setDefaultValues(context, R.xml.pref_settings, false)
     PreferenceManager.setDefaultValues(context, R.xml.pref_api, true)
+    PreferenceManager.setDefaultValues(context, R.xml.pref_connect, true)
+}
+
+fun isRunningTest(): Boolean = try {
+    Class.forName("androidx.test.espresso.Espresso")
+    true
+} catch (e: ClassNotFoundException) {
+    false
 }

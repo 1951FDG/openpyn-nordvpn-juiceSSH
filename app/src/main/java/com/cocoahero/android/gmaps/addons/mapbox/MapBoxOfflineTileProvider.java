@@ -1,7 +1,6 @@
 package com.cocoahero.android.gmaps.addons.mapbox;
 
 import android.database.Cursor;
-
 import android.util.Log;
 
 import androidx.annotation.MainThread;
@@ -14,6 +13,8 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.maps.android.geometry.Point;
 import com.google.maps.android.projection.SphericalMercatorProjection;
+
+import org.jetbrains.annotations.NonNls;
 
 import java.io.Closeable;
 import java.io.File;
@@ -54,6 +55,9 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     // Tile dimension, in pixels.
     private static final int TILE_DIM = 512;
 
+    // sqlite3x, sqliteX, sqlite4java-android
+    private static final String SQLITE = "sqlite3x";
+
     private static final String TAG = "MBTileProvider";
 
     // TABLE tiles (zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB);
@@ -82,18 +86,15 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     //region Constructors
 
-    @SuppressWarnings("unused")
     public MapBoxOfflineTileProvider(@NonNull File file) {
         this(file.getAbsolutePath());
     }
 
-    @SuppressWarnings({ "WeakerAccess", "unused" })
     public MapBoxOfflineTileProvider(@NonNull String pathToFile) {
         // this(SQLiteDatabase.openDatabase(pathToFile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS));
         this(SQLiteDatabase.openDatabase(pathToFile, null, SQLiteDatabase.OPEN_READONLY));
     }
 
-    @SuppressWarnings({ "LambdaLast", "unused" })
     public MapBoxOfflineTileProvider(@Nullable CursorFactory factory, @NonNull String pathToFile) {
         this(create(factory, pathToFile));
     }
@@ -123,7 +124,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     //region Accessors
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getAttribution() {
         return getStringValue("attribution");
     }
@@ -135,13 +135,11 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * be determined.
      */
     @Nullable
-    @SuppressWarnings("unused")
     public LatLngBounds getBounds() {
         return bounds;
     }
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getDescription() {
         return getStringValue("description");
     }
@@ -152,7 +150,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the maximum zoom level supported or {@link #maximumZoom} if
      * it could not be determined.
      */
-    @SuppressWarnings("unused")
     public float getMaximumZoom() {
         return maximumZoom;
     }
@@ -163,25 +160,21 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the minimum zoom level supported or {@link #minimumZoom} if
      * it could not be determined.
      */
-    @SuppressWarnings("unused")
     public float getMinimumZoom() {
         return minimumZoom;
     }
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getName() {
         return getStringValue("name");
     }
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getType() {
         return getStringValue("template");
     }
 
     @Nullable
-    @SuppressWarnings("unused")
     public String getVersion() {
         return getStringValue("version");
     }
@@ -193,7 +186,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return {@code true} if the requested zoom level is supported by this
      * provider.
      */
-    @SuppressWarnings({ "WeakerAccess", "unused" })
     public boolean isZoomLevelAvailable(float zoom) {
         return (zoom >= minimumZoom) && (zoom <= maximumZoom);
     }
@@ -202,7 +194,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     //region TileProvider
 
-    @SuppressWarnings({ "unused", "ParameterNameDiffersFromOverriddenParameter", "SynchronizedMethod" })
+    @SuppressWarnings({ "ParameterNameDiffersFromOverriddenParameter", "SynchronizedMethod" })
     @Override
     @NonNull
     public synchronized Tile getTile(int x, int y, int zoom) {
@@ -292,7 +284,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     @Nullable
     private String getStringValue(@NonNull String key) {
-        String sql = "SELECT value FROM metadata WHERE name = ?";
+        @NonNls String sql = "SELECT value FROM metadata WHERE name = ?";
         String[] bindArgs = { key };
         try (Cursor cursor = mDatabase.rawQueryWithFactory(null, sql, bindArgs, null, null)) {
             return cursor.moveToPosition(0) ? cursor.getString(0) : null;
@@ -301,7 +293,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     @Nullable
     private String getSQliteVersion() {
-        String sql = "SELECT sqlite_version() AS sqlite_version";
+        @NonNls String sql = "SELECT sqlite_version() AS sqlite_version";
         //return DatabaseUtils.stringForQuery(mDatabase, sql, null); // sqliteX
         try (Cursor cursor = mDatabase.rawQueryWithFactory(null, sql, null, null, null)) {
             return cursor.moveToPosition(0) ? cursor.getString(0) : null;
@@ -347,7 +339,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the newly opened database
      * @throws android.database.SQLException if the database cannot be opened
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
+    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral", "MethodCallInLoopCondition" })
     private static SQLiteDatabase create(@Nullable CursorFactory factory, @NonNull String path) {
         SQLiteDatabase database = SQLiteDatabase
                 .openDatabase(SQLiteDatabaseConfiguration.MEMORY_DB_PATH, factory, SQLiteDatabase.CREATE_IF_NECESSARY);
@@ -398,8 +390,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @throws IOException      if an I/O error occurs reading from the stream
      * @throws OutOfMemoryError if an array of the required size cannot be allocated
      */
-    @SuppressWarnings({ "unused", "ForLoopWithMissingComponent", "MethodCallInLoopCondition", "NestedAssignment",
-            "ValueOfIncrementOrDecrementUsed" })
+    @SuppressWarnings({ "ForLoopWithMissingComponent", "MethodCallInLoopCondition", "NestedAssignment", "ValueOfIncrementOrDecrementUsed",
+            "NumericCastThatLosesPrecision" })
     private static byte[] read(InputStream source, int initialSize) throws IOException {
         int capacity = initialSize;
         byte[] buf = new byte[capacity];
@@ -463,8 +455,6 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     static {
         // sqlite3ndk should be loaded first
         System.loadLibrary("sqlite3ndk");
-        System.loadLibrary("sqlite3x");
-        // System.loadLibrary("sqliteX");
-        // System.loadLibrary("sqlite4java-android");
+        System.loadLibrary(SQLITE);
     }
 }

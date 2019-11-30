@@ -1,3 +1,5 @@
+-keep public class androidx.navigation.fragment.NavHostFragment { *; }
+
 -keep public class io.requery.android.database.sqlite.SQLiteCustomFunction { *; }
 -keep public class io.requery.android.database.sqlite.SQLiteDebug** { *; }
 -keep public class io.requery.android.database.sqlite.SQLiteFunction { *; }

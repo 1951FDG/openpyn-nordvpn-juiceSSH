@@ -14,6 +14,7 @@ tests_apk_path('app/build/outputs/apk/androidTest/debug/app-debug-androidTest.ap
 # clear all previously generated screenshots in your local output directory before creating new ones
 clear_previous_screenshots(true)
 reinstall_app(true)
+use_adb_root(true)
 
 # For more information about all available options run
 #   fastlane screengrab --help

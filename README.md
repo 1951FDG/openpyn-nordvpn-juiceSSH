@@ -96,10 +96,11 @@ After the map is done loading, the NordVPN API is invoked to query all the suppo
 ## Screenshots
 
 <p align="middle">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01.png" width="24%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02.png" width="24%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03.png" width="24%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04.png" width="24%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01_01.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04.png" width="18%">
 </p>
 
 ## Download
@@ -116,7 +117,7 @@ Please use my `test` branch of [Openpyn](https://github.com/1951FDG/openpyn-nord
 
 To compile and run the project you'll need:
 
--   [Android Studio 3.3 or higher](https://developer.android.com/studio/)
+-   [Android Studio 3.5 or higher](https://developer.android.com/studio/)
     -   Android `10 (API level 29)`
     -   Android SDK Build-Tools `29.0.2`
     -   CMake `v3.10.2`
@@ -130,9 +131,9 @@ To compile and run the project you'll need:
 
 ## References
 
--   [MyStorage.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utilities/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
+-   [MyStorage.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utils/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
 
--   [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utilities/PrintArray.kt) inspired by Github repo, [PrintArray
+-   [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utils/PrintArray.kt) inspired by Github repo, [PrintArray
     ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
 
 -   [SecurityManager.java](app/src/main/java/com/getsixtyfour/openvpnmgmt/android/security/SecurityManager.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
@@ -157,7 +158,6 @@ To compile and run the project you'll need:
 -   [Ktor](https://github.com/ktorio/ktor)
 -   [LeakCanary](https://github.com/square/leakcanary)
 -   [Minibar](https://github.com/mayuroks/minibar)
--   [Morphing Material Dialogs](https://github.com/AdityaAnand1/Morphing-Material-Dialogs)
 -   [Moshi](https://github.com/square/moshi)
 -   [Moshi: Pristine Models](https://github.com/jayrave/moshi-pristine-models)
 -   [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
@@ -170,6 +170,7 @@ To compile and run the project you'll need:
 -   [StaticLog](https://github.com/jupf/staticlog)
 -   [SVC](https://github.com/BansookNam/svc)
 -   [Toasty](https://github.com/GrenderG/Toasty)
+-   [Unused Resources Remover for Android](https://github.com/konifar/gradle-unused-resources-remover-plugin)
 
 ## Feedback
 

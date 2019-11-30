@@ -5,6 +5,10 @@
  */
 package com.getsixtyfour.openvpnmgmt.implementation;
 
+import com.getsixtyfour.openvpnmgmt.api.Client;
+import com.getsixtyfour.openvpnmgmt.api.Status;
+import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,10 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import com.getsixtyfour.openvpnmgmt.api.Client;
-import com.getsixtyfour.openvpnmgmt.api.Status;
-import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
@@ -42,11 +42,13 @@ public class OpenVpnClient implements Client {
     OpenVpnClient(String s) throws OpenVpnParseException {
         String[] strings = s.split(",");
         if (strings.length != 5) {
+            //noinspection ConstantConditions
             throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_ROUTE_STRING, s, 5));
         }
         try {
             String[] realConnection = strings[1].split(":");
             if (realConnection.length != 2) {
+                //noinspection ConstantConditions
                 throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_REAL_CONNECTION_STRING, strings[2]));
             }
             InetAddress realAddress = InetAddress.getByName(realConnection[0]);

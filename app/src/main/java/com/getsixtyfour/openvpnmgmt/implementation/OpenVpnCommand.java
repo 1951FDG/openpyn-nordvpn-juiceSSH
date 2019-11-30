@@ -1,10 +1,10 @@
 package com.getsixtyfour.openvpnmgmt.implementation;
 
+import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
 /**
  * @author Maksym Shkolnyi aka maskimko

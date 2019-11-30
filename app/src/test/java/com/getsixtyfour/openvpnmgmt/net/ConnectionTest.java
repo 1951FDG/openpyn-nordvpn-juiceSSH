@@ -5,6 +5,11 @@
  */
 package com.getsixtyfour.openvpnmgmt.net;
 
+import com.getsixtyfour.openvpnmgmt.api.Client;
+import com.getsixtyfour.openvpnmgmt.api.Route;
+import com.getsixtyfour.openvpnmgmt.api.Status;
+import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.*;
 import org.junit.runners.*;
@@ -15,11 +20,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import com.getsixtyfour.openvpnmgmt.api.Client;
-import com.getsixtyfour.openvpnmgmt.api.Route;
-import com.getsixtyfour.openvpnmgmt.api.Status;
-import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
 /**
  * @author 1951FDG

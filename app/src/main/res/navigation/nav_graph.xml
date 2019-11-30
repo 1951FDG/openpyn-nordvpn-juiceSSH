@@ -3,10 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mapFragment">
+    app:startDestination="@id/mapFragment"
+    tools:ignore="UnusedNavigation">
     <fragment
         android:id="@+id/mapFragment"
         android:name="io.github.getsixtyfour.openpyn.map.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_multiSelectDialogFragment"
+            app:destination="@+id/multiSelectDialog"
+            tools:ignore="UnusedIds" />
+        <action
+            android:id="@+id/action_mapFragment_to_preferenceDialogFragment"
+            app:destination="@+id/preferenceDialog"
+            tools:ignore="UnusedIds" />
+    </fragment>
+    <dialog
+        android:id="@+id/multiSelectDialog"
+        android:name="com.abdeveloper.library.MultiSelectDialog"
+        android:label="multi_select_dialog"
+        tools:layout="@layout/multi_select_dialog" />
+    <dialog
+        android:id="@+id/preferenceDialog"
+        android:name="io.github.getsixtyfour.openpyn.dialog.PreferenceDialog"
+        android:label="preference_dialog"
+        tools:layout="@layout/abc_preference_dialog_material" >
+        <argument
+            android:name="message"
+            app:argType="string" />
+    </dialog>
 </navigation>

@@ -1,17 +1,5 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Objects;
-
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
@@ -29,6 +17,18 @@ import com.getsixtyfour.openvpnmgmt.listeners.StateManager.State;
 import com.getsixtyfour.openvpnmgmt.listeners.StateManager.StateListener;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Objects;
+
 /**
  * @author Arne Schwabe
  * @author 1951FDG
@@ -38,6 +38,14 @@ import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 public final class ManagementConnection extends AbstractConnection implements Connection {
 
     private static volatile ManagementConnection mInstance = null;
+
+    private static final String ARG_INTERACT = "interact";
+
+    private static final String ARG_ON = "on";
+
+    private static final String ARG_RELEASE = "release";
+
+    private static final String ARG_SIGTERM = "SIGTERM";
 
     public static final Integer BYTE_COUNT_INTERVAL = 2;
 
@@ -199,11 +207,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
         isRunning = true;
         {
             try {
-                managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, "interact"));
+                managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, ARG_INTERACT));
                 managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
-                managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, "on"));
-                managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, "on"));
-                managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, "release"));
+                managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ARG_ON));
+                managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, ARG_ON));
+                managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, ARG_RELEASE));
                 BufferedReader in = getBufferedReader();
                 String line;
                 while ((line = in.readLine()) != null) {
@@ -238,7 +246,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @Override
     public void stopOpenVPN() throws IOException {
-        managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, "SIGTERM"));
+        managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, ARG_SIGTERM));
         if (!isRunning) {
             disconnect();
         }
@@ -263,7 +271,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onConnected() {
-        LOGGER.info("connected");
+        LOGGER.info("Connected");
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onConnected();
@@ -271,7 +279,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onDisconnected() {
-        LOGGER.info("disconnected");
+        LOGGER.info("Disconnected");
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onDisconnected();
@@ -284,7 +292,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     private void parseInput(String line) throws IOException {
         if ((Character.compare(line.charAt(0), '>') == 0) && line.contains(":")) {
             String[] parts = line.split(":", 2);
-            String cmd = parts[0].substring(1);
+            @NonNls String cmd = parts[0].substring(1);
             String argument = parts[1];
             switch (cmd) {
                 case "BYTECOUNT":
@@ -358,7 +366,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     private void processLog(String argument) {
         String[] args = argument.split(",", 3);
         String date = args[0];
-        String level = args[1];
+        @NonNls String level = args[1];
         String message = args[2];
         LogLevel logLevel;
         switch (level) {

@@ -18,10 +18,11 @@ import android.os.RemoteException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.lang.ref.WeakReference;
-
 import com.getsixtyfour.openvpnmgmt.android.core.IOpenVPNServiceInternal;
 import com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService;
+
+import java.lang.ref.WeakReference;
+
 import io.github.getsixtyfour.openpyn.R;
 
 /**

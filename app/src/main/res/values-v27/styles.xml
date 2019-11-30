@@ -16,21 +16,18 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="titleTextColor">#ffbebebe</item>
+
     </style>
 
     <style name="Base.Theme.AppTheme.Settings" parent="Base.V27.Theme.AppTheme.Settings" />
 
     <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <item name="colorControlNormal">#ffbebebe</item>
-        <item name="android:textColorPrimary">#ffbebebe</item>
+        <item name="colorControlNormal">?android:attr/textColorSecondary</item>
     </style>
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textColor">#ffbebebe</item>
-    </style>
-
-    <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar">
-        <item name="titleTextColor">#ffbebebe</item>
     </style>
 
 </resources>

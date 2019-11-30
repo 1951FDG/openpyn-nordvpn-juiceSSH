@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <Blacklist />
+  <Whitelist>
+    <ID>ComplexCondition:Common.kt$flag.isNotEmpty() &amp;&amp; city.isNotEmpty() &amp;&amp; lat != 0.0 &amp;&amp; lon != 0.0 &amp;&amp; ip.isNotEmpty()</ID>
+    <ID>ComplexMethod:Common.kt$createJson</ID>
+    <ID>ComplexMethod:OpenpynController.kt$OpenpynController$onOutputLine</ID>
+    <ID>LongMethod:Common.kt$createJson</ID>
+    <ID>LongMethod:Utilities.kt$showThreats</ID>
+    <ID>LongParameterList:Utilities.kt$( context: Context, countryBoundaries: CountryBoundaries?, lastLocation: Location?, flags: HashSet&lt;CharSequence&gt;, jsonObj: JSONObject?, jsonArr: JSONArray? = null )</ID>
+    <ID>LongParameterList:Utilities.kt$( context: Context, jsonArray: JSONArray, countries: List&lt;MultiSelectable&gt;, listener: OnMarkerCreateListener, favorites: ArrayList&lt;LazyMarker&gt;?, callback: OnLevelChangeCallback )</ID>
+    <ID>TooManyFunctions:MainActivity.kt$MainActivity$MainActivity</ID>
+    <ID>TooManyFunctions:MapControlTower.kt$MapControlTower$MapControlTower</ID>
+  </Whitelist>
+</SmellBaseline>
