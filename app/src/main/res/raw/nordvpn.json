@@ -574,9 +574,6 @@
     },
     "categories": [
       {
-        "name": "P2P"
-      },
-      {
         "name": "Standard VPN servers"
       }
     ]
@@ -673,9 +670,6 @@
     },
     "categories": [
       {
-        "name": "P2P"
-      },
-      {
         "name": "Standard VPN servers"
       }
     ]
@@ -712,6 +706,9 @@
       },
       {
         "name": "Obfuscated Servers"
+      },
+      {
+        "name": "Onion Over VPN"
       },
       {
         "name": "P2P"
@@ -966,6 +963,9 @@
         "name": "Obfuscated Servers"
       },
       {
+        "name": "Onion Over VPN"
+      },
+      {
         "name": "P2P"
       },
       {
@@ -981,6 +981,9 @@
       "long": 121.525
     },
     "categories": [
+      {
+        "name": "Double VPN"
+      },
       {
         "name": "Standard VPN servers"
       }
@@ -1007,9 +1010,6 @@
       "long": 28.964722
     },
     "categories": [
-      {
-        "name": "Obfuscated Servers"
-      },
       {
         "name": "P2P"
       },
@@ -1080,22 +1080,6 @@
       {
         "name": "Obfuscated Servers"
       },
-      {
-        "name": "P2P"
-      },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
-    "flag": "us",
-    "country": "United States",
-    "location": {
-      "lat": 29.9544444,
-      "long": -90.075
-    },
-    "categories": [
       {
         "name": "P2P"
       },
@@ -1204,22 +1188,6 @@
       {
         "name": "Obfuscated Servers"
       },
-      {
-        "name": "P2P"
-      },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
-    "flag": "us",
-    "country": "United States",
-    "location": {
-      "lat": 38.2541667,
-      "long": -85.7594444
-    },
-    "categories": [
       {
         "name": "P2P"
       },
@@ -1353,22 +1321,6 @@
       {
         "name": "Dedicated IP"
       },
-      {
-        "name": "P2P"
-      },
-      {
-        "name": "Standard VPN servers"
-      }
-    ]
-  },
-  {
-    "flag": "us",
-    "country": "United States",
-    "location": {
-      "lat": 44.98,
-      "long": -93.2636111
-    },
-    "categories": [
       {
         "name": "P2P"
       },
