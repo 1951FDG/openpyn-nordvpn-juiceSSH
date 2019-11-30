@@ -19,6 +19,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -26,14 +27,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Objects;
 
+@SuppressWarnings("FieldNotUsedInToString")
 public class LazyMarker {
 
     @FunctionalInterface
     @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     public interface OnMarkerCreateListener {
 
-        @NonNull
-        Marker onMarkerCreate(@NonNull MarkerOptions options, @Nullable Object aTag);
+        void onMarkerCreate(@NonNull LazyMarker marker);
     }
 
     @FunctionalInterface
@@ -51,6 +52,9 @@ public class LazyMarker {
 
     private LatLng location;
 
+    @SuppressWarnings("TransientFieldInNonSerializableClass")
+    private transient GoogleMap map;
+
     @Nullable
     @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient Marker marker;
@@ -61,19 +65,20 @@ public class LazyMarker {
     @Nullable
     private Object tag;
 
-    public LazyMarker(@NonNull MarkerOptions options) {
-        this(options, null, null);
+    public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options) {
+        this(googleMap, options, null, null);
     }
 
-    public LazyMarker(@NonNull MarkerOptions options, @Nullable Object aTag) {
-        this(options, aTag, null);
+    public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options, @Nullable Object aTag) {
+        this(googleMap, options, aTag, null);
     }
 
-    public LazyMarker(@NonNull MarkerOptions options, @Nullable Object aTag,
+    public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options, @Nullable Object aTag,
                       @Nullable OnMarkerCreateListener markerCreateListener) {
         if (options.isVisible()) {
-            createMarker(options, aTag, markerCreateListener);
+            createMarker(googleMap, options, aTag, markerCreateListener);
         } else {
+            map = googleMap;
             markerOptions = copy(options);
             listener = markerCreateListener;
         }
@@ -81,6 +86,7 @@ public class LazyMarker {
         location = options.getPosition();
     }
 
+    @SuppressWarnings("NonFinalFieldReferenceInEquals")
     @Override
     public boolean equals(@Nullable Object obj) {
         if (this == obj) {
@@ -92,6 +98,7 @@ public class LazyMarker {
         return Objects.equals(location, ((LazyMarker) obj).location);
     }
 
+    @SuppressWarnings("NonFinalFieldReferencedInHashCode")
     @Override
     public int hashCode() {
         return location.hashCode();
@@ -106,9 +113,8 @@ public class LazyMarker {
     public float getAlpha() {
         if (marker != null) {
             return marker.getAlpha();
-        } else {
-            return markerOptions.getAlpha();
         }
+        return markerOptions.getAlpha();
     }
 
     public void setAlpha(float alpha) {
@@ -119,13 +125,12 @@ public class LazyMarker {
         }
     }
 
-    @NonNull
+    @Nullable
     public String getId() {
-        createMarker();
-        if (marker == null) {
-            throw new AssertionError();
+        if (marker != null) {
+            return marker.getId();
         }
-        return marker.getId();
+        return null;
     }
 
     @IntRange(from = 0, to = 9)
@@ -137,9 +142,8 @@ public class LazyMarker {
     public LatLng getPosition() {
         if (marker != null) {
             return marker.getPosition();
-        } else {
-            return markerOptions.getPosition();
         }
+        return markerOptions.getPosition();
     }
 
     public void setPosition(@NonNull LatLng position) {
@@ -154,9 +158,8 @@ public class LazyMarker {
     public float getRotation() {
         if (marker != null) {
             return marker.getRotation();
-        } else {
-            return markerOptions.getRotation();
         }
+        return markerOptions.getRotation();
     }
 
     public void setRotation(float rotation) {
@@ -171,9 +174,8 @@ public class LazyMarker {
     public String getSnippet() {
         if (marker != null) {
             return marker.getSnippet();
-        } else {
-            return markerOptions.getSnippet();
         }
+        return markerOptions.getSnippet();
     }
 
     public void setSnippet(@NonNull String snippet) {
@@ -200,9 +202,8 @@ public class LazyMarker {
     public String getTitle() {
         if (marker != null) {
             return marker.getTitle();
-        } else {
-            return markerOptions.getTitle();
         }
+        return markerOptions.getTitle();
     }
 
     public void setTitle(@NonNull String title) {
@@ -216,9 +217,8 @@ public class LazyMarker {
     public float getZIndex() {
         if (marker != null) {
             return marker.getZIndex();
-        } else {
-            return markerOptions.getZIndex();
         }
+        return markerOptions.getZIndex();
     }
 
     public void setZIndex(float zIndex) {
@@ -238,9 +238,8 @@ public class LazyMarker {
     public boolean isDraggable() {
         if (marker != null) {
             return marker.isDraggable();
-        } else {
-            return markerOptions.isDraggable();
         }
+        return markerOptions.isDraggable();
     }
 
     public void setDraggable(boolean draggable) {
@@ -254,9 +253,8 @@ public class LazyMarker {
     public boolean isFlat() {
         if (marker != null) {
             return marker.isFlat();
-        } else {
-            return markerOptions.isFlat();
         }
+        return markerOptions.isFlat();
     }
 
     public void setFlat(boolean flat) {
@@ -270,18 +268,16 @@ public class LazyMarker {
     public boolean isInfoWindowShown() {
         if (marker != null) {
             return marker.isInfoWindowShown();
-        } else {
-            return false;
         }
+        return false;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isVisible() {
         if (marker != null) {
             return marker.isVisible();
-        } else {
-            return false;
         }
+        return false;
     }
 
     public void setVisible(boolean visible) {
@@ -339,15 +335,18 @@ public class LazyMarker {
 
     private void createMarker() {
         if (marker == null) {
-            createMarker(markerOptions, tag, listener);
-            markerOptions = null;
+            createMarker(map, markerOptions, tag, listener);
             listener = null;
         }
     }
 
-    private void createMarker(MarkerOptions options, Object aTag, OnMarkerCreateListener markerCreateListener) {
+    private void createMarker(GoogleMap googleMap, MarkerOptions options, Object aTag, OnMarkerCreateListener markerCreateListener) {
+        marker = googleMap.addMarker(options);
+        if (aTag != null) {
+            marker.setTag(aTag);
+        }
         if (markerCreateListener != null) {
-            marker = markerCreateListener.onMarkerCreate(options, aTag);
+            markerCreateListener.onMarkerCreate(this);
         }
     }
 

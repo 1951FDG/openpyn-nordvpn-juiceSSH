@@ -3,11 +3,9 @@ package io.github.getsixtyfour.openpyn.map
 import android.content.Context
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.ImageView
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
-import com.androidmapsextensions.lazy.LazyMarker.OnMarkerCreateListener
 import com.antoniocarlon.map.CameraUpdateAnimator
 import com.antoniocarlon.map.CameraUpdateAnimator.Animation
 import com.antoniocarlon.map.CameraUpdateAnimator.AnimatorListener
@@ -19,13 +17,11 @@ import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
-import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.TileOverlayOptions
 import com.naver.android.svc.annotation.ControlTower
 import com.naver.android.svc.annotation.RequireScreen
@@ -59,7 +55,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.coroutines.experimental.asReference
 import org.jetbrains.anko.info
 import org.json.JSONArray
 import org.json.JSONObject
@@ -84,16 +79,13 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
         Log.error("Caught $exception")
         logException(exception)
     }
-
     private val applicationContext: Context
         get() = screen.requireContext().applicationContext
-
     private lateinit var markers: HashMap<LatLng, LazyMarker>
     private lateinit var flags: HashSet<CharSequence>
     private lateinit var mAnimations: ArrayList<Animation>
     private var mMap: GoogleMap? = null
     private var mCameraUpdateAnimator: CameraUpdateAnimator? = null
-
     private val mMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
     //set by async
     private lateinit var mCountries: List<MultiSelectable>
@@ -106,10 +98,6 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
     @ExperimentalCoroutinesApi
     private val mSendChannel = actor<Context>(coroutineContext, Channel.RENDEZVOUS) {
         channel.map(IO) { createGeoJson(it) }.consumeEach { animateCamera(it) }
-    }
-
-    override fun onCreated() {
-        loadData()
     }
 
     override fun onStarted() {
@@ -143,29 +131,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
         mMap = googleMap
 
         mMap?.let {
-            // todo get rid of asReference..., check all this invocations
-            onMarkerCreateListener.setMap(it)
-            it.addTileOverlay(TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false))
-            it.setMaxZoomPreference(mTileProvider!!.maximumZoom)
-            it.setMinZoomPreference(mTileProvider!!.minimumZoom)
-            it.setOnInfoWindowClickListener(this)
-            it.setOnMapClickListener(this)
-            it.setOnMarkerClickListener(this)
-            it.setOnMapLoadedCallback(this)
-
-            // todo
-            //val params = fab1.layoutParams as ConstraintLayout.LayoutParams
-            //it.setPadding(0, 0, 0, params.height + params.bottomMargin)
-
-            it.uiSettings?.isScrollGesturesEnabled = true
-            it.uiSettings?.isZoomGesturesEnabled = true
-
-            mCameraUpdateAnimator = CameraUpdateAnimator(it, mAnimations, this)
-            mCameraUpdateAnimator?.animatorListener = this
-
-            // Load map
-            views.showMap()
-            map.onResume()
+            loadData()
         }
     }
 
@@ -208,8 +174,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
             }
 
             markers[marker.position]?.let {
-                it.zIndex = 1.0f
-                it.setIcon(mDescriptor10)
+                onLevelChangeCallback.onLevelChange(it, 10)
 
                 views.toggleFavoriteButton(it.level == 1)
             }
@@ -271,7 +236,6 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
 
     fun updateMasterMarkerWithDelay(show: Boolean, delayMillis: Long) {
         launch {
-            // ui thread
             delay(delayMillis)
             updateMasterMarker(show)
         }
@@ -290,8 +254,7 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
             views.fakeLayoutButtons()
             markers[animation.target]?.let {
                 if (flags.contains(it.tag)) {
-                    it.zIndex = 1.0f
-                    it.setIcon(mDescriptor10)
+                    onLevelChangeCallback.onLevelChange(it, 10)
 
                     if (!it.isVisible) it.isVisible = true
                     if (!it.isInfoWindowShown) it.showInfoWindow()
@@ -385,40 +348,31 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
     }
 
     private fun loadData() = launch(mHandler) {
-        // ui thread
         screen.toolBar?.showProgress(true)
-        val ref = applicationContext.asReference()
-        val mapView = views.findViewById<MapView>(R.id.map)
 
-        // background thread
-        val countries = async(IO) { countryList(ref(), R.raw.emojis) }
-        val countryBoundaries = async(IO) { getCountryBoundaries(ref()) }
-        val favorites = async(IO) { LazyMarkerStorage(FAVORITE_KEY).loadFavorites(ref()) }
-        val jsonArray = async(IO) { jsonArray(ref(), R.raw.nordvpn, ".json") }
+        val countries = async(IO) { countryList(applicationContext, R.raw.emojis) }
+        val countryBoundaries = async(IO) { getCountryBoundaries(applicationContext) }
+        val favorites = async(IO) { LazyMarkerStorage(FAVORITE_KEY).loadFavorites(applicationContext) }
+        val jsonArray = async(IO) { jsonArray(applicationContext, R.raw.nordvpn, ".json") }
         val tileProvider = async(IO) { fileBackedTileProvider() }
-        val jsonObj = async(IO) { createGeoJson(ref()) }
-        val map = async(Main) { mapView?.onCreate(null) }
+        val jsonObj = async(IO) { createGeoJson(applicationContext) }
 
-        // ui thread
         mCountries = countries.await()
         mTileProvider = tileProvider.await()
         mCountryBoundaries = countryBoundaries.await()
         mFavorites = favorites.await()
         mJsonArray = jsonArray.await()
-        map.await()
 
-        // Show data in UI
         screen.toolBar?.hideProgress(true)
+
         showData(jsonObj.await())
     }
 
     private suspend fun showData(jsonObj: JSONObject?) {
-        val ref = applicationContext.asReference()
-        // todo use current context or not?
         val (hashSet, hashMap) = withContext(Default) {
-            createMarkers(ref(), mJsonArray, mCountries, onMarkerCreateListener, mFavorites, onLevelChangeCallback)
+            createMarkers(applicationContext, mJsonArray, mCountries, mMap!!, mFavorites, onLevelChangeCallback)
         }
-        flags = withContext(Default) { showPrintArray(ref(), mCountries, hashSet) }
+        flags = withContext(Default) { showPrintArray(applicationContext, mCountries, hashSet) }
         markers = hashMap
         mAnimations = createCameraUpdates()
         val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, flags, jsonObj, mJsonArray)
@@ -430,22 +384,30 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
             target = latLng
         }
         mAnimations.add(animation)
-        val mapView = views.findViewById<MapView>(R.id.map)
-        val watermark = mapView?.findViewWithTag<ImageView>("GoogleWatermark")
 
-        if (watermark != null) {
-            watermark.visibility = View.INVISIBLE
-            /*
-            val params = watermark.layoutParams as RelativeLayout.LayoutParams
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
-            params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
-            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0)
-            params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
-            */
+        mMap?.let {
+            it.addTileOverlay(TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false))
+            it.setMaxZoomPreference(mTileProvider!!.maximumZoom)
+            it.setMinZoomPreference(mTileProvider!!.minimumZoom)
+            it.setOnInfoWindowClickListener(this)
+            it.setOnMapClickListener(this)
+            it.setOnMarkerClickListener(this)
+            it.setOnMapLoadedCallback(this)
+
+            // todo
+            //val params = fab1.layoutParams as ConstraintLayout.LayoutParams
+            //it.setPadding(0, 0, 0, params.height + params.bottomMargin)
+
+            it.uiSettings?.isScrollGesturesEnabled = true
+            it.uiSettings?.isZoomGesturesEnabled = true
+
+            mCameraUpdateAnimator = CameraUpdateAnimator(it, mAnimations, this)
+            mCameraUpdateAnimator?.animatorListener = this
+
+            // Load map
+            views.showMap()
+            map.onResume()
         }
-        mapView?.getMapAsync(this)
     }
 
     private fun animateCamera(jsonObj: JSONObject?, closest: Boolean = false, execute: Boolean = true) {
@@ -469,36 +431,26 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
 
     companion object {
         private const val FAVORITE_KEY = "pref_favorites"
-        internal val mDescriptor0: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map1) }
-        internal val mDescriptor1: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map2) }
-        internal val mDescriptor10: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map0) }
-        val onLevelChangeCallback: OnLevelChangeCallback = OnLevelChangeCallback { marker, level ->
-            when (level) {
-                0 -> {
-                    marker.zIndex = 0f
-                    marker.setIcon(mDescriptor0)
-                }
-                1 -> {
-                    marker.zIndex = level / 10.toFloat()
-                    marker.setIcon(mDescriptor1)
-                }
-            }
-        }
-        val onMarkerCreateListener: OnMarkerCreateListener1 = OnMarkerCreateListener1()
+        val onLevelChangeCallback: OnLevelChangeCallback = object : OnLevelChangeCallback {
+            val mDescriptor0: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map1) }
+            val mDescriptor1: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map2) }
+            val mDescriptor10: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map0) }
 
-        class OnMarkerCreateListener1 : OnMarkerCreateListener {
-            private lateinit var map: GoogleMap
-
-            fun setMap(googleMap: GoogleMap) {
-                this.map = googleMap
-            }
-
-            override fun onMarkerCreate(options: MarkerOptions, tag: Any?): Marker {
-                val marker = map.addMarker(options)
-                if (tag != null) {
-                    marker.tag = tag
+            override fun onLevelChange(marker: LazyMarker, level: Int) {
+                when (level) {
+                    0 -> {
+                        marker.zIndex = 0.0f
+                        marker.setIcon(mDescriptor0)
+                    }
+                    1 -> {
+                        marker.zIndex = level.toFloat() / 10
+                        marker.setIcon(mDescriptor1)
+                    }
+                    10 -> {
+                        marker.zIndex = 1.0f
+                        marker.setIcon(mDescriptor10)
+                    }
                 }
-                return marker
             }
         }
     }

@@ -187,9 +187,6 @@ dependencies {
     kapt 'com.naver.android.svc:svc-compiler:1.0.0'
 
     // Coroutines
-    implementation("org.jetbrains.anko:anko-coroutines:$anko_version") {
-        transitive = false
-    }
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-io-jvm:$kotlinx_io_version"
 
     // Crashlytics

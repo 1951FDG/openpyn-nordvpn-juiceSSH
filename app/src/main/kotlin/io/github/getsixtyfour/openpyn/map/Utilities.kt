@@ -16,11 +16,11 @@ import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
-import com.androidmapsextensions.lazy.LazyMarker.OnMarkerCreateListener
 import com.antoniocarlon.map.CameraUpdateAnimator.Animation
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
 import com.getsixtyfour.openvpnmgmt.android.security.SecurityManager
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition.Builder
 import com.google.android.gms.maps.model.LatLng
@@ -438,28 +438,10 @@ fun createMarkers(
     context: Context,
     jsonArray: JSONArray,
     countries: List<MultiSelectable>,
-    listener: OnMarkerCreateListener,
+    map: GoogleMap,
     favorites: ArrayList<LazyMarker>?,
     callback: OnLevelChangeCallback
 ): Pair<HashSet<CharSequence>, HashMap<LatLng, LazyMarker>> {
-    fun lazyMarker(
-        listener: OnMarkerCreateListener,
-        favorites: ArrayList<LazyMarker>?,
-        options: MarkerOptions,
-        flag: CharSequence?,
-        callback: OnLevelChangeCallback
-    ): LazyMarker {
-        val marker = LazyMarker(options, flag, listener)
-        favorites?.let {
-            val index = it.indexOf(marker)
-            if (index >= 0) {
-                marker.setLevel(it[index].level, callback)
-            }
-        }
-
-        return marker
-    }
-
     fun parseToUnicode(countries: List<MultiSelectable>, input: CharSequence): CharSequence {
         // Replace the aliases by their unicode
         var result = input
@@ -539,7 +521,14 @@ fun createMarkers(
         }
 
         flags.add(flag)
-        markers[latLng] = lazyMarker(listener, favorites, options, flag, callback)
+        val marker = LazyMarker(map, options, flag)
+        favorites?.let {
+            val index = it.indexOf(marker)
+            if (index >= 0) {
+                marker.setLevel(it[index].level, callback)
+            }
+        }
+        markers[latLng] = marker
     }
 
     return Pair(flags, markers)

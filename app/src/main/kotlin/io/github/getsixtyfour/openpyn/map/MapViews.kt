@@ -1,6 +1,7 @@
 package io.github.getsixtyfour.openpyn.map
 
 import android.view.View
+import android.widget.ImageView
 import com.mayurrokade.minibar.UserMessage
 import com.naver.android.svc.core.views.ActionViews
 import io.github.getsixtyfour.openpyn.MainActivity
@@ -29,8 +30,8 @@ class MapViews : ActionViews<MapViewsAction>() {
     override fun onCreated() {
         // todo decouple
         (screen.hostActivity as? MainActivity)?.mSnackProgressBarManager?.setViewsToMove(arrayOf(fab0, fab1))
-
-        fab0.setOnClickListener { viewsAction.toggleCommand(fab0) } // todo check
+        // todo check
+        fab0.setOnClickListener { viewsAction.toggleCommand(fab0) }
 
         fab1.setOnClickListener { viewsAction.updateMasterMarker() }
 
@@ -93,6 +94,20 @@ class MapViews : ActionViews<MapViewsAction>() {
     }
 
     fun showMap() {
+        val watermark = map.findViewWithTag<ImageView>("GoogleWatermark")
+
+        if (watermark != null) {
+            watermark.visibility = View.INVISIBLE
+            /*
+            val params = watermark.layoutParams as RelativeLayout.LayoutParams
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0)
+            params.addRule(RelativeLayout.ALIGN_PARENT_END, 0)
+            */
+        }
         map.visibility = View.VISIBLE
     }
 

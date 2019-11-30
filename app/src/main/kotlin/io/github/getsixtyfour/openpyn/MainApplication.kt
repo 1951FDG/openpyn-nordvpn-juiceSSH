@@ -1,7 +1,6 @@
 package io.github.getsixtyfour.openpyn
 
 import android.app.Application
-import com.google.android.gms.maps.MapsInitializer
 import com.michaelflisar.gdprdialog.GDPR
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 
@@ -15,7 +14,6 @@ open class MainApplication : Application() {
             return
         }*/
 
-        MapsInitializer.initialize(this) //todo check value
         setDefaultPreferences(this)
 
         NetworkInfo.getInstance(this)
