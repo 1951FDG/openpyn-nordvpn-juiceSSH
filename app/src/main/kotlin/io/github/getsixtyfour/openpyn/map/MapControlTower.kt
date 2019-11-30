@@ -395,8 +395,8 @@ class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, O
             it.setOnMapLoadedCallback(this)
 
             // todo
-            //val params = fab1.layoutParams as ConstraintLayout.LayoutParams
-            //it.setPadding(0, 0, 0, params.height + params.bottomMargin)
+            // val params = fab1.layoutParams as ConstraintLayout.LayoutParams
+            // it.setPadding(0, 0, 0, params.height + params.bottomMargin)
 
             it.uiSettings?.isScrollGesturesEnabled = true
             it.uiSettings?.isZoomGesturesEnabled = true
