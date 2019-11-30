@@ -117,7 +117,7 @@ Please use my `test` branch of [Openpyn](https://github.com/1951FDG/openpyn-nord
 
 To compile and run the project you'll need:
 
--   [Android Studio 3.3 or higher](https://developer.android.com/studio/)
+-   [Android Studio 3.5 or higher](https://developer.android.com/studio/)
     -   Android `10 (API level 29)`
     -   Android SDK Build-Tools `29.0.2`
     -   CMake `v3.10.2`
