@@ -115,7 +115,6 @@ androidGitVersion {
 detekt {
     toolVersion = '1.2.0'
     input = files('src/main/kotlin')
-    filters = '.*/resources/.*,.*/build/.*'
     baseline = file('detekt-baseline.xml')
     config = files("$rootDir/config/detekt/detekt.yml")
     reports {
