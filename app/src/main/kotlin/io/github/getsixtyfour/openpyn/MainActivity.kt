@@ -19,8 +19,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.loader.app.LoaderManager
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
-import com.adityaanand.morphdialog.MorphDialog
-import com.adityaanand.morphdialog.utils.MorphDialogAction
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 // import com.getsixtyfour.openvpnmgmt.android.VPNAuthenticationHandler
@@ -69,7 +67,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     OnClickListener, OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener,
     OnSessionStartedListener, PreferenceDialog.NoticeDialogListener, CoroutineScope by MainScope() {
 
-    private var dialog: MorphDialog? = null
+    // private var dialog: MorphDialog? = null
     // todo check value
     private val mConnectionListAdapter by lazy {
         ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
@@ -174,7 +172,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         //     }
         // }
 
-        MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)
+        // MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -280,21 +278,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
             return getString(R.string.vpn_connect_message, element(location, flag, server, country))
         }
 
-        fun showMessageDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
+        /*fun showMessageDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
             title(R.string.title_dialog_connect)
             content(message())
             positiveText(android.R.string.ok)
             negativeText(android.R.string.cancel)
             onPositive { _: MorphDialog, _: MorphDialogAction -> toggleConnection() }
             show()
-        }
+        }*/
 
-        fun showWarningDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
+        /*fun showWarningDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
             title(R.string.title_dialog_error)
             content(R.string.error_must_have_at_least_one_server)
             positiveText(android.R.string.ok)
             show()
-        }
+        }*/
 
         if (id != R.id.fab0 || v !is FloatingActionButton) return
 
