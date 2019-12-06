@@ -39,8 +39,8 @@
 
     <string name="cancel_connection">Disconnect</string>
 
-    <string name="title_cancel">Cancel Confirmation</string>
-    <string name="cancel_connection_query">Disconnect the connected VPN/cancel the connection attempt?</string>
+    <string name="title_cancel">Disconnect VPN</string>
+    <string name="cancel_connection_query">Are you sure you want to disconnect?</string>
 
     <string name="vpn_launch_title">Connecting to OpenVPN Management Interface…</string>
 </resources>
