@@ -211,7 +211,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         isRunning = true;
         {
             try {
-                managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, ARG_INTERACT));
+                // managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, ARG_INTERACT));
                 managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
                 managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ARG_ON));
                 managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, ARG_ON));
