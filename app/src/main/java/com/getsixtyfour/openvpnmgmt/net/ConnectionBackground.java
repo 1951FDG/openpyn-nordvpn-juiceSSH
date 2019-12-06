@@ -11,7 +11,7 @@ import java.io.IOException;
  * @author 1951FDG
  */
 
-//@WorkerThread // todo all the methods below should be called on background thread
+// @WorkerThread // todo all the methods below should be called on background thread
 public interface ConnectionBackground extends Runnable {
 
     void connect(@NotNull String host, @NotNull Integer port) throws IOException;

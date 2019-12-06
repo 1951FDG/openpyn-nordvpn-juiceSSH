@@ -18,7 +18,7 @@ import java.util.Calendar;
 @SuppressWarnings({ "UseOfObsoleteDateTimeApi", "unused" })
 public interface Route {
 
-    //Virtual Address,Common Name,Real Address,Last Ref
+    // Virtual Address,Common Name,Real Address,Last Ref
     @Nullable
     String getCommonName();
 

@@ -26,7 +26,7 @@ class MapViews : ActionViews<MapViewsAction>() {
     private val map by lazy { rootView.map }
     private val minibarView by lazy { rootView.minibar }
 
-    //todo inner classes
+    // todo inner classes
     override fun onCreated() {
         // todo decouple
         (screen.hostActivity as? MainActivity)?.mSnackProgressBarManager?.setViewsToMove(arrayOf(fab0, fab1))

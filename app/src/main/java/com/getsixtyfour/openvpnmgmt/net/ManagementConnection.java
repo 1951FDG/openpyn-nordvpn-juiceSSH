@@ -216,7 +216,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 String line;
                 while ((line = in.readLine()) != null) {
                     if (!line.isEmpty()) {
-                        //LOGGER.info("Read from socket line: {}", line);
+                        // LOGGER.info("Read from socket line: {}", line);
                         parseInput(line);
                     }
                 }
@@ -286,7 +286,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    //todo see all magic characters, cosntants
+    // todo see all magic characters, cosntants
     @SuppressWarnings({ "IfStatementWithTooManyBranches", "OverlyComplexMethod", "OverlyLongMethod", "SpellCheckingInspection",
             "SwitchStatementWithTooManyBranches" })
     private void parseInput(String line) throws IOException {
@@ -340,7 +340,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         } else if (line.startsWith(Strings.ERROR_PREFIX)) {
             // TODO
             LOGGER.error(line);
-            //throw new IOException("Stream closed");
+            // throw new IOException("Stream closed");
         } else {
             LOGGER.error("Got unrecognized line: {}", line);
         }

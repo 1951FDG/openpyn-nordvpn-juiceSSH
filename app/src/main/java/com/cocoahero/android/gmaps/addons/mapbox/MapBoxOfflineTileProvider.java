@@ -294,7 +294,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     @Nullable
     private String getSQliteVersion() {
         @NonNls String sql = "SELECT sqlite_version() AS sqlite_version";
-        //return DatabaseUtils.stringForQuery(mDatabase, sql, null); // sqliteX
+        // return DatabaseUtils.stringForQuery(mDatabase, sql, null); // sqliteX
         try (Cursor cursor = mDatabase.rawQueryWithFactory(null, sql, null, null, null)) {
             return cursor.moveToPosition(0) ? cursor.getString(0) : null;
         }
