@@ -21,7 +21,7 @@ import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-// import com.getsixtyfour.openvpnmgmt.android.VPNAuthenticationHandler
+// import io.github.getsixtyfour.openvpnmgmt.VPNAuthenticationHandler
 // import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.startOpenVPNService
 // import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants
 // import com.getsixtyfour.openvpnmgmt.net.ManagementConnection

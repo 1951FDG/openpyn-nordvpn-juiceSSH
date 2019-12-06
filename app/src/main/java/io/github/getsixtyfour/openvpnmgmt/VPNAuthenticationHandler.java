@@ -1,4 +1,4 @@
-package com.getsixtyfour.openvpnmgmt.android;
+package io.github.getsixtyfour.openvpnmgmt;
 
 import android.content.Context;
 import android.content.SharedPreferences;

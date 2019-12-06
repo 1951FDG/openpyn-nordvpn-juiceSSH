@@ -1,4 +1,4 @@
-package com.getsixtyfour.openvpnmgmt.android.security;
+package io.github.getsixtyfour.security;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
