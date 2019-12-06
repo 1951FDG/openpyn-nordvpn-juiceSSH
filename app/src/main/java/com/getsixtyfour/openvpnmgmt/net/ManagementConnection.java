@@ -41,9 +41,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private static final String ARG_INTERACT = "interact";
 
-    private static final String ARG_ON = "on";
+    private static final String ARG_ON = " on";
 
-    private static final String ARG_RELEASE = "release";
+    private static final String ARG_RELEASE = " release";
 
     private static final String ARG_SIGTERM = "SIGTERM";
 

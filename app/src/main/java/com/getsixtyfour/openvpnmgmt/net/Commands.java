@@ -26,7 +26,7 @@ final class Commands {
      * hold release -- leave hold state and start OpenVPN, but do not alter the current hold flag setting.
      */
 
-    public static final String HOLD_COMMAND = "hold %s";
+    public static final String HOLD_COMMAND = "hold%s";
 
     /**
      * log on     -- Enable real-time output of log messages.
@@ -36,7 +36,7 @@ final class Commands {
      * log 20     -- Show the most recent 20 lines of log file history.
      */
 
-    public static final String LOG_COMMAND = "log %s";
+    public static final String LOG_COMMAND = "log%s";
 
     public static final String PASSWORD_COMMAND = "password '%s' %s";
 
@@ -56,7 +56,7 @@ final class Commands {
      * state on all -- Atomically show state history while at the same time enable real-time state notification of future state transitions.
      */
 
-    public static final String STATE_COMMAND = "state %s";
+    public static final String STATE_COMMAND = "state%s";
 
     public static final String STATUS_COMMAND = "status";
 
