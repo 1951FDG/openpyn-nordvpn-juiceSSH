@@ -94,7 +94,7 @@ public final class StringUtils {
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using Command Parsing rules.</p>
+     * <p>Escapes the characters in a {@code String} using backslash-based shell escaping.</p>
      *
      * <p>Deals correctly with double quotes and backslashes.</p>
      *
@@ -110,14 +110,7 @@ public final class StringUtils {
         if (cs.length() == 0) {
             return "";
         }
-        String escapedString = escapeOpenVPNStyleString(cs);
-        char[] searchChars = { '|', '&', ';', '<', '>', '(', ')', '$', '`', '*', '?', '[', '#', '~', '=', '%' };
-        if (escapedString.contentEquals(cs) && !containsAny(escapedString, searchChars)) {
-            escapedString = cs.toString();
-        } else {
-            escapedString = '"' + escapedString + '"';
-        }
-        return escapedString;
+        return escapeOpenVPNStyleString(cs);
     }
 
     /**
