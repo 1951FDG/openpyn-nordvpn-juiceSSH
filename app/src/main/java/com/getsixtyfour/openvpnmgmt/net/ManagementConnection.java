@@ -116,6 +116,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 onConnectError(e);
             }
         }
+        // Ensures state listeners are notified of current state if VPN is already connected
         {
             String result = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
             String[] lines = result.split(System.lineSeparator());
