@@ -8,7 +8,7 @@ package com.getsixtyfour.openvpnmgmt.android;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,8 +24,8 @@ import com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService;
 @SuppressWarnings("UtilityClass")
 public final class VPNLaunchHelper {
 
-    public static void startOpenVPNService(@NonNull Context context) {
-        Intent intent = prepareStartService(context);
+    public static void startOpenVPNService(@NonNull Context context, @NonNull Bundle extras) {
+        Intent intent = prepareStartService(context, extras);
         if (intent != null) {
             ContextCompat.startForegroundService(context, intent);
         }
@@ -38,16 +38,13 @@ public final class VPNLaunchHelper {
     private static Intent getStartServiceIntent(Context context) {
         Intent intent = new Intent(context, OpenVPNService.class);
         PackageManager packageManager = context.getPackageManager();
-        ResolveInfo resolveInfo = packageManager.resolveService(intent, 0);
-        return (resolveInfo == null) ? null : intent;
+        return (packageManager.resolveService(intent, 0) != null) ? intent : null;
     }
 
-    private static Intent prepareStartService(Context context) {
+    private static Intent prepareStartService(Context context, Bundle extras) {
         Intent intent = getStartServiceIntent(context);
         if (intent != null) {
-            intent.putExtra(OpenVPNService.EXTRA_ALWAYS_SHOW_NOTIFICATION, true);
-            intent.putExtra(OpenVPNService.EXTRA_HOST, VPNAuthenticationHandler.getHost(context));
-            intent.putExtra(OpenVPNService.EXTRA_PORT, VPNAuthenticationHandler.getPort(context));
+            intent.replaceExtras(extras);
         }
         return intent;
     }

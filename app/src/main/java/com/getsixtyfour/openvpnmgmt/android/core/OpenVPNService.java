@@ -57,25 +57,10 @@ public final class OpenVPNService extends Service
         implements LogListener, StateListener, ByteCountListener, IOpenVPNServiceInternal, ConnectionListener {
 
     @NonNls
-    public static final String EXTRA_ALWAYS_SHOW_NOTIFICATION = "com.getsixtyfour.openvpnmgmt.android.extra.NOTIFICATION_ALWAYS_VISIBLE";
-
-    @NonNls
-    public static final String EXTRA_HOST = "com.getsixtyfour.openvpnmgmt.android.extra.HOST";
-
-    @NonNls
-    public static final String EXTRA_PORT = "com.getsixtyfour.openvpnmgmt.android.extra.PORT";
-
-    @NonNls
     public static final String NOTIFICATION_CHANNEL_BG_ID = "openvpn_bg";
 
     @NonNls
     public static final String NOTIFICATION_CHANNEL_NEW_STATUS_ID = "openvpn_newstat";
-
-    @NonNls
-    public static final String START_SERVICE_NOT_STICKY = "com.getsixtyfour.openvpnmgmt.android.START_SERVICE_NOT_STICKY";
-
-    @NonNls
-    public static final String START_SERVICE_STICKY = "com.getsixtyfour.openvpnmgmt.android.START_SERVICE_STICKY";
 
     private static final String TAG = "OpenVPNService";
 
@@ -120,20 +105,20 @@ public final class OpenVPNService extends Service
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        if ((intent != null) && START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
+        if ((intent != null) && IntentConstants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
             return START_NOT_STICKY;
         }
-        if ((intent != null) && START_SERVICE_STICKY.equals(intent.getAction())) {
+        if ((intent != null) && IntentConstants.ACTION_START_SERVICE_STICKY.equals(intent.getAction())) {
             return START_REDELIVER_INTENT;
         }
         if (intent == null) {
             throw new IllegalArgumentException("intent can't be null");
         }
 
-        mNotificationAlwaysVisible = intent.getBooleanExtra(EXTRA_ALWAYS_SHOW_NOTIFICATION, true);
+        mNotificationAlwaysVisible = intent.getBooleanExtra(IntentConstants.EXTRA_SHOW_NOTIFICATION, true);
 
-        String host = StringUtils.defaultIfBlank(intent.getStringExtra(EXTRA_HOST), DEFAULT_REMOTE_SERVER);
-        int port = intent.getIntExtra(EXTRA_PORT, DEFAULT_REMOTE_PORT);
+        String host = StringUtils.defaultIfBlank(intent.getStringExtra(IntentConstants.EXTRA_HOST), DEFAULT_REMOTE_SERVER);
+        int port = intent.getIntExtra(IntentConstants.EXTRA_PORT, DEFAULT_REMOTE_PORT);
 
         // Always show notification here to avoid problem with startForeground timeout
         {
@@ -157,14 +142,14 @@ public final class OpenVPNService extends Service
         thread.start();
 
         Log.i(TAG, "Starting OpenVPN Service");
-        return Service.START_REDELIVER_INTENT;
+        return START_REDELIVER_INTENT;
     }
 
     @Nullable
     @Override
     public IBinder onBind(@Nullable Intent intent) {
         Log.i(TAG, "onBind");
-        return ((intent != null) && START_SERVICE_NOT_STICKY.equals(intent.getAction())) ? mBinder : null;
+        return ((intent != null) && IntentConstants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) ? mBinder : null;
     }
 
     @Override
@@ -342,7 +327,7 @@ public final class OpenVPNService extends Service
     private void doSendBroadcast(String state, String message) {
         // TODO
         Intent intent = new Intent();
-        intent.setAction(IntentConstants.INTENT_ACTION_VPN_STATUS);
+        intent.setAction(IntentConstants.ACTION_VPN_STATUS);
         intent.putExtra(IntentConstants.EXTRA_STATE, state);
         intent.putExtra(IntentConstants.EXTRA_MESSAGE, message);
         sendBroadcast(intent);

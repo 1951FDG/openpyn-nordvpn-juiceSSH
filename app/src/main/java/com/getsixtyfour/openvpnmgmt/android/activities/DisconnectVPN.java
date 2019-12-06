@@ -18,6 +18,7 @@ import android.os.RemoteException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants;
 import com.getsixtyfour.openvpnmgmt.android.core.IOpenVPNServiceInternal;
 import com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService;
 
@@ -74,7 +75,7 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
     protected void onResume() {
         super.onResume();
         Intent intent = new Intent(this, OpenVPNService.class);
-        intent.setAction(OpenVPNService.START_SERVICE_NOT_STICKY);
+        intent.setAction(IntentConstants.ACTION_START_SERVICE_NOT_STICKY);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         showDisconnectDialog();
     }

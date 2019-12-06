@@ -23,6 +23,10 @@ import com.adityaanand.morphdialog.MorphDialog
 import com.adityaanand.morphdialog.utils.MorphDialogAction
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
+// import com.getsixtyfour.openvpnmgmt.android.VPNAuthenticationHandler
+// import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.startOpenVPNService
+// import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants
+// import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
@@ -37,8 +41,6 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-// import com.getsixtyfour.openvpnmgmt.android.VPNAuthenticationHandler
-// import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.startOpenVPNService
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog
 import io.github.getsixtyfour.openpyn.map.MapFragment
@@ -58,7 +60,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-// import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 
@@ -110,17 +111,27 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         // }
 
         // run {
-        //     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        //     val editor = preferences.edit()
+        //     PreferenceManager.getDefaultSharedPreferences(this).edit().apply {
+        //         // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
+        //         putString(getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
+        //         // Default management port used by Openpyn
+        //         putString(getString(R.string.pref_openvpnmgmt_port_key), "7015")
+        //         apply()
+        //     }
         //
-        //     editor.putString("pref_management_address", "10.0.2.2")
-        //     editor.putInt("pref_management_port", 7015)
-        //     editor.apply()
         //     val connection = ManagementConnection.getInstance()
         //     val handler = VPNAuthenticationHandler(this)
+        //     val host = VPNAuthenticationHandler.getHost(this)
+        //     val port = VPNAuthenticationHandler.getPort(this)
+        //     val bundle = Bundle().apply {
+        //         putBoolean(IntentConstants.EXTRA_SHOW_NOTIFICATION, true)
+        //         putString(IntentConstants.EXTRA_HOST, host)
+        //         putInt(IntentConstants.EXTRA_PORT, port)
+        //     }
+        //
         //     connection.setUsernamePasswordHandler(handler)
         //
-        //     startOpenVPNService(this)
+        //     startOpenVPNService(this, bundle)
         // }
     }
 

@@ -8,11 +8,12 @@ import androidx.preference.PreferenceManager;
 
 import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 
+import io.github.getsixtyfour.openpyn.R;
+
 /**
  * @author 1951FDG
  */
 
-@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
 
     private final Context mContext;
@@ -20,25 +21,28 @@ public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
     @NonNull
     public static String getHost(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(Constants.PREF_MANAGEMENT_ADDRESS, Constants.DEF_HOST);
+        return preferences.getString(context.getString(R.string.pref_openvpnmgmt_host_key),
+                context.getString(R.string.pref_openvpnmgmt_host_default));
     }
 
     @NonNull
     public static String getPassword(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(Constants.PREF_MANAGEMENT_PASSWORD, Constants.DEF_PASSWORD);
+        return preferences.getString(context.getString(R.string.pref_openvpnmgmt_password_key),
+                context.getString(R.string.pref_openvpnmgmt_password_default));
     }
 
-    @NonNull
-    public static Integer getPort(@NonNull Context context) {
+    public static int getPort(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getInt(Constants.PREF_MANAGEMENT_PORT, Constants.DEF_PORT);
+        return Integer.parseInt(preferences.getString(context.getString(R.string.pref_openvpnmgmt_port_key),
+                context.getString(R.string.pref_openvpnmgmt_port_default)));
     }
 
     @NonNull
     public static String getUserName(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(Constants.PREF_MANAGEMENT_USERNAME, Constants.DEF_USER_NAME);
+        return preferences.getString(context.getString(R.string.pref_openvpnmgmt_username_key),
+                context.getString(R.string.pref_openvpnmgmt_username_default));
     }
 
     public VPNAuthenticationHandler(@NonNull Context context) {
