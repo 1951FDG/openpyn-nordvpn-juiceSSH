@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/title_activity_openvpnmgmt">
+    <SwitchPreference
+        android:defaultValue="@string/pref_openvpnmgmt_default"
+        android:key="@string/pref_openvpnmgmt_key"
+        android:summary="@string/pref_description_openvpnmgmt"
+        android:title="@string/pref_openvpnmgmt" />
+    <EditTextPreference
+        android:defaultValue="@string/pref_openvpnmgmt_host_default"
+        android:dependency="@string/pref_openvpnmgmt_key"
+        android:key="@string/pref_openvpnmgmt_host_key"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_openvpnmgmt_host"
+        app:useSimpleSummaryProvider="true" />
+    <EditTextPreference
+        android:defaultValue="@string/pref_openvpnmgmt_port_default"
+        android:dependency="@string/pref_openvpnmgmt_key"
+        android:key="@string/pref_openvpnmgmt_port_key"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_openvpnmgmt_port"
+        app:useSimpleSummaryProvider="true" />
+    <EditTextPreference
+        android:defaultValue="@string/pref_openvpnmgmt_username_default"
+        android:dependency="@string/pref_openvpnmgmt_key"
+        android:key="@string/pref_openvpnmgmt_username_key"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_openvpnmgmt_username"
+        app:useSimpleSummaryProvider="true" />
+    <EditTextPreference
+        android:defaultValue="@string/pref_openvpnmgmt_password_default"
+        android:dependency="@string/pref_openvpnmgmt_key"
+        android:key="@string/pref_openvpnmgmt_password_key"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_openvpnmgmt_password"
+        app:useSimpleSummaryProvider="true" />
+</PreferenceScreen>

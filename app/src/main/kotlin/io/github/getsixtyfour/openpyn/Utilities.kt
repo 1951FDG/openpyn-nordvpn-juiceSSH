@@ -268,6 +268,7 @@ fun populateAboutConfig() {
 fun setDefaultPreferences(context: Context) {
     PreferenceManager.setDefaultValues(context, R.xml.pref_settings, false)
     PreferenceManager.setDefaultValues(context, R.xml.pref_api, true)
+    PreferenceManager.setDefaultValues(context, R.xml.pref_openvpnmgmt, true)
     PreferenceManager.setDefaultValues(context, R.xml.pref_connect, true)
 }
 

@@ -46,6 +46,9 @@
             android:key="pref_log_level"
             android:title="@string/pref_log_level" />
         <Preference
+            android:title="@string/title_activity_openvpnmgmt"
+            app:fragment="io.github.getsixtyfour.openpyn.fragment.ManagementPreferenceFragment" />
+        <Preference
             android:title="@string/title_activity_apis"
             app:fragment="io.github.getsixtyfour.openpyn.fragment.ApiPreferenceFragment" />
         <Preference
