@@ -148,11 +148,14 @@ public final class ManagementConnection extends AbstractConnection implements Co
         out.flush();
         @NonNls String line;
         while ((line = in.readLine()) != null) {
-            if (!in.ready() && "END".equals(line)) {
-                break;
+            if (!line.isEmpty()) {
+                if ("END".equals(line)) {
+                    break;
+                }
+                // LOGGER.info("Read from socket line: {}", line);
+                sb.append(line);
+                sb.append(System.lineSeparator());
             }
-            sb.append(line);
-            sb.append(System.lineSeparator());
         }
         return sb.toString();
     }
