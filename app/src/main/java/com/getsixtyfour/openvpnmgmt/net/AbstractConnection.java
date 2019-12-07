@@ -56,10 +56,7 @@ abstract class AbstractConnection implements Closeable {
     public void closeQuietly() {
         try {
             close();
-        } catch (IOException e) {
-            // ignore
-            // todo remove line
-            LOGGER.warn(e.toString());
+        } catch (IOException ignored) {
         }
     }
 

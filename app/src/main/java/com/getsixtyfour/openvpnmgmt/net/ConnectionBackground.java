@@ -22,6 +22,9 @@ public interface ConnectionBackground extends Runnable {
     String executeCommand(@NotNull String command) throws IOException;
 
     @NotNull
+    String getManagementVersion() throws IOException;
+
+    @NotNull
     Status getOpenVPNStatus() throws OpenVpnParseException, IOException;
 
     @NotNull

@@ -83,9 +83,23 @@ public class ConnectionTest {
             connection.connect(host, port);
         }
         String result = connection.executeCommand(Commands.HELP_COMMAND);
-        Assert.assertNotNull(result);
+        Assert.assertNotEquals("", result);
         String[] lines = result.split(System.lineSeparator());
         Assert.assertTrue(lines.length > 1);
+        LOGGER.info(result);
+    }
+
+    /**
+     * Test of getManagementVersion method, of class Connection.
+     */
+    @Test
+    public void testGetManagementVersion() throws IOException {
+        LOGGER.info("getManagementVersion");
+        if (!connection.isConnected()) {
+            connection.connect(host, port);
+        }
+        String result = connection.getManagementVersion();
+        Assert.assertNotEquals("", result);
         LOGGER.info(result);
     }
 
@@ -99,7 +113,7 @@ public class ConnectionTest {
             connection.connect(host, port);
         }
         String result = connection.getOpenVPNVersion();
-        Assert.assertNotNull(result);
+        Assert.assertNotEquals("", result);
         LOGGER.info(result);
     }
 

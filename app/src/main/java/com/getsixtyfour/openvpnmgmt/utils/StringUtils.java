@@ -101,7 +101,6 @@ public final class StringUtils {
      * @param cs the CharSequence to escape values in, may be null
      * @return String with escaped values, {@code null} if null string input
      */
-    @SuppressWarnings("MagicCharacter")
     @Nullable
     public static String escapeOpenVPN(@Nullable CharSequence cs) {
         if (cs == null) {

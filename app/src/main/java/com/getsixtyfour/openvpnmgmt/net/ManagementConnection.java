@@ -105,7 +105,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
         mStateManager.addListener(Objects.requireNonNull(listener));
     }
 
-    // todo safe split
     @Override
     public void connect(@NotNull String host, @NotNull Integer port) throws IOException {
         if (!isConnected()) {
@@ -120,8 +119,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
         {
             String result = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
             String[] lines = result.split(System.lineSeparator());
-            String argument = lines[lines.length - 1];
-            if (!argument.contains(VpnStatus.AUTH_FAILURE)) {
+            String argument = (lines.length >= 1) ? lines[lines.length - 1] : "";
+            if (!argument.isEmpty() && !argument.contains(VpnStatus.AUTH_FAILURE)) {
                 processState(argument);
             }
         }
@@ -174,9 +173,21 @@ public final class ManagementConnection extends AbstractConnection implements Co
     public String getOpenVPNVersion() throws IOException {
         String result = executeCommand(Commands.VERSION_COMMAND);
         String[] lines = result.split(System.lineSeparator());
-        String line = lines[lines.length - 2];
-        if (line.startsWith(Strings.OPEN_VPN_VERSION_PREFIX)) {
+        String line = (lines.length >= 2) ? lines[lines.length - 2] : "";
+        if (!line.isEmpty() && line.startsWith(Strings.OPEN_VPN_VERSION_PREFIX)) {
             return line.substring(Strings.OPEN_VPN_VERSION_PREFIX.length() + 1);
+        }
+        return "";
+    }
+
+    @NotNull
+    @Override
+    public String getManagementVersion() throws IOException {
+        String result = executeCommand(Commands.VERSION_COMMAND);
+        String[] lines = result.split(System.lineSeparator());
+        String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
+        if (!line.isEmpty() && line.startsWith(Strings.MANAGEMENT_VERSION_PREFIX)) {
+            return line.substring(Strings.MANAGEMENT_VERSION_PREFIX.length() + 1);
         }
         return "";
     }

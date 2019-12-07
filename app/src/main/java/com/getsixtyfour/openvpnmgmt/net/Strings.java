@@ -19,6 +19,9 @@ final class Strings {
     public static final String MANAGEMENT_CMD_PREFIX = "MANAGEMENT: CMD";
 
     @NonNls
+    public static final String MANAGEMENT_VERSION_PREFIX = "Management Version:";
+
+    @NonNls
     public static final String NEED_PREFIX = "Need";
 
     @NonNls

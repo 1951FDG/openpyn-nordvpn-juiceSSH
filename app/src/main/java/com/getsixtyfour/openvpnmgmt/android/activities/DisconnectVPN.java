@@ -47,9 +47,7 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
             if (service != null) {
                 try {
                     service.stopVPN(false);
-                } catch (RemoteException e) {
-                    // TODO
-                    e.printStackTrace();
+                } catch (RemoteException ignored) {
                 }
             }
         }

@@ -309,7 +309,6 @@ public final class OpenVPNService extends Service
                     NotificationManagerCompat.IMPORTANCE_MIN);
             channel.setDescription(getString(R.string.channel_description_background));
             channel.enableLights(false);
-            channel.setLightColor(Color.DKGRAY); //todo why set color
             mNotificationManager.createNotificationChannel(channel);
         }
         // Connection status change messages
