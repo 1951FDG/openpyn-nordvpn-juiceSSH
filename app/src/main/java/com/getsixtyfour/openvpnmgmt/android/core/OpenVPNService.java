@@ -356,7 +356,6 @@ public final class OpenVPNService extends Service
                 builder.setTicker(tickerText);
             }
             if (NOTIFICATION_CHANNEL_BG_ID.equals(channel)) {
-                builder.setPriority(NotificationCompat.PRIORITY_MIN);
                 builder.setUsesChronometer(true);
             }
             if (when != 0L) {
