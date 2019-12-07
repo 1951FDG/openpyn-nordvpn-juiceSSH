@@ -295,7 +295,7 @@ public final class OpenVPNService extends Service
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         // The notification action icons are still required and continue to be used on older versions of Android
-        builder.addAction(R.drawable.ic_close_white_24dp, getString(R.string.cancel_connection), pendingIntent);
+        builder.addAction(R.drawable.ic_close_white, getString(R.string.cancel_connection), pendingIntent);
     }
 
     @SuppressLint("WrongConstant")
@@ -375,17 +375,16 @@ public final class OpenVPNService extends Service
     @SuppressWarnings("MethodWithMultipleReturnPoints")
     private static int getIconByConnectionStatus(ConnectionStatus level) {
         switch (level) {
-            case LEVEL_AUTH_FAILED:
-                return R.drawable.ic_stat_vpn_outline;
-            case LEVEL_NOT_CONNECTED:
-                return R.drawable.ic_stat_vpn_offline;
-            case LEVEL_CONNECTING_NO_SERVER_REPLY_YET:
-            case LEVEL_CONNECTING_SERVER_REPLIED:
-                return R.drawable.ic_stat_vpn_empty_halo;
             case LEVEL_CONNECTED:
+                return R.drawable.ic_stat_shield;
+            case LEVEL_CONNECTING_SERVER_REPLIED:
+                return R.drawable.ic_stat_shield_check_outline;
+            case LEVEL_CONNECTING_NO_SERVER_REPLY_YET:
+            case LEVEL_NOT_CONNECTED:
+            case LEVEL_AUTH_FAILED:
             case UNKNOWN_LEVEL:
             default:
-                return R.drawable.ic_stat_vpn;
+                return R.drawable.ic_stat_shield_outline;
         }
     }
 
