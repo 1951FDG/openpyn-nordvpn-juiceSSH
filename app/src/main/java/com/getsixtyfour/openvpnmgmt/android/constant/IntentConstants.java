@@ -19,10 +19,13 @@ public final class IntentConstants {
     public static final String EXTRA_STATE = INTENT_PACKAGE_PREFIX + ".extra.STATE";
 
     @NonNls
-    public static final String ACTION_VPN_STATUS = INTENT_PACKAGE_PREFIX + ".action.VPN_STATUS";
+    public static final String ACTION_VPN_STATE_CHANGED = INTENT_PACKAGE_PREFIX + ".action.VPN_STATE_CHANGED";
 
     @NonNls
-    public static final String EXTRA_SHOW_NOTIFICATION = INTENT_PACKAGE_PREFIX + ".extra.SHOW_NOTIFICATION";
+    public static final String EXTRA_POST_NOTIFICATION = INTENT_PACKAGE_PREFIX + ".extra.POST_NOTIFICATION";
+
+    @NonNls
+    public static final String EXTRA_SEND_BROADCAST = INTENT_PACKAGE_PREFIX + ".extra.SEND_BROADCAST";
 
     @NonNls
     public static final String EXTRA_HOST = INTENT_PACKAGE_PREFIX + ".extra.HOST";

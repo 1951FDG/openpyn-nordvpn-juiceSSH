@@ -14,7 +14,7 @@ public class StringUtilsTest {
 
     public static final String original = "fQDaoFx\\Fi\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^";
 
-    public static final String expected = "\"fQDaoFx\\\\Fi\\\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^\"";
+    public static final String expected = "fQDaoFx\\\\Fi\\\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StringUtilsTest.class);
 

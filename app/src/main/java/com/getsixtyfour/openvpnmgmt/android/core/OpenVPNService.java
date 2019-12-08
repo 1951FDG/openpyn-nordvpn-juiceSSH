@@ -81,7 +81,9 @@ public final class OpenVPNService extends Service
 
     private boolean mDisplayByteCount = false;
 
-    private boolean mNotificationAlwaysVisible = false;
+    private boolean mPostNotification = false;
+
+    private boolean mSendBroadcast = false;
 
     @SuppressWarnings({ "RedundantNoArgConstructor", "UnnecessaryCallToSuper" })
     public OpenVPNService() {
@@ -115,7 +117,8 @@ public final class OpenVPNService extends Service
             throw new IllegalArgumentException("intent can't be null");
         }
 
-        mNotificationAlwaysVisible = intent.getBooleanExtra(IntentConstants.EXTRA_SHOW_NOTIFICATION, true);
+        mPostNotification = intent.getBooleanExtra(IntentConstants.EXTRA_POST_NOTIFICATION, false);
+        mSendBroadcast = intent.getBooleanExtra(IntentConstants.EXTRA_SEND_BROADCAST, false);
 
         String host = StringUtils.defaultIfBlank(intent.getStringExtra(IntentConstants.EXTRA_HOST), DEFAULT_REMOTE_SERVER);
         int port = intent.getIntExtra(IntentConstants.EXTRA_PORT, DEFAULT_REMOTE_PORT);
@@ -241,8 +244,10 @@ public final class OpenVPNService extends Service
         @NonNls String address = state.getRemoteAddress();
         @NonNls String port = state.getRemotePort();
         ConnectionStatus level = VpnStatus.getLevel(name, message);
-        // doSendBroadcast(name, message);
-        if (mNotificationAlwaysVisible) {
+        if (mSendBroadcast) {
+            doSendBroadcast(name, message);
+        }
+        if (mPostNotification) {
             // Display byte count only after being connected
             if (level == ConnectionStatus.LEVEL_CONNECTED) {
                 mDisplayByteCount = true;
@@ -324,12 +329,11 @@ public final class OpenVPNService extends Service
     }
 
     private void doSendBroadcast(String state, String message) {
-        // TODO
         Intent intent = new Intent();
-        intent.setAction(IntentConstants.ACTION_VPN_STATUS);
+        intent.setAction(IntentConstants.ACTION_VPN_STATE_CHANGED);
         intent.putExtra(IntentConstants.EXTRA_STATE, state);
         intent.putExtra(IntentConstants.EXTRA_MESSAGE, message);
-        sendBroadcast(intent);
+        sendBroadcast(intent, android.Manifest.permission.ACCESS_NETWORK_STATE);
     }
 
     private void endVpnService() {

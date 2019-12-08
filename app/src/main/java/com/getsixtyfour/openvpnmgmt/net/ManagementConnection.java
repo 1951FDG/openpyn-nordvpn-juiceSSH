@@ -139,7 +139,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
         if (!isConnected()) {
             throw new IOException(SOCKET_IS_NOT_CONNECTED);
         }
-        // todo measure number of chars during usages
         StringBuilder sb = new StringBuilder(256);
         BufferedReader in = getBufferedReader();
         BufferedWriter out = getBufferedWriter();
@@ -162,6 +161,18 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @NotNull
     @Override
+    public String getManagementVersion() throws IOException {
+        String result = executeCommand(Commands.VERSION_COMMAND);
+        String[] lines = result.split(System.lineSeparator());
+        String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
+        if (!line.isEmpty() && line.startsWith(Strings.MANAGEMENT_VERSION_PREFIX)) {
+            return line.substring(Strings.MANAGEMENT_VERSION_PREFIX.length() + 1);
+        }
+        return "";
+    }
+
+    @NotNull
+    @Override
     public Status getOpenVPNStatus() throws OpenVpnParseException, IOException {
         OpenVpnStatus ovs = new OpenVpnStatus();
         ovs.setCommandOutput(executeCommand(Commands.STATUS_COMMAND));
@@ -176,18 +187,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
         String line = (lines.length >= 2) ? lines[lines.length - 2] : "";
         if (!line.isEmpty() && line.startsWith(Strings.OPEN_VPN_VERSION_PREFIX)) {
             return line.substring(Strings.OPEN_VPN_VERSION_PREFIX.length() + 1);
-        }
-        return "";
-    }
-
-    @NotNull
-    @Override
-    public String getManagementVersion() throws IOException {
-        String result = executeCommand(Commands.VERSION_COMMAND);
-        String[] lines = result.split(System.lineSeparator());
-        String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
-        if (!line.isEmpty() && line.startsWith(Strings.MANAGEMENT_VERSION_PREFIX)) {
-            return line.substring(Strings.MANAGEMENT_VERSION_PREFIX.length() + 1);
         }
         return "";
     }
@@ -301,11 +300,10 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    // todo see all magic characters, cosntants
     @SuppressWarnings({ "IfStatementWithTooManyBranches", "OverlyComplexMethod", "OverlyLongMethod", "SpellCheckingInspection",
             "SwitchStatementWithTooManyBranches" })
     private void parseInput(String line) throws IOException {
-        if ((Character.compare(line.charAt(0), '>') == 0) && line.contains(":")) {
+        if (line.startsWith(">") && line.contains(":")) {
             String[] parts = line.split(":", 2);
             @NonNls String cmd = parts[0].substring(1);
             String argument = parts[1];
@@ -362,7 +360,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void processByteCount(String argument) {
-        int comma = argument.indexOf(',');
+        int comma = argument.indexOf(",");
         Long in = Long.valueOf(argument.substring(0, comma));
         Long out = Long.valueOf(argument.substring(comma + 1));
         ByteCount byteCount = new ByteCount(in, out);
@@ -428,9 +426,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
             return;
         }
         if (argument.startsWith(Strings.NEED_PREFIX)) {
-            char ch = '\'';
-            int p1 = argument.indexOf(ch);
-            int p2 = argument.indexOf(ch, p1 + 1);
+            String s = "\'";
+            int p1 = argument.indexOf(s);
+            int p2 = argument.indexOf(s, p1 + 1);
             @NonNls String type = argument.substring(p1 + 1, p2);
             LOGGER.info("OpenVPN requires Authentication type {}", type);
             String handlerUsername = null;

@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         //     val host = VPNAuthenticationHandler.getHost(this)
         //     val port = VPNAuthenticationHandler.getPort(this)
         //     val bundle = Bundle().apply {
-        //         putBoolean(IntentConstants.EXTRA_SHOW_NOTIFICATION, true)
+        //         putBoolean(IntentConstants.EXTRA_POST_NOTIFICATION, true)
         //         putString(IntentConstants.EXTRA_HOST, host)
         //         putInt(IntentConstants.EXTRA_PORT, port)
         //     }
