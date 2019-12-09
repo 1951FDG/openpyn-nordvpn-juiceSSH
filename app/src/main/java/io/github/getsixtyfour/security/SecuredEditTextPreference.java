@@ -1,30 +1,37 @@
 package io.github.getsixtyfour.security;
 
 import android.content.Context;
+import android.text.InputType;
 import android.util.AttributeSet;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.EditTextPreference;
+import androidx.preference.EditTextPreference.OnBindEditTextListener;
 
-public final class SecuredEditTextPreference extends EditTextPreference {
+public final class SecuredEditTextPreference extends EditTextPreference implements OnBindEditTextListener {
 
     private final SecurityManager securityManager = SecurityManager.getInstance(getContext());
 
     public SecuredEditTextPreference(@NonNull Context context) {
         super(context);
+        setOnBindEditTextListener(this);
     }
 
     public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        setOnBindEditTextListener(this);
     }
 
     public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setOnBindEditTextListener(this);
     }
 
     public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        setOnBindEditTextListener(this);
     }
 
     @Nullable
@@ -41,6 +48,11 @@ public final class SecuredEditTextPreference extends EditTextPreference {
         } else {
             super.setText(securityManager.encryptString(text));
         }
+    }
+
+    @Override
+    public void onBindEditText(@NonNull EditText editText) {
+        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
     }
 
     @Override
