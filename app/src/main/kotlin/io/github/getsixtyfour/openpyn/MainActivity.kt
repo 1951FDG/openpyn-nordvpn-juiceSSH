@@ -21,10 +21,9 @@ import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-// import io.github.getsixtyfour.openvpnmgmt.VPNAuthenticationHandler
-// import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.startOpenVPNService
-// import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants
-// import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
+import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.startOpenVPNService
+import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants
+import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
@@ -44,6 +43,7 @@ import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog
 import io.github.getsixtyfour.openpyn.map.MapFragment
 import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
 import io.github.getsixtyfour.openpyn.utils.Toaster
+import io.github.getsixtyfour.openvpnmgmt.VPNAuthenticationHandler
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
@@ -327,6 +327,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         toolbar.hideProgress(true)
         val fragment = getCurrentNavigationFragment(this) as? MapFragment
         fragment?.controlTower?.updateMasterMarkerWithDelay(true, DELAY_MILLIS)
+
+        run {
+            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+            val openvpnmgmt = preferences.getBoolean(this.getString(R.string.pref_openvpnmgmt_key), false)
+            if (openvpnmgmt) {
+                val handler = VPNAuthenticationHandler(this)
+                val host = VPNAuthenticationHandler.getHost(this)
+                val port = VPNAuthenticationHandler.getPort(this)
+                val bundle = Bundle().apply {
+                    putBoolean(IntentConstants.EXTRA_POST_NOTIFICATION, true)
+                    putString(IntentConstants.EXTRA_HOST, host)
+                    putInt(IntentConstants.EXTRA_PORT, port)
+                }
+                val connection = ManagementConnection.getInstance()
+                connection.setUsernamePasswordHandler(handler)
+
+                startOpenVPNService(this, bundle)
+            }
+        }
     }
 
     @Suppress("MagicNumber")

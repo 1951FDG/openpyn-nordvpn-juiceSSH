@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
+import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
@@ -131,9 +132,22 @@ class OpenpynController(
         val netflix = preferences.getBoolean("pref_netflix", false)
         test = preferences.getBoolean("pref_test", false)
         val patch = preferences.getBoolean("pref_skip_dns_patch", false)
-        val silent = preferences.getBoolean("pref_silent", false)
+        var silent = preferences.getBoolean("pref_silent", false)
         nvram = preferences.getBoolean("pref_nvram", false)
-        val openvpn = "--syslog openpyn"
+        var openvpn = ""
+        val openvpnmgmt = preferences.getBoolean(mCtx.getString(R.string.pref_openvpnmgmt_key), false)
+        val host = preferences.getString(
+            mCtx.getString(R.string.pref_openvpnmgmt_host_key),
+            mCtx.getString(R.string.pref_openvpnmgmt_host_default)
+        )!!
+        val port = preferences.getString(
+            mCtx.getString(R.string.pref_openvpnmgmt_port_key),
+            mCtx.getString(R.string.pref_openvpnmgmt_port_default)
+        )!!
+        if (openvpnmgmt) {
+            silent = true
+            openvpn = "--management $host ${port.toInt()} --management-up-down"
+        }
         val options = StringBuilder("openpyn")
 
         when {

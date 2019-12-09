@@ -339,7 +339,6 @@
     <string name="pref_openvpnmgmt_username_key">pref_management_username</string>
     <string name="pref_openvpnmgmt_password_key">pref_management_password</string>
 
-    <string name="pref_openvpnmgmt_default">false</string>
     <string name="pref_openvpnmgmt_host_default">127.0.0.1</string>
     <string name="pref_openvpnmgmt_port_default">23</string>
     <string name="pref_openvpnmgmt_username_default" />

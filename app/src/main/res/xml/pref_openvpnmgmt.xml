@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/title_activity_openvpnmgmt">
     <SwitchPreference
-        android:defaultValue="@string/pref_openvpnmgmt_default"
+        android:defaultValue="false"
         android:key="@string/pref_openvpnmgmt_key"
         android:summary="@string/pref_description_openvpnmgmt"
         android:title="@string/pref_openvpnmgmt" />
