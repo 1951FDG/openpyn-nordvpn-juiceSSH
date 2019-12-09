@@ -66,8 +66,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private final StateManager mStateManager = new StateManager();
 
-    private boolean isRunning = false;
-
     private ConnectionListener mConnectionListener;
 
     private ConnectionStatus mLastLevel = ConnectionStatus.LEVEL_NOT_CONNECTED;
@@ -128,8 +126,10 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @Override
     public void disconnect() {
-        super.disconnect();
-        onDisconnected();
+        if (isConnected()) {
+            super.disconnect();
+            onDisconnected();
+        }
     }
 
     @NotNull
@@ -218,7 +218,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
             // UncheckedIOException requires Android N
             throw new RuntimeException(new IOException(SOCKET_IS_NOT_CONNECTED));
         }
-        isRunning = true;
         {
             try {
                 // managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, ARG_INTERACT));
@@ -242,10 +241,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
             } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
                 LOGGER.error("Could not parse string", e);
             }
-            LOGGER.info("TERMINATED");
-            disconnect();
         }
-        isRunning = false;
+        LOGGER.info("TERMINATED");
+        throw new ThreadDeath();
     }
 
     @Override
@@ -261,9 +259,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
     @Override
     public void stopOpenVPN() throws IOException {
         managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, ARG_SIGTERM));
-        if (!isRunning) {
-            disconnect();
-        }
     }
 
     private void managementCommand(String command) throws IOException {
@@ -277,6 +272,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onConnectError(@NotNull Throwable e) {
+        if (!(e instanceof IllegalArgumentException) && !(e instanceof IOException)) {
+            LOGGER.error("Unknown exception thrown");
+        }
         LOGGER.error(e.toString());
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {

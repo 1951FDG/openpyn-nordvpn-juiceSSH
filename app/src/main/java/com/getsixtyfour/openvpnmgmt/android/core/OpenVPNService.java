@@ -15,6 +15,8 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -43,6 +45,7 @@ import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Locale;
 
 import io.github.getsixtyfour.openpyn.R;
@@ -54,7 +57,7 @@ import io.github.getsixtyfour.openpyn.R;
 
 @SuppressWarnings({ "OverlyComplexClass", "ClassWithTooManyDependencies" })
 public final class OpenVPNService extends Service
-        implements LogListener, StateListener, ByteCountListener, IOpenVPNServiceInternal, ConnectionListener {
+        implements LogListener, StateListener, ByteCountListener, IOpenVPNServiceInternal, ConnectionListener, UncaughtExceptionHandler {
 
     @NonNls
     public static final String NOTIFICATION_CHANNEL_BG_ID = "openvpn_bg";
@@ -107,6 +110,7 @@ public final class OpenVPNService extends Service
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        Log.i(TAG, "onStartCommand");
         if ((intent != null) && IntentConstants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
             return START_NOT_STICKY;
         }
@@ -135,11 +139,7 @@ public final class OpenVPNService extends Service
             try {
                 Connection connection = ManagementConnection.getInstance();
                 connection.connect(host, port);
-            } catch (IOException e) {
-                Log.e(TAG, e.toString());
-            } catch (Exception e) {
-                Log.e(TAG, "Unknown exception thrown");
-                Log.e(TAG, e.toString());
+            } catch (IOException ignored) {
             }
         });
         thread.start();
@@ -157,8 +157,10 @@ public final class OpenVPNService extends Service
 
     @Override
     public void onDestroy() {
+        Log.i(TAG, "onDestroy");
         {
             Connection connection = ManagementConnection.getInstance();
+            connection.disconnect();
             connection.removeByteCountListener(this);
             connection.removeLogListener(this);
             connection.removeStateListener(this);
@@ -187,25 +189,33 @@ public final class OpenVPNService extends Service
         }
     }
 
-    // todo check which thread these run on
     @Override
     public void onConnectError(@NonNull Throwable e) {
-        // TODO
+        if (isMainThread()) {
+            Log.e(TAG, "", new NetworkOnMainThreadException());
+        }
         endVpnService();
     }
 
     @Override
     public void onConnected() {
+        if (isMainThread()) {
+            Log.e(TAG, "", new NetworkOnMainThreadException());
+        }
         // Start a background thread that handles incoming messages of the management interface
         Connection connection = ManagementConnection.getInstance();
         Thread thread = new Thread(connection, THREAD_NAME);
+        thread.setUncaughtExceptionHandler(this);
         thread.start();
+
         Log.i(TAG, "Starting OpenVPN Management");
     }
 
     @Override
     public void onDisconnected() {
-        endVpnService();
+        if (isMainThread()) {
+            Log.i(TAG, "", new NetworkOnMainThreadException());
+        }
     }
 
     @Override
@@ -294,6 +304,14 @@ public final class OpenVPNService extends Service
         return result;
     }
 
+    @Override
+    public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
+        if (!(e instanceof ThreadDeath)) {
+            Log.e(TAG, "Exception " + e + " in thread \"" + t.getName() + "\"");
+        }
+        endVpnService();
+    }
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private void addVpnActionsToNotification(Builder builder) {
         Intent intent = new Intent(this, DisconnectVPN.class);
@@ -340,6 +358,10 @@ public final class OpenVPNService extends Service
         Log.i(TAG, "Stopping OpenVPN Service");
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
         stopSelf();
+    }
+
+    private boolean isMainThread() {
+        return Thread.currentThread() == Looper.getMainLooper().getThread();
     }
 
     @SuppressWarnings({ "TypeMayBeWeakened", "MethodWithTooManyParameters" })
