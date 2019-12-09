@@ -3,9 +3,11 @@ package io.github.getsixtyfour.openpyn.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
+import io.github.getsixtyfour.openpyn.SettingsActivity.Companion
 
 /**
  * This fragment shows API settings preferences only.
@@ -20,6 +22,8 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
+
+        findPreference<Preference>(getString(R.string.pref_openvpnmgmt_password_key))?.let(Companion::bindPreferenceSummaryToValue)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
