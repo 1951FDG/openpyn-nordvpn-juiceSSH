@@ -133,7 +133,6 @@ public final class OpenVPNService extends Service
             String title = getString(R.string.notification_title, getString(R.string.state_disconnected));
             showNotification(title, text, text, NOTIFICATION_CHANNEL_NEW_STATUS_ID, 0L, ConnectionStatus.LEVEL_NOT_CONNECTED);
         }
-        // todo inner class, check thread killed handler to end service
         // Connect to the management interface in a background thread
         Thread thread = new Thread(() -> {
             try {
@@ -285,13 +284,8 @@ public final class OpenVPNService extends Service
             }
             showNotification(title, text, tickerText, NOTIFICATION_CHANNEL_NEW_STATUS_ID, 0L, level);
         }
-        // todo test implications
-        // if ((level == ConnectionStatus.LEVEL_NOT_CONNECTED) || (level == ConnectionStatus.LEVEL_AUTH_FAILED)) {
-        //     endVpnService();
-        // }
     }
 
-    // todo test implications
     public boolean stopVPN(boolean replaceConnection) {
         boolean result = false;
         try {
