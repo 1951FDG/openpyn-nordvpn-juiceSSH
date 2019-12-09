@@ -83,7 +83,7 @@ public final class SecurityManager {
             cipher.init(Cipher.DECRYPT_MODE, mKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(encryptedBytes, IV_LENGTH, encryptedBytes.length - IV_LENGTH);
             output = new String(cipherBytes, StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalArgumentException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             Log.wtf(TAG, e);
         }
         return output;
@@ -105,7 +105,7 @@ public final class SecurityManager {
             cipher.init(Cipher.ENCRYPT_MODE, mKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(clearText);
             output = new String(Base64.encode(concat(iv, cipherBytes), Base64.NO_WRAP), StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalArgumentException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             Log.wtf(TAG, e);
         }
         return output;
