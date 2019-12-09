@@ -50,7 +50,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     }
 
     private fun isMainThread(): Boolean {
-        return Looper.getMainLooper().thread === Thread.currentThread()
+        return Looper.getMainLooper().thread == Thread.currentThread()
     }
 
     // constructor
