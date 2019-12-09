@@ -238,6 +238,7 @@ This app uses (modified) code from several open source projects.
 -   [Snyk](https://snyk.io/)
 -   [SonarLint](https://www.sonarlint.org/)
 -   [Sourcetree](https://www.sourcetreeapp.com/)
+-   [SVG-edit](https://svg-edit.github.io/svgedit/releases/latest/editor/svg-editor.html)
 -   [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
 
 ## Attributions
