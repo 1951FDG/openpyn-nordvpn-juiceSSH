@@ -135,6 +135,7 @@ class OpenpynController(
         var silent = preferences.getBoolean("pref_silent", false)
         nvram = preferences.getBoolean("pref_nvram", false)
         var openvpn = ""
+        val options = StringBuilder("openpyn")
         val openvpnmgmt = preferences.getBoolean(mCtx.getString(R.string.pref_openvpnmgmt_key), false)
         val host = preferences.getString(
             mCtx.getString(R.string.pref_openvpnmgmt_host_key),
@@ -147,8 +148,15 @@ class OpenpynController(
         if (openvpnmgmt) {
             silent = true
             openvpn = "--management $host ${port.toInt()} --management-up-down"
+
+            val username = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_username_key), "")!!
+            val password = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_password_key), "")!!
+
+            if (username.isNotEmpty() && password.isNotEmpty()) {
+                options.append(" --application")
+                openvpn = "$openvpn --auth-nocache --auth-retry interact --management-hold --management-query-passwords"
+            }
         }
-        val options = StringBuilder("openpyn")
 
         when {
             flag.isNotEmpty() -> options.append(" ${code(flag)}")
