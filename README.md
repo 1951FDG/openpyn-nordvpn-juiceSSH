@@ -109,7 +109,7 @@ The public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.op
 
 Please use my `test` branch of [Openpyn](https://github.com/1951FDG/openpyn-nordvpn).
 
-    git clone --branch test git@github.com:1951FDG/openpyn-nordvpn.git
+    git clone --branch 2.2.1 git@github.com:1951FDG/openpyn-nordvpn.git
     cd openpyn-nordvpn
     pip3 install --upgrade .
 
