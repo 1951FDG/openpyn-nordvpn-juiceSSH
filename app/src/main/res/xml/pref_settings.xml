@@ -33,12 +33,12 @@
             android:entryValues="@array/pref_top_servers_values"
             android:key="pref_top_servers"
             android:title="@string/pref_top_servers" />
-        <ListPreference
+        <!--<ListPreference
             android:defaultValue="3"
             android:entries="@array/pref_pings_entries"
             android:entryValues="@array/pref_pings_values"
             android:key="pref_pings"
-            android:title="@string/pref_pings" />
+            android:title="@string/pref_pings" />-->
         <ListPreference
             android:defaultValue="25"
             android:entries="@array/pref_log_level_entries"

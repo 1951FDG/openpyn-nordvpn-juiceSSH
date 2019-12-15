@@ -122,7 +122,7 @@ class OpenpynController(
         val tcp = preferences.getBoolean("pref_tcp", false)
         val load = preferences.getString("pref_max_load", "")!!
         val top = preferences.getString("pref_top_servers", "")!!
-        val pings = preferences.getString("pref_pings", "")!!
+        /*val pings = preferences.getString("pref_pings", "")!!*/
         val rules = preferences.getBoolean("pref_force_fw", false)
         val p2p = preferences.getBoolean("pref_p2p", false)
         val dedicated = preferences.getBoolean("pref_dedicated", false)
@@ -163,8 +163,8 @@ class OpenpynController(
             options.append(" --max-load $load")
         if (top.isNotEmpty())
             options.append(" --top-servers $top")
-        if (pings.isNotEmpty())
-            options.append(" --pings $pings")
+        /*if (pings.isNotEmpty())
+            options.append(" --pings $pings")*/
         if (rules)
             options.append(" --force-fw-rules")
         if (p2p)
