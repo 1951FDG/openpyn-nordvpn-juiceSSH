@@ -56,7 +56,7 @@
         android:paddingEnd="16dp"
         android:orientation="vertical">
 
-        <include layout="@layout/abc_preference_widget_checkbox" />
+        <include layout="@layout/abc_preference_widget" />
     </LinearLayout>
 
 </LinearLayout>
