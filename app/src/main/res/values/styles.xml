@@ -76,6 +76,10 @@
 
     <style name="blinkt.dialog" parent="android:Theme.DeviceDefault.Light.Dialog" />
 
+    <!--<style name="PreferenceSummaryTextStyle" tools:override="true">-->
+        <!--<item name="android:textAppearance">?android:attr/textAppearanceListItemSecondary</item>-->
+    <!--</style>-->
+
     <!--<style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">-->
         <!--<item name="android:background">?android:attr/colorBackground</item>-->
         <!--<item name="android:cacheColorHint">?android:attr/colorBackground</item>-->

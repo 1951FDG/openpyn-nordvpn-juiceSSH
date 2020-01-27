@@ -20,6 +20,7 @@
             android:paddingLeft="?attr/dialogPreferredPadding"
             android:paddingEnd="?attr/dialogPreferredPadding"
             android:paddingRight="?attr/dialogPreferredPadding"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textIsSelectable="false" />
     </FrameLayout>
