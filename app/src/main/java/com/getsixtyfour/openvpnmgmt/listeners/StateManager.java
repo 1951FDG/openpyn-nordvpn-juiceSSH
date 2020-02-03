@@ -3,14 +3,47 @@ package com.getsixtyfour.openvpnmgmt.listeners;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @author 1951FDG
  */
 
 public class StateManager {
+
+    private final CopyOnWriteArraySet<StateListener> mListeners;
+
+    private State mState;
+
+    public StateManager() {
+        mListeners = new CopyOnWriteArraySet<>();
+    }
+
+    public boolean addListener(@NotNull StateListener listener) {
+        return mListeners.add(listener);
+    }
+
+    public boolean removeListener(@NotNull StateListener listener) {
+        return mListeners.remove(listener);
+    }
+
+    public void setState(@NotNull State state) {
+        mState = state;
+        notifyListeners();
+    }
+
+    private void notifyListeners() {
+        for (StateListener listener : mListeners) {
+            listener.onStateChanged(mState);
+        }
+    }
+
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
+    @FunctionalInterface
+    public interface StateListener {
+
+        void onStateChanged(@NotNull State state);
+    }
 
     @SuppressWarnings("PublicInnerClass")
     public static class State {
@@ -65,42 +98,6 @@ public class StateManager {
         @NotNull
         public String getName() {
             return mName;
-        }
-    }
-
-    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
-    @FunctionalInterface
-    public interface StateListener {
-
-        void onStateChanged(@NotNull State state);
-    }
-
-    private final List<StateListener> stateListener;
-
-    private State mState;
-
-    public StateManager() {
-        stateListener = new CopyOnWriteArrayList<>();
-    }
-
-    public void addListener(@NotNull StateListener listener) {
-        if (!stateListener.contains(listener)) {
-            stateListener.add(listener);
-        }
-    }
-
-    public void removeListener(@NotNull StateListener listener) {
-        stateListener.remove(listener);
-    }
-
-    public void setState(@NotNull State state) {
-        mState = state;
-        notifyListeners();
-    }
-
-    private void notifyListeners() {
-        for (StateListener listener : stateListener) {
-            listener.onStateChanged(mState);
         }
     }
 }

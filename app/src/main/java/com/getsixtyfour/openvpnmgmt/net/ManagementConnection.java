@@ -37,7 +37,16 @@ import java.util.Objects;
 @SuppressWarnings({ "Singleton", "OverlyCoupledClass", "OverlyComplexClass", "ClassWithTooManyDependencies" })
 public final class ManagementConnection extends AbstractConnection implements Connection {
 
-    private static volatile ManagementConnection mInstance = null;
+    public static final Integer BYTE_COUNT_INTERVAL = 2;
+
+    @NonNls
+    private static final String NOT_SUPPORTED_YET = "Not supported yet";
+
+    @NonNls
+    private static final String SOCKET_IS_NOT_CONNECTED = "Socket is not connected";
+
+    @NonNls
+    private static final String STREAM_CLOSED = "Stream closed";
 
     private static final String ARG_INTERACT = "interact";
 
@@ -47,18 +56,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private static final String ARG_SIGTERM = "SIGTERM";
 
-    public static final Integer BYTE_COUNT_INTERVAL = 2;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
 
-    @NonNls
-    public static final String NOT_SUPPORTED_YET = "Not supported yet";
-
-    @NonNls
-    public static final String SOCKET_IS_NOT_CONNECTED = "Socket is not connected";
-
-    @NonNls
-    public static final String STREAM_CLOSED = "Stream closed";
+    private static volatile ManagementConnection sInstance = null;
 
     private final ByteCountManager mByteCountManager = new ByteCountManager();
 
@@ -72,35 +72,35 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private UsernamePasswordHandler mUsernamePasswordHandler;
 
-    @NotNull
-    @SuppressWarnings({ "DoubleCheckedLocking", "SynchronizeOnThis" })
-    public static ManagementConnection getInstance() {
-        if (mInstance == null) {
-            synchronized (ManagementConnection.class) {
-                if (mInstance == null) {
-                    mInstance = new ManagementConnection();
-                }
-            }
-        }
-        return mInstance;
-    }
-
     private ManagementConnection() {
     }
 
-    @Override
-    public void addByteCountListener(@NotNull ByteCountListener listener) {
-        mByteCountManager.addListener(Objects.requireNonNull(listener));
+    @NotNull
+    @SuppressWarnings({ "DoubleCheckedLocking", "SynchronizeOnThis" })
+    public static ManagementConnection getInstance() {
+        if (sInstance == null) {
+            synchronized (ManagementConnection.class) {
+                if (sInstance == null) {
+                    sInstance = new ManagementConnection();
+                }
+            }
+        }
+        return sInstance;
     }
 
     @Override
-    public void addLogListener(@NotNull LogListener listener) {
-        mLogManager.addListener(Objects.requireNonNull(listener));
+    public boolean addByteCountListener(@NotNull ByteCountListener listener) {
+        return mByteCountManager.addListener(Objects.requireNonNull(listener));
     }
 
     @Override
-    public void addStateListener(@NotNull StateListener listener) {
-        mStateManager.addListener(Objects.requireNonNull(listener));
+    public boolean addLogListener(@NotNull LogListener listener) {
+        return mLogManager.addListener(Objects.requireNonNull(listener));
+    }
+
+    @Override
+    public boolean addStateListener(@NotNull StateListener listener) {
+        return mStateManager.addListener(Objects.requireNonNull(listener));
     }
 
     @Override
@@ -133,7 +133,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @NotNull
-    @SuppressWarnings({ "NestedAssignment", "MethodCallInLoopCondition" })
+    @SuppressWarnings({ "NestedAssignment", "MethodCallInLoopCondition", "MagicNumber" })
     @Override
     public String executeCommand(@NotNull String command) throws IOException {
         if (!isConnected()) {
@@ -197,18 +197,18 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @Override
-    public void removeByteCountListener(@NotNull ByteCountListener listener) {
-        mByteCountManager.removeListener(Objects.requireNonNull(listener));
+    public boolean removeByteCountListener(@NotNull ByteCountListener listener) {
+        return mByteCountManager.removeListener(Objects.requireNonNull(listener));
     }
 
     @Override
-    public void removeLogListener(@NotNull LogListener listener) {
-        mLogManager.removeListener(Objects.requireNonNull(listener));
+    public boolean removeLogListener(@NotNull LogListener listener) {
+        return mLogManager.removeListener(Objects.requireNonNull(listener));
     }
 
     @Override
-    public void removeStateListener(@NotNull StateListener listener) {
-        mStateManager.removeListener(Objects.requireNonNull(listener));
+    public boolean removeStateListener(@NotNull StateListener listener) {
+        return mStateManager.removeListener(Objects.requireNonNull(listener));
     }
 
     @SuppressWarnings({ "NestedAssignment", "MethodCallInLoopCondition", "ProhibitedExceptionThrown" })
@@ -239,10 +239,10 @@ public final class ManagementConnection extends AbstractConnection implements Co
                     LOGGER.error(message, e);
                 }
             } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-                LOGGER.error("Could not parse string", e);
+                LOGGER.error("Could not parse string", e); //NON-NLS
             }
         }
-        LOGGER.info("TERMINATED");
+        LOGGER.info("TERMINATED"); //NON-NLS
         throw new ThreadDeath();
     }
 
@@ -273,7 +273,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void onConnectError(@NotNull Throwable e) {
         if (!(e instanceof IllegalArgumentException) && !(e instanceof IOException)) {
-            LOGGER.error("Unknown exception thrown");
+            LOGGER.error("Unknown exception thrown"); //NON-NLS
         }
         LOGGER.error(e.toString());
         ConnectionListener listener = mConnectionListener;
@@ -283,7 +283,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onConnected() {
-        LOGGER.info("Connected");
+        LOGGER.info("Connected"); //NON-NLS
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onConnected();
@@ -291,7 +291,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onDisconnected() {
-        LOGGER.info("Disconnected");
+        LOGGER.info("Disconnected"); //NON-NLS
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onDisconnected();
@@ -343,7 +343,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 case "RSA_SIGN":
                     throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
                 default:
-                    LOGGER.error("Got unrecognized argument: {}", argument);
+                    LOGGER.error("Got unrecognized argument: {}", argument); //NON-NLS
                     break;
             }
         } else if (line.startsWith(Strings.SUCCESS_PREFIX)) {
@@ -353,7 +353,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             LOGGER.error(line);
             // throw new IOException("Stream closed");
         } else {
-            LOGGER.error("Got unrecognized line: {}", line);
+            LOGGER.error("Got unrecognized line: {}", line); //NON-NLS
         }
     }
 
@@ -368,7 +368,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     private void processHold(String argument) throws IOException {
         // Close connection if AUTH has failed
         if (argument.startsWith(Strings.WAITING_FOR_HOLD_RELEASE_PREFIX) && (mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED)) {
-            LOGGER.error("Verification Error");
+            LOGGER.error("Verification Error"); //NON-NLS
             throw new IOException(STREAM_CLOSED);
         }
     }
@@ -428,7 +428,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             int p1 = argument.indexOf(s);
             int p2 = argument.indexOf(s, p1 + 1);
             @NonNls String type = argument.substring(p1 + 1, p2);
-            LOGGER.info("OpenVPN requires Authentication type {}", type);
+            LOGGER.info("OpenVPN requires Authentication type {}", type); //NON-NLS
             String handlerUsername = null;
             String handlerPassword = null;
             UsernamePasswordHandler handler = mUsernamePasswordHandler;
@@ -462,11 +462,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
         String message = state.getMessage();
         // Workaround for OpenVPN doing AUTH and WAIT while being connected, simply ignore these state
         if ((mLastLevel == ConnectionStatus.LEVEL_CONNECTED) && (VpnStatus.WAIT.equals(name) || VpnStatus.AUTH.equals(name))) {
-            LOGGER.info("Ignoring OpenVPN Status in CONNECTED state ({}->{}): {}", name, mLastLevel, message);
+            LOGGER.info("Ignoring OpenVPN Status in CONNECTED state ({}->{}): {}", name, mLastLevel, message); //NON-NLS
         } else {
             mStateManager.setState(state);
             mLastLevel = VpnStatus.getLevel(name, message);
-            LOGGER.info("New OpenVPN Status ({}->{}): {}", name, mLastLevel, message);
+            LOGGER.info("New OpenVPN Status ({}->{}): {}", name, mLastLevel, message); //NON-NLS
         }
     }
 }

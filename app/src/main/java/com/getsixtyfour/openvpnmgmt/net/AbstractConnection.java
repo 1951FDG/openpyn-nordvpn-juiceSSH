@@ -60,17 +60,6 @@ abstract class AbstractConnection implements Closeable {
         }
     }
 
-    private void connect() throws IOException {
-        LOGGER.info("Connecting to {}:{}", mHost, mPort);
-        mSocket = new Socket(mHost, mPort);
-        InputStreamReader in = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
-        mBufferedReader = new BufferedReader(in, DEFAULT_CHAR_BUFFER_SIZE);
-        OutputStreamWriter out = new OutputStreamWriter(mSocket.getOutputStream(), StandardCharsets.UTF_8);
-        mBufferedWriter = new BufferedWriter(out, DEFAULT_CHAR_BUFFER_SIZE);
-        mSocket.setKeepAlive(mKeepAlive);
-        mSocket.setTcpNoDelay(true);
-    }
-
     public void connect(String host, Integer port) throws IOException {
         if (isConnected()) {
             throw new IOException("already connected");
@@ -87,7 +76,7 @@ abstract class AbstractConnection implements Closeable {
     }
 
     public void disconnect() {
-        LOGGER.info("Disconnecting");
+        LOGGER.info("Disconnecting"); //NON-NLS
         closeQuietly();
     }
 
@@ -117,5 +106,17 @@ abstract class AbstractConnection implements Closeable {
 
     protected BufferedWriter getBufferedWriter() {
         return mBufferedWriter;
+    }
+
+    @SuppressWarnings("OverlyBroadThrowsClause")
+    private void connect() throws IOException {
+        LOGGER.info("Connecting to {}:{}", mHost, mPort); //NON-NLS
+        mSocket = new Socket(mHost, mPort);
+        InputStreamReader in = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
+        mBufferedReader = new BufferedReader(in, DEFAULT_CHAR_BUFFER_SIZE);
+        OutputStreamWriter out = new OutputStreamWriter(mSocket.getOutputStream(), StandardCharsets.UTF_8);
+        mBufferedWriter = new BufferedWriter(out, DEFAULT_CHAR_BUFFER_SIZE);
+        mSocket.setKeepAlive(mKeepAlive);
+        mSocket.setTcpNoDelay(true);
     }
 }

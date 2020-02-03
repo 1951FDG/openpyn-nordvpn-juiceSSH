@@ -25,7 +25,7 @@ import java.io.IOException;
  * @author Maksym Shkolnyi aka maskimko
  */
 
-@SuppressWarnings({ "UtilityClass", "CallToSystemExit", "HardCodedStringLiteral" })
+@SuppressWarnings({ "UtilityClass", "CallToSystemExit", "HardCodedStringLiteral", "UseOfSystemOutOrSystemErr" })
 public final class StatusCli {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusCli.class);
@@ -57,7 +57,6 @@ public final class StatusCli {
         } catch (ParseException ex) {
             LOGGER.error("Cannot parse arguments", ex);
         }
-
         try {
             Connection conn = ManagementConnection.getInstance();
             conn.connect(host, port);
@@ -66,8 +65,6 @@ public final class StatusCli {
             System.out.println("OpenVPN status: " + status);
         } catch (OpenVpnParseException | IOException ex) {
             LOGGER.error("Cannot get OpenVPN status.", ex);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

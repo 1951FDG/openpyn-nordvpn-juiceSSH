@@ -45,12 +45,10 @@ import org.sqlite.database.sqlite.SQLiteDirectCursorDriver;
 import org.sqlite.database.sqlite.SQLiteQuery;
 import org.sqlite.database.sqlite.SQLiteStatement;*/
 
+@SuppressWarnings("FieldNotUsedInToString")
 @MainThread
 public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     //region Statics
-
-    // Used to measure distances relative to the total world size.
-    private static final double WORLD_WIDTH = 1.0;
 
     // Tile dimension, in pixels.
     private static final int TILE_DIM = 512;
@@ -61,6 +59,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     private static final String TAG = "MBTileProvider";
 
     // TABLE tiles (zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB);
+    @NonNls
     private static final String mSql = "SELECT tile_data FROM tiles WHERE zoom_level = ? AND tile_column = ? AND tile_row = ?";
 
     //endregion Statics
@@ -68,7 +67,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     //region Members
 
     @Nullable
-    private LatLngBounds bounds;
+    private LatLngBounds mBounds;
 
     private final SQLiteDatabase mDatabase;
 
@@ -78,9 +77,9 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
 
     // private final SQLiteQueue mQueue;
 
-    private float maximumZoom;
+    private float mMaximumZoom;
 
-    private float minimumZoom;
+    private float mMinimumZoom;
 
     //endregion Members
 
@@ -117,8 +116,8 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     @NonNull
     @Override
     public String toString() {
-        return "MapBoxOfflineTileProvider{" + "mDatabase='" + "'" + ", mSql='" + mSql + "'" + ", mBounds=" + bounds + ", mMinimumZoom="
-                + minimumZoom + ", mMaximumZoom=" + maximumZoom + "}";
+        return "MapBoxOfflineTileProvider{" + "mDatabase='" + "'" + ", mSql='" + mSql + "'" + ", mBounds=" + mBounds + ", mMinimumZoom="
+                + mMinimumZoom + ", mMaximumZoom=" + mMaximumZoom + "}";
     }
 
     //region Accessors
@@ -136,7 +135,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      */
     @Nullable
     public LatLngBounds getBounds() {
-        return bounds;
+        return mBounds;
     }
 
     @Nullable
@@ -147,21 +146,21 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
     /**
      * The maximum zoom level supported by this provider.
      *
-     * @return the maximum zoom level supported or {@link #maximumZoom} if
+     * @return the maximum zoom level supported or {@link #mMaximumZoom} if
      * it could not be determined.
      */
     public float getMaximumZoom() {
-        return maximumZoom;
+        return mMaximumZoom;
     }
 
     /**
      * The minimum zoom level supported by this provider.
      *
-     * @return the minimum zoom level supported or {@link #minimumZoom} if
+     * @return the minimum zoom level supported or {@link #mMinimumZoom} if
      * it could not be determined.
      */
     public float getMinimumZoom() {
-        return minimumZoom;
+        return mMinimumZoom;
     }
 
     @Nullable
@@ -187,7 +186,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * provider.
      */
     public boolean isZoomLevelAvailable(float zoom) {
-        return (zoom >= minimumZoom) && (zoom <= maximumZoom);
+        return (zoom >= mMinimumZoom) && (zoom <= mMaximumZoom);
     }
 
     //endregion Accessors
@@ -264,21 +263,21 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
             double n = Double.parseDouble(parts[3]);
             LatLng sw = new LatLng(s, w);
             LatLng ne = new LatLng(n, e);
-            bounds = new LatLngBounds(sw, ne);
+            mBounds = new LatLngBounds(sw, ne);
         }
     }
 
     private void calculateMaxZoomLevel() {
         String result = getStringValue("maxzoom");
         if (result != null) {
-            maximumZoom = Float.parseFloat(result);
+            mMaximumZoom = Float.parseFloat(result);
         }
     }
 
     private void calculateMinZoomLevel() {
         String result = getStringValue("minzoom");
         if (result != null) {
-            minimumZoom = Float.parseFloat(result);
+            mMinimumZoom = Float.parseFloat(result);
         }
     }
 
@@ -312,19 +311,20 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @param z The requested zoom level.
      * @return the geographic bounds of the tile
      */
-    @SuppressWarnings("MagicNumber")
+    @SuppressWarnings({ "MagicNumber", "ImplicitNumericConversion" })
     @NonNull
     public static LatLngBounds calculateTileBounds(int x, int y, int z) {
-        // Width of the world = WORLD_WIDTH = 1
+        // Width of the world = 1
+        double worldWidth = 1.0;
         // Calculate width of one tile, given there are 2 ^ zoom tiles in that zoom level
         // In terms of world width units
-        double tileWidth = WORLD_WIDTH / Math.pow(2.0, z);
+        double tileWidth = worldWidth / Math.pow(2.0, z);
         // Make bounds: minX, maxX, minY, maxY
         double minX = x * tileWidth;
         double maxX = (x + 1) * tileWidth;
         double minY = y * tileWidth;
         double maxY = (y + 1) * tileWidth;
-        SphericalMercatorProjection sProjection = new SphericalMercatorProjection(WORLD_WIDTH);
+        SphericalMercatorProjection sProjection = new SphericalMercatorProjection(worldWidth);
         LatLng sw = sProjection.toLatLng(new Point(minX, maxY));
         LatLng ne = sProjection.toLatLng(new Point(maxX, minY));
         return new LatLngBounds(sw, ne);
@@ -339,7 +339,7 @@ public class MapBoxOfflineTileProvider implements TileProvider, Closeable {
      * @return the newly opened database
      * @throws android.database.SQLException if the database cannot be opened
      */
-    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral", "MethodCallInLoopCondition" })
+    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral", "MethodCallInLoopCondition", "StringConcatenation" })
     private static SQLiteDatabase create(@Nullable CursorFactory factory, @NonNull String path) {
         SQLiteDatabase database = SQLiteDatabase
                 .openDatabase(SQLiteDatabaseConfiguration.MEMORY_DB_PATH, factory, SQLiteDatabase.CREATE_IF_NECESSARY);

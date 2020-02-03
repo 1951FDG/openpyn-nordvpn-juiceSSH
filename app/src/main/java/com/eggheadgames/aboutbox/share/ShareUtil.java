@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat;
 import com.eggheadgames.aboutbox.AboutBoxUtils;
 import com.eggheadgames.aboutbox.AboutConfig;
 
-@SuppressWarnings("UtilityClass")
+@SuppressWarnings({ "UtilityClass", "StringConcatenation" })
 public final class ShareUtil {
 
     private ShareUtil() {

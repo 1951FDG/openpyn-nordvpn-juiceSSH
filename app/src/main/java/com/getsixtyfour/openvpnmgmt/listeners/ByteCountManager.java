@@ -4,8 +4,7 @@ import com.getsixtyfour.openvpnmgmt.core.TrafficHistory;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @author 1951FDG
@@ -13,26 +12,35 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ByteCountManager {
 
-    @SuppressWarnings("PublicInnerClass")
-    public static class ByteCount {
+    private final CopyOnWriteArraySet<ByteCountListener> mListeners;
 
-        private final Long mIn;
+    private final TrafficHistory mTrafficHistory = new TrafficHistory();
 
-        private final Long mOut;
+    private ByteCount mByteCount;
 
-        public ByteCount(@NotNull Long in, @NotNull Long out) {
-            mIn = in;
-            mOut = out;
-        }
+    public ByteCountManager() {
+        mListeners = new CopyOnWriteArraySet<>();
+    }
 
-        @NotNull
-        public Long getIn() {
-            return mIn;
-        }
+    public boolean addListener(@NotNull ByteCountListener listener) {
+        return mListeners.add(listener);
+    }
 
-        @NotNull
-        public Long getOut() {
-            return mOut;
+    public boolean removeListener(@NotNull ByteCountListener listener) {
+        return mListeners.remove(listener);
+    }
+
+    public void setByteCount(@NotNull ByteCount byteCount) {
+        mByteCount = byteCount;
+        notifyListeners();
+    }
+
+    private void notifyListeners() {
+        long in = mByteCount.getInBytes();
+        long out = mByteCount.getOutBytes();
+        TrafficHistory.LastDiff diff = mTrafficHistory.add(in, out);
+        for (ByteCountListener listener : mListeners) {
+            listener.onByteCountChanged(in, out, diff.getDiffIn(), diff.getDiffOut());
         }
     }
 
@@ -43,39 +51,26 @@ public class ByteCountManager {
         void onByteCountChanged(long in, long out, long diffIn, long diffOut);
     }
 
-    private final List<ByteCountListener> mByteCountListeners;
+    @SuppressWarnings("PublicInnerClass")
+    public static class ByteCount {
 
-    private final TrafficHistory trafficHistory = new TrafficHistory();
+        private final Long mInBytes;
 
-    private ByteCount mByteCount;
+        private final Long mOutBytes;
 
-    public ByteCountManager() {
-        mByteCountListeners = new CopyOnWriteArrayList<>();
-    }
-
-    public void addListener(@NotNull ByteCountListener listener) {
-        if (!mByteCountListeners.contains(listener)) {
-            mByteCountListeners.add(listener);
-            // TrafficHistory.LastDiff diff = trafficHistory.getLastDiff(null);
-            // listener.onByteCountChanged(diff.getIn(), diff.getOut(), diff.getDiffIn(), diff.getDiffOut());
+        public ByteCount(@NotNull Long inBytes, @NotNull Long outBytes) {
+            mInBytes = inBytes;
+            mOutBytes = outBytes;
         }
-    }
 
-    public void removeListener(@NotNull ByteCountListener listener) {
-        mByteCountListeners.remove(listener);
-    }
+        @NotNull
+        public Long getInBytes() {
+            return mInBytes;
+        }
 
-    public void setByteCount(@NotNull ByteCount byteCount) {
-        mByteCount = byteCount;
-        notifyListeners();
-    }
-
-    private void notifyListeners() {
-        long in = mByteCount.getIn();
-        long out = mByteCount.getOut();
-        TrafficHistory.LastDiff diff = trafficHistory.add(in, out);
-        for (ByteCountListener listener : mByteCountListeners) {
-            listener.onByteCountChanged(in, out, diff.getDiffIn(), diff.getDiffOut());
+        @NotNull
+        public Long getOutBytes() {
+            return mOutBytes;
         }
     }
 }

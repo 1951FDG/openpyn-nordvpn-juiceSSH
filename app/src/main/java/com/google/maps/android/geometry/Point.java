@@ -20,10 +20,13 @@ import androidx.annotation.NonNull;
 
 public class Point {
 
+    @SuppressWarnings("FieldNamingConvention")
     public final double x;
 
+    @SuppressWarnings("FieldNamingConvention")
     public final double y;
 
+    @SuppressWarnings("ParameterHidesMemberVariable")
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
@@ -32,6 +35,6 @@ public class Point {
     @NonNull
     @Override
     public String toString() {
-        return "Point{" + "x=" + x + ", y=" + y + '}';
+        return "Point{" + "x=" + x + ", y=" + y + "}";
     }
 }

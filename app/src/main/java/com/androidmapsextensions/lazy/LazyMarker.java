@@ -30,40 +30,26 @@ import java.util.Objects;
 @SuppressWarnings("FieldNotUsedInToString")
 public class LazyMarker {
 
-    @FunctionalInterface
-    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
-    public interface OnMarkerCreateListener {
+    @Nullable
+    @SuppressWarnings("TransientFieldInNonSerializableClass")
+    private transient OnMarkerCreateListener mListener;
 
-        void onMarkerCreate(@NonNull LazyMarker marker);
-    }
-
-    @FunctionalInterface
-    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
-    public interface OnLevelChangeCallback {
-
-        void onLevelChange(@NonNull LazyMarker marker, int level);
-    }
-
-    private int level;
+    @SuppressWarnings("TransientFieldInNonSerializableClass")
+    private transient GoogleMap mMap;
 
     @Nullable
     @SuppressWarnings("TransientFieldInNonSerializableClass")
-    private transient OnMarkerCreateListener listener;
-
-    private LatLng location;
+    private transient Marker mMarker;
 
     @SuppressWarnings("TransientFieldInNonSerializableClass")
-    private transient GoogleMap map;
+    private transient MarkerOptions mMarkerOptions;
+
+    private int mLevel;
+
+    private LatLng mLocation;
 
     @Nullable
-    @SuppressWarnings("TransientFieldInNonSerializableClass")
-    private transient Marker marker;
-
-    @SuppressWarnings("TransientFieldInNonSerializableClass")
-    private transient MarkerOptions markerOptions;
-
-    @Nullable
-    private Object tag;
+    private Object mTag;
 
     public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options) {
         this(googleMap, options, null, null);
@@ -78,276 +64,12 @@ public class LazyMarker {
         if (options.isVisible()) {
             createMarker(googleMap, options, aTag, markerCreateListener);
         } else {
-            map = googleMap;
-            markerOptions = copy(options);
-            listener = markerCreateListener;
+            mMap = googleMap;
+            mMarkerOptions = copy(options);
+            mListener = markerCreateListener;
         }
-        tag = aTag;
-        location = options.getPosition();
-    }
-
-    @SuppressWarnings("NonFinalFieldReferenceInEquals")
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if ((obj == null) || (getClass() != obj.getClass())) {
-            return false;
-        }
-        return Objects.equals(location, ((LazyMarker) obj).location);
-    }
-
-    @SuppressWarnings("NonFinalFieldReferencedInHashCode")
-    @Override
-    public int hashCode() {
-        return location.hashCode();
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "LazyMarker{" + "tag=" + tag + ", level=" + level + ", location=" + location + "}";
-    }
-
-    public float getAlpha() {
-        if (marker != null) {
-            return marker.getAlpha();
-        }
-        return markerOptions.getAlpha();
-    }
-
-    public void setAlpha(float alpha) {
-        if (marker != null) {
-            marker.setAlpha(alpha);
-        } else {
-            markerOptions.alpha(alpha);
-        }
-    }
-
-    @Nullable
-    public String getId() {
-        if (marker != null) {
-            return marker.getId();
-        }
-        return null;
-    }
-
-    @IntRange(from = 0, to = 9)
-    public int getLevel() {
-        return level;
-    }
-
-    @NonNull
-    public LatLng getPosition() {
-        if (marker != null) {
-            return marker.getPosition();
-        }
-        return markerOptions.getPosition();
-    }
-
-    public void setPosition(@NonNull LatLng position) {
-        location = position;
-        if (marker != null) {
-            marker.setPosition(position);
-        } else {
-            markerOptions.position(position);
-        }
-    }
-
-    public float getRotation() {
-        if (marker != null) {
-            return marker.getRotation();
-        }
-        return markerOptions.getRotation();
-    }
-
-    public void setRotation(float rotation) {
-        if (marker != null) {
-            marker.setRotation(rotation);
-        } else {
-            markerOptions.rotation(rotation);
-        }
-    }
-
-    @Nullable
-    public String getSnippet() {
-        if (marker != null) {
-            return marker.getSnippet();
-        }
-        return markerOptions.getSnippet();
-    }
-
-    public void setSnippet(@NonNull String snippet) {
-        if (marker != null) {
-            marker.setSnippet(snippet);
-        } else {
-            markerOptions.snippet(snippet);
-        }
-    }
-
-    @Nullable
-    public Object getTag() {
-        return tag;
-    }
-
-    public void setTag(@Nullable Object aTag) {
-        tag = aTag;
-        if (marker != null) {
-            marker.setTag(aTag);
-        }
-    }
-
-    @Nullable
-    public String getTitle() {
-        if (marker != null) {
-            return marker.getTitle();
-        }
-        return markerOptions.getTitle();
-    }
-
-    public void setTitle(@NonNull String title) {
-        if (marker != null) {
-            marker.setTitle(title);
-        } else {
-            markerOptions.title(title);
-        }
-    }
-
-    public float getZIndex() {
-        if (marker != null) {
-            return marker.getZIndex();
-        }
-        return markerOptions.getZIndex();
-    }
-
-    public void setZIndex(float zIndex) {
-        if (marker != null) {
-            marker.setZIndex(zIndex);
-        } else {
-            markerOptions.zIndex(zIndex);
-        }
-    }
-
-    public void hideInfoWindow() {
-        if (marker != null) {
-            marker.hideInfoWindow();
-        }
-    }
-
-    public boolean isDraggable() {
-        if (marker != null) {
-            return marker.isDraggable();
-        }
-        return markerOptions.isDraggable();
-    }
-
-    public void setDraggable(boolean draggable) {
-        if (marker != null) {
-            marker.setDraggable(draggable);
-        } else {
-            markerOptions.draggable(draggable);
-        }
-    }
-
-    public boolean isFlat() {
-        if (marker != null) {
-            return marker.isFlat();
-        }
-        return markerOptions.isFlat();
-    }
-
-    public void setFlat(boolean flat) {
-        if (marker != null) {
-            marker.setFlat(flat);
-        } else {
-            markerOptions.flat(flat);
-        }
-    }
-
-    public boolean isInfoWindowShown() {
-        if (marker != null) {
-            return marker.isInfoWindowShown();
-        }
-        return false;
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isVisible() {
-        if (marker != null) {
-            return marker.isVisible();
-        }
-        return false;
-    }
-
-    public void setVisible(boolean visible) {
-        if (marker != null) {
-            marker.setVisible(visible);
-        } else if (visible) {
-            markerOptions.visible(true);
-            createMarker();
-        }
-    }
-
-    public void remove() {
-        if (marker != null) {
-            marker.remove();
-            marker = null;
-        }
-    }
-
-    public void setAnchor(float anchorU, float anchorV) {
-        if (marker != null) {
-            marker.setAnchor(anchorU, anchorV);
-        } else {
-            markerOptions.anchor(anchorU, anchorV);
-        }
-    }
-
-    public void setIcon(@Nullable BitmapDescriptor icon) {
-        if (marker != null) {
-            marker.setIcon(icon);
-        } else {
-            markerOptions.icon(icon);
-        }
-    }
-
-    public void setInfoWindowAnchor(float anchorU, float anchorV) {
-        if (marker != null) {
-            marker.setInfoWindowAnchor(anchorU, anchorV);
-        } else {
-            markerOptions.infoWindowAnchor(anchorU, anchorV);
-        }
-    }
-
-    public void setLevel(@IntRange(from = 0, to = 9) int aLevel, @Nullable OnLevelChangeCallback callback) {
-        level = aLevel;
-        if (callback != null) {
-            callback.onLevelChange(this, aLevel);
-        }
-    }
-
-    public void showInfoWindow() {
-        if (marker != null) {
-            marker.showInfoWindow();
-        }
-    }
-
-    private void createMarker() {
-        if (marker == null) {
-            createMarker(map, markerOptions, tag, listener);
-            listener = null;
-        }
-    }
-
-    private void createMarker(GoogleMap googleMap, MarkerOptions options, Object aTag, OnMarkerCreateListener markerCreateListener) {
-        marker = googleMap.addMarker(options);
-        if (aTag != null) {
-            marker.setTag(aTag);
-        }
-        if (markerCreateListener != null) {
-            markerCreateListener.onMarkerCreate(this);
-        }
+        mTag = aTag;
+        mLocation = options.getPosition();
     }
 
     private static MarkerOptions copy(MarkerOptions options) {
@@ -364,5 +86,283 @@ public class LazyMarker {
         copy.title(options.getTitle());
         copy.visible(options.isVisible());
         return copy;
+    }
+
+    @SuppressWarnings("NonFinalFieldReferenceInEquals")
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if ((obj == null) || (getClass() != obj.getClass())) {
+            return false;
+        }
+        return Objects.equals(mLocation, ((LazyMarker) obj).mLocation);
+    }
+
+    @SuppressWarnings("NonFinalFieldReferencedInHashCode")
+    @Override
+    public int hashCode() {
+        return mLocation.hashCode();
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "LazyMarker{" + "tag=" + mTag + ", level=" + mLevel + ", location=" + mLocation + "}";
+    }
+
+    public float getAlpha() {
+        if (mMarker != null) {
+            return mMarker.getAlpha();
+        }
+        return mMarkerOptions.getAlpha();
+    }
+
+    public void setAlpha(float alpha) {
+        if (mMarker != null) {
+            mMarker.setAlpha(alpha);
+        } else {
+            mMarkerOptions.alpha(alpha);
+        }
+    }
+
+    @Nullable
+    public String getId() {
+        if (mMarker != null) {
+            return mMarker.getId();
+        }
+        return null;
+    }
+
+    @IntRange(from = 0, to = 9)
+    public int getLevel() {
+        return mLevel;
+    }
+
+    @NonNull
+    public LatLng getPosition() {
+        if (mMarker != null) {
+            return mMarker.getPosition();
+        }
+        return mMarkerOptions.getPosition();
+    }
+
+    public void setPosition(@NonNull LatLng position) {
+        mLocation = position;
+        if (mMarker != null) {
+            mMarker.setPosition(position);
+        } else {
+            mMarkerOptions.position(position);
+        }
+    }
+
+    public float getRotation() {
+        if (mMarker != null) {
+            return mMarker.getRotation();
+        }
+        return mMarkerOptions.getRotation();
+    }
+
+    public void setRotation(float rotation) {
+        if (mMarker != null) {
+            mMarker.setRotation(rotation);
+        } else {
+            mMarkerOptions.rotation(rotation);
+        }
+    }
+
+    @Nullable
+    public String getSnippet() {
+        if (mMarker != null) {
+            return mMarker.getSnippet();
+        }
+        return mMarkerOptions.getSnippet();
+    }
+
+    public void setSnippet(@NonNull String snippet) {
+        if (mMarker != null) {
+            mMarker.setSnippet(snippet);
+        } else {
+            mMarkerOptions.snippet(snippet);
+        }
+    }
+
+    @Nullable
+    public Object getTag() {
+        return mTag;
+    }
+
+    public void setTag(@Nullable Object aTag) {
+        mTag = aTag;
+        if (mMarker != null) {
+            mMarker.setTag(aTag);
+        }
+    }
+
+    @Nullable
+    public String getTitle() {
+        if (mMarker != null) {
+            return mMarker.getTitle();
+        }
+        return mMarkerOptions.getTitle();
+    }
+
+    public void setTitle(@NonNull String title) {
+        if (mMarker != null) {
+            mMarker.setTitle(title);
+        } else {
+            mMarkerOptions.title(title);
+        }
+    }
+
+    public float getZIndex() {
+        if (mMarker != null) {
+            return mMarker.getZIndex();
+        }
+        return mMarkerOptions.getZIndex();
+    }
+
+    public void setZIndex(float zIndex) {
+        if (mMarker != null) {
+            mMarker.setZIndex(zIndex);
+        } else {
+            mMarkerOptions.zIndex(zIndex);
+        }
+    }
+
+    public void hideInfoWindow() {
+        if (mMarker != null) {
+            mMarker.hideInfoWindow();
+        }
+    }
+
+    public boolean isDraggable() {
+        if (mMarker != null) {
+            return mMarker.isDraggable();
+        }
+        return mMarkerOptions.isDraggable();
+    }
+
+    public void setDraggable(boolean draggable) {
+        if (mMarker != null) {
+            mMarker.setDraggable(draggable);
+        } else {
+            mMarkerOptions.draggable(draggable);
+        }
+    }
+
+    public boolean isFlat() {
+        if (mMarker != null) {
+            return mMarker.isFlat();
+        }
+        return mMarkerOptions.isFlat();
+    }
+
+    public void setFlat(boolean flat) {
+        if (mMarker != null) {
+            mMarker.setFlat(flat);
+        } else {
+            mMarkerOptions.flat(flat);
+        }
+    }
+
+    public boolean isInfoWindowShown() {
+        if (mMarker != null) {
+            return mMarker.isInfoWindowShown();
+        }
+        return false;
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean isVisible() {
+        if (mMarker != null) {
+            return mMarker.isVisible();
+        }
+        return false;
+    }
+
+    public void setVisible(boolean visible) {
+        if (mMarker != null) {
+            mMarker.setVisible(visible);
+        } else if (visible) {
+            mMarkerOptions.visible(true);
+            createMarker();
+        }
+    }
+
+    public void remove() {
+        if (mMarker != null) {
+            mMarker.remove();
+            mMarker = null;
+        }
+    }
+
+    public void setAnchor(float anchorU, float anchorV) {
+        if (mMarker != null) {
+            mMarker.setAnchor(anchorU, anchorV);
+        } else {
+            mMarkerOptions.anchor(anchorU, anchorV);
+        }
+    }
+
+    public void setIcon(@Nullable BitmapDescriptor icon) {
+        if (mMarker != null) {
+            mMarker.setIcon(icon);
+        } else {
+            mMarkerOptions.icon(icon);
+        }
+    }
+
+    public void setInfoWindowAnchor(float anchorU, float anchorV) {
+        if (mMarker != null) {
+            mMarker.setInfoWindowAnchor(anchorU, anchorV);
+        } else {
+            mMarkerOptions.infoWindowAnchor(anchorU, anchorV);
+        }
+    }
+
+    public void setLevel(@IntRange(from = 0, to = 9) int aLevel, @Nullable OnLevelChangeCallback callback) {
+        mLevel = aLevel;
+        if (callback != null) {
+            callback.onLevelChange(this, aLevel);
+        }
+    }
+
+    public void showInfoWindow() {
+        if (mMarker != null) {
+            mMarker.showInfoWindow();
+        }
+    }
+
+    private void createMarker() {
+        if (mMarker == null) {
+            createMarker(mMap, mMarkerOptions, mTag, mListener);
+            mListener = null;
+        }
+    }
+
+    private void createMarker(GoogleMap googleMap, MarkerOptions options, Object aTag, OnMarkerCreateListener markerCreateListener) {
+        mMarker = googleMap.addMarker(options);
+        if (aTag != null) {
+            mMarker.setTag(aTag);
+        }
+        if (markerCreateListener != null) {
+            markerCreateListener.onMarkerCreate(this);
+        }
+    }
+
+    @FunctionalInterface
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
+    public interface OnMarkerCreateListener {
+
+        void onMarkerCreate(@NonNull LazyMarker marker);
+    }
+
+    @FunctionalInterface
+    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
+    public interface OnLevelChangeCallback {
+
+        void onLevelChange(@NonNull LazyMarker marker, int level);
     }
 }

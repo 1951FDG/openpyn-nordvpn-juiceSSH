@@ -35,17 +35,17 @@ public interface Connection extends ConnectionBackground {
 
     boolean isOpenVPNActive();
 
-    void addByteCountListener(@NotNull ByteCountListener listener);
+    boolean addByteCountListener(@NotNull ByteCountListener listener);
 
-    void addLogListener(@NotNull LogListener listener);
+    boolean addLogListener(@NotNull LogListener listener);
 
-    void addStateListener(@NotNull StateListener listener);
+    boolean addStateListener(@NotNull StateListener listener);
 
-    void removeByteCountListener(@NotNull ByteCountListener listener);
+    boolean removeByteCountListener(@NotNull ByteCountListener listener);
 
-    void removeLogListener(@NotNull LogListener listener);
+    boolean removeLogListener(@NotNull LogListener listener);
 
-    void removeStateListener(@NotNull StateListener listener);
+    boolean removeStateListener(@NotNull StateListener listener);
 
     void setConnectionListener(@Nullable ConnectionListener connectionListener);
 

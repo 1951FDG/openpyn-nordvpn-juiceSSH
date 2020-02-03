@@ -6,8 +6,7 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "UtilityClass", "StaticMethodOnlyUsedInOneClass", "ClassIndependentOfModule", "ClassUnconnectedToPackage",
-        "ClassOnlyUsedInOnePackage" })
+@SuppressWarnings({ "UtilityClass", "StaticMethodOnlyUsedInOneClass", "ClassIndependentOfModule", "ClassUnconnectedToPackage" })
 public final class StringUtils {
 
     private StringUtils() {
@@ -82,9 +81,9 @@ public final class StringUtils {
      *
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
      *
-     * @param <T> the specific kind of CharSequence
-     * @param str the CharSequence to check, may be null
-     * @param defaultStr  the default CharSequence to return
+     * @param <T>        the specific kind of CharSequence
+     * @param str        the CharSequence to check, may be null
+     * @param defaultStr the default CharSequence to return
      * @return the passed in CharSequence, or the default
      */
     @SuppressWarnings("StandardVariableNames")
@@ -130,7 +129,7 @@ public final class StringUtils {
      * @param out the StringBuilder to receive the escaped string
      * @param cs  the CharSequence to escape values in, may be null
      */
-    @SuppressWarnings("MagicCharacter")
+    @SuppressWarnings({ "MagicCharacter", "HardcodedFileSeparator" })
     private static void escapeOpenVPNStyleString(StringBuilder out, CharSequence cs) {
         int sz = cs.length();
         for (int i = 0; i < sz; i++) {

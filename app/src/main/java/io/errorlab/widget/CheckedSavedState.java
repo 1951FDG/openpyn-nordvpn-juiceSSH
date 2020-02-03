@@ -27,7 +27,6 @@ class CheckedSavedState extends AbsSavedState {
         super(superState);
     }
 
-    @SuppressWarnings("WeakerAccess")
     CheckedSavedState(Parcel source, ClassLoader loader) {
         super(source, loader);
         checked = source.readInt() == 1;

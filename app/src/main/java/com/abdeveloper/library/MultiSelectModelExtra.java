@@ -17,7 +17,6 @@ public class MultiSelectModelExtra extends MultiSelectModel {
 
     private static final Pattern COMPILE = Pattern.compile(" ");
 
-    @SuppressWarnings("FieldNotUsedInToString")
     private transient int mInt;
 
     private String mTag;
@@ -31,11 +30,10 @@ public class MultiSelectModelExtra extends MultiSelectModel {
     }
 
     @NotNull
-    @SuppressWarnings("MagicCharacter")
     @Override
     public String toString() {
-        return "MultiSelectModel{" + "id=" + getId() + ", name=" + getName() + ", resId=" + getResId() + ", mTag='" + mTag + '\''
-                + ", mUnicode='" + mUnicode + '\'' + ", start=" + getStart() + ", end=" + getEnd() + '}';
+        return "MultiSelectModel{" + "id=" + getId() + ", name=" + getName() + ", resId=" + mInt + ", mTag='" + mTag + "\'" + ", mUnicode='"
+                + mUnicode + "\'" + ", start=" + getStart() + ", end=" + getEnd() + "}";
     }
 
     @Override

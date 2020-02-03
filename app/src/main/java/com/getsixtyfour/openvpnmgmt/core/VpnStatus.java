@@ -12,9 +12,6 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings({ "UtilityClass", "WeakerAccess" })
 public final class VpnStatus {
 
-    private VpnStatus() {
-    }
-
     @NonNls
     public static final String ADD_ROUTES = "ADD_ROUTES";
 
@@ -60,13 +57,16 @@ public final class VpnStatus {
     @NonNls
     public static final String AUTH_FAILURE = "auth-failure";
 
-    private static final String[] mConnected = { CONNECTED };
+    private static final String[] CONNECTED_STRINGS = { CONNECTED };
 
-    private static final String[] mNoReply = { CONNECTING, WAIT, RECONNECTING, RESOLVE, TCP_CONNECT };
+    private static final String[] NOT_CONNECTED_STRINGS = { DISCONNECTED, EXITING };
 
-    private static final String[] mNotConnected = { DISCONNECTED, EXITING };
+    private static final String[] NO_REPLY_STRINGS = { CONNECTING, WAIT, RECONNECTING, RESOLVE, TCP_CONNECT };
 
-    private static final String[] mReply = { AUTH, GET_CONFIG, ASSIGN_IP, ADD_ROUTES, AUTH_PENDING };
+    private static final String[] REPLY_STRINGS = { AUTH, GET_CONFIG, ASSIGN_IP, ADD_ROUTES, AUTH_PENDING };
+
+    private VpnStatus() {
+    }
 
     @SuppressWarnings({ "OverlyComplexMethod", "MethodWithMultipleReturnPoints" })
     @NotNull
@@ -74,26 +74,26 @@ public final class VpnStatus {
         if (RECONNECTING.equals(name) && AUTH_FAILURE.equals(message)) {
             return ConnectionStatus.LEVEL_AUTH_FAILED;
         }
-        for (String x : mNoReply) {
-            if (name.equals(x)) {
-                return ConnectionStatus.LEVEL_CONNECTING_NO_SERVER_REPLY_YET;
-            }
-        }
-        for (String x : mReply) {
-            if (name.equals(x)) {
-                return ConnectionStatus.LEVEL_CONNECTING_SERVER_REPLIED;
-            }
-        }
-        for (String x : mConnected) {
+        for (String x : CONNECTED_STRINGS) {
             if (name.equals(x)) {
                 return ConnectionStatus.LEVEL_CONNECTED;
             }
         }
-        for (String x : mNotConnected) {
+        for (String x : NOT_CONNECTED_STRINGS) {
             if (name.equals(x)) {
                 return ConnectionStatus.LEVEL_NOT_CONNECTED;
             }
         }
-        return ConnectionStatus.UNKNOWN_LEVEL;
+        for (String x : NO_REPLY_STRINGS) {
+            if (name.equals(x)) {
+                return ConnectionStatus.LEVEL_CONNECTING_NO_SERVER_REPLY_YET;
+            }
+        }
+        for (String x : REPLY_STRINGS) {
+            if (name.equals(x)) {
+                return ConnectionStatus.LEVEL_CONNECTING_SERVER_REPLIED;
+            }
+        }
+        return ConnectionStatus.LEVEL_UNKNOWN;
     }
 }

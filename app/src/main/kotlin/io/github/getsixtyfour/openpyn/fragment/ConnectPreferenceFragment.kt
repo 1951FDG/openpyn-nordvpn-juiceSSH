@@ -4,8 +4,12 @@ import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import io.github.getsixtyfour.openpyn.R
 
+/**
+ * This fragment shows Connect settings preferences only.
+ */
 @Suppress("unused")
 class ConnectPreferenceFragment : PreferenceFragmentCompat() {
+
     override fun addPreferencesFromResource(preferencesResId: Int) {
         preferenceScreen = preferenceManager.inflateFromResource(context, preferencesResId, preferenceScreen)
     }

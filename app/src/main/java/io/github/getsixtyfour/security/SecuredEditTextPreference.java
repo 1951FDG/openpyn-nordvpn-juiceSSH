@@ -12,7 +12,7 @@ import androidx.preference.EditTextPreference.OnBindEditTextListener;
 
 public final class SecuredEditTextPreference extends EditTextPreference implements OnBindEditTextListener {
 
-    private final SecurityManager securityManager = SecurityManager.getInstance(getContext());
+    private final SecurityManager mSecurityManager = SecurityManager.getInstance(getContext());
 
     public SecuredEditTextPreference(@NonNull Context context) {
         super(context);
@@ -38,7 +38,7 @@ public final class SecuredEditTextPreference extends EditTextPreference implemen
     @Override
     public String getText() {
         String text = super.getText();
-        return ((text == null) || (text.isEmpty())) ? text : securityManager.decryptString(text);
+        return ((text == null) || (text.isEmpty())) ? text : mSecurityManager.decryptString(text);
     }
 
     @Override
@@ -46,7 +46,7 @@ public final class SecuredEditTextPreference extends EditTextPreference implemen
         if ((text == null) || text.isEmpty()) {
             super.setText(text);
         } else {
-            super.setText(securityManager.encryptString(text));
+            super.setText(mSecurityManager.encryptString(text));
         }
     }
 

@@ -33,29 +33,6 @@ import io.github.getsixtyfour.openpyn.R;
 
 public class DisconnectVPN extends Activity implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
 
-    private static final class StopTask implements Runnable {
-
-        private final WeakReference<IOpenVPNServiceInternal> mService;
-
-        StopTask(IOpenVPNServiceInternal service) {
-            mService = new WeakReference<>(service);
-        }
-
-        @Override
-        public void run() {
-            IOpenVPNServiceInternal service = mService.get();
-            if (service != null) {
-                try {
-                    service.stopVPN(false);
-                } catch (RemoteException ignored) {
-                }
-            }
-        }
-    }
-
-    @Nullable
-    private IOpenVPNServiceInternal mService;
-
     private final ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -68,6 +45,9 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
             setService(null);
         }
     };
+
+    @Nullable
+    private IOpenVPNServiceInternal mService;
 
     @Override
     protected void onResume() {
@@ -82,15 +62,6 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
     protected void onPause() {
         super.onPause();
         unbindService(mConnection);
-    }
-
-    @Nullable
-    public IOpenVPNServiceInternal getService() {
-        return mService;
-    }
-
-    public void setService(@Nullable IOpenVPNServiceInternal service) {
-        mService = service;
     }
 
     @Override
@@ -108,6 +79,15 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
         finish();
     }
 
+    @Nullable
+    public IOpenVPNServiceInternal getService() {
+        return mService;
+    }
+
+    public void setService(@Nullable IOpenVPNServiceInternal service) {
+        mService = service;
+    }
+
     private void showDisconnectDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.title_cancel);
@@ -116,5 +96,25 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
         builder.setPositiveButton(android.R.string.ok, this);
         builder.setOnCancelListener(this);
         builder.show();
+    }
+
+    private static final class StopTask implements Runnable {
+
+        private final WeakReference<IOpenVPNServiceInternal> mService;
+
+        StopTask(IOpenVPNServiceInternal service) {
+            mService = new WeakReference<>(service);
+        }
+
+        @Override
+        public void run() {
+            IOpenVPNServiceInternal service = mService.get();
+            if (service != null) {
+                try {
+                    service.stopVPN();
+                } catch (RemoteException ignored) {
+                }
+            }
+        }
     }
 }

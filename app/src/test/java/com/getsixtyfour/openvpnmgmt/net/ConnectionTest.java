@@ -29,9 +29,9 @@ import java.util.Set;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ConnectionTest {
 
-    private static Connection connection = null;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionTest.class);
+
+    private static Connection connection = null;
 
     private final ResourceBundle bundle = ResourceBundle.getBundle("test");
 
@@ -129,7 +129,7 @@ public class ConnectionTest {
         Status result = connection.getOpenVPNStatus();
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.getUpdateTime());
-        List<Client> clientList = result.getClientList();
+        List<Client> clientList = result.getClients();
         Assert.assertFalse(clientList.isEmpty());
         Set<Route> routes = result.getRoutes();
         Assert.assertFalse(routes.isEmpty());

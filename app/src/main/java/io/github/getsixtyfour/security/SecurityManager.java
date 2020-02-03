@@ -28,15 +28,16 @@ import javax.crypto.spec.SecretKeySpec;
 @SuppressWarnings("Singleton")
 public final class SecurityManager {
 
-    private static volatile SecurityManager sInstance = null;
-
+    @SuppressWarnings("HardcodedFileSeparator")
     private static final String AES_GCM_NO_PADDING = "AES/GCM/NoPadding";
 
     private static final int IV_LENGTH = 16;
 
     private static final String TAG = "SecurityManager";
 
-    private SecretKey mKey;
+    private static volatile SecurityManager sInstance = null;
+
+    private SecretKey mSecretKey;
 
     @SuppressWarnings("unused")
     private SecurityManager() {
@@ -50,7 +51,7 @@ public final class SecurityManager {
             MessageDigest sha = MessageDigest.getInstance("SHA-1");
             key = sha.digest(key);
             key = Arrays.copyOf(key, IV_LENGTH);
-            mKey = new SecretKeySpec(key, "AES");
+            mSecretKey = new SecretKeySpec(key, "AES");
         } catch (NoSuchAlgorithmException e) {
             Log.wtf(TAG, e);
         }
@@ -69,6 +70,20 @@ public final class SecurityManager {
         return sInstance;
     }
 
+    private static byte[] concat(byte[]... arrays) {
+        int length = 0;
+        for (byte[] array : arrays) {
+            length += array.length;
+        }
+        byte[] result = new byte[length];
+        int pos = 0;
+        for (byte[] array : arrays) {
+            System.arraycopy(array, 0, result, pos, array.length);
+            pos += array.length;
+        }
+        return result;
+    }
+
     @NonNull
     @SuppressWarnings("WeakerAccess")
     public String decryptString(@NonNull String stringToDecrypt) {
@@ -80,7 +95,7 @@ public final class SecurityManager {
             byte[] encryptedBytes = Base64.decode(stringToDecrypt, Base64.DEFAULT);
             Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
             AlgorithmParameterSpec ivSpec = new IvParameterSpec(encryptedBytes, 0, IV_LENGTH);
-            cipher.init(Cipher.DECRYPT_MODE, mKey, ivSpec);
+            cipher.init(Cipher.DECRYPT_MODE, mSecretKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(encryptedBytes, IV_LENGTH, encryptedBytes.length - IV_LENGTH);
             output = new String(cipherBytes, StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalArgumentException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
@@ -102,26 +117,12 @@ public final class SecurityManager {
             byte[] iv = new byte[IV_LENGTH];
             new SecureRandom().nextBytes(iv);
             AlgorithmParameterSpec ivSpec = new IvParameterSpec(iv);
-            cipher.init(Cipher.ENCRYPT_MODE, mKey, ivSpec);
+            cipher.init(Cipher.ENCRYPT_MODE, mSecretKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(clearText);
             output = new String(Base64.encode(concat(iv, cipherBytes), Base64.NO_WRAP), StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalArgumentException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             Log.wtf(TAG, e);
         }
         return output;
-    }
-
-    private static byte[] concat(byte[]... arrays) {
-        int length = 0;
-        for (byte[] array : arrays) {
-            length += array.length;
-        }
-        byte[] result = new byte[length];
-        int pos = 0;
-        for (byte[] array : arrays) {
-            System.arraycopy(array, 0, result, pos, array.length);
-            pos += array.length;
-        }
-        return result;
     }
 }

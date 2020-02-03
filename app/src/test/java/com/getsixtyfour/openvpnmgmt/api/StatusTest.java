@@ -24,9 +24,9 @@ import java.util.Set;
 @SuppressWarnings({ "UseOfObsoleteDateTimeApi", "JUnitTestNG", "MigrateAssertToMatcherAssert", "MessageMissingOnJUnitAssertion" })
 public class StatusTest {
 
-    private static Status instance = null;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusTest.class);
+
+    private static Status instance = null;
 
     @BeforeClass
     public static void init() throws OpenVpnParseException {
@@ -46,7 +46,7 @@ public class StatusTest {
     @Test
     public void testGetClientList() {
         LOGGER.info("getClientList");
-        List<Client> result = instance.getClientList();
+        List<Client> result = instance.getClients();
         Assert.assertEquals(1L, result.size());
     }
 

@@ -241,7 +241,7 @@ fun populateAboutConfig() {
     aboutConfig.version = "$buildType $versionName ($versionCode)"
     aboutConfig.author = "1951FDG"
     aboutConfig.companyHtmlPath = "https://github.com/" + aboutConfig.author
-    aboutConfig.webHomePage = aboutConfig.companyHtmlPath + '/' + aboutConfig.appName
+    aboutConfig.webHomePage = aboutConfig.companyHtmlPath + "/" + aboutConfig.appName
     aboutConfig.buildType = AboutConfig.BuildType.GOOGLE
     aboutConfig.packageName = BuildConfig.APPLICATION_ID
     // custom analytics, dialog and share

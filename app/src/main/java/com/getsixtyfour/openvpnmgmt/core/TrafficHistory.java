@@ -7,7 +7,6 @@ package com.getsixtyfour.openvpnmgmt.core;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,57 +21,20 @@ public class TrafficHistory {
     public static final long PERIODS_TO_KEEP = 5L;
 
     @SuppressWarnings("WeakerAccess")
-    public static final long TIME_PERIOD_MINUTES = 60L * 1000L;
-
-    @SuppressWarnings("WeakerAccess")
     public static final long TIME_PERIOD_HOURS = 3600L * 1000L;
 
-    private final LinkedList<TrafficDataPoint> seconds = new LinkedList<>();
+    @SuppressWarnings("WeakerAccess")
+    public static final long TIME_PERIOD_MINUTES = 60L * 1000L;
 
-    private final LinkedList<TrafficDataPoint> minutes = new LinkedList<>();
+    private final LinkedList<TrafficDataPoint> mHours = new LinkedList<>();
 
-    private final LinkedList<TrafficDataPoint> hours = new LinkedList<>();
+    private final LinkedList<TrafficDataPoint> mMinutes = new LinkedList<>();
 
-    private TrafficDataPoint lastSecondUsedForMinute;
+    private final LinkedList<TrafficDataPoint> mSeconds = new LinkedList<>();
 
-    private TrafficDataPoint lastMinuteUsedForHours;
+    private TrafficDataPoint mLastMinuteUsedForHours;
 
-    public TrafficHistory() {
-    }
-
-    public LastDiff getLastDiff(TrafficDataPoint tdp) {
-        TrafficDataPoint newTdp = tdp;
-        TrafficDataPoint lastTdp;
-        if (seconds.isEmpty()) {
-            lastTdp = new TrafficDataPoint(0L, 0L, System.currentTimeMillis());
-        } else {
-            lastTdp = seconds.getLast();
-        }
-        if (newTdp == null) {
-            if (seconds.size() < 2) {
-                newTdp = lastTdp;
-            } else {
-                Iterator<TrafficDataPoint> iterator = seconds.descendingIterator();
-                newTdp = iterator.next();
-            }
-        }
-        return new LastDiff(lastTdp, newTdp);
-    }
-
-    @SuppressWarnings("unused")
-    public List<TrafficDataPoint> getHours() {
-        return Collections.unmodifiableList(hours);
-    }
-
-    @SuppressWarnings("unused")
-    public List<TrafficDataPoint> getMinutes() {
-        return Collections.unmodifiableList(minutes);
-    }
-
-    @SuppressWarnings("unused")
-    public List<TrafficDataPoint> getSeconds() {
-        return Collections.unmodifiableList(seconds);
-    }
+    private TrafficDataPoint mLastSecondUsedForMinute;
 
     @SuppressWarnings("unused")
     public static LinkedList<TrafficDataPoint> getDummyList() {
@@ -81,34 +43,36 @@ public class TrafficHistory {
         return list;
     }
 
-    @SuppressWarnings("PackageVisibleField")
-    private static final class TrafficDataPoint {
-
-        final long mTimestamp;
-
-        final long mIn;
-
-        final long mOut;
-
-        TrafficDataPoint(long inBytes, long outBytes, long timestamp) {
-            mIn = inBytes;
-            mOut = outBytes;
-            mTimestamp = timestamp;
-        }
-    }
-
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     public LastDiff add(long in, long out) {
         TrafficDataPoint tdp = new TrafficDataPoint(in, out, System.currentTimeMillis());
-        LastDiff diff = getLastDiff(tdp);
-        seconds.add(tdp);
-        if (lastSecondUsedForMinute == null) {
-            lastSecondUsedForMinute = new TrafficDataPoint(0L, 0L, 0L);
-            lastMinuteUsedForHours = new TrafficDataPoint(0L, 0L, 0L);
+        TrafficDataPoint lastTdp = mSeconds.isEmpty() ? new TrafficDataPoint(0L, 0L, System.currentTimeMillis()) : mSeconds.getLast();
+        LastDiff diff = new LastDiff(lastTdp, tdp);
+        mSeconds.add(tdp);
+        if (mLastSecondUsedForMinute == null) {
+            mLastSecondUsedForMinute = new TrafficDataPoint(0L, 0L, 0L);
+            mLastMinuteUsedForHours = new TrafficDataPoint(0L, 0L, 0L);
         }
         removeAndAverage(tdp, true);
         return diff;
     }
 
+    @SuppressWarnings("unused")
+    public List<TrafficDataPoint> getHours() {
+        return Collections.unmodifiableList(mHours);
+    }
+
+    @SuppressWarnings("unused")
+    public List<TrafficDataPoint> getMinutes() {
+        return Collections.unmodifiableList(mMinutes);
+    }
+
+    @SuppressWarnings("unused")
+    public List<TrafficDataPoint> getSeconds() {
+        return Collections.unmodifiableList(mSeconds);
+    }
+
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     private void removeAndAverage(TrafficDataPoint newTdp, boolean useSeconds) {
         HashSet<TrafficDataPoint> toRemove = new HashSet<>(10);
         long timePeriod;
@@ -117,22 +81,22 @@ public class TrafficHistory {
         TrafficDataPoint lastTsPeriod;
         if (useSeconds) {
             timePeriod = TIME_PERIOD_MINUTES;
-            tpList = seconds;
-            nextList = minutes;
-            lastTsPeriod = lastSecondUsedForMinute;
+            tpList = mSeconds;
+            nextList = mMinutes;
+            lastTsPeriod = mLastSecondUsedForMinute;
         } else {
             timePeriod = TIME_PERIOD_HOURS;
-            tpList = minutes;
-            nextList = hours;
-            lastTsPeriod = lastMinuteUsedForHours;
+            tpList = mMinutes;
+            nextList = mHours;
+            lastTsPeriod = mLastMinuteUsedForHours;
         }
         if ((newTdp.mTimestamp / timePeriod) > (lastTsPeriod.mTimestamp / timePeriod)) {
             nextList.add(newTdp);
             if (useSeconds) {
-                lastSecondUsedForMinute = newTdp;
+                mLastSecondUsedForMinute = newTdp;
                 removeAndAverage(newTdp, false);
             } else {
-                lastMinuteUsedForHours = newTdp;
+                mLastMinuteUsedForHours = newTdp;
             }
             for (TrafficDataPoint tph : tpList) {
                 // List is iterated from oldest to newest, remember first one that we did not
@@ -147,29 +111,45 @@ public class TrafficHistory {
     @SuppressWarnings("PublicInnerClass")
     public static final class LastDiff {
 
-        private final TrafficDataPoint mTdp;
+        private final TrafficDataPoint mFirstTdp;
 
         private final TrafficDataPoint mLastTdp;
 
-        LastDiff(TrafficDataPoint lastTdp, TrafficDataPoint tdp) {
+        LastDiff(TrafficDataPoint lastTdp, TrafficDataPoint firstTdp) {
             mLastTdp = lastTdp;
-            mTdp = tdp;
-        }
-
-        public long getDiffOut() {
-            return Math.max(0L, mTdp.mOut - mLastTdp.mOut);
+            mFirstTdp = firstTdp;
         }
 
         public long getDiffIn() {
-            return Math.max(0L, mTdp.mIn - mLastTdp.mIn);
+            return Math.max(0L, mFirstTdp.mInBytes - mLastTdp.mInBytes);
+        }
+
+        public long getDiffOut() {
+            return Math.max(0L, mFirstTdp.mOutBytes - mLastTdp.mOutBytes);
         }
 
         public long getIn() {
-            return mTdp.mIn;
+            return mFirstTdp.mInBytes;
         }
 
         public long getOut() {
-            return mTdp.mOut;
+            return mFirstTdp.mOutBytes;
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    private static final class TrafficDataPoint {
+
+        public final long mInBytes;
+
+        public final long mOutBytes;
+
+        public final long mTimestamp;
+
+        TrafficDataPoint(long inBytes, long outBytes, long timestamp) {
+            mInBytes = inBytes;
+            mOutBytes = outBytes;
+            mTimestamp = timestamp;
         }
     }
 }

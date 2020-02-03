@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NonNls;
 public final class IntentConstants {
 
     @NonNls
-    public static final String INTENT_PACKAGE_PREFIX = "com.getsixtyfour.openvpnmgmt.android";
+    private static final String INTENT_PACKAGE_PREFIX = "com.getsixtyfour.openvpnmgmt.android";
 
     @NonNls
     public static final String EXTRA_MESSAGE = INTENT_PACKAGE_PREFIX + ".extra.MESSAGE";

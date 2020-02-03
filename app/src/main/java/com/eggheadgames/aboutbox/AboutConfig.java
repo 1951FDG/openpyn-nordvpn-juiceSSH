@@ -2,10 +2,11 @@ package com.eggheadgames.aboutbox;
 
 import android.annotation.SuppressLint;
 
-@SuppressWarnings({ "PublicField", "unused" })
+@SuppressWarnings({ "PublicField", "unused", "FieldNamingConvention" })
 @SuppressLint("UnknownNullness")
 public class AboutConfig {
 
+    @SuppressWarnings("PublicInnerClass")
     public enum BuildType {
         AMAZON,
         GOOGLE

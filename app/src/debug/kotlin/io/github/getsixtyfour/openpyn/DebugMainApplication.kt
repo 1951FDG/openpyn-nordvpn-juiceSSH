@@ -1,5 +1,6 @@
 package io.github.getsixtyfour.openpyn
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.preference.PreferenceManager
 import com.github.moduth.blockcanary.BlockCanary
@@ -7,6 +8,7 @@ import com.github.moduth.blockcanary.BlockCanary
 @Suppress("unused")
 class DebugMainApplication : MainApplication() {
 
+    @SuppressLint("PrivateApi")
     override fun onCreate() {
         super.onCreate()
         // todo look for 10.0.2.2 on debug machine

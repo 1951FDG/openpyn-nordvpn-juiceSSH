@@ -22,7 +22,7 @@ public interface Status {
     String DATE_FORMAT = "EEE MMMM dd HH:mm:ss yyyy";
 
     @NotNull
-    List<Client> getClientList();
+    List<Client> getClients();
 
     @NotNull
     Set<Route> getRoutes();

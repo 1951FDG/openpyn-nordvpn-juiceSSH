@@ -10,8 +10,9 @@ import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.SettingsActivity.Companion
 
 /**
- * This fragment shows API settings preferences only.
+ * This fragment shows Management settings preferences only.
  */
+@Suppress("unused")
 class ManagementPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onDetach() {

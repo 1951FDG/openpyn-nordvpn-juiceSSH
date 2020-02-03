@@ -11,8 +11,11 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-@SuppressWarnings("UtilityClass")
+@SuppressWarnings({ "UtilityClass", "WeakerAccess" })
 public final class ResourceUtil {
+
+    private ResourceUtil() {
+    }
 
     @NonNull
     public static Bitmap getBitmap(@NonNull VectorDrawable vectorDrawable) {
@@ -35,8 +38,5 @@ public final class ResourceUtil {
         } else {
             throw new IllegalArgumentException("Unsupported drawable type");
         }
-    }
-
-    private ResourceUtil() {
     }
 }

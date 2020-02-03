@@ -15,7 +15,9 @@ interface SubmitCallbackListener {
     fun onCancel()
 }
 
+@Suppress("unused")
 object PrintArray {
+
     private var hint = android.R.string.unknownName
     private var title = android.R.string.unknownName
     private var positiveTitle = android.R.string.ok
@@ -35,31 +37,26 @@ object PrintArray {
         return this
     }
 
-    @Suppress("unused")
     fun setPositiveTitle(title: Int): PrintArray {
         positiveTitle = title
         return this
     }
 
-    @Suppress("unused")
     fun setNegativeTitle(title: Int): PrintArray {
         negativeTitle = title
         return this
     }
 
-    @Suppress("unused")
     fun setNeutralTitle(title: Int): PrintArray {
         neutralTitle = title
         return this
     }
 
-    @Suppress("unused")
     fun setItems(items: ArrayList<MultiSelectable>): PrintArray {
         itemsList = items
         return this
     }
 
-    @Suppress("unused")
     fun setCheckedItems(checkedItems: ArrayList<Int>): PrintArray {
         checkedItemsList = checkedItems
         return this
@@ -179,7 +176,6 @@ object PrintArray {
         }
     }
 
-    @Suppress("unused")
     fun putListInt(@Size(min = 1) key: String, intList: ArrayList<Int>, prefs: SharedPreferences): SharedPreferences.Editor {
         val array = intList.toTypedArray()
         val editor = prefs.edit()
@@ -187,7 +183,6 @@ object PrintArray {
         return editor
     }
 
-    @Suppress("unused")
     fun putListBoolean(@Size(min = 1) key: String, booleanList: ArrayList<Boolean>, prefs: SharedPreferences): SharedPreferences.Editor {
         val array = booleanList.toTypedArray()
         val editor = prefs.edit()
@@ -195,7 +190,6 @@ object PrintArray {
         return editor
     }
 
-    @Suppress("unused")
     fun putListString(@Size(min = 1) key: String, stringList: ArrayList<String>, prefs: SharedPreferences): SharedPreferences.Editor {
         val array = stringList.toTypedArray()
         val editor = prefs.edit()
@@ -203,19 +197,16 @@ object PrintArray {
         return editor
     }
 
-    @Suppress("unused")
     fun getListInt(@Size(min = 1) key: String, defValue: String = "", prefs: SharedPreferences): ArrayList<Int> {
         val array = prefs.getString(key, defValue)!!.split(delimiter)
         return array.mapTo(ArrayList()) { it.toInt() }
     }
 
-    @Suppress("unused")
     fun getListBoolean(@Size(min = 1) key: String, defValue: String = "", prefs: SharedPreferences): ArrayList<Boolean> {
         val array = prefs.getString(key, defValue)!!.split(delimiter)
         return array.mapTo(ArrayList()) { it.toBoolean() }
     }
 
-    @Suppress("unused")
     fun getListString(@Size(min = 1) key: String, defValue: String = "", prefs: SharedPreferences): ArrayList<String> {
         val array = prefs.getString(key, defValue)!!.split(delimiter)
         return array.toCollection(ArrayList())

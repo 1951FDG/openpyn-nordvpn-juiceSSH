@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat;
 
 import com.eggheadgames.aboutbox.AboutConfig;
 
-@SuppressWarnings({ "UtilityClass", "HardCodedStringLiteral" })
+@SuppressWarnings({ "UtilityClass", "HardCodedStringLiteral", "StringConcatenation" })
 public final class EmailUtil {
 
     private EmailUtil() {

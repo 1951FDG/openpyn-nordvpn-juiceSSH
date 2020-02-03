@@ -8,8 +8,8 @@ package com.getsixtyfour.openvpnmgmt.net;
 final class Commands {
 
     /**
-     * auth-retry none — Client will exit with a fatal error (this is the default).
-     * auth-retry nointeract — Client will retry the connection without requerying for an username/password. Use this option for unattended clients.
+     * auth-retry none — Client will exit with a fatal error.
+     * auth-retry nointeract — Client will retry the connection without requerying for an username/password.
      * auth-retry interact — Client will requery for an username/password and/or private key password before attempting a reconnection.
      */
 

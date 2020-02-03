@@ -29,7 +29,7 @@ import java.util.Locale;
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
 public class OpenVpnClient implements Client {
 
-    private final Calendar connectedSince;
+    private final Calendar mConnectedSince;
 
     private final String mCommonName;
 
@@ -64,7 +64,7 @@ public class OpenVpnClient implements Client {
             mIpAddress = realIpSocket;
             mReceivedBytes = rb;
             mSentBytes = sb;
-            connectedSince = calendar;
+            mConnectedSince = calendar;
         } catch (NumberFormatException ex) {
             throw new OpenVpnParseException(Constants.CANNOT_PARSE_PORT_NUMBER, ex);
         } catch (ParseException ex) {
@@ -80,7 +80,7 @@ public class OpenVpnClient implements Client {
         DateFormat df = DateFormat.getInstance();
         return "OpenVpnClient{" + "Common name: " + mCommonName + ", real IP address: " + mIpAddress.getHostString() + ", source port: "
                 + mIpAddress.getPort() + ", received bytes: " + mReceivedBytes + ", sent bytes: " + mSentBytes + ", connected since: " + df
-                .format(connectedSince.getTime()) + "}";
+                .format(mConnectedSince.getTime()) + "}";
     }
 
     @Nullable
@@ -92,7 +92,7 @@ public class OpenVpnClient implements Client {
     @Nullable
     @Override
     public Calendar getConnectedSince() {
-        return (Calendar) connectedSince.clone();
+        return (Calendar) mConnectedSince.clone();
     }
 
     @Nullable
