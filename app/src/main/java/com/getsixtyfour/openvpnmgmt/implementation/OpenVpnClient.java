@@ -29,9 +29,9 @@ import java.util.Locale;
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
 public class OpenVpnClient implements Client {
 
-    private final Calendar mConnectedSince;
-
     private final String mCommonName;
+
+    private final Calendar mConnectedSince;
 
     private final InetSocketAddress mIpAddress;
 

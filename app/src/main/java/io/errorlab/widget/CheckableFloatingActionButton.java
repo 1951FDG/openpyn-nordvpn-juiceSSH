@@ -12,13 +12,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class CheckableFloatingActionButton extends FloatingActionButton implements Checkable {
 
-    @SuppressWarnings("PublicInnerClass")
-    @FunctionalInterface
-    public interface OnCheckedChangeListener {
-
-        void onCheckedChanged(@NonNull FloatingActionButton fabView, boolean isChecked);
-    }
-
     private static final int[] CHECKED_STATE_SET = { android.R.attr.state_checked, };
 
     private boolean mChecked;
@@ -82,12 +75,19 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
         return drawableState;
     }
 
+    @Override
+    public void toggle() {
+        setChecked(!mChecked);
+    }
+
     public void setOnCheckedChangeListener(@Nullable OnCheckedChangeListener listener) {
         mOnCheckedChangeListener = listener;
     }
 
-    @Override
-    public void toggle() {
-        setChecked(!mChecked);
+    @SuppressWarnings("PublicInnerClass")
+    @FunctionalInterface
+    public interface OnCheckedChangeListener {
+
+        void onCheckedChanged(@NonNull FloatingActionButton fabView, boolean isChecked);
     }
 }

@@ -42,6 +42,8 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
     private final OnCameraIdleListener mOnCameraIdleListener;
 
+    private boolean mAnimating;
+
     private AnimatorListener mAnimatorListener;
 
     private boolean mIsRotateGestureEnabled;
@@ -53,8 +55,6 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
     private boolean mIsZoomControlsEnabled;
 
     private boolean mIsZoomGestureEnabled;
-
-    private boolean mAnimating;
 
     public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull OnCameraIdleListener onCameraIdleListener) {
         this(googleMap, new ArrayList<>(), onCameraIdleListener);
@@ -218,18 +218,26 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
         private boolean mAnimate;
 
-        private boolean mClosest;
-
         private boolean mCallback;
+
+        private boolean mClosest;
 
         private long mDelay;
 
-        private LatLng mTarget;
-
         private Object mTag;
+
+        private LatLng mTarget;
 
         public Animation(@NonNull CameraUpdate cameraUpdate) {
             mCameraUpdate = cameraUpdate;
+        }
+
+        public boolean getCallback() {
+            return mCallback;
+        }
+
+        public void setCallback(boolean callback) {
+            mCallback = callback;
         }
 
         @NonNull
@@ -252,14 +260,6 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
         public void setTag(@Nullable Object tag) {
             mTag = tag;
-        }
-
-        public boolean getCallback() {
-            return mCallback;
-        }
-
-        public void setCallback(boolean callback) {
-            mCallback = callback;
         }
 
         @Nullable

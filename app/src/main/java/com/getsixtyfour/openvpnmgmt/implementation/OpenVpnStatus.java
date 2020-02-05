@@ -29,21 +29,22 @@ import java.util.regex.Pattern;
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
 public class OpenVpnStatus extends OpenVpnCommand implements Status {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnStatus.class);
-
-    private static final Pattern STATS_HEADER = Pattern.compile("^OpenVPN STATISTICS"); //NON-NLS
-
     private static final Pattern CLIENTS_HEADER = Pattern.compile("^OpenVPN CLIENT LIST"); //NON-NLS
 
-    private static final Pattern UPDATED = Pattern.compile("^Updated,.*"); //NON-NLS
+    private static final Pattern CLIENT_COLUMNS = Pattern.compile("Common Name,Real Address,Bytes Received,Bytes Sent,Connected Since");
 
-    private static final Pattern CLIENT_COLUMNS = Pattern.compile("Common Name,Real Address,Bytes Received,Bytes Sent,Connected Since"); //NON-NLS
+    private static final Pattern GLOBAL_STATS = Pattern.compile("GLOBAL STATS"); //NON-NLS
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnStatus.class);
+
+    private static final Pattern ROUTES_COLUMNS = Pattern.compile("Virtual Address,Common Name,Real Address,Last Ref"); //NON-NLS
+            //NON-NLS
 
     private static final Pattern ROUTES_HEADER = Pattern.compile("^ROUTING TABLE"); //NON-NLS
 
-    private static final Pattern ROUTES_COLUMNS = Pattern.compile("Virtual Address,Common Name,Real Address,Last Ref"); //NON-NLS
+    private static final Pattern STATS_HEADER = Pattern.compile("^OpenVPN STATISTICS"); //NON-NLS
 
-    private static final Pattern GLOBAL_STATS = Pattern.compile("GLOBAL STATS"); //NON-NLS
+    private static final Pattern UPDATED = Pattern.compile("^Updated,.*"); //NON-NLS
 
     private final List<Client> mClients = new ArrayList<>(10);
 

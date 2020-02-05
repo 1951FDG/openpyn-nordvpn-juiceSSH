@@ -19,6 +19,10 @@ public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
 
     private final Context mContext;
 
+    public VPNAuthenticationHandler(@NonNull Context context) {
+        mContext = context.getApplicationContext();
+    }
+
     @NonNull
     public static String getHost(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -45,10 +49,6 @@ public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getString(context.getString(R.string.pref_openvpnmgmt_username_key),
                 context.getString(R.string.pref_openvpnmgmt_username_default));
-    }
-
-    public VPNAuthenticationHandler(@NonNull Context context) {
-        mContext = context.getApplicationContext();
     }
 
     @NonNull

@@ -39,15 +39,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     public static final Integer BYTE_COUNT_INTERVAL = 2;
 
-    @NonNls
-    private static final String NOT_SUPPORTED_YET = "Not supported yet";
-
-    @NonNls
-    private static final String SOCKET_IS_NOT_CONNECTED = "Socket is not connected";
-
-    @NonNls
-    private static final String STREAM_CLOSED = "Stream closed";
-
     private static final String ARG_INTERACT = "interact";
 
     private static final String ARG_ON = " on";
@@ -57,6 +48,15 @@ public final class ManagementConnection extends AbstractConnection implements Co
     private static final String ARG_SIGTERM = "SIGTERM";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
+
+    @NonNls
+    private static final String NOT_SUPPORTED_YET = "Not supported yet";
+
+    @NonNls
+    private static final String SOCKET_IS_NOT_CONNECTED = "Socket is not connected";
+
+    @NonNls
+    private static final String STREAM_CLOSED = "Stream closed";
 
     private static volatile ManagementConnection sInstance = null;
 

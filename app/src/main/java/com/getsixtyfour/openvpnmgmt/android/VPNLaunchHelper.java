@@ -24,14 +24,14 @@ import com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService;
 @SuppressWarnings("UtilityClass")
 public final class VPNLaunchHelper {
 
+    private VPNLaunchHelper() {
+    }
+
     public static void startOpenVPNService(@NonNull Context context, @NonNull Bundle extras) {
         Intent intent = prepareStartService(context, extras);
         if (intent != null) {
             ContextCompat.startForegroundService(context, intent);
         }
-    }
-
-    private VPNLaunchHelper() {
     }
 
     @Nullable

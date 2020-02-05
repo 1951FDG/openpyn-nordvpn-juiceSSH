@@ -54,11 +54,11 @@ public class StateManager {
 
         private final String mMessage;
 
+        private final String mName;
+
         private final String mRemoteAddress;
 
         private final String mRemotePort;
-
-        private final String mName;
 
         public State(@NotNull String date, @NotNull String name, @Nullable String message, @Nullable String localAddress,
                      @Nullable String remoteAddress, @Nullable String remotePort) {
@@ -85,6 +85,11 @@ public class StateManager {
             return mMessage;
         }
 
+        @NotNull
+        public String getName() {
+            return mName;
+        }
+
         @Nullable
         public String getRemoteAddress() {
             return mRemoteAddress;
@@ -93,11 +98,6 @@ public class StateManager {
         @Nullable
         public String getRemotePort() {
             return mRemotePort;
-        }
-
-        @NotNull
-        public String getName() {
-            return mName;
         }
     }
 }

@@ -67,11 +67,11 @@ public final class OpenVPNService extends Service
     @NonNls
     public static final String NEW_STATUS_CHANNEL_ID = "openvpn_newstat";
 
-    private static final String TAG = "OpenVPNService";
+    private static final int DEFAULT_REMOTE_PORT = 23;
 
     private static final String DEFAULT_REMOTE_SERVER = "127.0.0.1";
 
-    private static final int DEFAULT_REMOTE_PORT = 23;
+    private static final String TAG = "OpenVPNService";
 
     private static final String THREAD_NAME = "OpenVPNManagementThread";
 
@@ -93,11 +93,6 @@ public final class OpenVPNService extends Service
     @SuppressWarnings({ "RedundantNoArgConstructor", "UnnecessaryCallToSuper" })
     public OpenVPNService() {
         super();
-    }
-
-    @SuppressWarnings("ChainedMethodCall")
-    private static boolean isMainThread() {
-        return Thread.currentThread() == Looper.getMainLooper().getThread();
     }
 
     @SuppressWarnings("MethodWithMultipleReturnPoints")
@@ -183,6 +178,11 @@ public final class OpenVPNService extends Service
         }
         String roundedString = String.format(Locale.ROOT, roundFormat, result);
         return res.getString(R.string.byteSizeSuffix, roundedString, units);
+    }
+
+    @SuppressWarnings("ChainedMethodCall")
+    private static boolean isMainThread() {
+        return Thread.currentThread() == Looper.getMainLooper().getThread();
     }
 
     @Override
