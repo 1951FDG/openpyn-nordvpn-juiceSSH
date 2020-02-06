@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <color name="colorConnect">#3cba54</color>
     <color name="colorDisconnect">#DB3236</color>
-
-    <color name="colorTitleText" tools:keep="@color/colorTitleText">#ffffffff</color>
-
-    <color name="colorGreen" tools:keep="@color/colorGreen">#00C853</color>
-    <color name="colorBlue" tools:keep="@color/colorBlue">#0091EA</color>
-    <color name="colorRed" tools:keep="@color/colorRed">#F44336</color>
-    <color name="colorAmber" tools:keep="@color/colorAmber">#ffab00</color>
-    <color name="colorPurple" tools:keep="@color/colorPurple">#512DA8</color>
-
-    <color name="accent_material_pink_200">#ffff4081</color>
     <color name="accent_material_indigo_200">#ff536dfe</color>
-    <color name="accent_material_amber_200">#ffffd740</color>
 
     <color name="colorPrimary">@android:color/white</color>
     <color name="colorPrimaryDark">@android:color/black</color>
-    <color name="colorAccent">@color/accent_material_pink_200</color>
+    <color name="colorAccent">@color/Pink_A200</color>
+
+    <!-- Drawable -->
+    <color name="Black">#000000</color> <!--Number of times used: "34"-->
+    <color name="Grey_100">#f5f5f5</color> <!--Number of times used: "99"-->
+    <color name="White">#ffffff</color> <!--Number of times used: "3"-->
+    <color name="Red_900">#b71c1c</color> <!--Number of times used: "5"-->
+    <color name="Red_A700">#d50000</color> <!--Number of times used: "102"-->
+    <color name="Orange_500">#ff9800</color> <!--Number of times used: "4"-->
+    <color name="Amber_A200">#ffd740</color> <!--Number of times used: "22"-->
+    <color name="Light_Green_700">#689f38</color> <!--Number of times used: "11"-->
+    <color name="Light_Green_900">#33691e</color> <!--Used only once!-->
+    <color name="Green_600">#43a047</color> <!--Used only once!-->
+    <color name="Light_Blue_900">#01579b</color> <!--Used only once!-->
+    <color name="Blue_900">#0d47a1</color> <!--Number of times used: "53"-->
+    <color name="Blue_A200">#448aff</color> <!--Number of times used: "5"-->
+    <color name="Pink_A200">#ff4081</color> <!--Used only once!-->
+    <color name="Pink_A100">#ff80ab</color> <!--Used only once!-->
+    <!-- Drawable -->
 </resources>

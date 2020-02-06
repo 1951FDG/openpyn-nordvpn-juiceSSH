@@ -1,7 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!--<dimen name="fab_margin">16dp</dimen>-->
-    <dimen name="title_padding" tools:keep="@dimen/title_padding">12dp</dimen>
-    <dimen name="data_padding" tools:keep="@dimen/data_padding">4dp</dimen>
-    <dimen name="card_elevation" tools:keep="@dimen/card_elevation">4dp</dimen>
-</resources>
+<resources />
