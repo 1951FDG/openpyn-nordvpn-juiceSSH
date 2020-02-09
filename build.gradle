@@ -24,7 +24,7 @@ buildscript {
         classpath 'com.google.android.gms:strict-version-matcher-plugin:1.2.1'
         classpath 'gradle.plugin.com.github.konifar.gradle:plugin:0.3.3'
         classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.2.1'
-        classpath 'com.gladed.androidgitversion:gradle-android-git-version:0.4.10'
+        classpath 'com.gladed.androidgitversion:gradle-android-git-version:0.4.12'
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
         //classpath 'com.google.gms:google-services:4.3.3'
 
