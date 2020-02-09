@@ -10,6 +10,7 @@ import com.getsixtyfour.openvpnmgmt.api.Route;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.junit.*;
 import org.junit.runners.*;
@@ -29,20 +30,22 @@ import java.util.Set;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ConnectionTest {
 
+    @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionTest.class);
 
-    private static Connection connection = null;
+    private static Connection sConnection = null;
 
-    private final ResourceBundle bundle = ResourceBundle.getBundle("test");
+    @NonNls
+    private final ResourceBundle mBundle = ResourceBundle.getBundle("test");
 
-    private final String host = bundle.getString("management.server");
+    private final String mHost = mBundle.getString("management.server");
 
-    private final Integer port = Integer.valueOf(bundle.getString("management.port"));
+    private final Integer mPort = Integer.valueOf(mBundle.getString("management.port"));
 
     @BeforeClass
     public static void setUpClass() {
-        connection = ManagementConnection.getInstance();
-        connection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
+        sConnection = ManagementConnection.getInstance();
+        sConnection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
             @NotNull
             @Override
             public String getUserName() {
@@ -59,7 +62,7 @@ public class ConnectionTest {
 
     @AfterClass
     public static void tearDownClass() {
-        connection.disconnect();
+        sConnection.disconnect();
     }
 
     /**
@@ -68,9 +71,9 @@ public class ConnectionTest {
     @Test(expected = IOException.class)
     public void testConnect() throws IOException {
         LOGGER.info("connect");
-        connection.connect(host, port);
-        Assert.assertTrue(connection.isConnected());
-        connection.run();
+        sConnection.connect(mHost, mPort);
+        Assert.assertTrue(sConnection.isConnected());
+        sConnection.run();
     }
 
     /**
@@ -79,10 +82,10 @@ public class ConnectionTest {
     @Test
     public void testExecuteCommand() throws IOException {
         LOGGER.info("executeCommand");
-        if (!connection.isConnected()) {
-            connection.connect(host, port);
+        if (!sConnection.isConnected()) {
+            sConnection.connect(mHost, mPort);
         }
-        String result = connection.executeCommand(Commands.HELP_COMMAND);
+        String result = sConnection.executeCommand(Commands.HELP_COMMAND);
         Assert.assertNotEquals("", result);
         String[] lines = result.split(System.lineSeparator());
         Assert.assertTrue(lines.length > 1);
@@ -95,10 +98,10 @@ public class ConnectionTest {
     @Test
     public void testGetManagementVersion() throws IOException {
         LOGGER.info("getManagementVersion");
-        if (!connection.isConnected()) {
-            connection.connect(host, port);
+        if (!sConnection.isConnected()) {
+            sConnection.connect(mHost, mPort);
         }
-        String result = connection.getManagementVersion();
+        String result = sConnection.getManagementVersion();
         Assert.assertNotEquals("", result);
         LOGGER.info(result);
     }
@@ -109,10 +112,10 @@ public class ConnectionTest {
     @Test
     public void testGetOpenVPNVersion() throws IOException {
         LOGGER.info("getOpenVPNVersion");
-        if (!connection.isConnected()) {
-            connection.connect(host, port);
+        if (!sConnection.isConnected()) {
+            sConnection.connect(mHost, mPort);
         }
-        String result = connection.getOpenVPNVersion();
+        String result = sConnection.getOpenVPNVersion();
         Assert.assertNotEquals("", result);
         LOGGER.info(result);
     }
@@ -123,10 +126,10 @@ public class ConnectionTest {
     @Test
     public void testGetStatus() throws IOException, OpenVpnParseException {
         LOGGER.info("getOpenVPNStatus");
-        if (!connection.isConnected()) {
-            connection.connect(host, port);
+        if (!sConnection.isConnected()) {
+            sConnection.connect(mHost, mPort);
         }
-        Status result = connection.getOpenVPNStatus();
+        Status result = sConnection.getOpenVPNStatus();
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.getUpdateTime());
         List<Client> clientList = result.getClients();
@@ -142,7 +145,7 @@ public class ConnectionTest {
     @Test
     public void testIsOpenVPNActive() {
         LOGGER.info("isOpenVPNActive");
-        Assert.assertFalse(connection.isOpenVPNActive());
+        Assert.assertFalse(sConnection.isOpenVPNActive());
     }
 
     /**
@@ -151,11 +154,11 @@ public class ConnectionTest {
     @Test(expected = IOException.class)
     public void testRun() throws IOException {
         LOGGER.info("run");
-        if (!connection.isConnected()) {
-            connection.connect(host, port);
+        if (!sConnection.isConnected()) {
+            sConnection.connect(mHost, mPort);
         }
-        connection.run();
-        Assert.assertFalse(connection.isConnected());
+        sConnection.run();
+        Assert.assertFalse(sConnection.isConnected());
     }
 
     /**
@@ -164,10 +167,10 @@ public class ConnectionTest {
     @Test
     public void testStopOpenVPN() throws IOException {
         LOGGER.info("stopOpenVPN");
-        if (!connection.isConnected()) {
-            connection.connect(host, port);
+        if (!sConnection.isConnected()) {
+            sConnection.connect(mHost, mPort);
         }
-        Assert.assertTrue(connection.isConnected());
-        connection.stopOpenVPN();
+        Assert.assertTrue(sConnection.isConnected());
+        sConnection.stopOpenVPN();
     }
 }

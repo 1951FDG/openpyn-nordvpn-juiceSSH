@@ -12,6 +12,7 @@ import com.getsixtyfour.openvpnmgmt.listeners.LogManager.LogListener;
 
 import junit.framework.AssertionFailedError;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -28,21 +29,64 @@ import java.lang.reflect.Method;
 @SuppressWarnings({ "JUnitTestNG", "MessageMissingOnJUnitAssertion" })
 public class ManagementConnectionTest {
 
-    private static ManagementConnection connection = null;
-
+    @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnectionTest.class);
+
+    private static ManagementConnection sConnection = null;
 
     @BeforeClass
     public static void setUpClass() {
-        connection = ManagementConnection.getInstance();
+        sConnection = ManagementConnection.getInstance();
+    }
+
+    private static void invokeParseInput(String line) throws InvocationTargetException {
+        Class[] argClasses = { String.class };
+        Object[] argObjects = { line };
+        //noinspection HardCodedStringLiteral
+        invokeStaticMethod(ManagementConnection.class, "parseInput", argClasses, argObjects);
+    }
+
+    @SuppressWarnings({ "SameParameterValue", "ThrowInsideCatchBlockWhichIgnoresCaughtException", "TryWithIdenticalCatches" })
+    private static void invokeStaticMethod(Class<?> targetClass, String methodName, Class[] argClasses, Object[] argObjects)
+            throws InvocationTargetException {
+        try {
+            Method method = targetClass.getDeclaredMethod(methodName, argClasses);
+            method.setAccessible(true);
+            method.invoke(sConnection, argObjects);
+        } catch (NoSuchMethodException e) {
+            // Should happen only rarely, because most times the
+            // specified method should exist. If it does happen, just let
+            // the test fail so the programmer can fix the problem.
+            throw new AssertionFailedError(e.getMessage());
+        } catch (SecurityException e) {
+            // Should happen only rarely, because the setAccessible(true)
+            // should be allowed in when running unit tests. If it does
+            // happen, just let the test fail so the programmer can fix
+            // the problem.
+            throw new AssertionFailedError(e.getMessage());
+        } catch (IllegalAccessException e) {
+            // Should never happen, because setting accessible flag to
+            // true. If setting accessible fails, should throw a security
+            // exception at that point and never get to the invoke. But
+            // just in case, wrap it in a TestFailedException and let a
+            // human figure it out.
+            throw new AssertionFailedError(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            // Should happen only rarely, because usually the right
+            // number and types of arguments will be passed. If it does
+            // happen, just let the test fail so the programmer can fix
+            // the problem.
+            throw new AssertionFailedError(e.getMessage());
+        }
     }
 
     /**
      * Test of processByteCount method, of class ManagementConnection.
      */
+    @SuppressWarnings("Convert2Lambda")
     @Test
     public void testProcessByteCount() throws InvocationTargetException {
-        connection.addByteCountListener(new ByteCountListener() {
+        sConnection.addByteCountListener(new ByteCountListener() {
             @Override
             public void onByteCountChanged(long in, long out, long diffIn, long diffOut) {
                 Assert.assertEquals(1L, in);
@@ -51,13 +95,14 @@ public class ManagementConnectionTest {
                 Assert.assertEquals(1L, diffOut);
             }
         });
-        String line = ">BYTECOUNT:1,1";
+        @NonNls String line = ">BYTECOUNT:1,1";
         invokeParseInput(line);
     }
 
     /**
      * Test of processLog method, of class ManagementConnection.
      */
+    @SuppressWarnings("Convert2Lambda")
     @Test
     public void testProcessLog() throws InvocationTargetException {
         /*
@@ -72,10 +117,10 @@ public class ManagementConnectionTest {
                     Assert.assertEquals(LogLevel.VERBOSE, log.getLevel());
                 }
             };
-            connection.addLogListener(listener);
-            String line = ">LOG:,,";
+            sConnection.addLogListener(listener);
+            @NonNls String line = ">LOG:,,";
             invokeParseInput(line);
-            connection.removeLogListener(listener);
+            sConnection.removeLogListener(listener);
         }
         {
             LogListener listener = new LogListener() {
@@ -85,10 +130,10 @@ public class ManagementConnectionTest {
                     LOGGER.error("{}", log.getMessage());
                 }
             };
-            connection.addLogListener(listener);
-            String line = ">LOG:,N,event_wait";
+            sConnection.addLogListener(listener);
+            @NonNls String line = ">LOG:,N,event_wait";
             invokeParseInput(line);
-            connection.removeLogListener(listener);
+            sConnection.removeLogListener(listener);
         }
     }
 
@@ -98,12 +143,12 @@ public class ManagementConnectionTest {
     @SuppressWarnings({ "ReuseOfLocalVariable", "ThrowInsideCatchBlockWhichIgnoresCaughtException" })
     @Test(expected = IOException.class)
     public void testProcessPassword() throws InvocationTargetException, IOException {
-        String line = ">PASSWORD:Auth-Token:";
+        @NonNls String line = ">PASSWORD:Auth-Token:";
         invokeParseInput(line);
         line = ">PASSWORD:Verification Failed: 'Auth'";
         invokeParseInput(line);
         line = ">PASSWORD:Need 'Auth' username/password";
-        connection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
+        sConnection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
             @NotNull
             @Override
             public String getUserName() {
@@ -150,51 +195,11 @@ public class ManagementConnectionTest {
          * (e)-(h) are shown for CONNECTED state
          * (d) and (i) are shown for ASSIGN_IP and CONNECTED states
          */
-        String line = ">STATE:,CONNECTED,SUCCESS,,,,,";
+        @NonNls String line = ">STATE:,CONNECTED,SUCCESS,,,,,";
         invokeParseInput(line);
         line = ">STATE:,WAIT,,,,,,";
         invokeParseInput(line);
         line = ">STATE:,AUTH,,,,,,";
         invokeParseInput(line);
-    }
-
-    private static void invokeParseInput(String line) throws InvocationTargetException {
-        Class[] argClasses = { String.class };
-        Object[] argObjects = { line };
-        invokeStaticMethod(ManagementConnection.class, "parseInput", argClasses, argObjects);
-    }
-
-    @SuppressWarnings({ "SameParameterValue", "ThrowInsideCatchBlockWhichIgnoresCaughtException" })
-    private static void invokeStaticMethod(Class<?> targetClass, String methodName, Class[] argClasses, Object[] argObjects)
-            throws InvocationTargetException {
-        try {
-            Method method = targetClass.getDeclaredMethod(methodName, argClasses);
-            method.setAccessible(true);
-            method.invoke(connection, argObjects);
-        } catch (NoSuchMethodException e) {
-            // Should happen only rarely, because most times the
-            // specified method should exist. If it does happen, just let
-            // the test fail so the programmer can fix the problem.
-            throw new AssertionFailedError(e.getMessage());
-        } catch (SecurityException e) {
-            // Should happen only rarely, because the setAccessible(true)
-            // should be allowed in when running unit tests. If it does
-            // happen, just let the test fail so the programmer can fix
-            // the problem.
-            throw new AssertionFailedError(e.getMessage());
-        } catch (IllegalAccessException e) {
-            // Should never happen, because setting accessible flag to
-            // true. If setting accessible fails, should throw a security
-            // exception at that point and never get to the invoke. But
-            // just in case, wrap it in a TestFailedException and let a
-            // human figure it out.
-            throw new AssertionFailedError(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            // Should happen only rarely, because usually the right
-            // number and types of arguments will be passed. If it does
-            // happen, just let the test fail so the programmer can fix
-            // the problem.
-            throw new AssertionFailedError(e.getMessage());
-        }
     }
 }

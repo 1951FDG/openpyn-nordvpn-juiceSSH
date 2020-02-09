@@ -24,16 +24,11 @@ import com.schibsted.spain.barista.rule.cleardata.ClearFilesRule
 import com.schibsted.spain.barista.rule.cleardata.ClearPreferencesRule
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
+import org.hamcrest.*
 import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.TypeSafeMatcher
-import org.junit.AfterClass
-import org.junit.BeforeClass
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.hamcrest.Matchers.*
+import org.junit.*
+import org.junit.runner.*
 import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
 // import tools.fastlane.screengrab.cleanstatusbar.CleanStatusBar

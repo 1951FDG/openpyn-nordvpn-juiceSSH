@@ -5,6 +5,7 @@
  */
 package com.getsixtyfour.openvpnmgmt.net;
 
+import org.jetbrains.annotations.NonNls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ abstract class AbstractConnection implements Closeable {
 
     private static final int DEFAULT_CHAR_BUFFER_SIZE = 8192;
 
+    @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConnection.class);
 
     private BufferedReader mBufferedReader;
@@ -76,7 +78,7 @@ abstract class AbstractConnection implements Closeable {
     }
 
     public void disconnect() {
-        LOGGER.info("Disconnecting"); //NON-NLS
+        LOGGER.info("Disconnecting");
         closeQuietly();
     }
 
@@ -110,7 +112,7 @@ abstract class AbstractConnection implements Closeable {
 
     @SuppressWarnings("OverlyBroadThrowsClause")
     private void connect() throws IOException {
-        LOGGER.info("Connecting to {}:{}", mHost, mPort); //NON-NLS
+        LOGGER.info("Connecting to {}:{}", mHost, mPort);
         mSocket = new Socket(mHost, mPort);
         InputStreamReader in = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
         mBufferedReader = new BufferedReader(in, DEFAULT_CHAR_BUFFER_SIZE);

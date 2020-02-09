@@ -47,6 +47,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private static final String ARG_SIGTERM = "SIGTERM";
 
+    @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
 
     @NonNls
@@ -239,10 +240,10 @@ public final class ManagementConnection extends AbstractConnection implements Co
                     LOGGER.error(message, e);
                 }
             } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-                LOGGER.error("Could not parse string", e); //NON-NLS
+                LOGGER.error("Could not parse string", e);
             }
         }
-        LOGGER.info("TERMINATED"); //NON-NLS
+        LOGGER.info("TERMINATED");
         throw new ThreadDeath();
     }
 
@@ -273,7 +274,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void onConnectError(@NotNull Throwable e) {
         if (!(e instanceof IllegalArgumentException) && !(e instanceof IOException)) {
-            LOGGER.error("Unknown exception thrown"); //NON-NLS
+            LOGGER.error("Unknown exception thrown");
         }
         LOGGER.error(e.toString());
         ConnectionListener listener = mConnectionListener;
@@ -283,7 +284,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onConnected() {
-        LOGGER.info("Connected"); //NON-NLS
+        LOGGER.info("Connected");
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onConnected();
@@ -291,7 +292,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onDisconnected() {
-        LOGGER.info("Disconnected"); //NON-NLS
+        LOGGER.info("Disconnected");
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onDisconnected();
@@ -343,7 +344,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 case "RSA_SIGN":
                     throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
                 default:
-                    LOGGER.error("Got unrecognized argument: {}", argument); //NON-NLS
+                    LOGGER.error("Got unrecognized argument: {}", argument);
                     break;
             }
         } else if (line.startsWith(Strings.SUCCESS_PREFIX)) {
@@ -353,7 +354,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             LOGGER.error(line);
             // throw new IOException("Stream closed");
         } else {
-            LOGGER.error("Got unrecognized line: {}", line); //NON-NLS
+            LOGGER.error("Got unrecognized line: {}", line);
         }
     }
 
@@ -368,7 +369,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     private void processHold(String argument) throws IOException {
         // Close connection if AUTH has failed
         if (argument.startsWith(Strings.WAITING_FOR_HOLD_RELEASE_PREFIX) && (mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED)) {
-            LOGGER.error("Verification Error"); //NON-NLS
+            LOGGER.error("Verification Error");
             throw new IOException(STREAM_CLOSED);
         }
     }
@@ -428,7 +429,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             int p1 = argument.indexOf(s);
             int p2 = argument.indexOf(s, p1 + 1);
             @NonNls String type = argument.substring(p1 + 1, p2);
-            LOGGER.info("OpenVPN requires Authentication type {}", type); //NON-NLS
+            LOGGER.info("OpenVPN requires Authentication type {}", type);
             String handlerUsername = null;
             String handlerPassword = null;
             UsernamePasswordHandler handler = mUsernamePasswordHandler;
@@ -462,11 +463,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
         String message = state.getMessage();
         // Workaround for OpenVPN doing AUTH and WAIT while being connected, simply ignore these state
         if ((mLastLevel == ConnectionStatus.LEVEL_CONNECTED) && (VpnStatus.WAIT.equals(name) || VpnStatus.AUTH.equals(name))) {
-            LOGGER.info("Ignoring OpenVPN Status in CONNECTED state ({}->{}): {}", name, mLastLevel, message); //NON-NLS
+            LOGGER.info("Ignoring OpenVPN Status in CONNECTED state ({}->{}): {}", name, mLastLevel, message);
         } else {
             mStateManager.setState(state);
             mLastLevel = VpnStatus.getLevel(name, message);
-            LOGGER.info("New OpenVPN Status ({}->{}): {}", name, mLastLevel, message); //NON-NLS
+            LOGGER.info("New OpenVPN Status ({}->{}): {}", name, mLastLevel, message);
         }
     }
 }

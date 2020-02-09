@@ -5,6 +5,7 @@ import com.getsixtyfour.openvpnmgmt.api.Route;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,22 +30,29 @@ import java.util.regex.Pattern;
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
 public class OpenVpnStatus extends OpenVpnCommand implements Status {
 
-    private static final Pattern CLIENTS_HEADER = Pattern.compile("^OpenVPN CLIENT LIST"); //NON-NLS
+    @NonNls
+    private static final Pattern CLIENTS_HEADER = Pattern.compile("^OpenVPN CLIENT LIST");
 
+    @NonNls
     private static final Pattern CLIENT_COLUMNS = Pattern.compile("Common Name,Real Address,Bytes Received,Bytes Sent,Connected Since");
 
-    private static final Pattern GLOBAL_STATS = Pattern.compile("GLOBAL STATS"); //NON-NLS
+    @NonNls
+    private static final Pattern GLOBAL_STATS = Pattern.compile("GLOBAL STATS");
 
+    @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnStatus.class);
 
-    private static final Pattern ROUTES_COLUMNS = Pattern.compile("Virtual Address,Common Name,Real Address,Last Ref"); //NON-NLS
-            //NON-NLS
+    @NonNls
+    private static final Pattern ROUTES_COLUMNS = Pattern.compile("Virtual Address,Common Name,Real Address,Last Ref");
 
-    private static final Pattern ROUTES_HEADER = Pattern.compile("^ROUTING TABLE"); //NON-NLS
+    @NonNls
+    private static final Pattern ROUTES_HEADER = Pattern.compile("^ROUTING TABLE");
 
-    private static final Pattern STATS_HEADER = Pattern.compile("^OpenVPN STATISTICS"); //NON-NLS
+    @NonNls
+    private static final Pattern STATS_HEADER = Pattern.compile("^OpenVPN STATISTICS");
 
-    private static final Pattern UPDATED = Pattern.compile("^Updated,.*"); //NON-NLS
+    @NonNls
+    private static final Pattern UPDATED = Pattern.compile("^Updated,.*");
 
     private final List<Client> mClients = new ArrayList<>(10);
 
@@ -65,7 +73,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             calendar.setTime(parsedDate);
             ut = calendar;
         } catch (ParseException ex) {
-            String msg = "Cannot parse update time string"; //NON-NLS
+            @NonNls String msg = "Cannot parse update time string";
             LOGGER.error(msg, ex);
             throw new OpenVpnParseException(msg, ex);
         }
@@ -117,7 +125,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
 
     @Override
     public void setCommandOutput(@NotNull String output) throws OpenVpnParseException {
-        LOGGER.info("Parsing: {}{}", System.lineSeparator(), output); //NON-NLS
+        LOGGER.info("Parsing: {}{}", System.lineSeparator(), output);
         super.setCommandOutput(output);
     }
 
@@ -125,7 +133,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             "OverlyComplexMethod" })
     @Override
     public void setCommandOutput(@NotNull String[] lines) throws OpenVpnParseException {
-        String msg = "Cannot parse OpenVPN status. Wrong lines sequence."; //NON-NLS
+        @NonNls String msg = "Cannot parse OpenVPN status. Wrong lines sequence.";
         int length = lines.length;
         for (int i = 0; i < length; i++) {
             if (STATS_HEADER.matcher(lines[i]).matches()) {
@@ -170,7 +178,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
                 }
             }
         }
-        LOGGER.info("Successfully parsed {}{}", System.lineSeparator(), this); //NON-NLS
+        LOGGER.info("Successfully parsed {}{}", System.lineSeparator(), this);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -179,7 +187,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             Client ovc = new OpenVpnClient(clientString);
             mClients.add(ovc);
         } catch (OpenVpnParseException ex) {
-            LOGGER.error("Cannot add the client", ex); //NON-NLS
+            LOGGER.error("Cannot add the client", ex);
         }
     }
 
@@ -189,7 +197,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             Route ovr = new OpenVpnRoute(routeString);
             mRoutes.add(ovr);
         } catch (OpenVpnParseException ex) {
-            LOGGER.error("Cannot add route", ex); //NON-NLS
+            LOGGER.error("Cannot add route", ex);
         }
     }
 }

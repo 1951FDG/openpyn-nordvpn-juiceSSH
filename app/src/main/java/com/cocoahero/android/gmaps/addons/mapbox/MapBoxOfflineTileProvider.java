@@ -60,7 +60,6 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
     // sqlite3x, sqliteX, sqlite4java-android
     private static final String SQLITE_3 = "sqlite3x";
 
-    @NonNls
     private static final String SQLITE_3_NDK = "sqlite3ndk";
 
     private static final String TAG = "MBTileProvider";
