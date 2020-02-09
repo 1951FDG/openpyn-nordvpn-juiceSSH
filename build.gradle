@@ -17,7 +17,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'io.fabric.tools:gradle:1.31.1'
+        classpath 'io.fabric.tools:gradle:1.31.2'
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.1'
         classpath 'com.netflix.nebula:gradle-lint-plugin:16.0.2'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:1.0.2'
@@ -26,7 +26,9 @@ buildscript {
         classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.2.1'
         classpath 'com.gladed.androidgitversion:gradle-android-git-version:0.4.10'
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
-        //classpath 'com.google.gms:google-services:4.2.0'
+        //classpath 'com.google.gms:google-services:4.3.3'
+
+        // NOTE: Use app/src/release/res/values/values.xml instead of google-services plugin
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
