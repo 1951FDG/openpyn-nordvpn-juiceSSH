@@ -172,7 +172,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation 'androidx.preference:preference:1.1.0'
-    implementation 'androidx.sqlite:sqlite:2.0.1'
+    implementation 'androidx.sqlite:sqlite:2.1.0'
 
     // Anko
     implementation("org.jetbrains.anko:anko-sdk21:$anko_version") {
