@@ -52,8 +52,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.features.DefaultRequest
 import io.ktor.client.request.get
-import io.ktor.client.response.HttpResponse
-import io.ktor.client.response.readText
+import io.ktor.client.statement.HttpStatement
+import io.ktor.client.statement.readText
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import org.jetbrains.anko.alert
@@ -698,7 +698,7 @@ suspend fun createGeoJson(context: Context): JSONObject? {
 
             try {
                 withTimeout(TIME_MILLIS) {
-                    val response = client.get<HttpResponse>(server)
+                    val response = client.get<HttpStatement>(server).execute()
                     val json = response.readText()
                     jsonObject = JSONObject(json)
                 }
