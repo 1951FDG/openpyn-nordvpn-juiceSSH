@@ -79,8 +79,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
                 GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS
             )
         ) {
-            withCustomDialogTheme(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert)
+            withCustomDialogTheme(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert_Custom)
             withForceSelection(true)
+            withNoToolbarTheme(false)
             withShowPaidOrFreeInfoText(false)
         }
     }
