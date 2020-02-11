@@ -2,32 +2,29 @@
 <resources>
 
     <style name="Base.V27.Theme.AppTheme" parent="Base.V21.Theme.AppTheme">
-        <item name="android:navigationBarColor">#fffafafa</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/navigationBarColor</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowLightStatusBar">true</item>
+
     </style>
 
     <style name="Base.Theme.AppTheme" parent="Base.V27.Theme.AppTheme" />
 
     <style name="Base.V27.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings">
-        <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
-        <item name="android:navigationBarColor">#fffafafa</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/navigationBarColor</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="titleTextColor">#ffbebebe</item>
+        <item name="titleTextColor">@color/titleTextColor</item>
 
     </style>
 
     <style name="Base.Theme.AppTheme.Settings" parent="Base.V27.Theme.AppTheme.Settings" />
 
-    <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <item name="colorControlNormal">?android:attr/textColorSecondary</item>
-    </style>
-
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textColor">#ffbebebe</item>
+        <item name="android:textColor">@color/titleTextColor</item>
+
     </style>
 
 </resources>

@@ -63,7 +63,7 @@
             style="@style/AppTheme.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/actionBarColor"
             android:elevation="4dp"
             app:ptb_progressHeight="1dp"
             app:title="@string/title_activity_settings"

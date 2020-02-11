@@ -3,7 +3,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:opacity="opaque">
 
-    <item android:drawable="@color/colorPrimary" />
+    <item android:drawable="@color/actionBarColor" />
 
     <item
         android:drawable="@drawable/ic_robot"

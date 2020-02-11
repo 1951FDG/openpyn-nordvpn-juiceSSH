@@ -1,6 +1,5 @@
 package io.github.getsixtyfour.openpyn.map
 
-import android.R.color
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -544,7 +543,7 @@ internal fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessa
     val message = context.getString(R.string.vpn_connected_message, city, flag, ip)
     return UserMessage.Builder().apply {
         with(context.applicationContext)
-        setBackgroundColor(R.color.accent_material_indigo_200).setTextColor(color.white)
+        setBackgroundColor(R.color.accent_material_indigo_200).setTextColor(android.R.color.white)
         setMessage(message).setDuration(DURATION).setShowInterpolator(AccelerateInterpolator())
         setDismissInterpolator(AccelerateInterpolator())
     }

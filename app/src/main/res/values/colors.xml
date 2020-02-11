@@ -4,9 +4,19 @@
     <color name="colorDisconnect">#DB3236</color>
     <color name="accent_material_indigo_200">#ff536dfe</color>
 
-    <color name="colorPrimary">@android:color/white</color>
+    <!-- color for the app bar and other primary UI elements -->
+    <color name="colorPrimary">@color/colorAccent</color>
+
+    <!-- a darker variant of the primary color, used for the status bar and contextual app bars -->
     <color name="colorPrimaryDark">@android:color/black</color>
+
+    <!-- a secondary color for controls like checkboxes and text fields -->
     <color name="colorAccent">@color/Pink_A200</color>
+
+    <color name="actionBarColor">@android:color/white</color>
+    <color name="navigationBarColor">#fffafafa</color>
+    <color name="statusBarColor">@android:color/white</color>
+    <color name="titleTextColor">#ffbebebe</color>
 
     <!-- Drawable -->
     <color name="Black">#000000</color> <!--Number of times used: "34"-->

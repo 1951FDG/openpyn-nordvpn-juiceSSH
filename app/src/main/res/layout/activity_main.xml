@@ -19,7 +19,7 @@
             style="@style/AppTheme.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/actionBarColor"
             app:ptb_progressHeight="1dp">
 
             <Spinner
