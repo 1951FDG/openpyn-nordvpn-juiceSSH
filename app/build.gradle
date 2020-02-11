@@ -6,21 +6,21 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
 
 apply plugin: 'com.getkeepsafe.dexcount'
 
+apply plugin: 'io.fabric'
+
 apply plugin: 'com.github.konifar.gradle.unused-resources-remover'
 
 apply plugin: 'com.gladed.androidgitversion'
 
-apply plugin: 'io.fabric'
-
 apply plugin: 'io.gitlab.arturbosch.detekt'
-
-apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 //apply plugin: 'com.google.gms.google-services'
 
