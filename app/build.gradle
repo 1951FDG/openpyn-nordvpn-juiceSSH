@@ -255,7 +255,7 @@ dependencies {
     // UI
     implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'com.github.mayuroks:minibar:0.2.0'
-    implementation('com.github.tingyik90:snackprogressbar:6.1.1') {
+    implementation('com.github.tingyik90:snackprogressbar:6.2.0') {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
     }
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
