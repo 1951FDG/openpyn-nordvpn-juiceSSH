@@ -277,6 +277,7 @@ dependencies {
     implementation('com.github.tingyik90:snackprogressbar:6.1.1') {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
     }
+    //noinspection GradleDependency
     implementation 'commons-cli:commons-cli:1.4'
 
     // Anko
