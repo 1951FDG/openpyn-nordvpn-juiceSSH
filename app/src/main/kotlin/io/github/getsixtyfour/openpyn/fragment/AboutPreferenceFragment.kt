@@ -8,16 +8,28 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.preference.Preference
+import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
+import androidx.preference.SwitchPreference
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.eggheadgames.aboutbox.AboutBoxUtils
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.michaelflisar.gdprdialog.GDPR
+import com.michaelflisar.gdprdialog.GDPRConsent.NON_PERSONAL_CONSENT_ONLY
+import com.michaelflisar.gdprdialog.GDPRConsent.PERSONAL_CONSENT
+import com.michaelflisar.gdprdialog.GDPRConsentState
+import com.michaelflisar.gdprdialog.GDPRLocation.UNDEFINED
+import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.setTitle
+import io.github.getsixtyfour.openpyn.BuildConfig
 import io.github.getsixtyfour.openpyn.R
 
 /**
@@ -170,6 +182,34 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
                 true
             }
         ))
+
+        val debug = BuildConfig.DEBUG
+        if (!debug) {
+            category.addPreference(getSwitchPreference(
+                activity,
+                GDPR.getInstance().consentState.consent.isPersonalConsent,
+                R.string.egab_telemetry,
+                "Automatically sends usage statistics and crash reports to Google",
+                R.drawable.ic_firebase_black_24dp,
+                OnPreferenceChangeListener { preference, value ->
+                    if (value as Boolean) {
+                        // user consent given: he accepts personal data usage
+                        val consentState = GDPRConsentState(activity, PERSONAL_CONSENT, UNDEFINED)
+                        GDPR.getInstance().setConsent(consentState)
+                    } else {
+                        // user consent given: he accept non personal data only
+                        val consentState = GDPRConsentState(activity, NON_PERSONAL_CONSENT_ONLY, UNDEFINED)
+                        GDPR.getInstance().setConsent(consentState)
+                    }
+                    val core = CrashlyticsCore.Builder().disabled(!value).build()
+                    Fabric.with(preference.context.applicationContext, Crashlytics.Builder().core(core).build())
+
+                    FirebaseAnalytics.getInstance(preference.context.applicationContext).setAnalyticsCollectionEnabled(value)
+
+                    return@OnPreferenceChangeListener true
+                }
+            ))
+        }
     }
 
     private fun getPreference(
@@ -184,6 +224,23 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         titleResId?.let { preference.title = context.getString(it) }
         summary?.let { preference.summary = it }
         listener?.let { preference.onPreferenceClickListener = listener }
+        return preference
+    }
+
+    private fun getSwitchPreference(
+        context: Context,
+        defaultValue: Boolean,
+        titleResId: Int?,
+        summary: String?,
+        iconResId: Int?,
+        listener: OnPreferenceChangeListener?
+    ): Preference {
+        val preference = SwitchPreference(context)
+        preference.setDefaultValue(defaultValue)
+        iconResId?.let { preference.icon = ContextCompat.getDrawable(context, it) }
+        titleResId?.let { preference.title = context.getString(it) }
+        summary?.let { preference.summary = it }
+        listener?.let { preference.onPreferenceChangeListener = listener }
         return preference
     }
 }

@@ -290,6 +290,7 @@
     <string name="egab_share">Share</string>
     <string name="egab_changelog">Changelog</string>
     <string name="egab_submit_issue">Report a problem</string>
+    <string name="egab_telemetry">Telemetry</string>
 
     <string name="pref_log_level">Logging level</string>
 
