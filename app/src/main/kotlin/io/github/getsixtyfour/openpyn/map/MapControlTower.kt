@@ -66,7 +66,7 @@ import java.util.HashSet
 @ControlTower
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)
-class MapControlTower : SVC_MapControlTower(), AnkoLogger, OnMapReadyCallback, OnMapLoadedCallback, OnCameraIdleListener,
+class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallback, OnMapLoadedCallback, OnCameraIdleListener,
     OnMapClickListener, OnMarkerClickListener, OnInfoWindowClickListener, SubmitCallbackListener, MapViewsAction, AnimatorListener,
     OnCommandExecuteListener, CoroutineScope by MainScope() {
 

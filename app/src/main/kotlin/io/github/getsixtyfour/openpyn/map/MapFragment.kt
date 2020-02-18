@@ -21,7 +21,7 @@ import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 @SvcFragment
 @RequireViews(MapViews::class)
 @RequireControlTower(MapControlTower::class)
-class MapFragment : SVC_MapFragment(), AnkoLogger, OnSessionStartedListener, OnSessionFinishedListener, OnCommandExecuteListener {
+class MapFragment : AbstractMapFragment(), AnkoLogger, OnSessionStartedListener, OnSessionFinishedListener, OnCommandExecuteListener {
 
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
         return controlTower.positionAndFlagForSelectedMarker()
