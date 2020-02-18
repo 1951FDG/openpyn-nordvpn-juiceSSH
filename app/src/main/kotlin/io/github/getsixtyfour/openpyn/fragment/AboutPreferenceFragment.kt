@@ -152,7 +152,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             activity,
             R.string.egab_leave_review,
             null,
-            R.drawable.ic_star_black_24dp,
+            R.drawable.ic_google_play_black_24dp,
             OnPreferenceClickListener {
                 AboutBoxUtils.openApp(activity, config.buildType, config.packageName)
                 true
