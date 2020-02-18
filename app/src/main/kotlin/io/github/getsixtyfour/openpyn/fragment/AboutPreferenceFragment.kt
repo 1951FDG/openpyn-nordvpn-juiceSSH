@@ -20,6 +20,7 @@ import com.eggheadgames.aboutbox.AboutBoxUtils
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
+import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
@@ -29,6 +30,7 @@ import com.michaelflisar.gdprdialog.GDPRConsentState
 import com.michaelflisar.gdprdialog.GDPRLocation.UNDEFINED
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.setTitle
+import io.github.getsixtyfour.ktextension.verifyInstallerId
 import io.github.getsixtyfour.openpyn.BuildConfig
 import io.github.getsixtyfour.openpyn.R
 
@@ -120,7 +122,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         category.addPreference(getPreference(
             activity,
-            R.string.egab_version,
+            if (activity.verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)) R.string.egab_play_store_version else R.string.egab_version,
             config.version,
             R.drawable.ic_info_outline_black_24dp,
             OnPreferenceClickListener {

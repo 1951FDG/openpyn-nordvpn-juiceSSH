@@ -291,6 +291,7 @@
     <string name="egab_changelog">Changelog</string>
     <string name="egab_submit_issue">Report a problem</string>
     <string name="egab_telemetry">Telemetry</string>
+    <string name="egab_play_store_version">Play Store version</string>
 
     <string name="pref_log_level">Logging level</string>
 
