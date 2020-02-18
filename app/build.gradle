@@ -184,6 +184,7 @@ dependencies {
 
     // Architecture
     implementation('com.naver.android.svc:svc:1.0.0') {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
     }
     //kapt 'com.naver.android.svc:svc-compiler:1.0.0'
@@ -226,9 +227,6 @@ dependencies {
     implementation 'com.squareup.moshi:moshi:1.9.2'
 
     // Kotlin
-    implementation('org.jetbrains.kotlin:kotlin-reflect') {
-        force = true
-    }
     implementation('org.jetbrains.kotlin:kotlin-stdlib') {
         force = true
     }
@@ -290,6 +288,11 @@ dependencies {
     // Google Maps SDK for Android v.3.0.0 BETA
     //implementation name:'maps-sdk-3.0.0-beta', ext:'aar'
     //implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+
+    // Kotlin
+    //implementation('org.jetbrains.kotlin:kotlin-reflect') {
+    //    force = true
+    //}
 
     // UI
     //implementation('com.afollestad.material-dialogs:core:0.9.6.0') {
