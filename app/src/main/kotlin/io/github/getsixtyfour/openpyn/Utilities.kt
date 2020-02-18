@@ -2,10 +2,8 @@ package io.github.getsixtyfour.openpyn
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources.NotFoundException
 import android.net.Uri
 import android.view.MenuItem
@@ -20,7 +18,6 @@ import androidx.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
-import com.google.android.gms.common.GooglePlayServicesUtil
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPR.IGDPRCallback
 import com.michaelflisar.gdprdialog.GDPRSetup
@@ -30,6 +27,7 @@ import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import io.fabric.sdk.android.Fabric
+import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.createJson
 import io.github.getsixtyfour.openpyn.utils.stringifyJsonArray
@@ -42,7 +40,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
-private const val JUICE_SSH_PACKAGE_NAME = "com.sonelli.juicessh"
 const val SNACK_BAR_JUICESSH: Int = 1
 const val SNACK_BAR_PERMISSIONS: Int = 0
 
@@ -178,41 +175,10 @@ fun <T : Activity> setSnackBarManager(activity: T, manager: SnackProgressBarMana
     manager.put(
         snackProgressBar(type, activity.getString(R.string.error_must_install_juicessh), action, object : OnActionClickListener {
             override fun onActionClick() {
-                juiceSSHInstall(activity)
+                activity.juiceSSHInstall()
             }
         }), SNACK_BAR_JUICESSH
     )
-}
-
-fun <T : Activity> isJuiceSSHInstalled(activity: T): Boolean = try {
-    activity.packageManager.getPackageInfo(JUICE_SSH_PACKAGE_NAME, 0)
-    true
-} catch (e: NameNotFoundException) {
-    false
-}
-
-fun <T : Activity> juiceSSHInstall(activity: T) {
-    fun openURI(uri: Uri, packageName: String? = null) {
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        intent.setPackage(packageName)
-        ContextCompat.startActivity(activity, intent, null)
-    }
-
-    try {
-        activity.packageManager.getPackageInfo(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE, 0)
-        val uriBuilder =
-            Uri.parse("https://play.google.com/store/apps/details").buildUpon().appendQueryParameter("id", JUICE_SSH_PACKAGE_NAME)
-                .appendQueryParameter("launch", "true")
-        try {
-            openURI(uriBuilder.build(), GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)
-        } catch (e: ActivityNotFoundException) {
-            openURI(uriBuilder.build())
-        }
-    } catch (e: NameNotFoundException) {
-        val s = "juicessh-2-1-4"
-        val uriString = "https://www.apkmirror.com/apk/sonelli-ltd/juicessh-ssh-client/$s-release/$s-android-apk-download/download/"
-        openURI(Uri.parse(uriString))
-    }
 }
 
 fun showSnackProgressBar(manager: SnackProgressBarManager, storeId: Int) {

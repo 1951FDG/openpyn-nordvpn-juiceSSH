@@ -39,6 +39,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import io.fabric.sdk.android.Fabric
+import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog
 import io.github.getsixtyfour.openpyn.map.MapFragment
 import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         //     else -> error(api.getErrorString(errorCode))
         // }
 
-        // if (isJuiceSSHInstalled(this)) {
+        // if (isJuiceSSHInstalled()) {
         //     if (hasPermissions(this, PERMISSION_READ, PERMISSION_OPEN_SESSIONS)) onPermissionsGranted(PERMISSION_REQUEST_CODE)
         // }
 
@@ -136,7 +137,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
 
     override fun onResume() {
         super.onResume()
-        if (isJuiceSSHInstalled(this)) {
+        if (isJuiceSSHInstalled()) {
             if (hasPermissions(this, PERMISSION_READ, PERMISSION_OPEN_SESSIONS)) {
                 mSnackProgressBarManager.dismiss()
                 onPermissionsGranted(PERMISSION_REQUEST_CODE)
