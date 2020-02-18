@@ -5,9 +5,12 @@ import android.content.SharedPreferences
 import androidx.annotation.Size
 import androidx.appcompat.app.AlertDialog.Builder
 import androidx.fragment.app.FragmentActivity
+// import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectDialog
 import com.abdeveloper.library.MultiSelectable
+// import io.github.getsixtyfour.openpyn.R
+// import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
 
 interface SubmitCallbackListener {
     fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String)
@@ -171,7 +174,9 @@ object PrintArray {
                     listener.onCancel()
                 }
             })
-
+            // todo change to nav
+            // val action = MapFragmentDirections.actionMapFragmentToMultiSelectDialogFragment()
+            // Navigation.findNavController(context.findViewById(R.id.map)).navigate(action)
             show(context.supportFragmentManager, "multiSelectDialog")
         }
     }
