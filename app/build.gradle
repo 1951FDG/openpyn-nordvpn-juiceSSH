@@ -61,7 +61,8 @@ android {
         }
     }
     dataBinding {
-        enabled = true
+        // Morphing-Material-Dialogs uses data binding code
+        enabled = false
     }
     externalNativeBuild {
         cmake {
