@@ -222,7 +222,7 @@ fun showThreats(activity: Activity, jsonObj: JSONObject) {
     }
 }
 
-fun showPrintArray(context: Context, countries: List<MultiSelectable>, hashSet: HashSet<CharSequence>): HashSet<CharSequence> {
+fun initPrintArray(context: Context, countries: List<MultiSelectable>, hashSet: HashSet<CharSequence>): HashSet<CharSequence> {
     val length = hashSet.size
     val defaultSelectedIdsList = ArrayList<Int>(length)
     countries.forEach {

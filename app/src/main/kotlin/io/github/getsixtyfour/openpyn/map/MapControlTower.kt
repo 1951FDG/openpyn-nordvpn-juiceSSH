@@ -372,7 +372,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         val (hashSet, hashMap) = withContext(Default) {
             createMarkers(applicationContext, mJsonArray, mCountries, mMap!!, mFavorites, onLevelChangeCallback)
         }
-        flags = withContext(Default) { showPrintArray(applicationContext, mCountries, hashSet) }
+        flags = withContext(Default) { initPrintArray(applicationContext, mCountries, hashSet) }
         markers = hashMap
         mAnimations = createCameraUpdates()
         val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, flags, jsonObj, mJsonArray)
