@@ -93,11 +93,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
 
-        showGDPRIfNecessary(this, mSetup)
-
         setProgressToolBar(this, toolbar)
 
         setSnackBarManager(this, mSnackProgressBarManager)
+
+        showGDPRIfNecessary(this, mSetup)
 
         // val api = GoogleApiAvailability.getInstance()
         // when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
