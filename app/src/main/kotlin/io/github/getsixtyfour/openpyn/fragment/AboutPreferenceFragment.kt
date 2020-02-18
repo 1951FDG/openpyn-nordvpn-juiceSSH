@@ -79,6 +79,34 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         root.addPreference(category)
 
+        val debug = BuildConfig.DEBUG
+        if (!debug) {
+            category.addPreference(getSwitchPreference(
+                activity,
+                GDPR.getInstance().consentState.consent.isPersonalConsent,
+                R.string.egab_telemetry,
+                "Automatically sends usage statistics and crash reports to Google",
+                R.drawable.ic_firebase_black_24dp,
+                OnPreferenceChangeListener { preference, value ->
+                    if (value as Boolean) {
+                        // user consent given: he accepts personal data usage
+                        val consentState = GDPRConsentState(activity, PERSONAL_CONSENT, UNDEFINED)
+                        GDPR.getInstance().setConsent(consentState)
+                    } else {
+                        // user consent given: he accept non personal data only
+                        val consentState = GDPRConsentState(activity, NON_PERSONAL_CONSENT_ONLY, UNDEFINED)
+                        GDPR.getInstance().setConsent(consentState)
+                    }
+                    val core = CrashlyticsCore.Builder().disabled(!value).build()
+                    Fabric.with(preference.context.applicationContext, Crashlytics.Builder().core(core).build())
+
+                    FirebaseAnalytics.getInstance(preference.context.applicationContext).setAnalyticsCollectionEnabled(value)
+
+                    return@OnPreferenceChangeListener true
+                }
+            ))
+        }
+
         category.addPreference(getPreference(
             activity,
             R.string.egab_author,
@@ -182,34 +210,6 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
                 true
             }
         ))
-
-        val debug = BuildConfig.DEBUG
-        if (!debug) {
-            category.addPreference(getSwitchPreference(
-                activity,
-                GDPR.getInstance().consentState.consent.isPersonalConsent,
-                R.string.egab_telemetry,
-                "Automatically sends usage statistics and crash reports to Google",
-                R.drawable.ic_firebase_black_24dp,
-                OnPreferenceChangeListener { preference, value ->
-                    if (value as Boolean) {
-                        // user consent given: he accepts personal data usage
-                        val consentState = GDPRConsentState(activity, PERSONAL_CONSENT, UNDEFINED)
-                        GDPR.getInstance().setConsent(consentState)
-                    } else {
-                        // user consent given: he accept non personal data only
-                        val consentState = GDPRConsentState(activity, NON_PERSONAL_CONSENT_ONLY, UNDEFINED)
-                        GDPR.getInstance().setConsent(consentState)
-                    }
-                    val core = CrashlyticsCore.Builder().disabled(!value).build()
-                    Fabric.with(preference.context.applicationContext, Crashlytics.Builder().core(core).build())
-
-                    FirebaseAnalytics.getInstance(preference.context.applicationContext).setAnalyticsCollectionEnabled(value)
-
-                    return@OnPreferenceChangeListener true
-                }
-            ))
-        }
     }
 
     private fun getPreference(
