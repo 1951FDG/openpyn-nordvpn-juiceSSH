@@ -112,7 +112,7 @@ android {
 }
 
 androidGitVersion {
-    format = '%tag%%-count%%-commit%%-branch%%-dirty%'
+    format = '%describe%%-branch%%-dirty%'
 }
 
 detekt {
