@@ -249,13 +249,13 @@
     <string name="pref_silent">Silent</string>
     <string name="pref_description_silent">Do not try to send notifications. Use if \“libnotify\” or \“gi\” are not available</string>
 
-    <string name="is_tor">is_tor</string>
-    <string name="is_proxy">is_proxy</string>
-    <string name="is_anonymous">is_anonymous</string>
-    <string name="is_known_attacker">is_known_attacker</string>
-    <string name="is_known_abuser">is_known_abuser</string>
-    <string name="is_threat">is_threat</string>
-    <string name="is_bogon">is_bogon</string>
+    <string name="is_tor" translatable="false">is_tor</string>
+    <string name="is_proxy" translatable="false">is_proxy</string>
+    <string name="is_anonymous" translatable="false">is_anonymous</string>
+    <string name="is_known_attacker" translatable="false">is_known_attacker</string>
+    <string name="is_known_abuser" translatable="false">is_known_abuser</string>
+    <string name="is_threat" translatable="false">is_threat</string>
+    <string name="is_bogon" translatable="false">is_bogon</string>
 
     <string name="pref_category_geolocation">Geolocation API</string>
     <string name="pref_geo">GeoIP</string>
@@ -279,9 +279,9 @@
 
     <string name="pref_category_api_keys">API keys</string>
 
-    <string name="pref_api_ipdata">IPData</string>
-    <string name="pref_api_ipinfo">IPInfo</string>
-    <string name="pref_api_ipstack">IPStack</string>
+    <string name="pref_api_ipdata" translatable="false">IPData</string>
+    <string name="pref_api_ipinfo" translatable="false">IPInfo</string>
+    <string name="pref_api_ipstack" translatable="false">IPStack</string>
 
     <string name="egab_leave_review">Leave review</string>
     <string name="egab_contact_support">Contact us</string>
@@ -324,7 +324,7 @@
 
     <string name="title_activity_about">About</string>
     <string name="title_activity_apis">APIs</string>
-    <string name="title_activity_openvpnmgmt">OpenVPN</string>
+    <string name="title_activity_openvpnmgmt" translatable="false">OpenVPN</string>
     <string name="title_activity_settings">Settings</string>
 
     <string name="pref_openvpnmgmt">Management interface</string>
@@ -335,14 +335,14 @@
     <string name="pref_openvpnmgmt_password">Password</string>
 
 
-    <string name="pref_openvpnmgmt_key">pref_management_enabled</string>
-    <string name="pref_openvpnmgmt_host_key">pref_management_address</string>
-    <string name="pref_openvpnmgmt_port_key">pref_management_port</string>
-    <string name="pref_openvpnmgmt_username_key">pref_management_username</string>
-    <string name="pref_openvpnmgmt_password_key">pref_management_password</string>
+    <string name="pref_openvpnmgmt_key" translatable="false">pref_management_enabled</string>
+    <string name="pref_openvpnmgmt_host_key" translatable="false">pref_management_address</string>
+    <string name="pref_openvpnmgmt_port_key" translatable="false">pref_management_port</string>
+    <string name="pref_openvpnmgmt_username_key" translatable="false">pref_management_username</string>
+    <string name="pref_openvpnmgmt_password_key" translatable="false">pref_management_password</string>
 
-    <string name="pref_openvpnmgmt_host_default">127.0.0.1</string>
-    <string name="pref_openvpnmgmt_port_default">23</string>
-    <string name="pref_openvpnmgmt_username_default" />
-    <string name="pref_openvpnmgmt_password_default" />
+    <string name="pref_openvpnmgmt_host_default" translatable="false">127.0.0.1</string>
+    <string name="pref_openvpnmgmt_port_default" translatable="false">23</string>
+    <string name="pref_openvpnmgmt_username_default" translatable="false" />
+    <string name="pref_openvpnmgmt_password_default" translatable="false" />
 </resources>

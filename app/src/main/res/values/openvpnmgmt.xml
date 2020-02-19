@@ -14,28 +14,28 @@
     <string name="state_tcp_connect">Connecting (TCP)</string>
     <string name="state_auth_failed">Authentication failed</string>
     <string name="state_auth_pending">Authentication pending</string>
-    <string name="unknown_state" translatable="false">Unknown state</string>
+    <string name="unknown_state">Unknown state</string>
 
     <string name="channel_name_background">Connection statistics</string>
     <string name="channel_description_background">Ongoing statistics of the established OpenVPN connection</string>
     <string name="channel_name_status">Connection status change</string>
     <string name="channel_description_status">Status changes of the OpenVPN connection (Connecting, authenticating,…)</string>
 
-    <string name="bits_per_second">bit/s</string>
-    <string name="kbits_per_second">kbit/s</string>
-    <string name="mbits_per_second">Mbit/s</string>
-    <string name="gbits_per_second">Gbit/s</string>
+    <string name="bits_per_second" translatable="false">bit/s</string>
+    <string name="kbits_per_second" translatable="false">kbit/s</string>
+    <string name="mbits_per_second" translatable="false">Mbit/s</string>
+    <string name="gbits_per_second" translatable="false">Gbit/s</string>
 
-    <string name="volume_byte">B</string>
-    <string name="volume_kbyte">kB</string>
-    <string name="volume_mbyte">MB</string>
-    <string name="volume_gbyte">GB</string>
+    <string name="volume_byte" translatable="false">B</string>
+    <string name="volume_kbyte" translatable="false">kB</string>
+    <string name="volume_mbyte" translatable="false">MB</string>
+    <string name="volume_gbyte" translatable="false">GB</string>
 
-    <string name="byteSizeSuffix"><xliff:g id="number" example="123">%1$s</xliff:g> <xliff:g id="unit" example="MB">%2$s</xliff:g></string>
+    <string name="byteSizeSuffix" translatable="false"><xliff:g id="number" example="123">%1$s</xliff:g> <xliff:g id="unit" example="MB">%2$s</xliff:g></string>
 
-    <string name="notification_title">OpenVPN: %s</string>
+    <string name="notification_title" translatable="false">OpenVPN: %s</string>
 
-    <string name="status_line_byte_count"><xliff:g id="d/l speed" example="8.0 Mbit/s">↓%2$s</xliff:g> <xliff:g id="downloaded" example="1.0 MB">%1$s</xliff:g> - <xliff:g id="u/l speed" example="8.0 Mbit/s">↑%4$s</xliff:g> <xliff:g id="uploaded" example="1.0 MB">%3$s</xliff:g></string>
+    <string name="status_line_byte_count" translatable="false"><xliff:g id="d/l speed" example="8.0 Mbit/s">↓%2$s</xliff:g> <xliff:g id="downloaded" example="1.0 MB">%1$s</xliff:g> - <xliff:g id="u/l speed" example="8.0 Mbit/s">↑%4$s</xliff:g> <xliff:g id="uploaded" example="1.0 MB">%3$s</xliff:g></string>
 
     <string name="cancel_connection">Disconnect</string>
 

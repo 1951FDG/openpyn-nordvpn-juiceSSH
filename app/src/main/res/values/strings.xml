@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Openpyn</string>
+    <string name="app_name" translatable="false">Openpyn</string>
 
     <string name="at_preposition">at</string>
-    <string name="empty" />
+    <string name="empty" translatable="false" />
 
     <!-- Menu -->
     <string name="menu_refresh">Refresh</string>
