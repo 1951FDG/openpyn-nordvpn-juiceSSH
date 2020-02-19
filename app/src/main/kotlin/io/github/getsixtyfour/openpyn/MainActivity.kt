@@ -99,9 +99,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     private var mAppSettingsDialogShown: Boolean = false
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
     private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
-    // private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf("0GlR/IbwMTlB1QMpZlJRvrXfOZg=")) }
-    // todo remove this and uncomment above after internal test
-    private val mGooglePlayStoreCertificate: Boolean = true
+    private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -112,7 +110,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         setSnackBarManager(this, mSnackProgressBarManager)
 
         showGDPRIfNecessary(this, mSetup)
-        // todo remove after internal test
+        // todo remove after beta release test
         error(apkSignatures.toString())
 
         // val api = GoogleApiAvailability.getInstance()

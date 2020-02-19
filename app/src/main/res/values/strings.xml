@@ -35,4 +35,14 @@
     <string name="vpn_country_name"><xliff:g example="Netherlands" id="country">%1$s</xliff:g></string>
     <string name="vpn_location_name"><xliff:g example="Netherlands" id="country">%1$s</xliff:g> <xliff:g example="at" id="string">%2$s</xliff:g> <xliff:g example="52.3500000" id="latitude">%3$s</xliff:g>, <xliff:g example="4.9166670" id="longitude">%4$s</xliff:g></string>
     <!-- Strings related to Connection -->
+
+    <!-- App signing certificate (derived) -->
+    <string name="app_signature" translatable="false">9W85d/g5B3DxFoElJ9skn4mcEY4=</string>
+
+    <!-- App signing certificate (original) -->
+    <!--<string name="app_signature" translatable="false">0GlR/IbwMTlB1QMpZlJRvrXfOZg=</string>-->
+
+    <!-- App signing certificate (internal test) -->
+    <!--<string name="app_signature" translatable="false">36Yo+sowNh3itBBeAvKPRoBueaE=</string>-->
+
 </resources>
