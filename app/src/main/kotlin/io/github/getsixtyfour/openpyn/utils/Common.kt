@@ -183,8 +183,8 @@ fun createJson(): JSONArray? {
         }
     }
 
-    val timeout = 1000
-    val timeoutRead = 1000
+    val timeout = 10000
+    val timeoutRead = 10000
     // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
     val (_, _, result) = SERVER.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
     when (result) {
