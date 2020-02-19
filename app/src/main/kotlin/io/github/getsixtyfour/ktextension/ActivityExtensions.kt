@@ -7,6 +7,9 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.net.Uri
 import androidx.core.content.ContextCompat
 import com.google.android.gms.common.GooglePlayServicesUtil
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 
 private const val JUICE_SSH_PACKAGE_NAME = "com.sonelli.juicessh"
 
@@ -38,5 +41,21 @@ fun Activity.juiceSSHInstall() {
         val s = "juicessh-2-1-4"
         val uriString = "https://www.apkmirror.com/apk/sonelli-ltd/juicessh-ssh-client/$s-release/$s-android-apk-download/download/"
         openURI(Uri.parse(uriString))
+    }
+}
+
+fun Activity.startUpdate(appUpdateManager: AppUpdateManager, requestCode: Int) {
+    appUpdateManager.appUpdateInfo.addOnSuccessListener {
+        if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+            appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, requestCode)
+        }
+    }
+}
+
+fun Activity.handleUpdate(appUpdateManager: AppUpdateManager, requestCode: Int) {
+    appUpdateManager.appUpdateInfo.addOnSuccessListener {
+        if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+            appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, requestCode)
+        }
     }
 }

@@ -24,7 +24,10 @@ import com.crashlytics.android.core.CrashlyticsCore
 import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.startOpenVPNService
 import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
+import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPRConsentState
@@ -39,7 +42,12 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import io.fabric.sdk.android.Fabric
+import io.github.getsixtyfour.ktextension.apkSignatures
+import io.github.getsixtyfour.ktextension.handleUpdate
 import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
+import io.github.getsixtyfour.ktextension.startUpdate
+import io.github.getsixtyfour.ktextension.verifyInstallerId
+import io.github.getsixtyfour.ktextension.verifySigningCertificate
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog
 import io.github.getsixtyfour.openpyn.map.MapFragment
 import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
@@ -58,6 +66,7 @@ import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
@@ -88,6 +97,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     }
     val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
     private var mAppSettingsDialogShown: Boolean = false
+    private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
+    private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
+    // private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf("0GlR/IbwMTlB1QMpZlJRvrXfOZg=")) }
+    // todo remove this and uncomment above after internal test
+    private val mGooglePlayStoreCertificate: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -98,6 +112,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         setSnackBarManager(this, mSnackProgressBarManager)
 
         showGDPRIfNecessary(this, mSetup)
+        // todo remove after internal test
+        error(apkSignatures.toString())
 
         // val api = GoogleApiAvailability.getInstance()
         // when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
@@ -137,6 +153,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
 
     override fun onResume() {
         super.onResume()
+
+        if (mConnectionManager != null) {
+            if (mGooglePlayStorePackage && mGooglePlayStoreCertificate) handleUpdate(mAppUpdateManager, MY_REQUEST_CODE)
+            return
+        }
+
         if (isJuiceSSHInstalled()) {
             if (hasPermissions(this, PERMISSION_READ, PERMISSION_OPEN_SESSIONS)) {
                 mSnackProgressBarManager.dismiss()
@@ -166,6 +188,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
 
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
             mAppSettingsDialogShown = false
+        }
+
+        if (requestCode == MY_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                // If the update is cancelled or fails, you can request to start the update again.
+                error("Update flow failed! Result code: $resultCode")
+            }
         }
 
         // if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
@@ -428,7 +457,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
 
     private fun onPermissionsGranted(requestCode: Int, vararg perms: String) {
         if (requestCode != PERMISSION_REQUEST_CODE) return
-        if (mConnectionManager != null) return
 
         spinner.adapter = mConnectionListAdapter
         LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
@@ -444,6 +472,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         )
 
         mConnectionManager?.startClient()
+
+        if (mGooglePlayStorePackage && mGooglePlayStoreCertificate) startUpdate(mAppUpdateManager, MY_REQUEST_CODE)
     }
 
     private fun onPermissionsDenied(requestCode: Int, vararg perms: String) {
@@ -463,6 +493,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     }
 
     companion object {
+        const val MY_REQUEST_CODE: Int = 1
         const val PERMISSION_REQUEST_CODE: Int = 23
         // private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
     }
