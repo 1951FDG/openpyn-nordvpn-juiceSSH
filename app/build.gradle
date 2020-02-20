@@ -183,7 +183,7 @@ dependencies {
     }
 
     // Architecture
-    implementation('com.naver.android.svc:svc:1.0.0') {
+    implementation('com.naver.android.svc:svc:1.0.1') {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
     }
