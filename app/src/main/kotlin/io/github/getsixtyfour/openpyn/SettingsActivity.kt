@@ -3,8 +3,7 @@ package io.github.getsixtyfour.openpyn
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration.SCREENLAYOUT_SIZE_MASK
-import android.content.res.Configuration.SCREENLAYOUT_SIZE_XLARGE
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
@@ -184,7 +183,7 @@ class SettingsActivity : PreferenceActivityCompat() {
          * example, 10" tablets are extra-large.
          */
         fun isXLargeTablet(context: Context): Boolean {
-            return context.resources.configuration.screenLayout and SCREENLAYOUT_SIZE_MASK >= SCREENLAYOUT_SIZE_XLARGE
+            return context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_XLARGE
         }
 
         fun startAboutFragment(activity: Activity) {

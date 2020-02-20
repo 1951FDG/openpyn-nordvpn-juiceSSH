@@ -81,12 +81,12 @@ class ConnectionManager(
         return mSessionRunning
     }
 
-    fun toggleConnection(activity: Activity, uuid: UUID) {
+    fun toggleConnection(activity: Activity, id: UUID, requestCode: Int) {
         if (isConnectingOrDisconnecting()) return
 
         mSessionRunning = true
 
-        if (isConnected()) disconnect() else connect(activity, uuid)
+        if (isConnected()) disconnect() else connect(activity, id, requestCode)
     }
 
     fun startClient() {
@@ -117,17 +117,13 @@ class ConnectionManager(
         }).start()
     }
 
-    private fun connect(activity: Activity, uuid: UUID) {
+    private fun connect(activity: Activity, id: UUID, requestCode: Int) {
         Thread(Runnable {
             try {
-                mClient.connect(activity, uuid, this, JUICESSH_REQUEST_CODE)
+                mClient.connect(activity, id, this, requestCode)
             } catch (e: ServiceNotConnectedException) {
                 Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
             }
         }).start()
-    }
-
-    companion object {
-        const val JUICESSH_REQUEST_CODE: Int = 345
     }
 }

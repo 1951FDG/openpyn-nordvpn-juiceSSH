@@ -57,7 +57,6 @@ import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
-import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager.Companion.JUICESSH_REQUEST_CODE
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.container
@@ -486,13 +485,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     }
 
     private fun toggleConnection() {
-        val uuid = mConnectionListAdapter.getConnectionId(spinner.selectedItemPosition)
-        mConnectionManager?.toggleConnection(this, uuid!!)
+        val id = mConnectionListAdapter.getConnectionId(spinner.selectedItemPosition)
+        mConnectionManager?.toggleConnection(this, id!!, JUICESSH_REQUEST_CODE)
     }
 
     companion object {
         const val MY_REQUEST_CODE: Int = 1
         const val PERMISSION_REQUEST_CODE: Int = 23
+        const val JUICESSH_REQUEST_CODE: Int = 345
         // private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
     }
 }

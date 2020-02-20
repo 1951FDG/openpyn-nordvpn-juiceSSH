@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Build.VERSION;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -30,7 +29,7 @@ public final class EmailUtil {
         if (TextUtils.isEmpty(emailBody)) {
             String deviceInfo = "";
             deviceInfo += "\n App version: " + config.version;
-            deviceInfo += "\n Android version: " + VERSION.RELEASE + " (" + VERSION.SDK_INT + ")";
+            deviceInfo += "\n Android version: " + Build.VERSION.RELEASE + " (" + Build.VERSION.SDK_INT + ")";
             deviceInfo += "\n Device: " + Build.MODEL + " (" + Build.PRODUCT + ")";
             deviceInfo += "\n Platform: " + platformName(config.buildType);
             emailBody = config.emailBodyPrompt + "\n\n\n\n\n" + "---------------------------" + deviceInfo;

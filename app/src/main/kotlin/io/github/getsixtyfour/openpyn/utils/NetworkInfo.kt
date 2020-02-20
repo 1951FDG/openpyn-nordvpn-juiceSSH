@@ -5,13 +5,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkCapabilities.TRANSPORT_BLUETOOTH
-import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
-import android.net.NetworkCapabilities.TRANSPORT_ETHERNET
-import android.net.NetworkCapabilities.TRANSPORT_LOWPAN
-import android.net.NetworkCapabilities.TRANSPORT_VPN
-import android.net.NetworkCapabilities.TRANSPORT_WIFI
-import android.net.NetworkCapabilities.TRANSPORT_WIFI_AWARE
 import android.net.NetworkRequest
 import android.os.Handler
 import android.os.Looper
@@ -65,25 +58,25 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
                 val netCap: NetworkCapabilities? = connectivityManager.getNetworkCapabilities(network)
                 netCap?.let {
                     when {
-                        it.hasTransport(TRANSPORT_CELLULAR) -> {
+                        it.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
                             debug("Connectivity: CELLULAR")
                         }
-                        it.hasTransport(TRANSPORT_WIFI) -> {
+                        it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
                             debug("Connectivity: WIFI")
                         }
-                        it.hasTransport(TRANSPORT_BLUETOOTH) -> {
+                        it.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> {
                             debug("Connectivity: BLUETOOTH")
                         }
-                        it.hasTransport(TRANSPORT_ETHERNET) -> {
+                        it.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
                             debug("Connectivity: ETHERNET")
                         }
-                        it.hasTransport(TRANSPORT_VPN) -> {
+                        it.hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> {
                             debug("Connectivity: VPN")
                         }
-                        it.hasTransport(TRANSPORT_WIFI_AWARE) -> {
+                        it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE) -> {
                             debug("Connectivity: WIFI_AWARE")
                         }
-                        it.hasTransport(TRANSPORT_LOWPAN) -> {
+                        it.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN) -> {
                             debug("Connectivity: LOWPAN")
                         }
                     }
