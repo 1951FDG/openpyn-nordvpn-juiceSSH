@@ -66,7 +66,7 @@
         <item>Vietnam</item>
     </string-array>
 
-    <string-array name="pref_country_values">
+    <string-array name="pref_country_values" translatable="false">
         <item>al</item>
         <item>ar</item>
         <item>au</item>
@@ -134,7 +134,7 @@
 
     <string name="pref_max_load">Max load</string>
 
-    <string-array name="pref_max_load_entries">
+    <string-array name="pref_max_load_entries" translatable="false">
         <item>10</item>
         <item>20</item>
         <item>30</item>
@@ -144,7 +144,7 @@
         <item>70</item>
     </string-array>
 
-    <string-array name="pref_max_load_values">
+    <string-array name="pref_max_load_values" translatable="false">
         <item>10</item>
         <item>20</item>
         <item>30</item>
@@ -156,7 +156,7 @@
 
     <string name="pref_top_servers">Top servers</string>
 
-    <string-array name="pref_top_servers_entries">
+    <string-array name="pref_top_servers_entries" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -169,7 +169,7 @@
         <item>10</item>
     </string-array>
 
-    <string-array name="pref_top_servers_values">
+    <string-array name="pref_top_servers_values" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -184,14 +184,14 @@
 
     <!--<string name="pref_pings">Pings</string>
 
-    <string-array name="pref_pings_entries">
+    <string-array name="pref_pings_entries" translatable="false">
         <item>2</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
     </string-array>
 
-    <string-array name="pref_pings_values">
+    <string-array name="pref_pings_values" translatable="false">
         <item>2</item>
         <item>3</item>
         <item>4</item>
@@ -230,7 +230,7 @@
 
     <string name="pref_nvram_client">ASUSWRT-Merlin client instance</string>
 
-    <string-array name="pref_nvram_client_entries">
+    <string-array name="pref_nvram_client_entries" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -238,7 +238,7 @@
         <item>5</item>
     </string-array>
 
-    <string-array name="pref_nvram_client_values">
+    <string-array name="pref_nvram_client_values" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -270,7 +270,7 @@
         <item>IPStack (requires API Key)</item>
     </string-array>
 
-    <string-array name="pref_geo_client_values">
+    <string-array name="pref_geo_client_values" translatable="false">
         <item>ipapi</item>
         <item>ipdata</item>
         <item>ipinfo</item>
@@ -307,7 +307,7 @@
         <item>Critical</item>
     </string-array>
 
-    <string-array name="pref_log_level_values">
+    <string-array name="pref_log_level_values" translatable="false">
         <item>5</item>
         <item>10</item>
         <item>15</item>
