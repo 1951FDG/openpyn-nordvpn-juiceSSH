@@ -60,10 +60,9 @@ android {
             }
         }
     }
-    dataBinding {
-        // Morphing-Material-Dialogs uses data binding code
-        enabled = false
-    }
+    // Morphing-Material-Dialogs uses data binding code
+    dataBinding.enabled = false
+    viewBinding.enabled = true
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
