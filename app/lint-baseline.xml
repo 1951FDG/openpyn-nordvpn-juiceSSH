@@ -18,7 +18,7 @@
         errorLine1="      android:pathData=&quot;M21.86,0H0v13.62l4.5,13.83l27.55,-0.02L9.77,43.63l8.53,26.21L0,56.56V512h450.36l-21.59,-15.68l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02L479.28,512H512v-21.86L21.86,0zM20.61,116.74l8.49,-26.19l-22.3,-16.19l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02L56.65,90.52l8.53,26.21l-22.3,-16.19L20.61,116.74zM67.5,163.63l8.49,-26.19L53.69,121.24l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02L103.54,137.4l8.53,26.21l-22.3,-16.19L67.5,163.63zM114.38,210.51l8.49,-26.19l-22.3,-16.19l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02l-22.28,16.19l8.53,26.21l-22.3,-16.19L114.38,210.51zM161.27,257.4l8.49,-26.19l-22.3,-16.19l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02l-22.28,16.19l8.53,26.21l-22.3,-16.19L161.27,257.4zM208.15,304.28l8.49,-26.19l-22.3,-16.19l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02l-22.28,16.19l8.53,26.21l-22.3,-16.19L208.15,304.28zM255.04,351.17l8.49,-26.19l-22.3,-16.19l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02l-22.28,16.19l8.53,26.21l-22.3,-16.19L255.04,351.17zM301.92,398.05l8.49,-26.19l-22.3,-16.19l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02l-22.28,16.19l8.53,26.21l-22.3,-16.19L301.92,398.05zM348.81,444.94l8.49,-26.19l-22.3,-16.19l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02l-22.28,16.19l8.53,26.21l-22.3,-16.19L348.81,444.94zM440.26,491.81l-22.3,-16.19l-22.27,16.21l8.49,-26.19l-22.3,-16.19l27.55,-0.02l8.51,-26.21l8.53,26.21l27.55,-0.02l-22.28,16.19L440.26,491.81z&quot;"
         errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/drawable/ic_bosnia_and_herzegovina_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_bosnia_and_herzegovina_40dp.xml"
             line="7"
             column="25"/>
     </issue>
@@ -40,7 +40,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_albania_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_albania_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -51,7 +51,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_argentina_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_argentina_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -62,7 +62,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_australia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_australia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -73,7 +73,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_austria_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_austria_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -84,7 +84,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_belgium_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_belgium_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -95,7 +95,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_bosnia_and_herzegovina_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_bosnia_and_herzegovina_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -106,7 +106,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_brazil_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_brazil_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -117,7 +117,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_bulgaria_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_bulgaria_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -128,7 +128,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_canada_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_canada_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -139,7 +139,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_chile_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_chile_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -150,7 +150,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_costa_rica_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_costa_rica_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -161,7 +161,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_croatia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_croatia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -172,7 +172,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_cyprus_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_cyprus_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -183,7 +183,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_czech_republic_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_czech_republic_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -194,7 +194,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_denmark_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_denmark_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -205,7 +205,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_estonia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_estonia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -216,7 +216,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_finland_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_finland_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -227,7 +227,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_france_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_france_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -238,7 +238,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_georgia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_georgia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -249,7 +249,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_germany_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_germany_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -260,7 +260,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_greece_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_greece_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -271,7 +271,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_hong_kong_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_hong_kong_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -282,7 +282,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_hungary_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_hungary_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -293,7 +293,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_iceland_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_iceland_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -304,7 +304,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_india_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_india_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -315,7 +315,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_indonesia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_indonesia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -326,7 +326,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_ireland_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_ireland_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -337,7 +337,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_israel_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_israel_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -348,7 +348,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_italy_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_italy_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -359,7 +359,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_japan_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_japan_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -370,7 +370,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_latvia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_latvia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -381,7 +381,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_luxembourg_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_luxembourg_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -392,7 +392,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_malaysia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_malaysia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -403,7 +403,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_mexico_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_mexico_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -414,7 +414,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_moldova_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_moldova_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -425,7 +425,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_netherlands_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_netherlands_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -436,7 +436,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_new_zealand_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_new_zealand_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -447,7 +447,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_north_macedonia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_north_macedonia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -458,7 +458,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_norway_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_norway_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -469,7 +469,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_poland_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_poland_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -480,7 +480,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_portugal_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_portugal_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -491,7 +491,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_romania_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_romania_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -502,7 +502,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_serbia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_serbia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -513,7 +513,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_singapore_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_singapore_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -524,7 +524,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_slovakia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_slovakia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -535,7 +535,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_slovenia_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_slovenia_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -546,7 +546,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_south_africa_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_south_africa_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -557,7 +557,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_south_korea_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_south_korea_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -568,7 +568,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_spain_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_spain_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -579,7 +579,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_sweden_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_sweden_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -590,7 +590,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_switzerland_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_switzerland_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -601,7 +601,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_taiwan_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_taiwan_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -612,7 +612,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_thailand_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_thailand_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -623,7 +623,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_turkey_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_turkey_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -634,7 +634,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_ukraine_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_ukraine_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -645,7 +645,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_united_arab_emirates_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_united_arab_emirates_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -656,7 +656,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_united_kingdom_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_united_kingdom_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -667,7 +667,7 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_united_states_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_united_states_40dp.xml"
             line="1"
             column="1"/>
     </issue>
@@ -678,119 +678,9 @@
         errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
         errorLine2="^">
         <location
-            file="src/main/res/drawable/ic_vietnam_40dp.xml"
+            file="src/main/res/drawable-anydpi/ic_vietnam_40dp.xml"
             line="1"
             column="1"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
-        message="The resource `R.id.action_generate` appears to be unused"
-        errorLine1="        android:id=&quot;@+id/action_generate&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/debug/res/menu/menu_main.xml"
-            line="7"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
-        message="The resource `R.id.nav_graph` appears to be unused"
-        errorLine1="    android:id=&quot;@+id/nav_graph&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/navigation/nav_graph.xml"
-            line="5"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnknownNullness"
-        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
-        errorLine1="    public static void main(String[] args) {"
-        errorLine2="                            ~~~~~~~~">
-        <location
-            file="src/main/java/ua/pp/msk/openvpnstatus/cli/StatusCli.java"
-            line="36"
-            column="29"/>
-    </issue>
-
-    <issue
-        id="UnknownNullness"
-        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
-        errorLine1="    public LastDiff getLastDiff(TrafficDataPoint tdp) {"
-        errorLine2="           ~~~~~~~~">
-        <location
-            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
-            line="70"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnknownNullness"
-        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
-        errorLine1="    public LastDiff getLastDiff(TrafficDataPoint tdp) {"
-        errorLine2="                                ~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
-            line="70"
-            column="33"/>
-    </issue>
-
-    <issue
-        id="UnknownNullness"
-        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
-        errorLine1="    public LinkedList&lt;TrafficDataPoint> getHours() {"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
-            line="104"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnknownNullness"
-        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
-        errorLine1="    public LinkedList&lt;TrafficDataPoint> getMinutes() {"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
-            line="109"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnknownNullness"
-        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
-        errorLine1="    public LinkedList&lt;TrafficDataPoint> getSeconds() {"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
-            line="114"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnknownNullness"
-        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
-        errorLine1="    public static LinkedList&lt;TrafficDataPoint> getDummyList() {"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
-            line="119"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="UnknownNullness"
-        message="Unknown nullability; explicitly declare as `@Nullable` or `@NonNull` to improve Kotlin interoperability; see https://android.github.io/kotlin-guides/interop.html#nullability-annotations"
-        errorLine1="    public LastDiff add(long in, long out) {"
-        errorLine2="           ~~~~~~~~">
-        <location
-            file="src/main/java/com/getsixtyfour/openvpnmgmt/core/TrafficHistory.java"
-            line="171"
-            column="12"/>
     </issue>
 
 </issues>
