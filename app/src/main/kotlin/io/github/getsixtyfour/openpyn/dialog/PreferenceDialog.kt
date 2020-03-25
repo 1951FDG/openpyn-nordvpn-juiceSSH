@@ -60,6 +60,12 @@ class PreferenceDialog : AppCompatDialogFragment(), DialogInterface.OnClickListe
         }
     }
 
+    override fun onDetach() {
+        super.onDetach()
+
+        mListener = null
+    }
+
     override fun onClick(dialog: DialogInterface?, which: Int) {
         when (which) {
             DialogInterface.BUTTON_POSITIVE -> {
