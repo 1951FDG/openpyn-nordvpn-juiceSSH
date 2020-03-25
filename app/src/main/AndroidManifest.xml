@@ -69,6 +69,11 @@
             android:taskAffinity="com.getsixtyfour.openvpnmgmt"
             android:theme="@style/Theme.AlertDialogHost" />
         <!-- Private activity -->
+        <activity
+            android:name="pub.devrel.easypermissions.AppSettingsDialogHolderActivity"
+            android:exported="false"
+            android:theme="@style/EasyPermissions.Transparent" />
+        <!-- Private activity -->
         <!--<activity-->
             <!--android:name="com.adityaanand.morphdialog.MorphDialogActivity"-->
             <!--android:exported="false"-->

@@ -101,6 +101,12 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="EasyPermissions" parent="Theme.MaterialComponents.Light.Bridge">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <!--<style name="PreferenceSummaryTextStyle" tools:override="true">-->
         <!--<item name="android:textAppearance">?android:attr/textAppearanceListItemSecondary</item>-->
     <!--</style>-->
