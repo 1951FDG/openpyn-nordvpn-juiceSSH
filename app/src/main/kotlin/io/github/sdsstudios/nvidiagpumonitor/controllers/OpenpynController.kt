@@ -72,6 +72,7 @@ class OpenpynController(
 
                 mOnOutputLineListener?.let { listener: OnOutputLineListener ->
                     when {
+                        0 == level -> return@let
                         it == SPAM && 5 >= level -> listener.spam(message)
                         it == DEBUG && 10 >= level -> listener.debug(message)
                         it == VERBOSE && 15 >= level -> listener.verbose(message)
