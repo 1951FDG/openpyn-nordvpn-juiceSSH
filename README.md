@@ -29,6 +29,7 @@ An Android app written in C/C++, [Java](https://www.oracle.com/java/), and [Kotl
 -   [Requirements](#requirements)
 -   [References](#references)
 -   [Libraries used](#libraries-used)
+-   [Plugins used](#plugins-used)
 -   [Feedback](#feedback)
 -   [Credits](#credits)
 -   [Built with](#built-with)
@@ -151,7 +152,6 @@ To compile and run the project you'll need:
 -   [EasyPermissions](https://github.com/googlesamples/easypermissions)
 -   [Fuel](https://github.com/kittinunf/Fuel)
 -   [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
--   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
 -   [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 -   [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 -   [Kotlin](https://github.com/JetBrains/kotlin)
@@ -170,6 +170,12 @@ To compile and run the project you'll need:
 -   [StaticLog](https://github.com/jupf/staticlog)
 -   [SVC](https://github.com/BansookNam/svc)
 -   [Toasty](https://github.com/GrenderG/Toasty)
+
+## Plugins used
+
+-   [Detekt](https://github.com/arturbosch/detekt)
+-   [Gradle Versions Plugin](https://github.com/ben-manes/gradle-versions-plugin)
+-   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
 -   [Unused Resources Remover for Android](https://github.com/konifar/gradle-unused-resources-remover-plugin)
 
 ## Feedback
@@ -225,12 +231,12 @@ This app uses (modified) code from several open source projects.
 -   [Codacy](https://www.codacy.com/)
 -   [DB Browser for SQLite](http://sqlitebrowser.org/)
 -   [Dependabot](https://dependabot.com/)
--   [Detekt](https://github.com/arturbosch/detekt)
 -   [Fastlane](https://fastlane.tools/)
 -   [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
 -   [JSON Schema Tool](https://jsonschema.net/)
 -   [Kotlin Code Sorter](https://github.com/longforus/KotlinCodeSorter)
 -   [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
+-   [Material Design Icons](https://materialdesignicons.com/)
 -   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 -   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 -   [Regex101](https://regex101.com/)
