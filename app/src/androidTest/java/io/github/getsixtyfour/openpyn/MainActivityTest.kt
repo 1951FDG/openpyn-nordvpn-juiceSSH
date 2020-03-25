@@ -168,7 +168,7 @@ class MainActivityTest {
         val appCompatTextView = onView(
             allOf(
                 withId(R.id.title),
-                withText(R.string.title_activity_settings),
+                withText(R.string.title_settings),
                 childAtPosition(childAtPosition(withId(R.id.content), 0), 0),
                 isDisplayed()
             )

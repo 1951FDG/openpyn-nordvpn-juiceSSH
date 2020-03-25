@@ -11,5 +11,5 @@ interface MapViewsAction : ViewsAction {
     fun showCountryFilterDialog()
     fun toggleCommand(v: View?)
     fun toggleFavoriteMarker()
-    fun updateMasterMarker(show: Boolean = false)
+    fun updateMasterMarkerWithDelay(timeMillis: Long = 0)
 }

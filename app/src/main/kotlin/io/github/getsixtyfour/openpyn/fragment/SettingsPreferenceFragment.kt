@@ -17,9 +17,37 @@ import io.github.getsixtyfour.openpyn.onRefreshItemSelected
  */
 class SettingsPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartFragmentCallback {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setHasOptionsMenu(true)
+
+        findPreference<Preference>("pref_server")?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>("pref_country")?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>("pref_max_load")?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>("pref_top_servers")?.let(Companion::bindPreferenceSummaryToValue)
+        // findPreference<Preference>("pref_pings")?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>("pref_log_level")?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>("pref_nvram_client")?.let(Companion::bindPreferenceSummaryToValue)
+    }
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        // Load the preferences from an XML resource
+        setPreferencesFromResource(R.xml.pref_settings, rootKey)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.fitsSystemWindows = true
+        setDivider(null)
+
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun getCallbackFragment(): PreferenceFragmentCompat = this
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_refresh -> {
+            R.id.menu_refresh -> {
                 onRefreshItemSelected(requireActivity(), item)
                 true
             }
@@ -39,35 +67,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStart
         val fragment = fragmentManager.fragmentFactory.instantiate(activity.classLoader, pref.fragment)
         fragment.arguments = args
         fragment.setTargetFragment(caller, 0)
-        fragmentManager.beginTransaction().replace((view!!.parent as View).id, fragment).addToBackStack(null).commit()
+        fragmentManager.beginTransaction().replace((requireView().parent as View).id, fragment).addToBackStack(null).commit()
 
         return true
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-
-        findPreference<Preference>("pref_server")?.let(Companion::bindPreferenceSummaryToValue)
-        findPreference<Preference>("pref_country")?.let(Companion::bindPreferenceSummaryToValue)
-        findPreference<Preference>("pref_max_load")?.let(Companion::bindPreferenceSummaryToValue)
-        findPreference<Preference>("pref_top_servers")?.let(Companion::bindPreferenceSummaryToValue)
-        // findPreference<Preference>("pref_pings")?.let(Companion::bindPreferenceSummaryToValue)
-        findPreference<Preference>("pref_log_level")?.let(Companion::bindPreferenceSummaryToValue)
-        findPreference<Preference>("pref_nvram_client")?.let(Companion::bindPreferenceSummaryToValue)
-    }
-
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        // Load the preferences from an XML resource
-        setPreferencesFromResource(R.xml.pref_settings, rootKey)
-        // setTitle(requireActivity())
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.fitsSystemWindows = true
-        setDivider(null)
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun getCallbackFragment(): PreferenceFragmentCompat = this
 }

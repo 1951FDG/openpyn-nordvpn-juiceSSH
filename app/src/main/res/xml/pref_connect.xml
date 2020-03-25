@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="connect"
-    android:title="@string/title_activity_settings"
+    android:title="@string/title_settings"
     app:initialExpandedChildrenCount="5"
     app:orderingFromXml="true">
     <CheckBoxPreference

@@ -21,7 +21,7 @@ class CheckedSavedState extends AbsSavedState {
         }
     };
 
-    protected boolean checked;
+    protected boolean mChecked;
 
     protected CheckedSavedState(Parcelable superState) {
         super(superState);
@@ -29,12 +29,12 @@ class CheckedSavedState extends AbsSavedState {
 
     CheckedSavedState(Parcel source, ClassLoader loader) {
         super(source, loader);
-        checked = source.readInt() == 1;
+        mChecked = source.readInt() == 1;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeInt(checked ? 1 : 0);
+        dest.writeInt(mChecked ? 1 : 0);
     }
 }

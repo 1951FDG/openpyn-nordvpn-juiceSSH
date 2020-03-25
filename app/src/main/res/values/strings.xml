@@ -4,6 +4,7 @@
 
     <string name="at_preposition">at</string>
     <string name="empty" translatable="false" />
+    <string name="search_hint">Search…</string>
 
     <!-- Menu -->
     <string name="menu_refresh">Refresh</string>
@@ -11,29 +12,31 @@
     <!-- Menu -->
 
     <!-- Warning -->
-    <string name="warning_must_restart_app">Please restart app for changes to take effect</string>
+    <string name="warning_restart_app">Please restart app for changes to take effect</string>
     <!-- Warning -->
 
     <!-- Error -->
-    <string name="error_must_enable_permissions">Must enable permissions!</string>
-    <string name="error_could_not_connect_to_service">Tried to execute a command but could not connect to JuiceSSH plugin service</string>
-    <string name="error_must_install_juicessh">Must install the JuiceSSH app!</string>
-    <string name="error_must_have_at_least_one_server">Must have at least one server!</string>
+    <string name="error_juicessh_app">Must install the JuiceSSH app!</string>
+    <string name="error_juicessh_permissions">Must enable permissions!</string>
+    <string name="error_juicessh_server">Must have at least one server!</string>
+    <string name="error_juicessh_service">Tried to execute a command but could not connect to JuiceSSH plugin service</string>
     <!-- Error -->
 
-    <string name="title_activity_licenses">Licenses</string>
-    <string name="title_dialog_connect">VPN Connection</string>
-    <string name="title_dialog_error">Error</string>
-    <string name="title_dialog_warning">Warning</string>
+    <string name="title_error">Error</string>
+    <string name="title_licenses">Licenses</string>
+    <string name="title_warning">Warning</string>
+    <string name="title_ssh">SSH server</string>
 
     <string name="title_marker"><xliff:g example="\uD83C\uDDF3\uD83C\uDDF1" id="emoji">%1$s</xliff:g> <xliff:g example="Netherlands" id="country">%2$s</xliff:g></string>
 
     <!-- Strings related to Connection -->
-    <string name="vpn_connected_message">Connected to <xliff:g example="Amsterdam" id="city">%1$s</xliff:g>, <xliff:g example="NL" id="flag">%2$s</xliff:g> (<xliff:g example="192.168.1.1" id="ip">%3$s</xliff:g>)</string>
-    <string name="vpn_connect_message">Are you sure you want to connect to <xliff:g id="string">%1$s</xliff:g></string>
-    <string name="vpn_server_name">server <xliff:g example="nl471" id="server">%1$s</xliff:g>.nordvpn.com</string>
-    <string name="vpn_country_name"><xliff:g example="Netherlands" id="country">%1$s</xliff:g></string>
-    <string name="vpn_location_name"><xliff:g example="Netherlands" id="country">%1$s</xliff:g> <xliff:g example="at" id="string">%2$s</xliff:g> <xliff:g example="52.3500000" id="latitude">%3$s</xliff:g>, <xliff:g example="4.9166670" id="longitude">%4$s</xliff:g></string>
+    <string name="vpn_title_connect">VPN connection</string>
+    <string name="vpn_msg_connect">Are you sure you want to connect to <xliff:g id="string">%1$s</xliff:g></string>
+    <string name="vpn_name_country"><xliff:g example="Netherlands" id="country">%1$s</xliff:g></string>
+    <string name="vpn_name_location"><xliff:g example="Netherlands" id="country">%1$s</xliff:g> <xliff:g example="at" id="string">%2$s</xliff:g> <xliff:g example="52.3500000" id="latitude">%3$s</xliff:g>, <xliff:g example="4.9166670" id="longitude">%4$s</xliff:g></string>
+    <string name="vpn_name_server">server <xliff:g example="nl471" id="server">%1$s</xliff:g>.nordvpn.com</string>
+
+    <string name="vpn_msg_connected">Connected to <xliff:g example="Amsterdam" id="city">%1$s</xliff:g>, <xliff:g example="NL" id="flag">%2$s</xliff:g> (<xliff:g example="192.168.1.1" id="ip">%3$s</xliff:g>)</string>
     <!-- Strings related to Connection -->
 
     <!-- App signing certificate (derived) -->
@@ -44,5 +47,4 @@
 
     <!-- App signing certificate (internal test) -->
     <!--<string name="app_signature" translatable="false">36Yo+sowNh3itBBeAvKPRoBueaE=</string>-->
-
 </resources>

@@ -20,6 +20,7 @@ import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPR.IGDPRCallback
+import com.michaelflisar.gdprdialog.GDPRDefinitions
 import com.michaelflisar.gdprdialog.GDPRSetup
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
@@ -54,6 +55,15 @@ fun <T : FragmentActivity> getCurrentNavigationFragment(activity: T): Fragment? 
         null -> null
         else -> navHostFragment.childFragmentManager.primaryNavigationFragment
     }
+}
+
+fun getGDPR(theme: Int): GDPRSetup = with(
+    GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)
+) {
+    withCustomDialogTheme(theme)
+    withForceSelection(true)
+    withNoToolbarTheme(false)
+    withShowPaidOrFreeInfoText(false)
 }
 
 fun <T> showGDPRIfNecessary(activity: T, setup: GDPRSetup) where T : AppCompatActivity, T : IGDPRCallback {
@@ -123,8 +133,8 @@ fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETE
                 }*/
 
                 AlertDialog.Builder(it).apply {
-                    setTitle(R.string.title_dialog_warning)
-                    setMessage(R.string.warning_must_restart_app)
+                    setTitle(R.string.title_warning)
+                    setMessage(R.string.warning_restart_app)
                     setPositiveButton(android.R.string.ok, null)
                     show()
                 }
@@ -153,7 +163,7 @@ fun <T : AppCompatActivity> setProgressToolBar(
     activity.supportActionBar?.setDisplayShowTitleEnabled(showTitle)
 }
 
-// todo inner class
+// TODO: inner class
 fun <T : Activity> setSnackBarManager(activity: T, manager: SnackProgressBarManager) {
     fun snackProgressBar(type: Int, message: String, action: String, onActionClickListener: OnActionClickListener): SnackProgressBar {
         return SnackProgressBar(type, message).setAction(action, onActionClickListener)
@@ -163,7 +173,7 @@ fun <T : Activity> setSnackBarManager(activity: T, manager: SnackProgressBarMana
     val action = activity.getString(android.R.string.ok)
 
     manager.put(
-        snackProgressBar(type, activity.getString(R.string.error_must_enable_permissions), action, object : OnActionClickListener {
+        snackProgressBar(type, activity.getString(R.string.error_juicessh_permissions), action, object : OnActionClickListener {
             override fun onActionClick() {
                 ActivityCompat.requestPermissions(
                     activity, arrayOf(PERMISSION_READ, PERMISSION_OPEN_SESSIONS), MainActivity.PERMISSION_REQUEST_CODE
@@ -173,7 +183,7 @@ fun <T : Activity> setSnackBarManager(activity: T, manager: SnackProgressBarMana
     )
 
     manager.put(
-        snackProgressBar(type, activity.getString(R.string.error_must_install_juicessh), action, object : OnActionClickListener {
+        snackProgressBar(type, activity.getString(R.string.error_juicessh_app), action, object : OnActionClickListener {
             override fun onActionClick() {
                 activity.juiceSSHInstall()
             }
@@ -194,7 +204,7 @@ fun logException(throwable: Throwable) {
     }
 }
 
-//todo inner class
+// TODO: inner class
 @SuppressLint("DefaultLocale")
 fun populateAboutConfig() {
     val versionName = BuildConfig.VERSION_NAME

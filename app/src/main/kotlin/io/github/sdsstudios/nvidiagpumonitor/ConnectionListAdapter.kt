@@ -20,29 +20,33 @@ class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
 
     private val mInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-    override fun newView(context: Context?, cursor: Cursor?, parent: ViewGroup?): View {
+    override fun getItem(position: Int): Cursor? {
+        return super.getItem(position) as Cursor?
+    }
+
+    override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
         return mInflater.inflate(R.layout.spinner_item, parent, false)
     }
 
-    override fun bindView(view: View?, context: Context?, cursor: Cursor?) {
-        val nameColumn = cursor!!.getColumnIndex(Connections.COLUMN_NAME)
+    override fun newDropDownView(context: Context, cursor: Cursor, parent: ViewGroup): View {
+        return mInflater.inflate(R.layout.spinner_dropdown_item, parent, false)
+    }
 
-        if (nameColumn > -1) {
-            val name = cursor.getString(nameColumn)
-            view!!.findViewById<TextView>(R.id.textView).text = name
+    override fun bindView(view: View, context: Context, cursor: Cursor) {
+        val columnIndex = cursor.getColumnIndex(Connections.COLUMN_NAME)
+
+        if (columnIndex > -1) {
+            view.findViewById<TextView>(R.id.text).text = cursor.getString(columnIndex)
         }
     }
 
-    fun getConnectionId(position: Int): UUID? {
-        var id: UUID? = null
+    fun getConnectionId(position: Int): UUID? = getItem(position)?.run {
+        val columnIndex = getColumnIndex(Connections.COLUMN_ID)
 
-        if (cursor != null && cursor.moveToPosition(position)) {
-            val idIndex = cursor.getColumnIndex(Connections.COLUMN_ID)
-            if (idIndex > -1) {
-                id = UUID.fromString(cursor.getString(idIndex))
-            }
+        if (columnIndex > -1) {
+            UUID.fromString(getString(columnIndex))
+        } else {
+            null
         }
-
-        return id
     }
 }

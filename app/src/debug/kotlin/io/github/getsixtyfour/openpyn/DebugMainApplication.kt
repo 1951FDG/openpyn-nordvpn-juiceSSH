@@ -2,6 +2,9 @@ package io.github.getsixtyfour.openpyn
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
+import android.os.StrictMode.VmPolicy
 import androidx.preference.PreferenceManager
 import com.github.moduth.blockcanary.BlockCanary
 
@@ -11,8 +14,8 @@ class DebugMainApplication : MainApplication() {
     @SuppressLint("PrivateApi")
     override fun onCreate() {
         super.onCreate()
-        // todo look for 10.0.2.2 on debug machine
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
+        // TODO: add connectivity check for 10.0.2.2 on debug machine
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
             applicationContext.classLoader.loadClass("android.os.SystemProperties").let {
                 if ((it.getMethod("get", String::class.java).invoke(it, "ro.kernel.qemu") as String) == "1") {
                     // Edit Settings only for Emulator
@@ -26,6 +29,12 @@ class DebugMainApplication : MainApplication() {
                 }
             }
         }
+        // StrictMode.setThreadPolicy(
+        //     ThreadPolicy.Builder().detectAll().penaltyLog().build()
+        // )
+        // StrictMode.setVmPolicy(
+        //     VmPolicy.Builder().detectAll().penaltyLog().build()
+        // )
     }
 
     override fun installBlockCanary() {

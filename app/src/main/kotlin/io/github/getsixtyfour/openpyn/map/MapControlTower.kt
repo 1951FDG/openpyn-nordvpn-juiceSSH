@@ -26,14 +26,12 @@ import com.google.android.gms.maps.model.TileOverlayOptions
 import com.naver.android.svc.annotation.ControlTower
 import com.naver.android.svc.annotation.RequireScreen
 import com.naver.android.svc.annotation.RequireViews
-import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.utils.LazyMarkerStorage
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.getsixtyfour.openpyn.utils.SubmitCallbackListener
-import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.view.map
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -55,6 +53,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import org.json.JSONArray
 import org.json.JSONObject
@@ -68,23 +67,22 @@ import java.util.HashSet
 @RequireScreen(MapFragment::class)
 class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallback, OnMapLoadedCallback, OnCameraIdleListener,
     OnMapClickListener, OnMarkerClickListener, OnInfoWindowClickListener, SubmitCallbackListener, MapViewsAction, AnimatorListener,
-    OnCommandExecuteListener, CoroutineScope by MainScope() {
+    CoroutineScope by MainScope() {
 
+    private val applicationContext: Context
+        get() = screen.requireContext().applicationContext
     private val map by lazy { views.rootView.map }
-    private val mHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
+    private val mHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
         GlobalScope.launch(Main) {
             screen.toolBar?.hideProgress(true)
         }
-        exception.printStackTrace()
-        Log.error("Caught $exception")
-        logException(exception)
+        this.error("", e)
+        logException(e)
     }
-    private val applicationContext: Context
-        get() = screen.requireContext().applicationContext
-    private lateinit var markers: HashMap<LatLng, LazyMarker>
-    private lateinit var flags: HashSet<CharSequence>
+    private lateinit var mMarkers: HashMap<LatLng, LazyMarker>
+    private lateinit var mFlags: HashSet<CharSequence>
     private lateinit var mAnimations: ArrayList<Animation>
-    private var mMap: GoogleMap? = null
+    private var mGoogleMap: GoogleMap? = null
     private var mCameraUpdateAnimator: CameraUpdateAnimator? = null
     private val mMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
     //set by async
@@ -101,38 +99,49 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     override fun onStarted() {
-        mMap?.let { map.onStart() }
+        super.onStarted()
+
+        mGoogleMap?.let { map.onStart() }
     }
 
     override fun onResumed() {
-        mMap?.let { map.onResume() }
+        super.onResumed()
+
+        mGoogleMap?.let { map.onResume() }
     }
 
     override fun onPause() {
-        mMap?.let { map.onPause() }
+        super.onPause()
+
+        mGoogleMap?.let { map.onPause() }
     }
 
     override fun onStop() {
-        mMap?.let { map.onStop() }
+        super.onStop()
+
+        mGoogleMap?.let { map.onStop() }
     }
 
     @ObsoleteCoroutinesApi
     @ExperimentalCoroutinesApi
     override fun onDestroy() {
-        mMap?.let { map.onDestroy() }
+        super.onDestroy()
+
         mCameraUpdateAnimator?.onDestroy()
-        mCameraUpdateAnimator?.animatorListener = null
+
+        mGoogleMap?.let {
+            map.onDestroy()
+        }
+
         mSendChannel.close()
         mTileProvider?.close()
         cancel()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        mGoogleMap = googleMap
 
-        mMap?.let {
-            loadData()
-        }
+        mGoogleMap?.let { loadData() }
     }
 
     override fun onMapLoaded() {
@@ -140,10 +149,10 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     override fun onCameraIdle() {
-        val bounds = mMap!!.projection.visibleRegion.latLngBounds
+        val bounds = mGoogleMap!!.projection.visibleRegion.latLngBounds
 
-        markers.forEach { (key, value) ->
-            if (bounds.contains(key) && flags.contains(value.tag)) {
+        mMarkers.forEach { (key, value) ->
+            if (bounds.contains(key) && mFlags.contains(value.tag)) {
                 if (!value.isVisible) value.isVisible = true
             } else {
                 if (value.isVisible) value.isVisible = false
@@ -158,7 +167,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     override fun onMapClick(point: LatLng) {
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             it.setLevel(it.level, onLevelChangeCallback)
 
             views.hideFavoriteButton()
@@ -169,11 +178,11 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         if (marker.zIndex == 1.0f) {
             views.callConnectFabOnClick()
         } else {
-            markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
                 it.setLevel(it.level, onLevelChangeCallback)
             }
 
-            markers[marker.position]?.let {
+            mMarkers[marker.position]?.let {
                 onLevelChangeCallback.onLevelChange(it, 10)
 
                 views.toggleFavoriteButton(it.level == 1)
@@ -193,9 +202,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
-        mCountries.let {
-            flags = getCurrentFlags(it, selectedIds)
-        }
+        mCountries.let { mFlags = getCurrentFlags(it, selectedIds) }
 
         onCameraIdle()
     }
@@ -213,7 +220,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     override fun toggleFavoriteMarker() {
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             when (it.level) {
                 0 -> {
                     it.setLevel(1, null)
@@ -230,14 +237,10 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
 
     @ObsoleteCoroutinesApi
     @ExperimentalCoroutinesApi
-    override fun updateMasterMarker(show: Boolean) {
-        mSendChannel.offer(applicationContext)
-    }
-
-    fun updateMasterMarkerWithDelay(show: Boolean, delayMillis: Long) {
+    override fun updateMasterMarkerWithDelay(timeMillis: Long) {
         launch {
-            delay(delayMillis)
-            updateMasterMarker(show)
+            delay(timeMillis)
+            mSendChannel.offer(applicationContext)
         }
     }
 
@@ -252,8 +255,8 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     override fun onAnimationFinish(animation: Animation) {
         if (animation.isClosest) {
             views.fakeLayoutButtons()
-            markers[animation.target]?.let {
-                if (flags.contains(it.tag)) {
+            mMarkers[animation.target]?.let {
+                if (mFlags.contains(it.tag)) {
                     onLevelChangeCallback.onLevelChange(it, 10)
 
                     if (!it.isVisible) it.isVisible = true
@@ -273,8 +276,55 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     override fun onAnimationCancel(animation: Animation) {
-        markers[animation.target]?.let {
-            info("Animation to $it canceled")
+        mMarkers[animation.target]?.let { info("Animation to $it canceled") }
+    }
+
+    fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
+        var pair: Pair<Coordinate?, String> = Pair(null, "")
+
+        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.let {
+            val latLng = it.key
+            val tag = it.value.tag
+
+            pair = when {
+                mMarkers.count { entry -> entry.value.tag == tag } == 1 -> Pair(null, tag.toString())
+                else -> Pair(Coordinate(latLng.latitude, latLng.longitude), tag.toString())
+            }
+        }
+
+        return pair
+    }
+
+    fun onConnect() {
+        updateMasterMarkerWithDelay(DELAY_MILLIS)
+    }
+
+    fun onDisconnect() {
+        updateMasterMarkerWithDelay(DELAY_MILLIS)
+    }
+
+    fun onSessionCancelled() {
+        info("onSessionCancelled")
+
+        views.toggleConnectButton(false)
+    }
+
+    fun onSessionStarted() {
+        info("onSessionStarted")
+
+        views.toggleConnectButton(true)
+
+        views.hideListAndLocationButton()
+        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            if (it.isInfoWindowShown) it.hideInfoWindow()
+            views.hideFavoriteButton()
+        }
+        mGoogleMap?.let {
+            it.setOnInfoWindowClickListener(null)
+            it.setOnMapClickListener(null)
+            it.setOnMarkerClickListener { true }
+            it.uiSettings?.isScrollGesturesEnabled = false
+            it.uiSettings?.isZoomGesturesEnabled = false
         }
     }
 
@@ -284,67 +334,18 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         views.toggleConnectButton(false)
 
         views.showListAndLocationButton()
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             if (!it.isInfoWindowShown) it.showInfoWindow()
             views.showFavoriteButton()
         }
 
-        mMap?.let {
+        mGoogleMap?.let {
             it.setOnInfoWindowClickListener(this)
             it.setOnMapClickListener(this)
             it.setOnMarkerClickListener(this)
             it.uiSettings?.isScrollGesturesEnabled = true
             it.uiSettings?.isZoomGesturesEnabled = true
         }
-    }
-
-    fun onSessionStarted() {
-        info("onSessionStarted")
-
-        views.toggleConnectButton(true)
-
-        views.hideListAndLocationButton()
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
-            if (it.isInfoWindowShown) it.hideInfoWindow()
-            views.hideFavoriteButton()
-        }
-        mMap?.let {
-            it.setOnInfoWindowClickListener(null)
-            it.setOnMapClickListener(null)
-            it.setOnMarkerClickListener { true }
-            it.uiSettings?.isScrollGesturesEnabled = false
-            it.uiSettings?.isZoomGesturesEnabled = false
-        }
-    }
-
-    fun onSessionCancelled() {
-        info("onSessionCancelled")
-
-        views.toggleConnectButton(false)
-    }
-
-    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        var pair: Pair<Coordinate?, String> = Pair(null, "")
-
-        markers.entries.firstOrNull { it.value.zIndex == 1.0f }?.let {
-            val latLng = it.key
-            val tag = it.value.tag
-
-            pair = when {
-                markers.count { entry -> entry.value.tag == tag } == 1 -> Pair(null, tag.toString())
-                else -> Pair(Coordinate(latLng.latitude, latLng.longitude), tag.toString())
-            }
-        }
-
-        return pair
-    }
-
-    override fun onConnect() {
-        TODO("not implemented")
-    }
-
-    override fun onDisconnect() {
-        TODO("not implemented")
     }
 
     private fun loadData() = launch(mHandler) {
@@ -370,14 +371,14 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
 
     private suspend fun showData(jsonObj: JSONObject?) {
         val (hashSet, hashMap) = withContext(Default) {
-            createMarkers(applicationContext, mJsonArray, mCountries, mMap!!, mFavorites, onLevelChangeCallback)
+            createMarkers(applicationContext, mJsonArray, mCountries, mGoogleMap!!, mFavorites, onLevelChangeCallback)
         }
-        flags = withContext(Default) { initPrintArray(applicationContext, mCountries, hashSet) }
-        markers = hashMap
+        mFlags = withContext(Default) { initPrintArray(applicationContext, mCountries, hashSet) }
+        mMarkers = hashMap
         mAnimations = createCameraUpdates()
-        val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, flags, jsonObj, mJsonArray)
+        val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, mFlags, jsonObj, mJsonArray)
         val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
-            callback = true
+            isCallback = true
             isAnimate = true
             isClosest = true
             tag = jsonObj
@@ -385,7 +386,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         }
         mAnimations.add(animation)
 
-        mMap?.let {
+        mGoogleMap?.let {
             it.addTileOverlay(TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false))
             it.setMaxZoomPreference(mTileProvider!!.maximumZoom)
             it.setMinZoomPreference(mTileProvider!!.minimumZoom)
@@ -394,7 +395,6 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
             it.setOnMarkerClickListener(this)
             it.setOnMapLoadedCallback(this)
 
-            // todo
             // val params = fab1.layoutParams as ConstraintLayout.LayoutParams
             // it.setPadding(0, 0, 0, params.height + params.bottomMargin)
 
@@ -414,9 +414,9 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         // check if not already animating
         mCameraUpdateAnimator?.let {
             if (!it.isAnimating) {
-                val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, flags, jsonObj, mJsonArray)
+                val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, mFlags, jsonObj, mJsonArray)
                 val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
-                    callback = true
+                    isCallback = true
                     isAnimate = true
                     isClosest = closest
                     tag = jsonObj
@@ -430,6 +430,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     companion object {
+        private const val DELAY_MILLIS: Long = 10000
         private const val FAVORITE_KEY = "pref_favorites"
         val onLevelChangeCallback: OnLevelChangeCallback = object : OnLevelChangeCallback {
             val mDescriptor0: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map1) }

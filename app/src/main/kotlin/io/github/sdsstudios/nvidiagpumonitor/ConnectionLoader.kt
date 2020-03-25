@@ -18,7 +18,7 @@ class ConnectionLoader(
         try {
             cursor = super.loadInBackground()
         } catch (e: IllegalStateException) {
-            e.message?.let { Log.e(e.javaClass.name, it) }
+            Log.e(this.javaClass.simpleName, "", e)
         }
 
         return cursor

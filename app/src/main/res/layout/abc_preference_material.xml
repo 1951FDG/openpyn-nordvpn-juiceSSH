@@ -14,7 +14,8 @@
     android:baselineAligned="false"
     tools:ignore="Overdraw">
 
-    <include layout="@layout/image_frame" />
+    <include layout="@layout/image_frame"
+        tools:ignore="PrivateResource" />
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -46,7 +47,7 @@
             android:maxLines="10"
             style="@style/PreferenceSummaryTextStyle"
             tools:text="@tools:sample/lorem/random"
-            tools:ignore="SelectableText" />
+            tools:ignore="PrivateResource,SelectableText" />
 
     </RelativeLayout>
 

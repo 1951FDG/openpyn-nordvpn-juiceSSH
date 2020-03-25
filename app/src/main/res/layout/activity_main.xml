@@ -5,8 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="io.github.getsixtyfour.openpyn.MainActivity">
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -20,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/actionBarColor"
-            app:ptb_progressHeight="1dp">
+            app:ptb_progressHeight="1dp"
+            tools:menu="@menu/menu_main">
 
             <Spinner
                 android:id="@+id/spinner"
@@ -28,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
+                android:prompt="@string/title_ssh"
                 android:spinnerMode="dialog"
                 tools:listitem="@layout/spinner_item" />
 

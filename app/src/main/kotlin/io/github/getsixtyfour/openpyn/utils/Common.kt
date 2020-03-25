@@ -49,7 +49,8 @@ fun generateXML() {
     SERVER.httpGet().responseJson { _, _, result ->
         when (result) {
             is Result.Failure -> {
-                result.getException().message?.let { Log.error(it) }
+                val e = result.getException()
+                Log.error(e.javaClass.simpleName, e)
             }
             is Result.Success -> {
                 val mutableMap = mutableMapOf<String, String>()
@@ -189,7 +190,8 @@ fun createJson(): JSONArray? {
     val (_, _, result) = SERVER.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
     when (result) {
         is Result.Failure -> {
-            result.getException().message?.let { Log.error(it) }
+            val e = result.getException()
+            Log.error(e.javaClass.simpleName, e)
         }
         is Result.Success -> {
             val jsonObj = JSONObject()
@@ -284,10 +286,7 @@ fun sortJsonArray(jsonArray: JSONArray): JSONArray? {
     }
 
     array.sortWith(
-        compareBy(
-            { it.getString(COUNTRY) },
-            { it.getJSONObject(LOCATION).getDouble(LAT) },
-            { it.getJSONObject(LOCATION).getDouble(LONG) })
+        compareBy({ it.getString(COUNTRY) }, { it.getJSONObject(LOCATION).getDouble(LAT) }, { it.getJSONObject(LOCATION).getDouble(LONG) })
     )
     val result = JSONArray()
     for (res in array) {
@@ -296,11 +295,4 @@ fun sortJsonArray(jsonArray: JSONArray): JSONArray? {
     return result
 }
 
-fun stringifyJsonArray(jsonArray: JSONArray): String? {
-    val jsonArr = sortJsonArray(jsonArray)
-
-    return when {
-        jsonArr != null -> jsonArr.toString(2)
-        else -> null
-    }
-}
+fun stringifyJsonArray(jsonArray: JSONArray): String? = sortJsonArray(jsonArray)?.run { toString(2) }

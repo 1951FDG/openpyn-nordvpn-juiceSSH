@@ -75,7 +75,6 @@ import kotlin.math.pow
 const val TIME_MILLIS: Long = 600
 const val DURATION: Long = 7000
 
-// private const val TASK_TIMEOUT: Long = 500
 @Suppress("ComplexMethod", "MagicNumber")
 fun showThreats(activity: Activity, jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
@@ -255,8 +254,7 @@ fun initPrintArray(context: Context, countries: List<MultiSelectable>, hashSet: 
     }
 
     PrintArray.apply {
-        setHint(R.string.abc_search_hint)
-        setTitle(R.string.empty)
+        setHint(R.string.search_hint)
         setItems(currentCountries)
         setCheckedItems(currentIds)
     }
@@ -275,7 +273,7 @@ fun fileBackedTileProvider(): MapBoxOfflineTileProvider {
 @Suppress("unused", "SpellCheckingInspection")
 fun memoryBackedTileProvider(): MapBoxOfflineTileProvider {
     // Use a memory backed SQLite database
-    val tileProvider = MapBoxOfflineTileProvider(null, "file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
+    val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro", null)
     Log.debug(tileProvider.toString())
     return tileProvider
 }
@@ -352,7 +350,7 @@ fun getCurrentPosition(
 
     fun getString(ids: List<String>?): String = when {
         ids.isNullOrEmpty() -> "is nowhere"
-        else -> "is in " + ids.joinToString()
+        else -> "is in: " + ids.joinToString()
     }
 
     fun getFlag(list: List<String>?): String = when {
@@ -376,7 +374,7 @@ fun getCurrentPosition(
             val lat = jsonObj.getDouble(LAT)
             val lon = jsonObj.getDouble(LONG)
             val flag = jsonObj.getString(FLAG)
-            Log.debug("is in $flag")
+            Log.debug("is in: $flag")
             latLng = latLng(jsonArr, flags, flag, lat, lon)
         }
         jsonArr != null -> lastLocation?.let {
@@ -392,7 +390,7 @@ fun getCurrentPosition(
             val task = FusedLocationProviderClient(context).lastLocation
             try {
                 // Block on the task for a maximum of 500 milliseconds, otherwise time out.
-                Tasks.await(task, TASK_TIMEOUT, TimeUnit.MILLISECONDS)?.let {
+                Tasks.await(task, TIME_MILLIS, TimeUnit.MILLISECONDS)?.let {
                     val lat = it.latitude
                     val lon = it.longitude
                     val flag = getFLag(countryBoundaries, lon, lat)
@@ -443,13 +441,7 @@ fun createMarkers(
 ): Pair<HashSet<CharSequence>, HashMap<LatLng, LazyMarker>> {
     fun parseToUnicode(countries: List<MultiSelectable>, input: CharSequence): CharSequence {
         // Replace the aliases by their unicode
-        var result = input
-        val emoji = countries.find { (it as? MultiSelectModelExtra)?.tag == input } as? MultiSelectModelExtra
-        if (emoji != null) {
-            result = emoji.unicode
-        }
-
-        return result
+        return (countries.find { (it as? MultiSelectModelExtra)?.tag == input } as? MultiSelectModelExtra)?.unicode ?: input
     }
     // fun netflix(flag: CharSequence?): Boolean = when (flag) {
     //     "us" -> true
@@ -540,7 +532,7 @@ internal fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessa
     val city = jsonObj.getString(CITY)
     val flag = jsonObj.getString(FLAG).toUpperCase(Locale.ROOT)
     val ip = jsonObj.getString(IP)
-    val message = context.getString(R.string.vpn_connected_message, city, flag, ip)
+    val message = context.getString(R.string.vpn_msg_connected, city, flag, ip)
     return UserMessage.Builder().apply {
         with(context.applicationContext)
         setBackgroundColor(R.color.accent_material_indigo_200).setTextColor(android.R.color.white)
@@ -701,17 +693,16 @@ suspend fun createGeoJson(context: Context): JSONObject? {
                     val json = response.readText()
                     jsonObject = JSONObject(json)
                 }
-            } catch (exception: TimeoutCancellationException) {
-                exception.message?.let { Log.info(it) }
-            } catch (cause: Throwable) {
-                cause.message?.let { Log.error(it) }
+            } catch (e: TimeoutCancellationException) {
+                Log.info(e.javaClass.simpleName, e)
+            } catch (e: Throwable) {
+                Log.error(e.javaClass.simpleName, e)
             } finally {
                 Log.debug("$api: ${jsonObject.toString()}")
             }
 
             client.close()
-
-            return jsonObject?.let { createJson2(api, it) } ?: jsonObject
+            return jsonObject?.run { createJson2(api, this) }
         }
     }
 

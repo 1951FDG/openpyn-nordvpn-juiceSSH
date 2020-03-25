@@ -16,11 +16,13 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onDetach() {
         super.onDetach()
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_activity_settings)
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setHasOptionsMenu(false)
 
         findPreference<Preference>("pref_geo_client")?.let(Companion::bindPreferenceSummaryToValue)
@@ -38,6 +40,7 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.fitsSystemWindows = true
         setDivider(null)
+
         super.onViewCreated(view, savedInstanceState)
     }
 

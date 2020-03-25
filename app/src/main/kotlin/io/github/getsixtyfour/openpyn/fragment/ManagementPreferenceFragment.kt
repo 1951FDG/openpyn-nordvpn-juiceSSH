@@ -12,16 +12,17 @@ import io.github.getsixtyfour.openpyn.SettingsActivity.Companion
 /**
  * This fragment shows Management settings preferences only.
  */
-@Suppress("unused")
 class ManagementPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onDetach() {
         super.onDetach()
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_activity_settings)
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setHasOptionsMenu(false)
 
         findPreference<Preference>(getString(R.string.pref_openvpnmgmt_password_key))?.let(Companion::bindPreferenceSummaryToValue)
@@ -36,6 +37,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.fitsSystemWindows = true
         setDivider(null)
+
         super.onViewCreated(view, savedInstanceState)
     }
 

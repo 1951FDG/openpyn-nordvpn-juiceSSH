@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/title_activity_apis">
+    android:title="@string/title_apis">
     <PreferenceCategory android:title="@string/pref_category_geolocation">
         <SwitchPreference
             android:defaultValue="true"

@@ -38,12 +38,13 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
     private final Handler mHandler = new Handler();
 
-    private final GoogleMap mMap;
+    private GoogleMap mGoogleMap;
 
-    private final OnCameraIdleListener mOnCameraIdleListener;
+    private OnCameraIdleListener mOnCameraIdleListener;
 
     private boolean mAnimating;
 
+    @Nullable
     private AnimatorListener mAnimatorListener;
 
     private boolean mIsRotateGestureEnabled;
@@ -60,10 +61,10 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         this(googleMap, new ArrayList<>(), onCameraIdleListener);
     }
 
-    public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull ArrayList<Animation> cameraUpdates,
+    public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull Collection<? extends Animation> animations,
                                 @NonNull OnCameraIdleListener onCameraIdleListener) {
-        mMap = googleMap;
-        mCameraUpdates = cameraUpdates;
+        mGoogleMap = googleMap;
+        mCameraUpdates = new ArrayList<>(animations);
         mOnCameraIdleListener = onCameraIdleListener;
     }
 
@@ -120,6 +121,10 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
     public void onDestroy() {
         mHandler.removeCallbacksAndMessages(null);
+        mCancelableCallback.setAnimatorListener(null);
+        mAnimatorListener = null;
+        mOnCameraIdleListener = null;
+        mGoogleMap = null;
     }
 
     private void executeNext() {
@@ -127,19 +132,19 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
             onAnimationEnd();
         } else {
             Animation animation = mCameraUpdates.remove(0);
-            if (animation.getCallback()) {
+            if (animation.isCallback()) {
                 mCancelableCallback.setAnimation(animation);
                 mCancelableCallback.setAnimatorListener(mAnimatorListener);
                 if (animation.getDelay() == 0L) {
-                    startAnimation(mMap, animation, mCancelableCallback);
+                    startAnimation(mGoogleMap, animation, mCancelableCallback);
                 } else {
-                    mHandler.postDelayed(() -> startAnimation(mMap, animation, mCancelableCallback), animation.getDelay());
+                    mHandler.postDelayed(() -> startAnimation(mGoogleMap, animation, mCancelableCallback), animation.getDelay());
                 }
             } else {
                 if (animation.getDelay() == 0L) {
-                    startAnimation(mMap, animation, null);
+                    startAnimation(mGoogleMap, animation, null);
                 } else {
-                    mHandler.postDelayed(() -> startAnimation(mMap, animation, null), animation.getDelay());
+                    mHandler.postDelayed(() -> startAnimation(mGoogleMap, animation, null), animation.getDelay());
                 }
             }
         }
@@ -150,8 +155,8 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         if (mAnimatorListener != null) {
             mAnimatorListener.onAnimationEnd();
         }
-        mMap.setOnCameraIdleListener(mOnCameraIdleListener);
-        UiSettings settings = mMap.getUiSettings();
+        mGoogleMap.setOnCameraIdleListener(mOnCameraIdleListener);
+        UiSettings settings = mGoogleMap.getUiSettings();
         settings.setRotateGesturesEnabled(mIsRotateGestureEnabled);
         settings.setScrollGesturesEnabled(mIsScrollGestureEnabled);
         settings.setTiltGesturesEnabled(mIsTiltGestureEnabled);
@@ -164,18 +169,18 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         if (mAnimatorListener != null) {
             mAnimatorListener.onAnimationStart();
         }
-        UiSettings settings = mMap.getUiSettings();
+        UiSettings settings = mGoogleMap.getUiSettings();
         settings.setRotateGesturesEnabled(false);
         settings.setScrollGesturesEnabled(false);
         settings.setTiltGesturesEnabled(false);
         settings.setZoomControlsEnabled(false);
         settings.setZoomGesturesEnabled(false);
-        mMap.setOnCameraIdleListener(this);
+        mGoogleMap.setOnCameraIdleListener(this);
         mAnimating = true;
     }
 
     private void setUiSettings() {
-        UiSettings settings = mMap.getUiSettings();
+        UiSettings settings = mGoogleMap.getUiSettings();
         mIsRotateGestureEnabled = settings.isRotateGesturesEnabled();
         mIsScrollGestureEnabled = settings.isScrollGesturesEnabled();
         mIsTiltGestureEnabled = settings.isTiltGesturesEnabled();
@@ -232,7 +237,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
             mCameraUpdate = cameraUpdate;
         }
 
-        public boolean getCallback() {
+        public boolean isCallback() {
             return mCallback;
         }
 

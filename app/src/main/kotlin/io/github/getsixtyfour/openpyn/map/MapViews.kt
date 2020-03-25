@@ -26,14 +26,13 @@ class MapViews : ActionViews<MapViewsAction>() {
     private val map by lazy { rootView.map }
     private val minibarView by lazy { rootView.minibar }
 
-    // todo inner classes
+    // TODO: inner classes
     override fun onCreated() {
-        // todo decouple
+        // TODO: decouple
         (screen.hostActivity as? MainActivity)?.mSnackProgressBarManager?.setViewsToMove(arrayOf(fab0, fab1))
-        // todo check
         fab0.setOnClickListener { viewsAction.toggleCommand(fab0) }
 
-        fab1.setOnClickListener { viewsAction.updateMasterMarker() }
+        fab1.setOnClickListener { viewsAction.updateMasterMarkerWithDelay() }
 
         fab2.setOnClickListener { viewsAction.showCountryFilterDialog() }
 
@@ -41,6 +40,8 @@ class MapViews : ActionViews<MapViewsAction>() {
     }
 
     override fun onDestroy() {
+        super.onDestroy()
+
         fab0.setOnClickListener(null)
 
         fab1.setOnClickListener(null)
@@ -94,12 +95,10 @@ class MapViews : ActionViews<MapViewsAction>() {
     }
 
     fun showMap() {
-        val watermark = map.findViewWithTag<ImageView>("GoogleWatermark")
-
-        if (watermark != null) {
-            watermark.visibility = View.INVISIBLE
+        map.findViewWithTag<ImageView>("GoogleWatermark")?.let {
+            it.visibility = View.INVISIBLE
             /*
-            val params = watermark.layoutParams as RelativeLayout.LayoutParams
+            val params = it.layoutParams as RelativeLayout.LayoutParams
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
             params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)

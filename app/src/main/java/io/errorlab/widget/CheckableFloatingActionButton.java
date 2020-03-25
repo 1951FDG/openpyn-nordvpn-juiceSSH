@@ -38,14 +38,14 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
         }
         CheckedSavedState ss = (CheckedSavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
-        setChecked(ss.checked);
+        setChecked(ss.mChecked);
     }
 
     @NonNull
     @Override
     protected Parcelable onSaveInstanceState() {
         CheckedSavedState result = new CheckedSavedState(super.onSaveInstanceState());
-        result.checked = mChecked;
+        result.mChecked = mChecked;
         return result;
     }
 

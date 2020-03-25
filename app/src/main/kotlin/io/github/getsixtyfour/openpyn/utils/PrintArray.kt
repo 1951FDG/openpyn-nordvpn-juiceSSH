@@ -3,7 +3,7 @@ package io.github.getsixtyfour.openpyn.utils
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.Size
-import androidx.appcompat.app.AlertDialog.Builder
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 // import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
@@ -78,7 +78,7 @@ object PrintArray {
             }
         }
 
-        Builder(context).apply {
+        AlertDialog.Builder(context).apply {
             setTitle(title)
             setMultiChoiceItems(items, checkedItems) { dialog, which, isChecked ->
                 checkedItems[which] = isChecked
@@ -113,7 +113,7 @@ object PrintArray {
             }
         }
 
-        Builder(context).apply {
+        AlertDialog.Builder(context).apply {
             setTitle(title)
             setMultiChoiceItems(items.toTypedArray(), checkedItems.toBooleanArray()) { dialog, which, isChecked ->
                 checkedItems[which] = isChecked
@@ -174,10 +174,10 @@ object PrintArray {
                     listener.onCancel()
                 }
             })
-            // todo change to nav
+            // TODO: change to nav, setup onAttachFragment in activity or setup onAttach in class itself, or ?
             // val action = MapFragmentDirections.actionMapFragmentToMultiSelectDialogFragment()
             // Navigation.findNavController(context.findViewById(R.id.map)).navigate(action)
-            show(context.supportFragmentManager, "multiSelectDialog")
+            show(context.supportFragmentManager, null)
         }
     }
 

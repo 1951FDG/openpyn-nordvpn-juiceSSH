@@ -21,27 +21,34 @@ import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 @SvcFragment
 @RequireViews(MapViews::class)
 @RequireControlTower(MapControlTower::class)
-class MapFragment : AbstractMapFragment(), AnkoLogger, OnSessionStartedListener, OnSessionFinishedListener, OnCommandExecuteListener {
-
-    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        return controlTower.positionAndFlagForSelectedMarker()
-    }
-
-    override fun onConnect() {
-        TODO("not implemented")
-    }
-
-    override fun onDisconnect() {
-        TODO("not implemented")
-    }
+class MapFragment : AbstractMapFragment(), AnkoLogger, OnCommandExecuteListener, OnSessionStartedListener, OnSessionFinishedListener {
 
     val toolBar: ProgressToolbar? by lazy {
         requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
     }
 
-    override fun onSessionStarted(sessionId: Int, sessionKey: String) {
-        info("onSessionStarted")
-        controlTower.onSessionStarted()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        views.findViewById<MapView>(R.id.map)?.let {
+            it.onCreate(savedInstanceState)
+            it.getMapAsync(controlTower)
+        }
+    }
+
+    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
+        info("positionAndFlagForSelectedMarker")
+        return controlTower.positionAndFlagForSelectedMarker()
+    }
+
+    override fun onConnect() {
+        info("onConnect")
+        controlTower.onConnect()
+    }
+
+    override fun onDisconnect() {
+        info("onDisconnect")
+        controlTower.onDisconnect()
     }
 
     override fun onSessionCancelled() {
@@ -49,16 +56,13 @@ class MapFragment : AbstractMapFragment(), AnkoLogger, OnSessionStartedListener,
         controlTower.onSessionCancelled()
     }
 
+    override fun onSessionStarted(sessionId: Int, sessionKey: String) {
+        info("onSessionStarted")
+        controlTower.onSessionStarted()
+    }
+
     override fun onSessionFinished() {
         info("onSessionFinished")
         controlTower.onSessionFinished()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val mapView = views.findViewById<MapView>(R.id.map)
-        mapView?.onCreate(savedInstanceState)
-        mapView?.getMapAsync(controlTower)
     }
 }

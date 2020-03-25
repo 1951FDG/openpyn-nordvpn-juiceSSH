@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="settings"
-    android:title="@string/title_activity_settings"
+    android:title="@string/title_settings"
     app:initialExpandedChildrenCount="9">
         <EditTextPreference
             android:key="pref_server"
@@ -46,13 +46,13 @@
             android:key="pref_log_level"
             android:title="@string/pref_log_level" />
         <Preference
-            android:title="@string/title_activity_openvpnmgmt"
+            android:title="@string/title_openvpnmgmt"
             app:fragment="io.github.getsixtyfour.openpyn.fragment.ManagementPreferenceFragment" />
         <Preference
-            android:title="@string/title_activity_apis"
+            android:title="@string/title_apis"
             app:fragment="io.github.getsixtyfour.openpyn.fragment.ApiPreferenceFragment" />
         <Preference
-            android:title="@string/title_activity_about"
+            android:title="@string/title_about"
             app:fragment="io.github.getsixtyfour.openpyn.fragment.AboutPreferenceFragment" />
         <SwitchPreference
             android:defaultValue="false"

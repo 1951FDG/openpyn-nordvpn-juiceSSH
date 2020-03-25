@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="8dp"
-    tools:context="io.github.getsixtyfour.openpyn.MainActivity">
+    android:paddingTop="8dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -30,7 +28,6 @@
         android:name="io.github.getsixtyfour.openpyn.fragment.ConnectPreferenceFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        tools:layout="@android:layout/preference_list_fragment" />
+        android:minHeight="48dp" />
 
 </LinearLayout>

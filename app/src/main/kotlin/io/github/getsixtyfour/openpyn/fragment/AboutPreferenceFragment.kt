@@ -41,11 +41,13 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onDetach() {
         super.onDetach()
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_activity_settings)
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setHasOptionsMenu(false)
     }
 
@@ -54,7 +56,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         val root = preferenceManager.createPreferenceScreen(activity)
         val config = AboutConfig.getInstance()
 
-        root.setTitle(R.string.title_activity_about)
+        root.setTitle(R.string.title_about)
 
         addAboutPreferences(activity, root, config)
 
@@ -69,12 +71,11 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.fitsSystemWindows = true
         setDivider(null)
+
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun getCallbackFragment(): PreferenceFragmentCompat {
-        return this
-    }
+    override fun getCallbackFragment(): PreferenceFragmentCompat = this
 
     private fun addAboutPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
         val category = PreferenceCategory(activity)
@@ -206,7 +207,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             null,
             R.drawable.ic_copyleft_green_24dp,
             OnPreferenceClickListener {
-                OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_activity_licenses))
+                OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_licenses))
                 val intent = Intent(activity, OssLicensesMenuActivity::class.java)
                 ContextCompat.startActivity(activity, intent, null)
                 true
@@ -225,7 +226,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         iconResId?.let { preference.icon = ContextCompat.getDrawable(context, it) }
         titleResId?.let { preference.title = context.getString(it) }
         summary?.let { preference.summary = it }
-        listener?.let { preference.onPreferenceClickListener = listener }
+        listener?.let { preference.onPreferenceClickListener = it }
         return preference
     }
 
@@ -242,7 +243,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         iconResId?.let { preference.icon = ContextCompat.getDrawable(context, it) }
         titleResId?.let { preference.title = context.getString(it) }
         summary?.let { preference.summary = it }
-        listener?.let { preference.onPreferenceChangeListener = listener }
+        listener?.let { preference.onPreferenceChangeListener = it }
         return preference
     }
 }

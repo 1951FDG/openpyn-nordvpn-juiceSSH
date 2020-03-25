@@ -25,8 +25,6 @@ class AppBlockCanaryContext : BlockCanaryContext() {
 
     override fun onBlock(context: Context?, blockInfo: BlockInfo?) {
         super.onBlock(context, blockInfo)
-        val e = blockInfo?.buildException()
-        e?.printStackTrace()
-        Log.e("block", blockInfo.toString())
+        blockInfo?.buildException()?.let { Log.e(this.javaClass.simpleName, "", it) }
     }
 }

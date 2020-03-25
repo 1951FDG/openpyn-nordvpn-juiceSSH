@@ -37,11 +37,7 @@ abstract class BaseController(
     }
 
     override fun onOutputLine(line: String) {
-        val matchResult = regex.find(line)
-
-        if (matchResult != null) {
-            mLiveData.value = convertDataToInt(matchResult.value)
-        }
+        regex.find(line)?.let { mLiveData.value = convertDataToInt(it.value) }
     }
 
     @CallSuper
@@ -61,7 +57,7 @@ abstract class BaseController(
                 return true
             }
         } catch (e: ServiceNotConnectedException) {
-            Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
+            Toast.makeText(mCtx, R.string.error_juicessh_service, Toast.LENGTH_LONG).show()
         }
         return false
     }
@@ -82,10 +78,12 @@ abstract class BaseController(
                 return true
             }
         } catch (e: ServiceNotConnectedException) {
-            Toast.makeText(mCtx, R.string.error_could_not_connect_to_service, Toast.LENGTH_LONG).show()
+            Toast.makeText(mCtx, R.string.error_juicessh_service, Toast.LENGTH_LONG).show()
         }
         return false
     }
 
     abstract fun convertDataToInt(data: String): Int
+
+    abstract fun onDestroy()
 }

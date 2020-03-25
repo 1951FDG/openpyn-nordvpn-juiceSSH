@@ -28,12 +28,11 @@ import javax.crypto.spec.SecretKeySpec;
 @SuppressWarnings("Singleton")
 public final class SecurityManager {
 
-    @SuppressWarnings("HardcodedFileSeparator")
-    private static final String AES_GCM_NO_PADDING = "AES/GCM/NoPadding";
+    private static final String TAG = "SecurityManager";
+
+    private static final String TRANSFORMATION = "AES/GCM/NoPadding";
 
     private static final int IV_LENGTH = 16;
-
-    private static final String TAG = "SecurityManager";
 
     private static volatile SecurityManager sInstance = null;
 
@@ -85,7 +84,7 @@ public final class SecurityManager {
     }
 
     @NonNull
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches" })
     public String decryptString(@NonNull String stringToDecrypt) {
         if (stringToDecrypt.isEmpty()) {
             return stringToDecrypt;
@@ -93,19 +92,24 @@ public final class SecurityManager {
         String output = stringToDecrypt;
         try {
             byte[] encryptedBytes = Base64.decode(stringToDecrypt, Base64.DEFAULT);
-            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             AlgorithmParameterSpec ivSpec = new IvParameterSpec(encryptedBytes, 0, IV_LENGTH);
             cipher.init(Cipher.DECRYPT_MODE, mSecretKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(encryptedBytes, IV_LENGTH, encryptedBytes.length - IV_LENGTH);
             output = new String(cipherBytes, StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalArgumentException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            Log.wtf(TAG, e);
+        } catch (NoSuchAlgorithmException ignored) {
+        } catch (NoSuchPaddingException ignored) {
+        } catch (InvalidKeyException ignored) {
+        } catch (IllegalArgumentException ignored) {
+        } catch (IllegalBlockSizeException ignored) {
+        } catch (BadPaddingException ignored) {
+        } catch (InvalidAlgorithmParameterException ignored) {
         }
         return output;
     }
 
     @NonNull
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches" })
     public String encryptString(@NonNull String stringToEncrypt) {
         if (stringToEncrypt.isEmpty()) {
             return stringToEncrypt;
@@ -113,15 +117,21 @@ public final class SecurityManager {
         String output = stringToEncrypt;
         try {
             byte[] clearText = stringToEncrypt.getBytes(StandardCharsets.UTF_8);
-            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             byte[] iv = new byte[IV_LENGTH];
-            new SecureRandom().nextBytes(iv);
+            SecureRandom sr = new SecureRandom();
+            sr.nextBytes(iv);
             AlgorithmParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.ENCRYPT_MODE, mSecretKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(clearText);
             output = new String(Base64.encode(concat(iv, cipherBytes), Base64.NO_WRAP), StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalArgumentException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            Log.wtf(TAG, e);
+        } catch (NoSuchAlgorithmException ignored) {
+        } catch (NoSuchPaddingException ignored) {
+        } catch (InvalidKeyException ignored) {
+        } catch (IllegalArgumentException ignored) {
+        } catch (IllegalBlockSizeException ignored) {
+        } catch (BadPaddingException ignored) {
+        } catch (InvalidAlgorithmParameterException ignored) {
         }
         return output;
     }

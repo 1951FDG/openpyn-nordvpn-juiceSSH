@@ -40,6 +40,8 @@ import org.sqlite.database.sqlite.SQLiteStatement;*/
 @SuppressWarnings("FieldNotUsedInToString")
 public final class MapBoxOfflineTileProvider extends AbstractTileProvider implements Closeable {
 
+    private static final String TAG = "MBTileProvider";
+
     /**
      * buffer size used for reading and writing
      */
@@ -53,7 +55,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
      */
     private static final int MAX_BUFFER_SIZE = Integer.MAX_VALUE - 8;
 
-    // TABLE tiles (zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB);
+    // TABLE tiles (zoom_level INTEGER, tile_column INTEGER, tile_row INTEGER, tile_data BLOB)
     @NonNls
     private static final String QUERY = "SELECT tile_data FROM tiles WHERE zoom_level = ? AND tile_column = ? AND tile_row = ?";
 
@@ -62,7 +64,6 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
 
     private static final String SQLITE_3_NDK = "sqlite3ndk";
 
-    private static final String TAG = "MBTileProvider";
     // private final SQLiteQueue mQueue;
 
     static {
@@ -86,8 +87,8 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
         this(SQLiteDatabase.openDatabase(pathToFile, null, SQLiteDatabase.OPEN_READONLY));
     }
 
-    public MapBoxOfflineTileProvider(@Nullable CursorFactory factory, @NonNull String pathToFile) {
-        this(create(factory, pathToFile));
+    public MapBoxOfflineTileProvider(@NonNull String pathToFile, @Nullable CursorFactory factory) {
+        this(create(pathToFile, factory));
     }
 
     private MapBoxOfflineTileProvider(@NonNull SQLiteDatabase database) {
@@ -112,7 +113,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
      * @throws android.database.SQLException if the database cannot be opened
      */
     @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral", "MethodCallInLoopCondition", "StringConcatenation" })
-    private static SQLiteDatabase create(@Nullable CursorFactory factory, @NonNull String path) {
+    private static SQLiteDatabase create(@NonNull String path, @Nullable CursorFactory factory) {
         SQLiteDatabase database = SQLiteDatabase
                 .openDatabase(SQLiteDatabaseConfiguration.MEMORY_DB_PATH, factory, SQLiteDatabase.CREATE_IF_NECESSARY);
         database.execSQL("ATTACH DATABASE '" + path + "' AS db");
@@ -164,7 +165,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
             }
             // if last call to source.read() returned -1, we are done
             // otherwise, try to read one more byte; if that failed we're done too
-            if ((n < 0) || (((n = source.read())) < 0)) {
+            if ((n < 0) || ((n = source.read()) < 0)) {
                 break;
             }
             // one more byte was read; need to allocate a larger buffer
@@ -233,7 +234,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
         try (AutoCloseInputStream fis = new AutoCloseInputStream(pfd)) {
             tile = new Tile(TILE_DIM, TILE_DIM, read(fis, BUFFER_SIZE << 4));
         } catch (IOException e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, "", e);
         }*/
         //endregion sqliteX
     }

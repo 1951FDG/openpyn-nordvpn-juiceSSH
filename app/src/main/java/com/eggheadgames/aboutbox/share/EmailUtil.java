@@ -12,14 +12,14 @@ import androidx.core.content.ContextCompat;
 
 import com.eggheadgames.aboutbox.AboutConfig;
 
-@SuppressWarnings({ "UtilityClass", "HardCodedStringLiteral", "StringConcatenation" })
+@SuppressWarnings({ "UtilityClass", "HardCodedStringLiteral", "StringConcatenation", "HardcodedLineSeparator",
+        "MethodWithMultipleReturnPoints" })
 public final class EmailUtil {
 
     private EmailUtil() {
         // Utility class
     }
 
-    @SuppressWarnings("HardcodedLineSeparator")
     public static void contactUs(@NonNull Activity activity) {
         AboutConfig config = AboutConfig.getInstance();
 
@@ -47,7 +47,6 @@ public final class EmailUtil {
         }
     }
 
-    @SuppressWarnings("MethodWithMultipleReturnPoints")
     private static String platformName(AboutConfig.BuildType buildType) {
         switch (buildType) {
             case GOOGLE:

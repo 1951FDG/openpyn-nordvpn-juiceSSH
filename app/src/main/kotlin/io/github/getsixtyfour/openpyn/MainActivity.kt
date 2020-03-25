@@ -1,6 +1,5 @@
 package io.github.getsixtyfour.openpyn
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,7 +20,7 @@ import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.startOpenVPNService
+import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.doStartService
 import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import com.google.android.gms.common.GooglePlayServicesUtil
@@ -31,12 +30,9 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPRConsentState
-import com.michaelflisar.gdprdialog.GDPRDefinitions
-import com.michaelflisar.gdprdialog.GDPRSetup
 import com.michaelflisar.gdprdialog.helper.GDPRPreperationData
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
-import com.sonelli.juicessh.pluginlibrary.listeners.OnClientStartedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
@@ -48,8 +44,7 @@ import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
 import io.github.getsixtyfour.ktextension.startUpdate
 import io.github.getsixtyfour.ktextension.verifyInstallerId
 import io.github.getsixtyfour.ktextension.verifySigningCertificate
-import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog
-import io.github.getsixtyfour.openpyn.map.MapFragment
+import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog.NoticeDialogListener
 import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
 import io.github.getsixtyfour.openpyn.utils.Toaster
 import io.github.getsixtyfour.openvpnmgmt.VPNAuthenticationHandler
@@ -70,38 +65,24 @@ import org.jetbrains.anko.info
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 
-const val DELAY_MILLIS: Long = 10000
+class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR.IGDPRCallback, OnClickListener, NoticeDialogListener,
+    OnLoaderChangedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
+    CoroutineScope by MainScope() {
 
-class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLoaderChangedListener, GDPR.IGDPRCallback,
-    OnClickListener, OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener,
-    OnSessionStartedListener, PreferenceDialog.NoticeDialogListener, CoroutineScope by MainScope() {
-
-    // private var dialog: MorphDialog? = null
-    // todo check value
-    private val mConnectionListAdapter by lazy {
-        ConnectionListAdapter(if (supportActionBar == null) this else supportActionBar!!.themedContext)
-    }
+    private var mConnectionListAdapter: ConnectionListAdapter? = null
     private var mConnectionManager: ConnectionManager? = null
-    private val mSetup by lazy {
-        with(
-            GDPRSetup(
-                GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS
-            )
-        ) {
-            withCustomDialogTheme(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert_Custom)
-            withForceSelection(true)
-            withNoToolbarTheme(false)
-            withShowPaidOrFreeInfoText(false)
-        }
-    }
-    val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
     private var mAppSettingsDialogShown: Boolean = false
+    // TODO: remove container reference
+    val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
+    private val mSetup by lazy { getGDPR(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert_Custom) }
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
     private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
+    // private var dialog: MorphDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
+
         super.onCreate(savedInstanceState)
 
         setProgressToolBar(this, toolbar)
@@ -109,13 +90,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
         setSnackBarManager(this, mSnackProgressBarManager)
 
         showGDPRIfNecessary(this, mSetup)
-        // todo remove after beta release test
+        // TODO: remove after beta release test
         error(apkSignatures.toString())
 
         // val api = GoogleApiAvailability.getInstance()
         // when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
-        //     ConnectionResult.SUCCESS -> onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, RESULT_OK, null)
-        //     //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, REQUEST_GOOGLE_PLAY_SERVICES)
+        //     ConnectionResult.SUCCESS -> onActivityResult(GOOGLE_REQUEST_CODE, RESULT_OK, null)
+        //     //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, GOOGLE_REQUEST_CODE)
         //     else -> error(api.getErrorString(errorCode))
         // }
 
@@ -124,35 +105,64 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
         // }
 
         // run {
-        //     PreferenceManager.getDefaultSharedPreferences(this).edit().apply {
+        //     /*PreferenceManager.getDefaultSharedPreferences(this).edit().apply {
         //         // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
         //         putString(getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
         //         // Default management port used by Openpyn
         //         putString(getString(R.string.pref_openvpnmgmt_port_key), "7015")
         //         apply()
+        //     }*/
+        //     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        //     val openvpnmgmt = preferences.getBoolean(this.getString(R.string.pref_openvpnmgmt_key), false)
+        //     if (openvpnmgmt) {
+        //         val handler = VPNAuthenticationHandler(this)
+        //         val host = VPNAuthenticationHandler.getHost(this)
+        //         val port = VPNAuthenticationHandler.getPort(this)
+        //         val bundle = Bundle().apply {
+        //             putBoolean(IntentConstants.EXTRA_POST_NOTIFICATION, true)
+        //             putString(IntentConstants.EXTRA_HOST, host)
+        //             putInt(IntentConstants.EXTRA_PORT, port)
+        //         }
+        //         // TODO: do this elsewhere e.g. in Service, add missing intent extras and create handler in Service
+        //         val connection = ManagementConnection.getInstance()
+        //         connection.setUsernamePasswordHandler(handler)
+        //
+        //         doStartService(this, bundle)
         //     }
-        //
-        //     val connection = ManagementConnection.getInstance()
-        //     val handler = VPNAuthenticationHandler(this)
-        //     val host = VPNAuthenticationHandler.getHost(this)
-        //     val port = VPNAuthenticationHandler.getPort(this)
-        //     val bundle = Bundle().apply {
-        //         putBoolean(IntentConstants.EXTRA_POST_NOTIFICATION, true)
-        //         putString(IntentConstants.EXTRA_HOST, host)
-        //         putInt(IntentConstants.EXTRA_PORT, port)
-        //     }
-        //
-        //     connection.setUsernamePasswordHandler(handler)
-        //
-        //     startOpenVPNService(this, bundle)
         // }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == JUICESSH_REQUEST_CODE) {
+            mConnectionManager?.onActivityResult(requestCode, resultCode, data)
+        }
+
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            mAppSettingsDialogShown = false
+        }
+
+        if (requestCode == UPDATE_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                // If the update is cancelled or fails, you can request to start the update again.
+                error("Update flow failed! Result code: $resultCode")
+            }
+        }
+
+        // if (requestCode == GOOGLE_REQUEST_CODE) {
+        //     if (resultCode == RESULT_OK) {
+        //     }
+        // }
+
+        // MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)
     }
 
     override fun onResume() {
         super.onResume()
 
         if (mConnectionManager != null) {
-            if (mGooglePlayStorePackage && mGooglePlayStoreCertificate) handleUpdate(mAppUpdateManager, MY_REQUEST_CODE)
+            if (mGooglePlayStorePackage && mGooglePlayStoreCertificate) handleUpdate(mAppUpdateManager, UPDATE_REQUEST_CODE)
             return
         }
 
@@ -170,44 +180,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        mConnectionManager?.onDestroy()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == JUICESSH_REQUEST_CODE) {
-            mConnectionManager?.gotActivityResult(requestCode, resultCode, data)
-        }
-
-        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-            mAppSettingsDialogShown = false
-        }
-
-        if (requestCode == MY_REQUEST_CODE) {
-            if (resultCode != RESULT_OK) {
-                // If the update is cancelled or fails, you can request to start the update again.
-                error("Update flow failed! Result code: $resultCode")
-            }
-        }
-
-        // if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES) {
-        //     if (resultCode == RESULT_OK) {
-        //         // TODO
-        //     }
-        // }
-
-        // MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -222,18 +194,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
         else if (granted.isNotEmpty()) onPermissionsGranted(requestCode, *granted)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> {
+            R.id.menu_settings -> {
                 onSettingsItemSelected(this, item)
                 true
             }
-            R.id.action_github -> {
+            R.id.menu_github -> {
                 onGitHubItemSelected(this, item)
                 true
             }
             /*
-            R.id.action_generate -> {
+            R.id.menu_generate -> {
                 generateXML()
                 true
             }
@@ -278,16 +257,16 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
                     val latitude = "%.7f".format(Locale.ENGLISH, location.latitude)
                     val longitude = "%.7f".format(Locale.ENGLISH, location.longitude)
                     val string = getString(R.string.at_preposition)
-                    getString(R.string.vpn_location_name, name, string, latitude, longitude)
+                    getString(R.string.vpn_name_location, name, string, latitude, longitude)
                 } else {
                     name
                 }
             }
             server.isNotEmpty() -> {
-                getString(R.string.vpn_server_name, server)
+                getString(R.string.vpn_name_server, server)
             }
             country.isNotEmpty() -> {
-                getString(R.string.vpn_country_name, getEntryForValue(country, R.array.pref_country_entries, R.array.pref_country_values))
+                getString(R.string.vpn_name_country, getEntryForValue(country, R.array.pref_country_entries, R.array.pref_country_values))
             }
             else -> {
                 getString(R.string.empty)
@@ -299,7 +278,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
             val preferences = PreferenceManager.getDefaultSharedPreferences(this)
             val server = preferences.getString("pref_server", "")!!
             val country = preferences.getString("pref_country", "")!!
-            return getString(R.string.vpn_connect_message, element(location, flag, server, country))
+            return getString(R.string.vpn_msg_connect, element(location, flag, server, country))
         }
 
         /*fun showMessageDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
@@ -321,7 +300,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
         if (id != R.id.fab0 || v !is FloatingActionButton) return
 
         mConnectionManager?.let {
-            if (mConnectionListAdapter.count > 0) {
+            if (mConnectionListAdapter?.count ?: 0 > 0) {
                 if (!it.isConnected()) {
                     // dialog = showMessageDialog(v)
                     val action = MapFragmentDirections.actionMapFragmentToPreferenceDialogFragment(message())
@@ -332,8 +311,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
             } else {
                 // showWarningDialog(v)
                 AlertDialog.Builder(this).apply {
-                    setTitle(R.string.title_dialog_error)
-                    setMessage(R.string.error_must_have_at_least_one_server)
+                    setTitle(R.string.title_error)
+                    setMessage(R.string.error_juicessh_server)
                     setPositiveButton(android.R.string.ok, null)
                     show()
                 }
@@ -341,50 +320,31 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
         }
     }
 
-    override fun onClientStarted() {
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        toggleConnection()
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+    }
 
     override fun onLoaderChanged(newCursor: Cursor?) {
         mConnectionListAdapter?.swapCursor(newCursor)
     }
 
-    override fun onClientStopped() {
+    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
+        return (getCurrentNavigationFragment(this) as? OnCommandExecuteListener)?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
     }
 
     override fun onConnect() {
         toolbar.hideProgress(true)
-        val fragment = getCurrentNavigationFragment(this) as? MapFragment
-        fragment?.controlTower?.updateMasterMarkerWithDelay(true, DELAY_MILLIS)
 
-        run {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-            val openvpnmgmt = preferences.getBoolean(this.getString(R.string.pref_openvpnmgmt_key), false)
-            if (openvpnmgmt) {
-                val handler = VPNAuthenticationHandler(this)
-                val host = VPNAuthenticationHandler.getHost(this)
-                val port = VPNAuthenticationHandler.getPort(this)
-                val bundle = Bundle().apply {
-                    putBoolean(IntentConstants.EXTRA_POST_NOTIFICATION, true)
-                    putString(IntentConstants.EXTRA_HOST, host)
-                    putInt(IntentConstants.EXTRA_PORT, port)
-                }
-                val connection = ManagementConnection.getInstance()
-                connection.setUsernamePasswordHandler(handler)
-
-                startOpenVPNService(this, bundle)
-            }
-        }
+        (getCurrentNavigationFragment(this) as? OnCommandExecuteListener)?.onConnect()
     }
 
-    @Suppress("MagicNumber")
     override fun onDisconnect() {
         toolbar.hideProgress(true)
-        val fragment = getCurrentNavigationFragment(this) as? MapFragment
-        fragment?.controlTower?.updateMasterMarkerWithDelay(true, DELAY_MILLIS)
-    }
 
-    override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        val fragment = getCurrentNavigationFragment(this) as? OnCommandExecuteListener
-        return fragment?.positionAndFlagForSelectedMarker() ?: Pair(null, "")
+        (getCurrentNavigationFragment(this) as? OnCommandExecuteListener)?.onDisconnect()
     }
 
     override fun onError(error: Int, reason: String) {
@@ -411,87 +371,68 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLo
     override fun onOutputLine(line: String) {
     }
 
-    override fun onSessionFinished() {
-        toolbar.hideProgress(true)
-
-        info("onSessionFinished")
-        val fragment = getCurrentNavigationFragment(this) as? OnSessionFinishedListener
-
-        fragment?.onSessionFinished()
-
-        spinner.isEnabled = true
+    override fun onSessionCancelled() {
+        (getCurrentNavigationFragment(this) as? OnSessionStartedListener)?.onSessionCancelled()
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
         toolbar.showProgress(true)
 
-        info("onSessionStarted")
-        val fragment = getCurrentNavigationFragment(this) as? OnSessionStartedListener
-
-        fragment?.onSessionStarted(sessionId, sessionKey)
+        (getCurrentNavigationFragment(this) as? OnSessionStartedListener)?.onSessionStarted(sessionId, sessionKey)
 
         spinner.isEnabled = false
     }
 
-    override fun onSessionCancelled() {
-        info("onSessionCancelled")
-        val fragment = getCurrentNavigationFragment(this) as? OnSessionStartedListener
+    override fun onSessionFinished() {
+        toolbar.hideProgress(true)
 
-        fragment?.onSessionCancelled()
+        (getCurrentNavigationFragment(this) as? OnSessionFinishedListener)?.onSessionFinished()
+
+        spinner.isEnabled = true
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        toggleConnection()
+    private fun onPermissionsGranted(requestCode: Int, vararg perms: String) {
+        if (requestCode != PERMISSION_REQUEST_CODE) return
+
+        mConnectionListAdapter = ConnectionListAdapter(this)
+        spinner.adapter = mConnectionListAdapter
+        LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
+
+        mConnectionManager = ConnectionManager(
+            ctx = this,
+            lifecycleOwner = this,
+            mSessionStartedListener = this,
+            mSessionFinishedListener = this,
+            sessionExecuteListener = this,
+            commandExecuteListener = this,
+            onOutputLineListener = Toaster(this)
+        )
+        mConnectionManager?.startClient()
+
+        if (mGooglePlayStorePackage && mGooglePlayStoreCertificate) startUpdate(mAppUpdateManager, UPDATE_REQUEST_CODE)
     }
 
-    override fun onDialogNegativeClick(dialog: DialogFragment) {
+    private fun onPermissionsDenied(requestCode: Int, vararg perms: String) {
+        if (perms.any { !ActivityCompat.shouldShowRequestPermissionRationale(this, it) }) {
+            mAppSettingsDialogShown = true
+            AppSettingsDialog.Builder(this).build().show()
+        }
     }
 
     private fun hasPermissions(context: Context, vararg perms: String): Boolean {
         return perms.none { ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED }
     }
 
-    private fun onPermissionsGranted(requestCode: Int, vararg perms: String) {
-        if (requestCode != PERMISSION_REQUEST_CODE) return
-
-        spinner.adapter = mConnectionListAdapter
-        LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
-
-        mConnectionManager = ConnectionManager(
-            ctx = this,
-            onClientStartedListener = this,
-            mActivitySessionStartedListener = this,
-            mActivitySessionFinishedListener = this,
-            mActivitySessionExecuteListener = this,
-            mActivityCommandExecuteListener = this,
-            mActivityOnOutputLineListener = Toaster(this)
-        )
-
-        mConnectionManager?.startClient()
-
-        if (mGooglePlayStorePackage && mGooglePlayStoreCertificate) startUpdate(mAppUpdateManager, MY_REQUEST_CODE)
-    }
-
-    private fun onPermissionsDenied(requestCode: Int, vararg perms: String) {
-        if (somePermissionPermanentlyDenied(this, *perms)) {
-            mAppSettingsDialogShown = true
-            AppSettingsDialog.Builder(this).build().show()
+    private fun toggleConnection() {
+        mConnectionListAdapter?.getConnectionId(spinner.selectedItemPosition)?.let {
+            mConnectionManager?.toggleConnection(this, it, JUICESSH_REQUEST_CODE)
         }
     }
 
-    private fun somePermissionPermanentlyDenied(activity: Activity, vararg perms: String): Boolean {
-        return perms.any { !ActivityCompat.shouldShowRequestPermissionRationale(activity, it) }
-    }
-
-    private fun toggleConnection() {
-        val id = mConnectionListAdapter.getConnectionId(spinner.selectedItemPosition)
-        mConnectionManager?.toggleConnection(this, id!!, JUICESSH_REQUEST_CODE)
-    }
-
     companion object {
-        const val MY_REQUEST_CODE: Int = 1
-        const val PERMISSION_REQUEST_CODE: Int = 23
-        const val JUICESSH_REQUEST_CODE: Int = 345
-        // private const val REQUEST_GOOGLE_PLAY_SERVICES = 1972
+        const val UPDATE_REQUEST_CODE: Int = 1
+        const val PERMISSION_REQUEST_CODE: Int = 2
+        const val JUICESSH_REQUEST_CODE: Int = 3
+        // private const val GOOGLE_REQUEST_CODE = 4
     }
 }

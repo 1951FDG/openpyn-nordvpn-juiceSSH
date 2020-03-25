@@ -12,6 +12,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import io.github.getsixtyfour.openpyn.fragment.AboutPreferenceFragment
 import io.github.getsixtyfour.openpyn.fragment.ApiPreferenceFragment
+import io.github.getsixtyfour.openpyn.fragment.ManagementPreferenceFragment
 import io.github.getsixtyfour.openpyn.fragment.SettingsPreferenceFragment
 import kotlinx.android.synthetic.main.mm2d_pac_content.toolbar
 import net.mm2d.preference.Header
@@ -51,9 +52,10 @@ class SettingsActivity : PreferenceActivityCompat() {
      * Make sure to deny any unknown fragments here.
      */
     override fun isValidFragment(fragmentName: String?): Boolean = when (fragmentName) {
-        SettingsPreferenceFragment::class.java.name -> true
-        ApiPreferenceFragment::class.java.name -> true
         AboutPreferenceFragment::class.java.name -> true
+        ApiPreferenceFragment::class.java.name -> true
+        ManagementPreferenceFragment::class.java.name -> true
+        SettingsPreferenceFragment::class.java.name -> true
         else -> false
     }
 
@@ -76,17 +78,15 @@ class SettingsActivity : PreferenceActivityCompat() {
      */
     override fun onIsMultiPane(): Boolean = isXLargeTablet(this)
 
-    /**
-     * {@inheritDoc}
-     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == android.R.id.home) {
-            // Override home navigation button to call onBackPressed (b/35152749).
-            onBackPressed()
-            return true
+        return when (item.itemId) {
+            android.R.id.home -> {
+                // Override home navigation button to call onBackPressed (b/35152749).
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     /*
@@ -133,7 +133,6 @@ class SettingsActivity : PreferenceActivityCompat() {
          * A preference value change listener that updates the preference's summary
          * to reflect its new value.
          */
-        @Suppress("WeakerAccess")
         val sBindPreferenceSummaryToValueListener: Preference.OnPreferenceChangeListener
             get() = Preference.OnPreferenceChangeListener { preference, value ->
                 val stringValue = value.toString()
@@ -187,7 +186,6 @@ class SettingsActivity : PreferenceActivityCompat() {
         }
 
         fun startAboutFragment(activity: Activity) {
-            //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
             val intent = Intent(activity, SettingsActivity::class.java).apply {
                 putExtra(EXTRA_SHOW_FRAGMENT, AboutPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
@@ -196,7 +194,6 @@ class SettingsActivity : PreferenceActivityCompat() {
         }
 
         fun startSettingsFragment(activity: Activity) {
-            //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity)
             val intent = Intent(activity, SettingsActivity::class.java).apply {
                 putExtra(EXTRA_SHOW_FRAGMENT, SettingsPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
@@ -204,7 +201,6 @@ class SettingsActivity : PreferenceActivityCompat() {
             ContextCompat.startActivity(activity, intent, null)
         }
 
-        @Suppress("WeakerAccess")
         fun validate(preference: Preference, str: String): Boolean {
             val regex = Regex("""^[a-z]{2}\d{1,4}$""")
             if (regex.matches(str)) {
