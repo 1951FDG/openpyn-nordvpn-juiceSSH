@@ -23,7 +23,7 @@ public final class EmailUtil {
     public static void contactUs(@NonNull Activity activity) {
         AboutConfig config = AboutConfig.getInstance();
 
-        Uri mailto = Uri.fromParts("mailto", config.emailAddress, null);
+        Uri mailto = Uri.parse("mailto:");
 
         String emailBody = config.emailBody;
         if (TextUtils.isEmpty(emailBody)) {
@@ -37,6 +37,7 @@ public final class EmailUtil {
 
         try {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, mailto);
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {config.emailAddress});
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, config.emailSubject);
             emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
             ContextCompat.startActivity(activity, Intent.createChooser(emailIntent, "Send email..."), null);
