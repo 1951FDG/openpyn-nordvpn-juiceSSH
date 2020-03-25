@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="state_connecting">Connecting</string>
-    <string name="state_wait">Waiting for server reply</string>
-    <string name="state_auth">Authenticating</string>
-    <string name="state_get_config">Getting client configuration</string>
-    <string name="state_assign_ip">Assigning IP addresses</string>
-    <string name="state_add_routes">Adding routes</string>
-    <string name="state_connected">Connected</string>
-    <string name="state_disconnected">Disconnected</string>
-    <string name="state_reconnecting">Reconnecting</string>
-    <string name="state_exiting">Exiting</string>
-    <string name="state_resolve">Resolving host names</string>
-    <string name="state_tcp_connect">Connecting (TCP)</string>
-    <string name="state_auth_failed">Authentication failed</string>
-    <string name="state_auth_pending">Authentication pending</string>
-    <string name="unknown_state">Unknown state</string>
-
-    <string name="channel_name_background">Connection statistics</string>
-    <string name="channel_description_background">Ongoing statistics of the established OpenVPN connection</string>
-    <string name="channel_name_status">Connection status change</string>
-    <string name="channel_description_status">Status changes of the OpenVPN connection (Connecting, authenticating,…)</string>
-
     <string name="bits_per_second" translatable="false">bit/s</string>
     <string name="kbits_per_second" translatable="false">kbit/s</string>
     <string name="mbits_per_second" translatable="false">Mbit/s</string>
@@ -31,16 +10,37 @@
     <string name="volume_mbyte" translatable="false">MB</string>
     <string name="volume_gbyte" translatable="false">GB</string>
 
-    <string name="byteSizeSuffix" translatable="false"><xliff:g id="number" example="123">%1$s</xliff:g> <xliff:g id="unit" example="MB">%2$s</xliff:g></string>
+    <string name="byteSizeSuffix" translatable="false"><xliff:g example="123" id="number">%1$s</xliff:g> <xliff:g example="MB" id="unit">%2$s</xliff:g></string>
 
-    <string name="notification_title" translatable="false">OpenVPN: %s</string>
+    <string name="vpn_service_name" translatable="false">​OpenVPN Management Client</string>
 
-    <string name="status_line_byte_count" translatable="false"><xliff:g id="d/l speed" example="8.0 Mbit/s">↓%2$s</xliff:g> <xliff:g id="downloaded" example="1.0 MB">%1$s</xliff:g> - <xliff:g id="u/l speed" example="8.0 Mbit/s">↑%4$s</xliff:g> <xliff:g id="uploaded" example="1.0 MB">%3$s</xliff:g></string>
+    <string name="vpn_title_status" translatable="false">OpenVPN: %s</string>
+    <string name="vpn_msg_byte_count" translatable="false"><xliff:g example="8.0 Mbit/s" id="d/l speed">↓%2$s</xliff:g> <xliff:g example="1.0 MB" id="downloaded">%1$s</xliff:g> - <xliff:g example="8.0 Mbit/s" id="u/l speed">↑%4$s</xliff:g> <xliff:g example="1.0 MB" id="uploaded">%3$s</xliff:g></string>
+    <string name="vpn_msg_launch">Connecting to OpenVPN Management Interface…</string>
 
-    <string name="cancel_connection">Disconnect</string>
+    <string name="vpn_title_disconnect">Disconnect VPN</string>
+    <string name="vpn_msg_disconnect">Are you sure you want to disconnect?</string>
 
-    <string name="title_cancel">Disconnect VPN</string>
-    <string name="cancel_connection_query">Are you sure you want to disconnect?</string>
+    <string name="vpn_action_close">Disconnect</string>
 
-    <string name="vpn_launch_title">Connecting to OpenVPN Management Interface…</string>
+    <string name="vpn_channel_name_background">Connection statistics</string>
+    <string name="vpn_channel_description_background">Ongoing statistics of the established OpenVPN connection</string>
+    <string name="vpn_channel_name_status">Connection status change</string>
+    <string name="vpn_channel_description_status">Status changes of the OpenVPN connection (Connecting, authenticating,…)</string>
+
+    <string name="vpn_state_add_routes">Adding routes</string>
+    <string name="vpn_state_assign_ip">Assigning IP addresses</string>
+    <string name="vpn_state_auth">Authenticating</string>
+    <string name="vpn_state_auth_failed">Authentication failed</string>
+    <string name="vpn_state_auth_pending">Authentication pending</string>
+    <string name="vpn_state_connected">Connected</string>
+    <string name="vpn_state_connecting">Connecting</string>
+    <string name="vpn_state_disconnected">Disconnected</string>
+    <string name="vpn_state_exiting">Exiting</string>
+    <string name="vpn_state_get_config">Getting client configuration</string>
+    <string name="vpn_state_reconnecting">Reconnecting</string>
+    <string name="vpn_state_resolve">Resolving host names</string>
+    <string name="vpn_state_tcp_connect">Connecting (TCP)</string>
+    <string name="vpn_state_unknown">Unknown state</string>
+    <string name="vpn_state_wait">Waiting for server reply</string>
 </resources>

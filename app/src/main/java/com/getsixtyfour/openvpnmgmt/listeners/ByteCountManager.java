@@ -1,6 +1,8 @@
 package com.getsixtyfour.openvpnmgmt.listeners;
 
 import com.getsixtyfour.openvpnmgmt.core.TrafficHistory;
+import com.getsixtyfour.openvpnmgmt.core.TrafficHistory.LastDiff;
+import com.getsixtyfour.openvpnmgmt.core.TrafficHistory.TrafficDataPoint;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -12,65 +14,42 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class ByteCountManager {
 
-    private final CopyOnWriteArraySet<ByteCountListener> mListeners;
+    private final CopyOnWriteArraySet<OnByteCountChangedListener> mListeners;
 
     private final TrafficHistory mTrafficHistory = new TrafficHistory();
 
-    private ByteCount mByteCount;
+    private TrafficDataPoint mTrafficDataPoint;
 
     public ByteCountManager() {
         mListeners = new CopyOnWriteArraySet<>();
     }
 
-    public boolean addListener(@NotNull ByteCountListener listener) {
+    public boolean addListener(@NotNull OnByteCountChangedListener listener) {
         return mListeners.add(listener);
     }
 
-    public boolean removeListener(@NotNull ByteCountListener listener) {
+    public boolean removeListener(@NotNull OnByteCountChangedListener listener) {
         return mListeners.remove(listener);
     }
 
-    public void setByteCount(@NotNull ByteCount byteCount) {
-        mByteCount = byteCount;
+    public void setTrafficDataPoint(@NotNull TrafficDataPoint trafficDataPoint) {
+        mTrafficDataPoint = trafficDataPoint;
         notifyListeners();
     }
 
     private void notifyListeners() {
-        long in = mByteCount.getInBytes();
-        long out = mByteCount.getOutBytes();
-        TrafficHistory.LastDiff diff = mTrafficHistory.add(in, out);
-        for (ByteCountListener listener : mListeners) {
+        long in = mTrafficDataPoint.mInBytes;
+        long out = mTrafficDataPoint.mOutBytes;
+        LastDiff diff = mTrafficHistory.add(in, out);
+        for (OnByteCountChangedListener listener : mListeners) {
             listener.onByteCountChanged(in, out, diff.getDiffIn(), diff.getDiffOut());
         }
     }
 
     @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     @FunctionalInterface
-    public interface ByteCountListener {
+    public interface OnByteCountChangedListener {
 
         void onByteCountChanged(long in, long out, long diffIn, long diffOut);
-    }
-
-    @SuppressWarnings("PublicInnerClass")
-    public static class ByteCount {
-
-        private final Long mInBytes;
-
-        private final Long mOutBytes;
-
-        public ByteCount(@NotNull Long inBytes, @NotNull Long outBytes) {
-            mInBytes = inBytes;
-            mOutBytes = outBytes;
-        }
-
-        @NotNull
-        public Long getInBytes() {
-            return mInBytes;
-        }
-
-        @NotNull
-        public Long getOutBytes() {
-            return mOutBytes;
-        }
     }
 }

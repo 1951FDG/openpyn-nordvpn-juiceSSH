@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.getsixtyfour.openvpnmgmt.implementation;
 
 import com.getsixtyfour.openvpnmgmt.api.Client;
-import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,8 +18,10 @@ import java.util.Locale;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
+ * @author 1951FDG
  */
 
+// TODO: time api
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
 public class OpenVpnClient implements Client {
 
@@ -54,7 +50,7 @@ public class OpenVpnClient implements Client {
             InetAddress realAddress = InetAddress.getByName(realConnection[0]);
             int port = Integer.parseInt(realConnection[1]);
             InetSocketAddress realIpSocket = new InetSocketAddress(realAddress, port);
-            SimpleDateFormat sdf = new SimpleDateFormat(Status.DATE_FORMAT, Locale.ROOT);
+            SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ROOT);
             Date parsedDate = sdf.parse(strings[4]);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(parsedDate);
@@ -65,12 +61,12 @@ public class OpenVpnClient implements Client {
             mReceivedBytes = rb;
             mSentBytes = sb;
             mConnectedSince = calendar;
-        } catch (NumberFormatException ex) {
-            throw new OpenVpnParseException(Constants.CANNOT_PARSE_PORT_NUMBER, ex);
-        } catch (ParseException ex) {
-            throw new OpenVpnParseException(Constants.CANNOT_PARSE_DATE, ex);
-        } catch (UnknownHostException ex) {
-            throw new OpenVpnParseException(Constants.CANNOT_PARSE_HOSTNAME, ex);
+        } catch (NumberFormatException e) {
+            throw new OpenVpnParseException(Constants.CANNOT_PARSE_PORT_NUMBER, e);
+        } catch (ParseException e) {
+            throw new OpenVpnParseException(Constants.CANNOT_PARSE_DATE, e);
+        } catch (UnknownHostException e) {
+            throw new OpenVpnParseException(Constants.CANNOT_PARSE_HOSTNAME, e);
         }
     }
 

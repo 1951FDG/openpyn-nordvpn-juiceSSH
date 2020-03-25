@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.getsixtyfour.openvpnmgmt.api;
 
 import org.jetbrains.annotations.Nullable;
@@ -13,9 +8,10 @@ import java.util.Calendar;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
+ * @author 1951FDG
  */
 
-@SuppressWarnings({ "UseOfObsoleteDateTimeApi", "unused" })
+@SuppressWarnings("UseOfObsoleteDateTimeApi")
 public interface Route {
 
     // Virtual Address,Common Name,Real Address,Last Ref

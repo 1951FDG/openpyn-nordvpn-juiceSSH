@@ -7,7 +7,6 @@ package com.getsixtyfour.openvpnmgmt.android;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,25 +26,14 @@ public final class VPNLaunchHelper {
     private VPNLaunchHelper() {
     }
 
-    public static void startOpenVPNService(@NonNull Context context, @NonNull Bundle extras) {
-        Intent intent = prepareStartService(context, extras);
-        if (intent != null) {
-            ContextCompat.startForegroundService(context, intent);
-        }
-    }
-
-    @Nullable
-    private static Intent getStartServiceIntent(Context context) {
+    public static void doStartService(@NonNull Context context, @Nullable Bundle extras) {
         Intent intent = new Intent(context, OpenVPNService.class);
-        PackageManager packageManager = context.getPackageManager();
-        return (packageManager.resolveService(intent, 0) != null) ? intent : null;
+        intent.replaceExtras(extras);
+        ContextCompat.startForegroundService(context, intent);
     }
 
-    private static Intent prepareStartService(Context context, Bundle extras) {
-        Intent intent = getStartServiceIntent(context);
-        if (intent != null) {
-            intent.replaceExtras(extras);
-        }
-        return intent;
+    public static void doStopService(@NonNull Context context) {
+        Intent intent = new Intent(context, OpenVPNService.class);
+        context.stopService(intent);
     }
 }

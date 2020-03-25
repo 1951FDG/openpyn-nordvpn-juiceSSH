@@ -17,6 +17,9 @@ import java.util.List;
 
 public class TrafficHistory {
 
+    public TrafficHistory() {
+    }
+
     @SuppressWarnings("WeakerAccess")
     public static final long PERIODS_TO_KEEP = 5L;
 
@@ -42,7 +45,7 @@ public class TrafficHistory {
         list.add(new TrafficDataPoint(0L, 0L, System.currentTimeMillis()));
         return list;
     }
-
+    // TODO: one with trafficpoint
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     public LastDiff add(long in, long out) {
         TrafficDataPoint tdp = new TrafficDataPoint(in, out, System.currentTimeMillis());
@@ -137,16 +140,22 @@ public class TrafficHistory {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
-    private static final class TrafficDataPoint {
+    @SuppressWarnings("PublicInnerClass")
+    public static final class TrafficDataPoint {
 
+        /**
+         * the number of bytes that have been received from the server
+         */
         public final long mInBytes;
 
+        /**
+         * the number of bytes that have been sent to the server
+         */
         public final long mOutBytes;
 
         public final long mTimestamp;
 
-        TrafficDataPoint(long inBytes, long outBytes, long timestamp) {
+        public TrafficDataPoint(long inBytes, long outBytes, long timestamp) {
             mInBytes = inBytes;
             mOutBytes = outBytes;
             mTimestamp = timestamp;

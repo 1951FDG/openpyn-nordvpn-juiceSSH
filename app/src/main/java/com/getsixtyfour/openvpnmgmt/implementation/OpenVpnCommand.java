@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
+ * @author 1951FDG
  */
 
 public abstract class OpenVpnCommand {

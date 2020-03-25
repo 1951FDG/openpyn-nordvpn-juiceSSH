@@ -1,9 +1,9 @@
 package com.getsixtyfour.openvpnmgmt.listeners;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 1951FDG
@@ -11,78 +11,86 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class StateManager {
 
-    private final CopyOnWriteArraySet<StateListener> mListeners;
+    private final CopyOnWriteArraySet<OnStateChangedListener> mListeners;
 
-    private State mState;
+    private OpenVpnNetworkState mState;
 
     public StateManager() {
         mListeners = new CopyOnWriteArraySet<>();
     }
 
-    public boolean addListener(@NotNull StateListener listener) {
+    public boolean addListener(@NotNull OnStateChangedListener listener) {
         return mListeners.add(listener);
     }
 
-    public boolean removeListener(@NotNull StateListener listener) {
+    public boolean removeListener(@NotNull OnStateChangedListener listener) {
         return mListeners.remove(listener);
     }
 
-    public void setState(@NotNull State state) {
+    public void setState(@NotNull OpenVpnNetworkState state) {
         mState = state;
         notifyListeners();
     }
 
     private void notifyListeners() {
-        for (StateListener listener : mListeners) {
+        for (OnStateChangedListener listener : mListeners) {
             listener.onStateChanged(mState);
         }
     }
 
     @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
     @FunctionalInterface
-    public interface StateListener {
+    public interface OnStateChangedListener {
 
-        void onStateChanged(@NotNull State state);
+        void onStateChanged(@NotNull OpenVpnNetworkState state);
     }
 
     @SuppressWarnings("PublicInnerClass")
-    public static class State {
+    public static class OpenVpnNetworkState {
 
-        private final String mDate;
+        /**
+         * time in UTC seconds
+         */
+        private final String mTime;
 
-        private final String mLocalAddress;
-
-        private final String mMessage;
-
+        /**
+         * state name
+         */
         private final String mName;
 
+        /**
+         * optional descriptive string
+         */
+        private final String mDescription;
+
+        /**
+         * optional TUN/TAP local IPv4 address
+         */
+        private final String mLocalAddress;
+
+        /**
+         * optional address of remote server
+         */
         private final String mRemoteAddress;
 
+        /**
+         * optional port of remote server
+         */
         private final String mRemotePort;
 
-        public State(@NotNull String date, @NotNull String name, @Nullable String message, @Nullable String localAddress,
-                     @Nullable String remoteAddress, @Nullable String remotePort) {
-            mDate = date;
+        public OpenVpnNetworkState(@NotNull String unixTime, @NotNull String name, @NotNull String description, @NotNull String localAddress,
+                                   @NotNull String remoteAddress, @NotNull String remotePort) {
+            mTime = unixTime;
             mName = name;
-            mMessage = message;
+            mDescription = description;
             mLocalAddress = localAddress;
             mRemoteAddress = remoteAddress;
             mRemotePort = remotePort;
         }
 
         @NotNull
-        public String getDate() {
-            return mDate;
-        }
-
-        @Nullable
-        public String getLocalAddress() {
-            return mLocalAddress;
-        }
-
-        @Nullable
-        public String getMessage() {
-            return mMessage;
+        public String getTime() {
+            return mTime;
         }
 
         @NotNull
@@ -90,14 +98,29 @@ public class StateManager {
             return mName;
         }
 
-        @Nullable
+        @NotNull
+        public String getDescription() {
+            return mDescription;
+        }
+
+        @NotNull
+        public String getLocalAddress() {
+            return mLocalAddress;
+        }
+
+        @NotNull
         public String getRemoteAddress() {
             return mRemoteAddress;
         }
 
-        @Nullable
+        @NotNull
         public String getRemotePort() {
             return mRemotePort;
+        }
+
+        @NotNull
+        public Long getMillis() {
+            return TimeUnit.MILLISECONDS.convert(Long.parseLong(mTime), TimeUnit.SECONDS);
         }
     }
 }

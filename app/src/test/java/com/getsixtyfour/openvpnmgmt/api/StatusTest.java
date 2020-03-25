@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.getsixtyfour.openvpnmgmt.api;
 
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
@@ -20,9 +15,10 @@ import java.util.Set;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
+ * @author 1951FDG
  */
 
-@SuppressWarnings({ "UseOfObsoleteDateTimeApi", "JUnitTestNG", "MigrateAssertToMatcherAssert", "MessageMissingOnJUnitAssertion" })
+@SuppressWarnings({ "JUnitTestNG", "MessageMissingOnJUnitAssertion", "MigrateAssertToMatcherAssert" })
 public class StatusTest {
 
     @NonNls
@@ -30,6 +26,7 @@ public class StatusTest {
 
     private static Status sInstance = null;
 
+    @SuppressWarnings({ "HardcodedLineSeparator", "StringBufferReplaceableByString", "MagicNumber" })
     @BeforeClass
     public static void init() throws OpenVpnParseException {
         sInstance = new OpenVpnStatus();
@@ -72,6 +69,7 @@ public class StatusTest {
     /**
      * Test of getUpdateTime method, of class Status.
      */
+    @SuppressWarnings("UseOfObsoleteDateTimeApi")
     @Test
     public void testGetUpdateTime() {
         LOGGER.info("getUpdateTime");

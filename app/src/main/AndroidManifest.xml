@@ -56,19 +56,28 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Licenses" />
+        <!-- Private activity -->
         <activity
             android:name="com.getsixtyfour.openvpnmgmt.android.activities.DisconnectVPN"
             android:excludeFromRecents="true"
-            android:launchMode="singleTask"
-            android:noHistory="true"
+            android:stateNotNeeded="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:process=":process"
+            android:finishOnCloseSystemDialogs="true"
             android:screenOrientation="portrait"
-            android:taskAffinity=""
-            android:theme="@style/blinkt.dialog" />
+            android:taskAffinity="com.getsixtyfour.openvpnmgmt"
+            android:theme="@style/Theme.AlertDialogHost" />
         <!-- Private activity -->
         <!--<activity-->
             <!--android:name="com.adityaanand.morphdialog.MorphDialogActivity"-->
             <!--android:exported="false"-->
             <!--android:theme="@style/MorphDialog.Custom.Light" />-->
+        <!-- Private service -->
+        <service
+            android:name="com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService"
+            android:label="@string/vpn_service_name"
+            android:exported="false" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -92,7 +101,5 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
-
-        <service android:name="com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService" />
     </application>
 </manifest>

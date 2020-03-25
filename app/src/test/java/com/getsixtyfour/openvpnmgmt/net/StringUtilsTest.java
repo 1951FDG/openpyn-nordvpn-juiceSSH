@@ -11,18 +11,16 @@ import org.slf4j.LoggerFactory;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "JUnitTestNG", "MessageMissingOnJUnitAssertion" })
+@SuppressWarnings({ "JUnitTestNG", "MessageMissingOnJUnitAssertion", "MigrateAssertToMatcherAssert" })
 public class StringUtilsTest {
 
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(StringUtilsTest.class);
 
     @NonNls
-    @SuppressWarnings("HardcodedFileSeparator")
     private final String mExpected = "fQDaoFx\\\\Fi\\\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^";
 
     @NonNls
-    @SuppressWarnings("HardcodedFileSeparator")
     private final String mOriginal = "fQDaoFx\\Fi\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^";
 
     /**

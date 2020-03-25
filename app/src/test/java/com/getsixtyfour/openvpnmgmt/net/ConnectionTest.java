@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.getsixtyfour.openvpnmgmt.net;
 
 import com.getsixtyfour.openvpnmgmt.api.Client;
 import com.getsixtyfour.openvpnmgmt.api.Route;
 import com.getsixtyfour.openvpnmgmt.api.Status;
-import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +20,7 @@ import java.util.Set;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "JUnitTestNG", "MigrateAssertToMatcherAssert", "MessageMissingOnJUnitAssertion" })
+@SuppressWarnings({ "JUnitTestNG", "MessageMissingOnJUnitAssertion", "MigrateAssertToMatcherAssert" })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ConnectionTest {
 
@@ -124,19 +118,19 @@ public class ConnectionTest {
      * Test of getOpenVPNStatus method, of class Connection.
      */
     @Test
-    public void testGetStatus() throws IOException, OpenVpnParseException {
+    public void testGetStatus() throws IOException {
         LOGGER.info("getOpenVPNStatus");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort);
         }
         Status result = sConnection.getOpenVPNStatus();
-        Assert.assertNotNull(result);
         Assert.assertNotNull(result.getUpdateTime());
         List<Client> clientList = result.getClients();
         Assert.assertFalse(clientList.isEmpty());
         Set<Route> routes = result.getRoutes();
         Assert.assertFalse(routes.isEmpty());
         LOGGER.info(result.toString());
+        LOGGER.info(clientList.toString());
     }
 
     /**

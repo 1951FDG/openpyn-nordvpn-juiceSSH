@@ -1,5 +1,7 @@
 package com.getsixtyfour.openvpnmgmt.implementation;
 
+import androidx.annotation.Nullable;
+
 import com.getsixtyfour.openvpnmgmt.api.Client;
 import com.getsixtyfour.openvpnmgmt.api.Route;
 import com.getsixtyfour.openvpnmgmt.api.Status;
@@ -25,6 +27,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
+ * @author 1951FDG
  */
 
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
@@ -58,7 +61,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
 
     private final Set<Route> mRoutes = new HashSet<>(10);
 
-    private Calendar mUpdatedAt;
+    private Calendar mUpdateTime = null;
 
     private static Calendar parseUpdatedTime(String updatedString) throws OpenVpnParseException {
         Calendar ut;
@@ -67,15 +70,13 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             if (components.length != 2) {
                 throw new OpenVpnParseException("Cannot parse update time string. There should be 2 components separated by comma");
             }
-            SimpleDateFormat sdf = new SimpleDateFormat(Status.DATE_FORMAT, Locale.ROOT);
+            SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ROOT);
             Date parsedDate = sdf.parse(components[1]);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(parsedDate);
             ut = calendar;
-        } catch (ParseException ex) {
-            @NonNls String msg = "Cannot parse update time string";
-            LOGGER.error(msg, ex);
-            throw new OpenVpnParseException(msg, ex);
+        } catch (ParseException e) {
+            throw new OpenVpnParseException("Cannot parse update time string", e);
         }
         return ut;
     }
@@ -85,7 +86,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
     public String toString() {
         DateFormat df = DateFormat.getInstance();
         StringBuilder sb = new StringBuilder("Updated:\t");
-        sb.append(df.format(mUpdatedAt.getTime()));
+        sb.append(df.format(mUpdateTime.getTime()));
         sb.append(System.lineSeparator());
         sb.append("Client List:");
         sb.append(System.lineSeparator());
@@ -117,15 +118,15 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
         return Collections.unmodifiableSet(mRoutes);
     }
 
-    @NotNull
+    @Nullable
     @Override
     public Calendar getUpdateTime() {
-        return (Calendar) mUpdatedAt.clone();
+        return (mUpdateTime == null) ? null : (Calendar) mUpdateTime.clone();
     }
 
     @Override
     public void setCommandOutput(@NotNull String output) throws OpenVpnParseException {
-        LOGGER.info("Parsing: {}{}", System.lineSeparator(), output);
+        LOGGER.info("Parsing:{}{}", System.lineSeparator(), output);
         super.setCommandOutput(output);
     }
 
@@ -139,9 +140,9 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             if (STATS_HEADER.matcher(lines[i]).matches()) {
                 if (UPDATED.matcher(lines[++i]).matches()) {
                     try {
-                        mUpdatedAt = parseUpdatedTime(lines[i++]);
-                    } catch (OpenVpnParseException ex) {
-                        LOGGER.error(Constants.CANNOT_PARSE_UPDATE_DATE, ex);
+                        mUpdateTime = parseUpdatedTime(lines[i++]);
+                    } catch (OpenVpnParseException e) {
+                        LOGGER.error(Constants.CANNOT_PARSE_UPDATE_DATE, e);
                     }
                 } else {
                     throw new OpenVpnParseException(msg);
@@ -150,9 +151,9 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             if (CLIENTS_HEADER.matcher(lines[i]).matches()) {
                 if (UPDATED.matcher(lines[++i]).matches()) {
                     try {
-                        mUpdatedAt = parseUpdatedTime(lines[i++]);
-                    } catch (OpenVpnParseException ex) {
-                        LOGGER.error(Constants.CANNOT_PARSE_UPDATE_DATE, ex);
+                        mUpdateTime = parseUpdatedTime(lines[i++]);
+                    } catch (OpenVpnParseException e) {
+                        LOGGER.error(Constants.CANNOT_PARSE_UPDATE_DATE, e);
                     }
                 } else {
                     throw new OpenVpnParseException(msg);
@@ -178,7 +179,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
                 }
             }
         }
-        LOGGER.info("Successfully parsed {}{}", System.lineSeparator(), this);
+        LOGGER.info("Successfully parsed{}{}", System.lineSeparator(), this);
     }
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -186,8 +187,8 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
         try {
             Client ovc = new OpenVpnClient(clientString);
             mClients.add(ovc);
-        } catch (OpenVpnParseException ex) {
-            LOGGER.error("Cannot add the client", ex);
+        } catch (OpenVpnParseException e) {
+            LOGGER.error("Cannot add the client", e);
         }
     }
 
@@ -196,8 +197,8 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
         try {
             Route ovr = new OpenVpnRoute(routeString);
             mRoutes.add(ovr);
-        } catch (OpenVpnParseException ex) {
-            LOGGER.error("Cannot add route", ex);
+        } catch (OpenVpnParseException e) {
+            LOGGER.error("Cannot add route", e);
         }
     }
 }

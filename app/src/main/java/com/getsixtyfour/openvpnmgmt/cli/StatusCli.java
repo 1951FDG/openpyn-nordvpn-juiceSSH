@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.getsixtyfour.openvpnmgmt.cli;
 
 import com.getsixtyfour.openvpnmgmt.api.Status;
-import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 import com.getsixtyfour.openvpnmgmt.net.Connection;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 
@@ -24,6 +18,7 @@ import java.io.IOException;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
+ * @author 1951FDG
  */
 
 @SuppressWarnings({ "UtilityClass", "CallToSystemExit", "UseOfSystemOutOrSystemErr" })
@@ -56,17 +51,17 @@ public final class StatusCli {
             }
             host = cmd.getOptionValue("host");
             port = Integer.valueOf(cmd.getOptionValue("port"));
-        } catch (ParseException ex) {
-            LOGGER.error("Cannot parse arguments", ex);
+        } catch (ParseException e) {
+            LOGGER.error("Cannot parse arguments", e);
         }
         try {
-            Connection conn = ManagementConnection.getInstance();
-            conn.connect(host, port);
-            Status status = conn.getOpenVPNStatus();
-            conn.disconnect();
+            Connection connection = ManagementConnection.getInstance();
+            connection.connect(host, port);
+            Status status = connection.getOpenVPNStatus();
+            connection.disconnect();
             System.out.println("OpenVPN status: " + status); //NON-NLS
-        } catch (OpenVpnParseException | IOException ex) {
-            LOGGER.error("Cannot get OpenVPN status.", ex);
+        } catch (IOException e) {
+            LOGGER.error("Cannot get OpenVPN status.", e);
         }
     }
 

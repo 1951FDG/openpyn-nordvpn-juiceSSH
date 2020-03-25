@@ -3,18 +3,18 @@ package com.getsixtyfour.openvpnmgmt.net;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
+import com.getsixtyfour.openvpnmgmt.core.TrafficHistory.TrafficDataPoint;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 import com.getsixtyfour.openvpnmgmt.implementation.OpenVpnStatus;
 import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager;
-import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.ByteCount;
-import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.ByteCountListener;
+import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.LogManager;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.Log;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.LogListener;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OpenVpnLogRecord;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OnRecordChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.StateManager;
-import com.getsixtyfour.openvpnmgmt.listeners.StateManager.State;
-import com.getsixtyfour.openvpnmgmt.listeners.StateManager.StateListener;
+import com.getsixtyfour.openvpnmgmt.listeners.StateManager.OnStateChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.StateManager.OpenVpnNetworkState;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
 import org.jetbrains.annotations.NonNls;
@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -90,37 +91,41 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @Override
-    public boolean addByteCountListener(@NotNull ByteCountListener listener) {
+    public boolean addByteCountListener(@NotNull OnByteCountChangedListener listener) {
         return mByteCountManager.addListener(Objects.requireNonNull(listener));
     }
 
     @Override
-    public boolean addLogListener(@NotNull LogListener listener) {
+    public boolean addLogListener(@NotNull OnRecordChangedListener listener) {
         return mLogManager.addListener(Objects.requireNonNull(listener));
     }
 
     @Override
-    public boolean addStateListener(@NotNull StateListener listener) {
+    public boolean addStateListener(@NotNull OnStateChangedListener listener) {
         return mStateManager.addListener(Objects.requireNonNull(listener));
     }
 
     @Override
     public void connect(@NotNull String host, @NotNull Integer port) throws IOException {
         if (!isConnected()) {
+            //noinspection OverlyBroadCatchBlock
             try {
                 super.connect(host, port);
+                // TODO: may cause crash, must process here, since run is still running
+                // Ensures state listeners are notified of current state if VPN is already connected
+                {
+                    String result = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
+                    String[] lines = result.split(System.lineSeparator());
+                    String argument = (lines.length >= 1) ? lines[lines.length - 1] : "";
+                    if (!argument.isEmpty() && !argument.contains(VpnStatus.AUTH_FAILURE)) {
+                        processState(argument);
+                    }
+                }
                 onConnected();
-            } catch (IllegalArgumentException | IOException e) {
+            } catch (Exception e) {
+                // TODO : do another catch on IO
                 onConnectError(e);
-            }
-        }
-        // Ensures state listeners are notified of current state if VPN is already connected
-        {
-            String result = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
-            String[] lines = result.split(System.lineSeparator());
-            String argument = (lines.length >= 1) ? lines[lines.length - 1] : "";
-            if (!argument.isEmpty() && !argument.contains(VpnStatus.AUTH_FAILURE)) {
-                processState(argument);
+                throw new IOException(e);
             }
         }
     }
@@ -174,9 +179,14 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @NotNull
     @Override
-    public Status getOpenVPNStatus() throws OpenVpnParseException, IOException {
+    public Status getOpenVPNStatus() throws IOException {
+        String output = executeCommand(Commands.STATUS_COMMAND);
         OpenVpnStatus ovs = new OpenVpnStatus();
-        ovs.setCommandOutput(executeCommand(Commands.STATUS_COMMAND));
+        try {
+            ovs.setCommandOutput(output);
+        } catch (OpenVpnParseException e) {
+            throw new IOException(e);
+        }
         return ovs;
     }
 
@@ -198,25 +208,26 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @Override
-    public boolean removeByteCountListener(@NotNull ByteCountListener listener) {
+    public boolean removeByteCountListener(@NotNull OnByteCountChangedListener listener) {
         return mByteCountManager.removeListener(Objects.requireNonNull(listener));
     }
 
     @Override
-    public boolean removeLogListener(@NotNull LogListener listener) {
+    public boolean removeLogListener(@NotNull OnRecordChangedListener listener) {
         return mLogManager.removeListener(Objects.requireNonNull(listener));
     }
 
     @Override
-    public boolean removeStateListener(@NotNull StateListener listener) {
+    public boolean removeStateListener(@NotNull OnStateChangedListener listener) {
         return mStateManager.removeListener(Objects.requireNonNull(listener));
     }
 
-    @SuppressWarnings({ "NestedAssignment", "MethodCallInLoopCondition", "ProhibitedExceptionThrown" })
+    @SuppressWarnings({ "NestedAssignment", "MethodCallInLoopCondition" })
     @Override
     public void run() {
         if (!isConnected()) {
             // UncheckedIOException requires Android N
+            //noinspection ProhibitedExceptionThrown
             throw new RuntimeException(new IOException(SOCKET_IS_NOT_CONNECTED));
         }
         {
@@ -235,16 +246,18 @@ public final class ManagementConnection extends AbstractConnection implements Co
                     }
                 }
             } catch (IOException e) {
-                String message = e.getMessage();
-                if (!STREAM_CLOSED.equals(message)) {
-                    LOGGER.error(message, e);
+                if (!STREAM_CLOSED.equals(e.getMessage())) {
+                    LOGGER.error("", e);
                 }
-            } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-                LOGGER.error("Could not parse string", e);
             }
         }
         LOGGER.info("TERMINATED");
-        throw new ThreadDeath();
+
+        Thread thread = Thread.currentThread();
+        UncaughtExceptionHandler eh = thread.getUncaughtExceptionHandler();
+        if ((eh != null) && (!(eh instanceof ThreadGroup))) {
+            eh.uncaughtException(thread, new ThreadDeath());
+        }
     }
 
     @Override
@@ -273,10 +286,12 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     private void onConnectError(@NotNull Throwable e) {
-        if (!(e instanceof IllegalArgumentException) && !(e instanceof IOException)) {
-            LOGGER.error("Unknown exception thrown");
+        if ((e instanceof IllegalArgumentException) || (e instanceof IOException)) {
+            LOGGER.error("", e);
+        } else {
+            LOGGER.error("Unknown exception thrown:", e);
         }
-        LOGGER.error(e.toString());
+
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onConnectError(e);
@@ -299,71 +314,84 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    @SuppressWarnings({ "IfStatementWithTooManyBranches", "OverlyComplexMethod", "OverlyLongMethod", "SpellCheckingInspection",
-            "SwitchStatementWithTooManyBranches" })
+    @SuppressWarnings({ "IfStatementWithTooManyBranches", "MagicCharacter" })
     private void parseInput(String line) throws IOException {
-        if (line.startsWith(">") && line.contains(":")) {
-            String[] parts = line.split(":", 2);
-            @NonNls String cmd = parts[0].substring(1);
-            String argument = parts[1];
-            switch (cmd) {
-                case "BYTECOUNT":
-                    processByteCount(argument);
-                    break;
-                case "FATAL":
-                    // TODO
-                    LOGGER.error(argument);
-                    break;
-                case "HOLD":
-                    processHold(argument);
-                    break;
-                case "INFO":
-                    // Ignore greeting from management
-                    break;
-                case "INFOMSG":
-                    // Undocumented real-time message
-                    break;
-                case "LOG":
-                    processLog(argument);
-                    break;
-                case "PASSWORD":
-                    processPassword(argument);
-                    break;
-                case "STATE":
-                    processState(argument);
-                    break;
-                case "UPDOWN":
-                    // Ignore
-                    break;
-                case "CLIENT":
-                case "ECHO":
-                case "NEED-OK":
-                case "NEED-STR":
-                case "PK_SIGN":
-                case "PROXY":
-                case "RSA_SIGN":
-                    throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
-                default:
-                    LOGGER.error("Got unrecognized argument: {}", argument);
-                    break;
+        if (line.startsWith(">") && (line.indexOf(':') > -1)) {
+            try {
+                process(line);
+            } catch (UnsupportedOperationException e) {
+                LOGGER.error("Got unsupported line: {}", line);
+                throw new IOException(e);
+            } catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException | NumberFormatException e) {
+                LOGGER.error("Could not parse line: {}", line);
+                throw new IOException(e);
             }
         } else if (line.startsWith(Strings.SUCCESS_PREFIX)) {
             LOGGER.info(line);
         } else if (line.startsWith(Strings.ERROR_PREFIX)) {
-            // TODO
+            // TODO:
             LOGGER.error(line);
-            // throw new IOException("Stream closed");
+            // throw new IOException(STREAM_CLOSED);
         } else {
             LOGGER.error("Got unrecognized line: {}", line);
         }
     }
 
+    @SuppressWarnings({ "OverlyComplexMethod", "OverlyLongMethod", "SwitchStatementWithTooManyBranches", "SpellCheckingInspection" })
+    private void process(String line) throws IOException {
+        String[] parts = line.split(":", 2);
+        @NonNls String cmd = parts[0].substring(1);
+        String argument = parts[1];
+        switch (cmd) {
+            case "BYTECOUNT":
+                processByteCount(argument);
+                break;
+            case "FATAL":
+                // TODO:
+                LOGGER.error(argument);
+                break;
+            case "HOLD":
+                processHold(argument);
+                break;
+            case "INFO":
+                // Ignore greeting from management
+                break;
+            case "INFOMSG":
+                // Undocumented real-time message
+                break;
+            case "LOG":
+                processLog(argument);
+                break;
+            case "PASSWORD":
+                processPassword(argument);
+                break;
+            case "STATE":
+                processState(argument);
+                break;
+            case "UPDOWN":
+                // Ignore
+                break;
+            case "CLIENT":
+            case "ECHO":
+            case "NEED-OK":
+            case "NEED-STR":
+            case "PK_SIGN":
+            case "PROXY":
+            case "RSA_SIGN":
+                throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
+            default:
+                LOGGER.error("Got unrecognized command: {}", cmd);
+                break;
+        }
+    }
+
+    @SuppressWarnings("MagicCharacter")
     private void processByteCount(String argument) {
-        int comma = argument.indexOf(",");
-        Long in = Long.valueOf(argument.substring(0, comma));
-        Long out = Long.valueOf(argument.substring(comma + 1));
-        ByteCount byteCount = new ByteCount(in, out);
-        mByteCountManager.setByteCount(byteCount);
+        int comma = argument.indexOf(',');
+        long in = Long.parseLong(argument.substring(0, comma));
+        long out = Long.parseLong(argument.substring(comma + 1));
+        TrafficDataPoint tdp = new TrafficDataPoint(in, out, 0L);
+        mByteCountManager.setTrafficDataPoint(tdp);
     }
 
     private void processHold(String argument) throws IOException {
@@ -374,10 +402,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    @SuppressWarnings("OverlyLongMethod")
     private void processLog(String argument) {
         String[] args = argument.split(",", 3);
-        String date = args[0];
+        String time = args[0];
         @NonNls String level = args[1];
         String message = args[2];
         LogLevel logLevel;
@@ -401,6 +428,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 logLevel = LogLevel.DEBUG;
                 break;
             default:
+                LOGGER.error("Unknown log level {} for message {}", level, message);
                 logLevel = LogLevel.VERBOSE;
                 break;
         }
@@ -412,8 +440,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         } else if (message.startsWith(Strings.NOTE_PREFIX)) {
             message = message.substring(Strings.NOTE_PREFIX.length() + 1);
         }
-        Log log = new Log(date, logLevel, message);
-        mLogManager.setLog(log);
+        mLogManager.setRecord(new OpenVpnLogRecord(time, logLevel, message));
     }
 
     private void processPassword(String argument) throws IOException {
@@ -438,11 +465,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 handlerPassword = handler.getUserPass();
             }
 
-            /*
-             *  simulate service restart
-             *  handler = null;
-             *  handlerUsername = handler.getUserName();
-             */
             String username = StringUtils.isBlank(handlerUsername) ? "..." : StringUtils.escapeOpenVPN(handlerUsername);
             String password = StringUtils.isBlank(handlerPassword) ? "..." : StringUtils.escapeOpenVPN(handlerPassword);
             if ("Auth".equals(type)) {
@@ -458,9 +480,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void processState(String argument) {
         String[] args = argument.split(",", -1);
-        State state = new State(args[0], args[1], args[2], args[3], args[4], args[5]);
+        OpenVpnNetworkState state = new OpenVpnNetworkState(args[0], args[1], args[2], args[3], args[4], args[5]);
         String name = state.getName();
-        String message = state.getMessage();
+        String message = state.getDescription();
         // Workaround for OpenVPN doing AUTH and WAIT while being connected, simply ignore these state
         if ((mLastLevel == ConnectionStatus.LEVEL_CONNECTED) && (VpnStatus.WAIT.equals(name) || VpnStatus.AUTH.equals(name))) {
             LOGGER.info("Ignoring OpenVPN Status in CONNECTED state ({}->{}): {}", name, mLastLevel, message);

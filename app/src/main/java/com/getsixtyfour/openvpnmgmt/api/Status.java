@@ -1,9 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.getsixtyfour.openvpnmgmt.api;
+
+import androidx.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -13,13 +10,11 @@ import java.util.Set;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
+ * @author 1951FDG
  */
 
-@SuppressWarnings({ "UseOfObsoleteDateTimeApi", "ConstantDeclaredInInterface" })
+@SuppressWarnings({ "UseOfObsoleteDateTimeApi" })
 public interface Status {
-
-    @SuppressWarnings("SpellCheckingInspection")
-    String DATE_FORMAT = "EEE MMMM dd HH:mm:ss yyyy";
 
     @NotNull
     List<Client> getClients();
@@ -27,6 +22,6 @@ public interface Status {
     @NotNull
     Set<Route> getRoutes();
 
-    @NotNull
+    @Nullable
     Calendar getUpdateTime();
 }

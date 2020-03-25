@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.getsixtyfour.openvpnmgmt.net;
 
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
-import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.ByteCountListener;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.Log;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.LogListener;
+import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.OnByteCountChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OpenVpnLogRecord;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OnRecordChangedListener;
 
 import junit.framework.AssertionFailedError;
 
@@ -26,7 +21,7 @@ import java.lang.reflect.Method;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "JUnitTestNG", "MessageMissingOnJUnitAssertion" })
+@SuppressWarnings({ "JUnitTestNG", "MessageMissingOnJUnitAssertion", "MigrateAssertToMatcherAssert" })
 public class ManagementConnectionTest {
 
     @NonNls
@@ -40,13 +35,15 @@ public class ManagementConnectionTest {
     }
 
     private static void invokeParseInput(String line) throws InvocationTargetException {
+        Class<ManagementConnection> targetClass = ManagementConnection.class;
         Class[] argClasses = { String.class };
         Object[] argObjects = { line };
-        //noinspection HardCodedStringLiteral
-        invokeStaticMethod(ManagementConnection.class, "parseInput", argClasses, argObjects);
+        @NonNls String methodName = "parseInput";
+
+        invokeStaticMethod(targetClass, methodName, argClasses, argObjects);
     }
 
-    @SuppressWarnings({ "SameParameterValue", "ThrowInsideCatchBlockWhichIgnoresCaughtException", "TryWithIdenticalCatches" })
+    @SuppressWarnings("TryWithIdenticalCatches")
     private static void invokeStaticMethod(Class<?> targetClass, String methodName, Class[] argClasses, Object[] argObjects)
             throws InvocationTargetException {
         try {
@@ -86,7 +83,7 @@ public class ManagementConnectionTest {
     @SuppressWarnings("Convert2Lambda")
     @Test
     public void testProcessByteCount() throws InvocationTargetException {
-        sConnection.addByteCountListener(new ByteCountListener() {
+        sConnection.addByteCountListener(new OnByteCountChangedListener() {
             @Override
             public void onByteCountChanged(long in, long out, long diffIn, long diffOut) {
                 Assert.assertEquals(1L, in);
@@ -111,10 +108,10 @@ public class ManagementConnectionTest {
          * (c) message text
          */
         {
-            LogListener listener = new LogListener() {
+            OnRecordChangedListener listener = new OnRecordChangedListener() {
                 @Override
-                public void onLog(@NotNull Log log) {
-                    Assert.assertEquals(LogLevel.VERBOSE, log.getLevel());
+                public void onRecordChanged(@NotNull OpenVpnLogRecord record) {
+                    Assert.assertEquals(LogLevel.VERBOSE, record.getLevel());
                 }
             };
             sConnection.addLogListener(listener);
@@ -123,11 +120,11 @@ public class ManagementConnectionTest {
             sConnection.removeLogListener(listener);
         }
         {
-            LogListener listener = new LogListener() {
+            OnRecordChangedListener listener = new OnRecordChangedListener() {
                 @Override
-                public void onLog(@NotNull Log log) {
-                    Assert.assertEquals(LogLevel.ERROR, log.getLevel());
-                    LOGGER.error("{}", log.getMessage());
+                public void onRecordChanged(@NotNull OpenVpnLogRecord record) {
+                    Assert.assertEquals(LogLevel.ERROR, record.getLevel());
+                    LOGGER.error("{}", record.getMessage());
                 }
             };
             sConnection.addLogListener(listener);
@@ -140,7 +137,7 @@ public class ManagementConnectionTest {
     /**
      * Test of processPassword method, of class ManagementConnection.
      */
-    @SuppressWarnings({ "ReuseOfLocalVariable", "ThrowInsideCatchBlockWhichIgnoresCaughtException" })
+    @SuppressWarnings("ReuseOfLocalVariable")
     @Test(expected = IOException.class)
     public void testProcessPassword() throws InvocationTargetException, IOException {
         @NonNls String line = ">PASSWORD:Auth-Token:";

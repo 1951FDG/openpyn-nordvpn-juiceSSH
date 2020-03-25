@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <public name="vpn_msg_launch" type="string" />
+
+    <public name="vpn_title_disconnect" type="string" />
+    <public name="vpn_msg_disconnect" type="string" />
+
+    <public name="vpn_action_close" type="string" />
+
+    <public name="vpn_channel_name_background" type="string" />
+    <public name="vpn_channel_description_background" type="string" />
+    <public name="vpn_channel_name_status" type="string" />
+    <public name="vpn_channel_description_status" type="string" />
+
+    <public name="vpn_state_add_routes" type="string" />
+    <public name="vpn_state_assign_ip" type="string" />
+    <public name="vpn_state_auth" type="string" />
+    <public name="vpn_state_auth_failed" type="string" />
+    <public name="vpn_state_auth_pending" type="string" />
+    <public name="vpn_state_connected" type="string" />
+    <public name="vpn_state_connecting" type="string" />
+    <public name="vpn_state_disconnected" type="string" />
+    <public name="vpn_state_exiting" type="string" />
+    <public name="vpn_state_get_config" type="string" />
+    <public name="vpn_state_reconnecting" type="string" />
+    <public name="vpn_state_resolve" type="string" />
+    <public name="vpn_state_tcp_connect" type="string" />
+    <public name="vpn_state_unknown" type="string" />
+    <public name="vpn_state_wait" type="string" />
+</resources>

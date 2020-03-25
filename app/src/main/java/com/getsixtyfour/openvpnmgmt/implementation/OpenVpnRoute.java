@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.getsixtyfour.openvpnmgmt.implementation;
 
 import com.getsixtyfour.openvpnmgmt.api.Route;
-import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +19,7 @@ import java.util.Objects;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
+ * @author 1951FDG
  */
 
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
@@ -54,7 +49,7 @@ public class OpenVpnRoute implements Route {
             InetAddress realAddress = InetAddress.getByName(realConnection[0]);
             int port = Integer.parseInt(realConnection[1]);
             InetSocketAddress realIpSocket = new InetSocketAddress(realAddress, port);
-            SimpleDateFormat sdf = new SimpleDateFormat(Status.DATE_FORMAT, Locale.ROOT);
+            SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ROOT);
             Date parsedDate = sdf.parse(strings[3]);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(parsedDate);
@@ -62,18 +57,18 @@ public class OpenVpnRoute implements Route {
             mVirtualIpAddress = virtualAddress;
             mRealIpAddress = realIpSocket;
             mLastRef = calendar;
-        } catch (NumberFormatException ex) {
-            throw new OpenVpnParseException(Constants.CANNOT_PARSE_PORT_NUMBER, ex);
-        } catch (ParseException ex) {
-            throw new OpenVpnParseException(Constants.CANNOT_PARSE_DATE, ex);
-        } catch (UnknownHostException ex) {
-            throw new OpenVpnParseException(Constants.CANNOT_PARSE_HOSTNAME, ex);
+        } catch (NumberFormatException e) {
+            throw new OpenVpnParseException(Constants.CANNOT_PARSE_PORT_NUMBER, e);
+        } catch (ParseException e) {
+            throw new OpenVpnParseException(Constants.CANNOT_PARSE_DATE, e);
+        } catch (UnknownHostException e) {
+            throw new OpenVpnParseException(Constants.CANNOT_PARSE_HOSTNAME, e);
         }
     }
 
     @Override
     public boolean equals(Object obj) {
-        // TODO
+        // TODO:
         if (obj == null) {
             return false;
         }
@@ -96,7 +91,7 @@ public class OpenVpnRoute implements Route {
         hash = (79 * hash) + Objects.hashCode(mVirtualIpAddress);
         hash = (79 * hash) + Objects.hashCode(mCommonName);
         hash = (79 * hash) + Objects.hashCode(mRealIpAddress);
-        // TODO
+        // TODO:
         hash = (79 * hash) + Objects.hashCode(mLastRef);
         return hash;
     }

@@ -1,7 +1,6 @@
 package com.getsixtyfour.openvpnmgmt.core;
 
 /**
- * @author Arne Schwabe
  * @author 1951FDG
  */
 

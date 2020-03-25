@@ -7,8 +7,9 @@ package com.getsixtyfour.openvpnmgmt.android.core;
 
 /**
  * @author Arne Schwabe
+ * @author 1951FDG
  */
 
 interface IOpenVPNServiceInternal {
-    boolean stopVPN();
+    void stopVPN();
 }

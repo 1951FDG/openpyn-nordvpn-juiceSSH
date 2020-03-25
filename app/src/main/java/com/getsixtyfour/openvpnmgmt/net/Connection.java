@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.getsixtyfour.openvpnmgmt.net;
 
-import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.ByteCountListener;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.LogListener;
-import com.getsixtyfour.openvpnmgmt.listeners.StateManager.StateListener;
+import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.OnByteCountChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OnRecordChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.StateManager.OnStateChangedListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 
-@SuppressWarnings("unused")
 public interface Connection extends ConnectionBackground {
 
     @Nullable
@@ -35,17 +29,17 @@ public interface Connection extends ConnectionBackground {
 
     boolean isOpenVPNActive();
 
-    boolean addByteCountListener(@NotNull ByteCountListener listener);
+    boolean addByteCountListener(@NotNull OnByteCountChangedListener listener);
 
-    boolean addLogListener(@NotNull LogListener listener);
+    boolean addLogListener(@NotNull OnRecordChangedListener listener);
 
-    boolean addStateListener(@NotNull StateListener listener);
+    boolean addStateListener(@NotNull OnStateChangedListener listener);
 
-    boolean removeByteCountListener(@NotNull ByteCountListener listener);
+    boolean removeByteCountListener(@NotNull OnByteCountChangedListener listener);
 
-    boolean removeLogListener(@NotNull LogListener listener);
+    boolean removeLogListener(@NotNull OnRecordChangedListener listener);
 
-    boolean removeStateListener(@NotNull StateListener listener);
+    boolean removeStateListener(@NotNull OnStateChangedListener listener);
 
     void setConnectionListener(@Nullable ConnectionListener connectionListener);
 
