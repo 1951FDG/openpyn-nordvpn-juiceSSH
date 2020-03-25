@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources />
+<resources>
+    <dimen name="dialog_corner_radius_material">20dp</dimen>
+</resources>
