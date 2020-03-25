@@ -622,6 +622,16 @@
             <rule>
               <match>
                 <AND>
+                  <NAME>onCreatePreferences</NAME>
+                  <OVERRIDDEN />
+                </AND>
+              </match>
+            </rule>
+          </section>
+          <section>
+            <rule>
+              <match>
+                <AND>
                   <NAME>onCreateView</NAME>
                   <OVERRIDDEN />
                 </AND>
