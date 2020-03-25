@@ -13,7 +13,7 @@ import java.util.Set;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "UseOfObsoleteDateTimeApi" })
+@SuppressWarnings("UseOfObsoleteDateTimeApi")
 public interface Status {
 
     @NotNull

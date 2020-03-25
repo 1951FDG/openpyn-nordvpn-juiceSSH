@@ -150,10 +150,7 @@ fun <T : Activity> onSettingsItemSelected(activity: T, @Suppress("UNUSED_PARAMET
 }
 
 fun <T : AppCompatActivity> setProgressToolBar(
-    activity: T,
-    toolbar: ProgressToolbar,
-    showHomeAsUp: Boolean = false,
-    showTitle: Boolean = false
+    activity: T, toolbar: ProgressToolbar, showHomeAsUp: Boolean = false, showTitle: Boolean = false
 ) {
     toolbar.hideProgress()
     toolbar.isIndeterminate = true

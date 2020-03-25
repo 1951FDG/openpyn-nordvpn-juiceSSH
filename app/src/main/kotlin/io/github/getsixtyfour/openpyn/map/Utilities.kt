@@ -17,7 +17,6 @@ import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
 import com.antoniocarlon.map.CameraUpdateAnimator.Animation
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
-import io.github.getsixtyfour.security.SecurityManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -47,6 +46,7 @@ import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.getsixtyfour.openpyn.utils.THREAT
 import io.github.getsixtyfour.openpyn.utils.createJson2
+import io.github.getsixtyfour.security.SecurityManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.features.DefaultRequest

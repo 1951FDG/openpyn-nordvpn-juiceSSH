@@ -33,8 +33,8 @@ import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
 import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.OnByteCountChangedListener;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OpenVpnLogRecord;
 import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OnRecordChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OpenVpnLogRecord;
 import com.getsixtyfour.openvpnmgmt.listeners.StateManager.OnStateChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.StateManager.OpenVpnNetworkState;
 import com.getsixtyfour.openvpnmgmt.net.Connection;
@@ -58,7 +58,8 @@ import io.github.getsixtyfour.openpyn.R;
 
 @SuppressWarnings({ "OverlyComplexClass", "ClassWithTooManyDependencies" })
 public final class OpenVPNService extends Service
-        implements OnRecordChangedListener, OnStateChangedListener, OnByteCountChangedListener, ConnectionListener, UncaughtExceptionHandler {
+        implements OnRecordChangedListener, OnStateChangedListener, OnByteCountChangedListener, ConnectionListener,
+        UncaughtExceptionHandler {
 
     private static final String TAG = "OpenVPNService";
 
@@ -98,7 +99,7 @@ public final class OpenVPNService extends Service
      */
     private long mStartTime;
 
-    private boolean mDisplayByteCount = true;
+    private final boolean mDisplayByteCount = true;
 
     private boolean mPostNotification = false;
 
@@ -113,7 +114,6 @@ public final class OpenVPNService extends Service
         if (networkStatsManager != null) {
             long usage = recordUsage(networkStatsManager, start, end, uid, tag);
             Log.d(TAG, String.format("Usage: %s", humanReadableByteCount(context, usage, false))); //NON-NLS
-
             // long totalData = recordUsage(networkStatsManager, start, end, uid, NetworkStats.Bucket.TAG_NONE);
             // Log.d(TAG, String.format("App usage: %s", humanReadableByteCount(context, totalData, false))); //NON-NLS
         }
@@ -126,7 +126,6 @@ public final class OpenVPNService extends Service
             int networkType = ConnectivityManager.TYPE_WIFI;
             NetworkStats stats = networkStatsManager.queryDetailsForUidTag(networkType, "", startTime, endTime, uid, tag);
             totalUsage = getTotalUsage(stats);
-
         } catch (SecurityException e) {
             Log.e(TAG, "Exception querying network detail.", e); //NON-NLS
         }
@@ -528,24 +527,23 @@ public final class OpenVPNService extends Service
     private static Notification getNotification(@NonNull Context context, @NonNull String title, @NonNull String text,
                                                 @NonNull String channel, long when, @IdRes int icon) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel);
-            builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
-            builder.setContentText(text);
-            builder.setContentTitle(title);
-            builder.setLocalOnly(true);
-            builder.setOngoing(true);
-            builder.setOnlyAlertOnce(true);
-            builder.setShowWhen(false);
-            builder.setSmallIcon(icon);
-            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-            builder.setWhen(when);
-            if (BG_CHANNEL_ID.equals(channel)) {
-                Intent intent = new Intent(context, DisconnectVPN.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                // The notification action icons are still required and continue to be used on older versions of Android
-                builder.addAction(R.drawable.ic_close_white, context.getString(R.string.vpn_action_close), pendingIntent);
-                builder.setUsesChronometer(true);
-            }
-
+        builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+        builder.setContentText(text);
+        builder.setContentTitle(title);
+        builder.setLocalOnly(true);
+        builder.setOngoing(true);
+        builder.setOnlyAlertOnce(true);
+        builder.setShowWhen(false);
+        builder.setSmallIcon(icon);
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        builder.setWhen(when);
+        if (BG_CHANNEL_ID.equals(channel)) {
+            Intent intent = new Intent(context, DisconnectVPN.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            // The notification action icons are still required and continue to be used on older versions of Android
+            builder.addAction(R.drawable.ic_close_white, context.getString(R.string.vpn_action_close), pendingIntent);
+            builder.setUsesChronometer(true);
+        }
         return builder.build();
     }
 }

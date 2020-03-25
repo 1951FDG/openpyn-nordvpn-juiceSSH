@@ -45,6 +45,7 @@ public class TrafficHistory {
         list.add(new TrafficDataPoint(0L, 0L, System.currentTimeMillis()));
         return list;
     }
+
     // TODO: one with trafficpoint
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     public LastDiff add(long in, long out) {

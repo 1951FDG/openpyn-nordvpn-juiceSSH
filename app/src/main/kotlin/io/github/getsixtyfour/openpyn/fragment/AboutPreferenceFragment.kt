@@ -216,11 +216,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun getPreference(
-        context: Context,
-        titleResId: Int?,
-        summary: String?,
-        iconResId: Int?,
-        listener: OnPreferenceClickListener?
+        context: Context, titleResId: Int?, summary: String?, iconResId: Int?, listener: OnPreferenceClickListener?
     ): Preference {
         val preference = Preference(context)
         iconResId?.let { preference.icon = ContextCompat.getDrawable(context, it) }
@@ -231,12 +227,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun getSwitchPreference(
-        context: Context,
-        defaultValue: Boolean,
-        titleResId: Int?,
-        summary: String?,
-        iconResId: Int?,
-        listener: OnPreferenceChangeListener?
+        context: Context, defaultValue: Boolean, titleResId: Int?, summary: String?, iconResId: Int?, listener: OnPreferenceChangeListener?
     ): Preference {
         val preference = SwitchPreference(context)
         preference.setDefaultValue(defaultValue)

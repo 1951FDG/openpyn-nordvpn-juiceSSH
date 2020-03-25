@@ -91,7 +91,6 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     private lateinit var mFavorites: ArrayList<LazyMarker>
     private lateinit var mJsonArray: JSONArray
     private var mTileProvider: MapBoxOfflineTileProvider? = null
-
     @ObsoleteCoroutinesApi
     @ExperimentalCoroutinesApi
     private val mSendChannel = actor<Context>(coroutineContext, Channel.RENDEZVOUS) {

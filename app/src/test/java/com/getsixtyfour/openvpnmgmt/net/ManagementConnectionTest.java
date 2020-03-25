@@ -2,8 +2,8 @@ package com.getsixtyfour.openvpnmgmt.net;
 
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
 import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.OnByteCountChangedListener;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OpenVpnLogRecord;
 import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OnRecordChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OpenVpnLogRecord;
 
 import junit.framework.AssertionFailedError;
 
@@ -39,7 +39,6 @@ public class ManagementConnectionTest {
         Class[] argClasses = { String.class };
         Object[] argObjects = { line };
         @NonNls String methodName = "parseInput";
-
         invokeStaticMethod(targetClass, methodName, argClasses, argObjects);
     }
 

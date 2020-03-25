@@ -37,7 +37,7 @@ public final class EmailUtil {
 
         try {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, mailto);
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {config.emailAddress});
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ config.emailAddress });
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, config.emailSubject);
             emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
             ContextCompat.startActivity(activity, Intent.createChooser(emailIntent, "Send email..."), null);
