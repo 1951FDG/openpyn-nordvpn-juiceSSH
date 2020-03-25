@@ -13,7 +13,7 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections
  */
 @MainThread
 class ConnectionListLoader(
-    private val mCtx: Context, private val mLoaderFinishCallback: ConnectionListLoaderFinishedCallback
+    private val mCtx: Context, private val mListener: OnLoaderChangedListener
 ) : LoaderManager.LoaderCallbacks<Cursor> {
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
@@ -26,10 +26,15 @@ class ConnectionListLoader(
     }
 
     override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {
-        mLoaderFinishCallback.onLoaderFinished(data)
+        mListener.onLoaderChanged(data)
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>) {
-        mLoaderFinishCallback.onLoaderFinished(null)
+        mListener.onLoaderChanged(null)
+    }
+
+    interface OnLoaderChangedListener {
+
+        fun onLoaderChanged(newCursor: Cursor?)
     }
 }

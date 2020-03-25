@@ -55,7 +55,7 @@ import io.github.getsixtyfour.openpyn.utils.Toaster
 import io.github.getsixtyfour.openvpnmgmt.VPNAuthenticationHandler
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
-import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoaderFinishedCallback
+import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader.OnLoaderChangedListener
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
@@ -72,7 +72,7 @@ import java.util.Locale
 
 const val DELAY_MILLIS: Long = 10000
 
-class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, ConnectionListLoaderFinishedCallback, GDPR.IGDPRCallback,
+class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, OnLoaderChangedListener, GDPR.IGDPRCallback,
     OnClickListener, OnClientStartedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionFinishedListener,
     OnSessionStartedListener, PreferenceDialog.NoticeDialogListener, CoroutineScope by MainScope() {
 
@@ -242,10 +242,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
         }
     }
 
-    override fun onLoaderFinished(newCursor: Cursor?) {
-        mConnectionListAdapter.swapCursor(newCursor)
-    }
-
     override fun onConsentInfoUpdate(consentState: GDPRConsentState, isNewState: Boolean) {
         // consent is known, handle this
         info("ConsentState: ${consentState.logString()}")
@@ -346,6 +342,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, Conn
     }
 
     override fun onClientStarted() {
+
+    override fun onLoaderChanged(newCursor: Cursor?) {
+        mConnectionListAdapter?.swapCursor(newCursor)
     }
 
     override fun onClientStopped() {
