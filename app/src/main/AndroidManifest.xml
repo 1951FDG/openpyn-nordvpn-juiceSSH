@@ -69,7 +69,7 @@
             <!--android:theme="@style/MorphDialog.Custom.Light" />-->
         <!-- Private activity -->
         <activity
-            android:name="com.getsixtyfour.openvpnmgmt.android.core.DisconnectActivity"
+            android:name="com.getsixtyfour.openvpnmgmt.android.DisconnectActivity"
             android:excludeFromRecents="true"
             android:stateNotNeeded="true"
             android:exported="false"
@@ -81,7 +81,7 @@
             android:theme="@style/Theme.AlertDialogHost" />
         <!-- Private service -->
         <service
-            android:name="com.getsixtyfour.openvpnmgmt.android.core.OpenVpnService"
+            android:name="com.getsixtyfour.openvpnmgmt.android.OpenVpnService"
             android:label="@string/vpn_service_name"
             android:exported="false" />
         <!--

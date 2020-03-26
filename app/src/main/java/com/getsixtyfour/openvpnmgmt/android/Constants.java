@@ -1,4 +1,4 @@
-package com.getsixtyfour.openvpnmgmt.android.core;
+package com.getsixtyfour.openvpnmgmt.android;
 
 import org.jetbrains.annotations.NonNls;
 

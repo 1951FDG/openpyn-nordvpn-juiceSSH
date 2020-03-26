@@ -1,4 +1,4 @@
-package com.getsixtyfour.openvpnmgmt.android.core;
+package com.getsixtyfour.openvpnmgmt.android;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;

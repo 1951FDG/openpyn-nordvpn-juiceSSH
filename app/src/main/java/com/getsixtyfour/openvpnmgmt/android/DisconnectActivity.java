@@ -3,7 +3,7 @@
  * Distributed under the GNU GPL v2 with additional terms. For full terms see the file doc/LICENSE.txt
  */
 
-package com.getsixtyfour.openvpnmgmt.android.core;
+package com.getsixtyfour.openvpnmgmt.android;
 
 import android.app.Activity;
 import android.app.AlertDialog;
