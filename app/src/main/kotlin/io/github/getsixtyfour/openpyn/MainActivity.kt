@@ -119,7 +119,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         //         val host = VpnAuthenticationHandler.getHost(this)
         //         val port = VpnAuthenticationHandler.getPort(this)
         //         val bundle = Bundle().apply {
-        //             putBoolean(Constants.EXTRA_POST_NOTIFICATION, true)
+        //             putBoolean(Constants.EXTRA_POST_BYTE_COUNT_NOTIFICATION, true)
+        //             putBoolean(Constants.EXTRA_POST_STATE_NOTIFICATION, true)
         //             putString(Constants.EXTRA_HOST, host)
         //             putInt(Constants.EXTRA_PORT, port)
         //         }

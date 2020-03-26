@@ -1,7 +1,5 @@
 package com.getsixtyfour.openvpnmgmt.implementation;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.getsixtyfour.openvpnmgmt.api.Client;
 import com.getsixtyfour.openvpnmgmt.api.Route;
 import com.getsixtyfour.openvpnmgmt.api.Status;
@@ -9,6 +7,7 @@ import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

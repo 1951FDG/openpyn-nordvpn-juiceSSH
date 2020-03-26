@@ -41,6 +41,7 @@ public class TrafficHistory {
     public TrafficHistory() {
     }
 
+    @NotNull
     public static LinkedList<TrafficDataPoint> getDummyList() {
         LinkedList<TrafficDataPoint> list = new LinkedList<>();
         list.add(new TrafficDataPoint(0L, 0L, System.currentTimeMillis()));
@@ -75,14 +76,17 @@ public class TrafficHistory {
         return diff;
     }
 
+    @NotNull
     public List<TrafficDataPoint> getHours() {
         return Collections.unmodifiableList(mHours);
     }
 
+    @NotNull
     public List<TrafficDataPoint> getMinutes() {
         return Collections.unmodifiableList(mMinutes);
     }
 
+    @NotNull
     public List<TrafficDataPoint> getSeconds() {
         return Collections.unmodifiableList(mSeconds);
     }

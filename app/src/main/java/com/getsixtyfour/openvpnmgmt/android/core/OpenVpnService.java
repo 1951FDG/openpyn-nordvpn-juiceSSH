@@ -24,6 +24,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
 import com.getsixtyfour.openvpnmgmt.core.LogManager.OpenVpnLogRecord;
@@ -33,7 +34,6 @@ import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
-import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
@@ -44,8 +44,6 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Locale;
 
 import io.github.getsixtyfour.openpyn.R;
-
-// TODO: change listeners, move them to separate package maybe rename listeners IOpenVpnStateListener
 
 /**
  * @author 1951FDG
@@ -77,12 +75,12 @@ public final class OpenVpnService extends Service
         }
     };
 
-    private final boolean mDisplayByteCount = true;
+    private boolean mPostByteCountNotification = false;
 
-    private boolean mPostNotification = false;
+    private boolean mPostStateNotification = false;
 
     // TODO: test
-    private boolean mSendBroadcast = false;
+    private boolean mSendStateBroadcast = false;
 
     /**
      * the connection start time in UTC milliseconds (could be some time in the past)
@@ -181,8 +179,8 @@ public final class OpenVpnService extends Service
 
     @NonNull
     @SuppressWarnings({ "TypeMayBeWeakened", "MethodWithTooManyParameters" })
-    private static Notification getNotification(@NonNull Context context, @NonNull String title, @NonNull String text,
-                                                @NonNull String channel, long when, @IdRes int icon) {
+    private Notification getNotification(@NonNull Context context, @NonNull String title, @NonNull String text, @NonNull String channel,
+                                         long when, @IdRes int icon) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel);
         builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
         builder.setContentText(text);
@@ -194,7 +192,8 @@ public final class OpenVpnService extends Service
         builder.setSmallIcon(icon);
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.setWhen(when);
-        if (Constants.BG_CHANNEL_ID.equals(channel)) {
+
+        if (Constants.BG_CHANNEL_ID.equals(channel) || !mPostByteCountNotification) {
             Intent intent = new Intent(context, DisconnectActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             // The notification action icons are still required and continue to be used on older versions of Android
@@ -258,8 +257,9 @@ public final class OpenVpnService extends Service
             throw new IllegalArgumentException("intent can't be null");
         }
 
-        mPostNotification = intent.getBooleanExtra(Constants.EXTRA_POST_NOTIFICATION, false);
-        mSendBroadcast = intent.getBooleanExtra(Constants.EXTRA_SEND_BROADCAST, false);
+        mPostByteCountNotification = intent.getBooleanExtra(Constants.EXTRA_POST_BYTE_COUNT_NOTIFICATION, false);
+        mPostStateNotification = intent.getBooleanExtra(Constants.EXTRA_POST_STATE_NOTIFICATION, false);
+        mSendStateBroadcast = intent.getBooleanExtra(Constants.EXTRA_SEND_STATE_BROADCAST, false);
 
         String host = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_HOST), DEFAULT_REMOTE_SERVER);
         int port = intent.getIntExtra(Constants.EXTRA_PORT, DEFAULT_REMOTE_PORT);
@@ -270,7 +270,8 @@ public final class OpenVpnService extends Service
             String text = getString(R.string.vpn_msg_launch);
             String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_disconnected));
 
-            Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, 0L, icon);
+            Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, System.currentTimeMillis(),
+                    icon);
             startForeground(Constants.NEW_STATUS_CHANNEL_ID.hashCode(), notification);
         }
         // Connect the management interface in a background thread
@@ -338,22 +339,23 @@ public final class OpenVpnService extends Service
         }
     }
 
-    // TODO: make use mDisplayByteCount a settable option, must show disconnect then for status notifications...
     @Override
     public void onByteCountChanged(long in, long out, long diffIn, long diffOut) {
-        if (mDisplayByteCount) {
-            long byteCountInterval = ManagementConnection.BYTE_COUNT_INTERVAL.longValue();
-            String sIn = humanReadableByteCount(this, in, false);
-            String sDiffIn = humanReadableByteCount(this, diffIn / byteCountInterval, true);
-            String sOut = humanReadableByteCount(this, out, false);
-            String sDiffOut = humanReadableByteCount(this, diffOut / byteCountInterval, true);
-            int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_CONNECTED);
-            String text = getString(R.string.vpn_msg_byte_count, sIn, sDiffIn, sOut, sDiffOut);
-            String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_connected));
-
-            Notification notification = getNotification(this, title, text, Constants.BG_CHANNEL_ID, mStartTime, icon);
-            startForeground(Constants.BG_CHANNEL_ID.hashCode(), notification);
+        if (!mPostByteCountNotification) {
+            return;
         }
+
+        long byteCountInterval = ManagementConnection.BYTE_COUNT_INTERVAL.longValue();
+        String sIn = humanReadableByteCount(this, in, false);
+        String sDiffIn = humanReadableByteCount(this, diffIn / byteCountInterval, true);
+        String sOut = humanReadableByteCount(this, out, false);
+        String sDiffOut = humanReadableByteCount(this, diffOut / byteCountInterval, true);
+        int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_CONNECTED);
+        String text = getString(R.string.vpn_msg_byte_count, sIn, sDiffIn, sOut, sDiffOut);
+        String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_connected));
+
+        Notification notification = getNotification(this, title, text, Constants.BG_CHANNEL_ID, mStartTime, icon);
+        startForeground(Constants.BG_CHANNEL_ID.hashCode(), notification);
     }
 
     @Override
@@ -428,14 +430,17 @@ public final class OpenVpnService extends Service
         @NonNls String port = state.getRemotePort();
 
         ConnectionStatus level = VpnStatus.getLevel(name, message);
-        if (mSendBroadcast) {
+        boolean isConnected = level == ConnectionStatus.LEVEL_CONNECTED;
+
+        if (mSendStateBroadcast) {
             Utils.doSendBroadcast(this, name, message);
         }
-        if (mPostNotification) {
-            if (level == ConnectionStatus.LEVEL_CONNECTED) {
-                mStartTime = state.getMillis();
-            }
 
+        if (isConnected) {
+            mStartTime = state.getMillis();
+        }
+
+        if (mPostStateNotification || isConnected) {
             int icon = getIconByConnectionStatus(level);
             String text = message;
             String title = getString(R.string.vpn_title_status, getString(getLocalizedState(name)));
@@ -451,7 +456,7 @@ public final class OpenVpnService extends Service
                 text = prefix + address;
             }
 
-            Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, 0L, icon);
+            Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, state.getMillis(), icon);
             startForeground(Constants.NEW_STATUS_CHANNEL_ID.hashCode(), notification);
         }
     }

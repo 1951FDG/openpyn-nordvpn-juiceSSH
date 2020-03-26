@@ -36,10 +36,13 @@ public final class Constants {
     public static final String ACTION_VPN_STATE_CHANGED = INTENT_PACKAGE_PREFIX + ".action.VPN_STATE_CHANGED";
 
     @NonNls
-    public static final String EXTRA_POST_NOTIFICATION = INTENT_PACKAGE_PREFIX + ".extra.POST_NOTIFICATION";
+    public static final String EXTRA_POST_BYTE_COUNT_NOTIFICATION = INTENT_PACKAGE_PREFIX + ".extra.POST_BYTE_COUNT_NOTIFICATION";
 
     @NonNls
-    public static final String EXTRA_SEND_BROADCAST = INTENT_PACKAGE_PREFIX + ".extra.SEND_BROADCAST";
+    public static final String EXTRA_POST_STATE_NOTIFICATION = INTENT_PACKAGE_PREFIX + ".extra.POST_STATE_NOTIFICATION";
+
+    @NonNls
+    public static final String EXTRA_SEND_STATE_BROADCAST = INTENT_PACKAGE_PREFIX + ".extra.SEND_BROADCAST";
 
     @NonNls
     public static final String EXTRA_HOST = INTENT_PACKAGE_PREFIX + ".extra.HOST";
