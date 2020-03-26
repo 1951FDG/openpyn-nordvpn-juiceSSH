@@ -23,9 +23,6 @@ import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
 import java.util.UUID
 
-/**
- * Created by Seth on 04/03/18.
- */
 @MainThread
 class ConnectionManager(
     ctx: Context,

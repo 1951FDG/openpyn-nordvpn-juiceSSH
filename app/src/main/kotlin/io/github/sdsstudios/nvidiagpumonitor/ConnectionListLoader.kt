@@ -9,9 +9,6 @@ import androidx.loader.content.Loader
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnLoaderChangedListener
 
-/**
- * Created by Seth on 04/03/18.
- */
 @MainThread
 class ConnectionListLoader(
     private val mCtx: Context, private val mListener: OnLoaderChangedListener

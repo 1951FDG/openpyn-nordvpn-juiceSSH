@@ -12,9 +12,6 @@ import io.github.getsixtyfour.openpyn.R
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 
-/**
- * Created by Seth on 05/03/18.
- */
 @MainThread
 abstract class BaseController(
     protected val mCtx: Context, private val mLiveData: MutableLiveData<Int>

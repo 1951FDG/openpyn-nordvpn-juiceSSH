@@ -12,9 +12,6 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections
 import io.github.getsixtyfour.openpyn.R
 import java.util.UUID
 
-/**
- * Created by Seth on 04/03/18.
- */
 @MainThread
 class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
 
