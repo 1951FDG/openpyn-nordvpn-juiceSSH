@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.map.util
+package io.github.getsixtyfour.openpyn.utils
 
 import android.content.Context
 import android.content.SharedPreferences

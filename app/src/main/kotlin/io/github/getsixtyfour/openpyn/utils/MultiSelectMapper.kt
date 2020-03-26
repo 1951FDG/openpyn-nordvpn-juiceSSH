@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.map.util
+package io.github.getsixtyfour.openpyn.utils
 
 import com.abdeveloper.library.MultiSelectModelExtra
 import com.jayrave.moshi.pristineModels.Mapper

@@ -21,8 +21,8 @@ import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.logException
-import io.github.getsixtyfour.openpyn.map.util.MultiSelectMapper
-import io.github.getsixtyfour.openpyn.map.util.PrintArray
+import io.github.getsixtyfour.openpyn.utils.MultiSelectMapper
+import io.github.getsixtyfour.openpyn.utils.PrintArray
 import org.json.JSONArray
 import org.json.JSONException
 import java.io.File
@@ -179,7 +179,7 @@ internal fun createJsonArray(context: Context, id: Int, ext: String): JSONArray 
 }
 
 @Suppress("MagicNumber")
-fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
+internal fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
     val json = context.resources.openRawResource(id).bufferedReader().use { it.readText() }
     val factory = PristineModelsJsonAdapterFactory.Builder().also { it.add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
     val moshi = Moshi.Builder().add(factory.build()).add(object {

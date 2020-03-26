@@ -30,8 +30,8 @@ import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.map.util.LazyMarkerStorage
-import io.github.getsixtyfour.openpyn.map.util.PrintArray
-import io.github.getsixtyfour.openpyn.map.util.SubmitCallbackListener
+import io.github.getsixtyfour.openpyn.utils.PrintArray
+import io.github.getsixtyfour.openpyn.utils.SubmitCallbackListener
 import io.github.getsixtyfour.openpyn.map.util.createGeoJson
 import io.github.getsixtyfour.openpyn.map.util.createMarkers
 import io.github.getsixtyfour.openpyn.map.util.createUserMessage
