@@ -47,13 +47,13 @@
             android:title="@string/pref_log_level" />
         <Preference
             android:title="@string/title_openvpnmgmt"
-            app:fragment="io.github.getsixtyfour.openpyn.fragment.ManagementPreferenceFragment" />
+            app:fragment="io.github.getsixtyfour.openpyn.settings.ManagementPreferenceFragment" />
         <Preference
             android:title="@string/title_apis"
-            app:fragment="io.github.getsixtyfour.openpyn.fragment.ApiPreferenceFragment" />
+            app:fragment="io.github.getsixtyfour.openpyn.settings.ApiPreferenceFragment" />
         <Preference
             android:title="@string/title_about"
-            app:fragment="io.github.getsixtyfour.openpyn.fragment.AboutPreferenceFragment" />
+            app:fragment="io.github.getsixtyfour.openpyn.settings.AboutPreferenceFragment" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="pref_test"
