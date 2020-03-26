@@ -10,6 +10,6 @@ package com.getsixtyfour.openvpnmgmt.android.core;
  * @author 1951FDG
  */
 
-interface IOpenVPNServiceInternal {
-    void stopVPN();
+interface IOpenVpnServiceInternal {
+    void disconnectVpn();
 }

@@ -1,6 +1,7 @@
 package io.github.sdsstudios.nvidiagpumonitor.listeners
 
 interface OnOutputLineListener {
+
     fun spam(message: CharSequence)
     fun debug(message: CharSequence)
     fun verbose(message: CharSequence)

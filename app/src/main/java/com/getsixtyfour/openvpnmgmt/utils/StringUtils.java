@@ -118,36 +118,36 @@ public final class StringUtils {
      * @return String with escaped values, {@code null} if null string input
      */
     @Nullable
-    public static String escapeOpenVPN(@Nullable CharSequence cs) {
+    public static String escapeString(@Nullable CharSequence cs) {
         if (cs == null) {
             return null;
         }
         if (cs.length() == 0) {
             return "";
         }
-        return escapeOpenVPNStyleString(cs);
+        return escapeBashStyleString(cs);
     }
 
     /**
-     * <p>Worker method for the {@link #escapeOpenVPN(CharSequence)} method.</p>
+     * <p>Worker method for the {@link #escapeString(CharSequence)} method.</p>
      *
      * @param cs the CharSequence to escape values in, may be null
      * @return the escaped string
      */
-    private static String escapeOpenVPNStyleString(CharSequence cs) {
+    private static String escapeBashStyleString(CharSequence cs) {
         StringBuilder writer = new StringBuilder(cs.length() << 1);
-        escapeOpenVPNStyleString(writer, cs);
+        escapeBashStyleString(writer, cs);
         return writer.toString();
     }
 
     /**
-     * <p>Worker method for the {@link #escapeOpenVPN(CharSequence)} method.</p>
+     * <p>Worker method for the {@link #escapeString(CharSequence)} method.</p>
      *
      * @param out the StringBuilder to receive the escaped string
      * @param cs  the CharSequence to escape values in, may be null
      */
     @SuppressWarnings("MagicCharacter")
-    private static void escapeOpenVPNStyleString(StringBuilder out, CharSequence cs) {
+    private static void escapeBashStyleString(StringBuilder out, CharSequence cs) {
         int sz = cs.length();
         for (int i = 0; i < sz; i++) {
             char ch = cs.charAt(i);

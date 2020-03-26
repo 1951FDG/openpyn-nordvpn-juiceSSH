@@ -1,4 +1,4 @@
-package com.getsixtyfour.openvpnmgmt.android.constant;
+package com.getsixtyfour.openvpnmgmt.android.core;
 
 import org.jetbrains.annotations.NonNls;
 
@@ -7,7 +7,21 @@ import org.jetbrains.annotations.NonNls;
  */
 
 @SuppressWarnings("UtilityClass")
-public final class IntentConstants {
+public final class Constants {
+
+    @SuppressWarnings("WeakerAccess")
+    @NonNls
+    public static final String BG_CHANNEL_ID = "openvpn_bg";
+
+    @SuppressWarnings("WeakerAccess")
+    @NonNls
+    public static final String NEW_STATUS_CHANNEL_ID = "openvpn_newstat";
+
+    @SuppressWarnings("WeakerAccess")
+    public static final String THREAD_NAME = "OpenVPNManagementThread";
+
+    @SuppressWarnings("WeakerAccess")
+    public static final int THREAD_STATS_TAG = 0x42;
 
     @NonNls
     private static final String INTENT_PACKAGE_PREFIX = "com.getsixtyfour.openvpnmgmt.android";
@@ -39,6 +53,6 @@ public final class IntentConstants {
     @NonNls
     public static final String ACTION_START_SERVICE_STICKY = INTENT_PACKAGE_PREFIX + ".action.START_SERVICE_STICKY";
 
-    private IntentConstants() {
+    private Constants() {
     }
 }

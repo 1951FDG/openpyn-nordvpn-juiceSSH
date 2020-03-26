@@ -21,7 +21,6 @@ import java.util.Locale;
  * @author 1951FDG
  */
 
-// TODO: time api
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
 public class OpenVpnClient implements Client {
 

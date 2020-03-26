@@ -5,6 +5,8 @@
 
 package com.getsixtyfour.openvpnmgmt.core;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -16,9 +18,6 @@ import java.util.List;
  */
 
 public class TrafficHistory {
-
-    public TrafficHistory() {
-    }
 
     @SuppressWarnings("WeakerAccess")
     public static final long PERIODS_TO_KEEP = 5L;
@@ -39,18 +38,33 @@ public class TrafficHistory {
 
     private TrafficDataPoint mLastSecondUsedForMinute;
 
-    @SuppressWarnings("unused")
+    public TrafficHistory() {
+    }
+
     public static LinkedList<TrafficDataPoint> getDummyList() {
         LinkedList<TrafficDataPoint> list = new LinkedList<>();
         list.add(new TrafficDataPoint(0L, 0L, System.currentTimeMillis()));
         return list;
     }
 
-    // TODO: one with trafficpoint
+    @NotNull
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     public LastDiff add(long in, long out) {
         TrafficDataPoint tdp = new TrafficDataPoint(in, out, System.currentTimeMillis());
-        TrafficDataPoint lastTdp = mSeconds.isEmpty() ? new TrafficDataPoint(0L, 0L, System.currentTimeMillis()) : mSeconds.getLast();
+        return add(tdp);
+    }
+
+    @NotNull
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+    public LastDiff add(long in, long out, long timestamp) {
+        TrafficDataPoint tdp = new TrafficDataPoint(in, out, timestamp);
+        return add(tdp);
+    }
+
+    @NotNull
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+    public LastDiff add(@NotNull TrafficDataPoint tdp) {
+        TrafficDataPoint lastTdp = mSeconds.isEmpty() ? new TrafficDataPoint(0L, 0L, tdp.mTimestamp) : mSeconds.getLast();
         LastDiff diff = new LastDiff(lastTdp, tdp);
         mSeconds.add(tdp);
         if (mLastSecondUsedForMinute == null) {
@@ -61,17 +75,14 @@ public class TrafficHistory {
         return diff;
     }
 
-    @SuppressWarnings("unused")
     public List<TrafficDataPoint> getHours() {
         return Collections.unmodifiableList(mHours);
     }
 
-    @SuppressWarnings("unused")
     public List<TrafficDataPoint> getMinutes() {
         return Collections.unmodifiableList(mMinutes);
     }
 
-    @SuppressWarnings("unused")
     public List<TrafficDataPoint> getSeconds() {
         return Collections.unmodifiableList(mSeconds);
     }

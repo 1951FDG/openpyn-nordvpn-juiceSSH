@@ -24,11 +24,11 @@ public class StringUtilsTest {
     private final String mOriginal = "fQDaoFx\\Fi\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^";
 
     /**
-     * Test of escapeOpenVPN method, of class StringUtils.
+     * Test of escapeString method, of class StringUtils.
      */
     @Test
-    public void testEscapeOpenVPN() {
-        LOGGER.info("escapeOpenVPN");
-        Assert.assertEquals(mExpected, StringUtils.escapeOpenVPN(mOriginal));
+    public void testEscapeString() {
+        LOGGER.info("escapeString");
+        Assert.assertEquals(mExpected, StringUtils.escapeString(mOriginal));
     }
 }

@@ -20,8 +20,8 @@ import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-import com.getsixtyfour.openvpnmgmt.android.VPNLaunchHelper.doStartService
-import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants
+import com.getsixtyfour.openvpnmgmt.android.core.Utils.doStartService
+import com.getsixtyfour.openvpnmgmt.android.core.Constants
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -47,12 +47,12 @@ import io.github.getsixtyfour.ktextension.verifySigningCertificate
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog.NoticeDialogListener
 import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
 import io.github.getsixtyfour.openpyn.utils.Toaster
-import io.github.getsixtyfour.openvpnmgmt.VPNAuthenticationHandler
+import io.github.getsixtyfour.openvpnmgmt.VpnAuthenticationHandler
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
-import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader.OnLoaderChangedListener
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
+import io.github.sdsstudios.nvidiagpumonitor.listeners.OnLoaderChangedListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.container
 import kotlinx.android.synthetic.main.activity_main.spinner
@@ -115,13 +115,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         //     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         //     val openvpnmgmt = preferences.getBoolean(this.getString(R.string.pref_openvpnmgmt_key), false)
         //     if (openvpnmgmt) {
-        //         val handler = VPNAuthenticationHandler(this)
-        //         val host = VPNAuthenticationHandler.getHost(this)
-        //         val port = VPNAuthenticationHandler.getPort(this)
+        //         val handler = VpnAuthenticationHandler(this)
+        //         val host = VpnAuthenticationHandler.getHost(this)
+        //         val port = VpnAuthenticationHandler.getPort(this)
         //         val bundle = Bundle().apply {
-        //             putBoolean(IntentConstants.EXTRA_POST_NOTIFICATION, true)
-        //             putString(IntentConstants.EXTRA_HOST, host)
-        //             putInt(IntentConstants.EXTRA_PORT, port)
+        //             putBoolean(Constants.EXTRA_POST_NOTIFICATION, true)
+        //             putString(Constants.EXTRA_HOST, host)
+        //             putInt(Constants.EXTRA_PORT, port)
         //         }
         //         // TODO: do this elsewhere e.g. in Service, add missing intent extras and create handler in Service
         //         val connection = ManagementConnection.getInstance()

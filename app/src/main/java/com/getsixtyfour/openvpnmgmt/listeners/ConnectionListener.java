@@ -1,4 +1,4 @@
-package com.getsixtyfour.openvpnmgmt.net;
+package com.getsixtyfour.openvpnmgmt.listeners;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,20 +1,22 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
+import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.api.Status;
+import com.getsixtyfour.openvpnmgmt.core.ByteCountManager;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
+import com.getsixtyfour.openvpnmgmt.core.LogManager;
+import com.getsixtyfour.openvpnmgmt.core.LogManager.OpenVpnLogRecord;
+import com.getsixtyfour.openvpnmgmt.core.StateManager;
+import com.getsixtyfour.openvpnmgmt.core.StateManager.OpenVpnNetworkState;
 import com.getsixtyfour.openvpnmgmt.core.TrafficHistory.TrafficDataPoint;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 import com.getsixtyfour.openvpnmgmt.implementation.OpenVpnStatus;
-import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager;
-import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.OnByteCountChangedListener;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OnRecordChangedListener;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OpenVpnLogRecord;
-import com.getsixtyfour.openvpnmgmt.listeners.StateManager;
-import com.getsixtyfour.openvpnmgmt.listeners.StateManager.OnStateChangedListener;
-import com.getsixtyfour.openvpnmgmt.listeners.StateManager.OpenVpnNetworkState;
+import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
+import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
 import org.jetbrains.annotations.NonNls;
@@ -40,25 +42,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     public static final Integer BYTE_COUNT_INTERVAL = 2;
 
-    private static final String ARG_INTERACT = "interact";
-
-    private static final String ARG_ON = " on";
-
-    private static final String ARG_RELEASE = " release";
-
-    private static final String ARG_SIGTERM = "SIGTERM";
-
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
-
-    @NonNls
-    private static final String NOT_SUPPORTED_YET = "Not supported yet";
-
-    @NonNls
-    private static final String SOCKET_IS_NOT_CONNECTED = "Socket is not connected";
-
-    @NonNls
-    private static final String STREAM_CLOSED = "Stream closed";
 
     private static volatile ManagementConnection sInstance = null;
 
@@ -112,7 +97,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             try {
                 super.connect(host, port);
                 // TODO: may cause crash, must process here, since run is still running
-                // Ensures state listeners are notified of current state if VPN is already connected
+                // Ensures state listeners are notified of current state if OpenVPN is already connected
                 {
                     String result = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
                     String[] lines = result.split(System.lineSeparator());
@@ -122,8 +107,10 @@ public final class ManagementConnection extends AbstractConnection implements Co
                     }
                 }
                 onConnected();
+            } catch (IOException e) {
+                onConnectError(e);
+                throw e;
             } catch (Exception e) {
-                // TODO : do another catch on IO
                 onConnectError(e);
                 throw new IOException(e);
             }
@@ -143,7 +130,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     @Override
     public String executeCommand(@NotNull String command) throws IOException {
         if (!isConnected()) {
-            throw new IOException(SOCKET_IS_NOT_CONNECTED);
+            throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
         }
         StringBuilder sb = new StringBuilder(256);
         BufferedReader in = getBufferedReader();
@@ -171,15 +158,15 @@ public final class ManagementConnection extends AbstractConnection implements Co
         String result = executeCommand(Commands.VERSION_COMMAND);
         String[] lines = result.split(System.lineSeparator());
         String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
-        if (!line.isEmpty() && line.startsWith(Strings.MANAGEMENT_VERSION_PREFIX)) {
-            return line.substring(Strings.MANAGEMENT_VERSION_PREFIX.length() + 1);
+        if (!line.isEmpty() && line.startsWith(Constants.MANAGEMENT_VERSION_PREFIX)) {
+            return line.substring(Constants.MANAGEMENT_VERSION_PREFIX.length() + 1);
         }
         return "";
     }
 
     @NotNull
     @Override
-    public Status getOpenVPNStatus() throws IOException {
+    public Status getVpnStatus() throws IOException {
         String output = executeCommand(Commands.STATUS_COMMAND);
         OpenVpnStatus ovs = new OpenVpnStatus();
         try {
@@ -192,18 +179,18 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @NotNull
     @Override
-    public String getOpenVPNVersion() throws IOException {
+    public String getVpnVersion() throws IOException {
         String result = executeCommand(Commands.VERSION_COMMAND);
         String[] lines = result.split(System.lineSeparator());
         String line = (lines.length >= 2) ? lines[lines.length - 2] : "";
-        if (!line.isEmpty() && line.startsWith(Strings.OPEN_VPN_VERSION_PREFIX)) {
-            return line.substring(Strings.OPEN_VPN_VERSION_PREFIX.length() + 1);
+        if (!line.isEmpty() && line.startsWith(Constants.OPEN_VPN_VERSION_PREFIX)) {
+            return line.substring(Constants.OPEN_VPN_VERSION_PREFIX.length() + 1);
         }
         return "";
     }
 
     @Override
-    public boolean isOpenVPNActive() {
+    public boolean isVpnActive() {
         return (mLastLevel != ConnectionStatus.LEVEL_NOT_CONNECTED) && (mLastLevel != ConnectionStatus.LEVEL_AUTH_FAILED);
     }
 
@@ -228,15 +215,15 @@ public final class ManagementConnection extends AbstractConnection implements Co
         if (!isConnected()) {
             // UncheckedIOException requires Android N
             //noinspection ProhibitedExceptionThrown
-            throw new RuntimeException(new IOException(SOCKET_IS_NOT_CONNECTED));
+            throw new RuntimeException(new IOException(Constants.SOCKET_IS_NOT_CONNECTED));
         }
         {
             try {
                 // managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, ARG_INTERACT));
                 managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
-                managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ARG_ON));
-                managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, ARG_ON));
-                managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, ARG_RELEASE));
+                managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Constants.ARG_ON));
+                managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, Constants.ARG_ON));
+                managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, Constants.ARG_RELEASE));
                 BufferedReader in = getBufferedReader();
                 String line;
                 while ((line = in.readLine()) != null) {
@@ -246,7 +233,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                     }
                 }
             } catch (IOException e) {
-                if (!STREAM_CLOSED.equals(e.getMessage())) {
+                if (!Constants.STREAM_CLOSED.equals(e.getMessage())) {
                     LOGGER.error("", e);
                 }
             }
@@ -271,13 +258,13 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @Override
-    public void stopOpenVPN() throws IOException {
-        managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, ARG_SIGTERM));
+    public void stopVpn() throws IOException {
+        managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, Constants.ARG_SIGTERM));
     }
 
     private void managementCommand(String command) throws IOException {
         if (!isConnected()) {
-            throw new IOException(SOCKET_IS_NOT_CONNECTED);
+            throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
         }
         BufferedWriter out = getBufferedWriter();
         out.write(command);
@@ -326,9 +313,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 LOGGER.error("Could not parse line: {}", line);
                 throw new IOException(e);
             }
-        } else if (line.startsWith(Strings.SUCCESS_PREFIX)) {
+        } else if (line.startsWith(Constants.SUCCESS_PREFIX)) {
             LOGGER.info(line);
-        } else if (line.startsWith(Strings.ERROR_PREFIX)) {
+        } else if (line.startsWith(Constants.ERROR_PREFIX)) {
             // TODO:
             LOGGER.error(line);
             // throw new IOException(STREAM_CLOSED);
@@ -378,7 +365,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             case "PK_SIGN":
             case "PROXY":
             case "RSA_SIGN":
-                throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
+                throw new UnsupportedOperationException(Constants.NOT_SUPPORTED_YET);
             default:
                 LOGGER.error("Got unrecognized command: {}", cmd);
                 break;
@@ -396,12 +383,13 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void processHold(String argument) throws IOException {
         // Close connection if AUTH has failed
-        if (argument.startsWith(Strings.WAITING_FOR_HOLD_RELEASE_PREFIX) && (mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED)) {
+        if (argument.startsWith(Constants.WAITING_FOR_HOLD_RELEASE_PREFIX) && (mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED)) {
             LOGGER.error("Verification Error");
-            throw new IOException(STREAM_CLOSED);
+            throw new IOException(Constants.STREAM_CLOSED);
         }
     }
 
+    @SuppressWarnings("OverlyLongMethod")
     private void processLog(String argument) {
         String[] args = argument.split(",", 3);
         String time = args[0];
@@ -427,31 +415,34 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 // D -- debug
                 logLevel = LogLevel.DEBUG;
                 break;
-            default:
-                LOGGER.error("Unknown log level {} for message {}", level, message);
+            case "":
                 logLevel = LogLevel.VERBOSE;
                 break;
+            default:
+                LOGGER.error("Unknown log level {} for message {}", level, message);
+                logLevel = LogLevel.UNKNOWN;
+                break;
         }
-        if (message.startsWith(Strings.MANAGEMENT_CMD_PREFIX)) {
+        if (message.startsWith(Constants.MANAGEMENT_CMD_PREFIX)) {
             logLevel = LogLevel.VERBOSE;
-        } else if (message.startsWith(Strings.WARNING_PREFIX)) {
+        } else if (message.startsWith(Constants.WARNING_PREFIX)) {
             logLevel = LogLevel.WARNING;
-            message = message.substring(Strings.WARNING_PREFIX.length() + 1);
-        } else if (message.startsWith(Strings.NOTE_PREFIX)) {
-            message = message.substring(Strings.NOTE_PREFIX.length() + 1);
+            message = message.substring(Constants.WARNING_PREFIX.length() + 1);
+        } else if (message.startsWith(Constants.NOTE_PREFIX)) {
+            message = message.substring(Constants.NOTE_PREFIX.length() + 1);
         }
         mLogManager.setRecord(new OpenVpnLogRecord(time, logLevel, message));
     }
 
     private void processPassword(String argument) throws IOException {
         // Ignore Auth token message, already managed by OpenVPN itself
-        if (argument.startsWith(Strings.AUTH_TOKEN_PREFIX)) {
+        if (argument.startsWith(Constants.AUTH_TOKEN_PREFIX)) {
             return;
         }
-        if (argument.startsWith(Strings.VERIFICATION_FAILED_PREFIX)) {
+        if (argument.startsWith(Constants.VERIFICATION_FAILED_PREFIX)) {
             return;
         }
-        if (argument.startsWith(Strings.NEED_PREFIX)) {
+        if (argument.startsWith(Constants.NEED_PREFIX)) {
             String s = "\'";
             int p1 = argument.indexOf(s);
             int p2 = argument.indexOf(s, p1 + 1);
@@ -465,15 +456,15 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 handlerPassword = handler.getUserPass();
             }
 
-            String username = StringUtils.isBlank(handlerUsername) ? "..." : StringUtils.escapeOpenVPN(handlerUsername);
-            String password = StringUtils.isBlank(handlerPassword) ? "..." : StringUtils.escapeOpenVPN(handlerPassword);
+            String username = StringUtils.isBlank(handlerUsername) ? "..." : StringUtils.escapeString(handlerUsername);
+            String password = StringUtils.isBlank(handlerPassword) ? "..." : StringUtils.escapeString(handlerPassword);
             if ("Auth".equals(type)) {
                 managementCommand(String.format(Locale.ROOT, Commands.USERNAME_COMMAND, type, username));
                 managementCommand(String.format(Locale.ROOT, Commands.PASSWORD_COMMAND, type, password));
             } else if ("Private Key".equals(type)) {
                 managementCommand(String.format(Locale.ROOT, Commands.PASSWORD_COMMAND, type, password));
             } else {
-                throw new UnsupportedOperationException(NOT_SUPPORTED_YET);
+                throw new UnsupportedOperationException(Constants.NOT_SUPPORTED_YET);
             }
         }
     }

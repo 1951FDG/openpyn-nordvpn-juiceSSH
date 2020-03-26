@@ -7,6 +7,7 @@ import androidx.annotation.MainThread
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections
+import io.github.sdsstudios.nvidiagpumonitor.listeners.OnLoaderChangedListener
 
 /**
  * Created by Seth on 04/03/18.
@@ -31,10 +32,5 @@ class ConnectionListLoader(
 
     override fun onLoaderReset(loader: Loader<Cursor>) {
         mListener.onLoaderChanged(null)
-    }
-
-    interface OnLoaderChangedListener {
-
-        fun onLoaderChanged(newCursor: Cursor?)
     }
 }

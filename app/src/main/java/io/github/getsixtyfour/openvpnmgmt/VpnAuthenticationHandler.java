@@ -15,11 +15,11 @@ import io.github.getsixtyfour.security.SecurityManager;
  * @author 1951FDG
  */
 
-public final class VPNAuthenticationHandler implements UsernamePasswordHandler {
+public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
 
     private final Context mContext;
 
-    public VPNAuthenticationHandler(@NonNull Context context) {
+    public VpnAuthenticationHandler(@NonNull Context context) {
         mContext = context.getApplicationContext();
     }
 

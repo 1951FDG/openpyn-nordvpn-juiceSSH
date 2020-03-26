@@ -1,6 +1,7 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
 import com.getsixtyfour.openvpnmgmt.api.Client;
+import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.api.Route;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 
@@ -101,29 +102,29 @@ public class ConnectionTest {
     }
 
     /**
-     * Test of getOpenVPNVersion method, of class Connection.
+     * Test of getVpnVersion method, of class Connection.
      */
     @Test
-    public void testGetOpenVPNVersion() throws IOException {
-        LOGGER.info("getOpenVPNVersion");
+    public void testGetVpnVersion() throws IOException {
+        LOGGER.info("getVpnVersion");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort);
         }
-        String result = sConnection.getOpenVPNVersion();
+        String result = sConnection.getVpnVersion();
         Assert.assertNotEquals("", result);
         LOGGER.info(result);
     }
 
     /**
-     * Test of getOpenVPNStatus method, of class Connection.
+     * Test of getVpnStatus method, of class Connection.
      */
     @Test
-    public void testGetStatus() throws IOException {
-        LOGGER.info("getOpenVPNStatus");
+    public void testGetVpnStatus() throws IOException {
+        LOGGER.info("getVpnStatus");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort);
         }
-        Status result = sConnection.getOpenVPNStatus();
+        Status result = sConnection.getVpnStatus();
         Assert.assertNotNull(result.getUpdateTime());
         List<Client> clientList = result.getClients();
         Assert.assertFalse(clientList.isEmpty());
@@ -134,12 +135,12 @@ public class ConnectionTest {
     }
 
     /**
-     * Test of isOpenVPNActive method, of class Connection.
+     * Test of isVpnActive method, of class Connection.
      */
     @Test
-    public void testIsOpenVPNActive() {
-        LOGGER.info("isOpenVPNActive");
-        Assert.assertFalse(sConnection.isOpenVPNActive());
+    public void testIsVpnActive() {
+        LOGGER.info("isVpnActive");
+        Assert.assertFalse(sConnection.isVpnActive());
     }
 
     /**
@@ -156,15 +157,15 @@ public class ConnectionTest {
     }
 
     /**
-     * Test of stopOpenVPN method, of class Connection.
+     * Test of stopVpn method, of class Connection.
      */
     @Test
-    public void testStopOpenVPN() throws IOException {
-        LOGGER.info("stopOpenVPN");
+    public void testStopVpn() throws IOException {
+        LOGGER.info("stopVpn");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort);
         }
         Assert.assertTrue(sConnection.isConnected());
-        sConnection.stopOpenVPN();
+        sConnection.stopVpn();
     }
 }

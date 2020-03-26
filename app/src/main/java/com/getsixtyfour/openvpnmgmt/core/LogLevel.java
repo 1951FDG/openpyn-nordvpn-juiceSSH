@@ -9,5 +9,6 @@ public enum LogLevel {
     WARNING,
     INFO,
     DEBUG,
-    VERBOSE
+    VERBOSE,
+    UNKNOWN
 }

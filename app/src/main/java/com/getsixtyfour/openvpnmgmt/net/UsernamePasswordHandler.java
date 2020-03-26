@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
  * @author 1951FDG
  */
 
-@SuppressWarnings("WeakerAccess")
 public interface UsernamePasswordHandler {
 
     @NotNull

@@ -1,8 +1,8 @@
-package com.getsixtyfour.openvpnmgmt.listeners;
+package com.getsixtyfour.openvpnmgmt.core;
 
-import com.getsixtyfour.openvpnmgmt.core.TrafficHistory;
 import com.getsixtyfour.openvpnmgmt.core.TrafficHistory.LastDiff;
 import com.getsixtyfour.openvpnmgmt.core.TrafficHistory.TrafficDataPoint;
+import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,16 +40,9 @@ public class ByteCountManager {
     private void notifyListeners() {
         long in = mTrafficDataPoint.mInBytes;
         long out = mTrafficDataPoint.mOutBytes;
-        LastDiff diff = mTrafficHistory.add(in, out);
+        LastDiff diff = mTrafficHistory.add(mTrafficDataPoint);
         for (OnByteCountChangedListener listener : mListeners) {
             listener.onByteCountChanged(in, out, diff.getDiffIn(), diff.getDiffOut());
         }
-    }
-
-    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
-    @FunctionalInterface
-    public interface OnByteCountChangedListener {
-
-        void onByteCountChanged(long in, long out, long diffIn, long diffOut);
     }
 }

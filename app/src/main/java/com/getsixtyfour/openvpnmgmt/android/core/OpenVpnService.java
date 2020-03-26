@@ -5,12 +5,9 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.app.usage.NetworkStats;
-import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
 import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Handler;
@@ -27,18 +24,16 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.getsixtyfour.openvpnmgmt.android.activities.DisconnectVPN;
-import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
+import com.getsixtyfour.openvpnmgmt.core.LogManager.OpenVpnLogRecord;
+import com.getsixtyfour.openvpnmgmt.core.StateManager.OpenVpnNetworkState;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
-import com.getsixtyfour.openvpnmgmt.listeners.ByteCountManager.OnByteCountChangedListener;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OnRecordChangedListener;
-import com.getsixtyfour.openvpnmgmt.listeners.LogManager.OpenVpnLogRecord;
-import com.getsixtyfour.openvpnmgmt.listeners.StateManager.OnStateChangedListener;
-import com.getsixtyfour.openvpnmgmt.listeners.StateManager.OpenVpnNetworkState;
-import com.getsixtyfour.openvpnmgmt.net.Connection;
-import com.getsixtyfour.openvpnmgmt.net.ConnectionListener;
+import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
+import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
+import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
+import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
@@ -57,35 +52,23 @@ import io.github.getsixtyfour.openpyn.R;
  */
 
 @SuppressWarnings({ "OverlyComplexClass", "ClassWithTooManyDependencies" })
-public final class OpenVPNService extends Service
+public final class OpenVpnService extends Service
         implements OnRecordChangedListener, OnStateChangedListener, OnByteCountChangedListener, ConnectionListener,
         UncaughtExceptionHandler {
 
-    private static final String TAG = "OpenVPNService";
-
-    @SuppressWarnings("WeakerAccess")
-    @NonNls
-    public static final String BG_CHANNEL_ID = "openvpn_bg";
-
-    @SuppressWarnings("WeakerAccess")
-    @NonNls
-    public static final String NEW_STATUS_CHANNEL_ID = "openvpn_newstat";
+    private static final String TAG = "OpenVpnService";
 
     private static final int DEFAULT_REMOTE_PORT = 23;
 
     private static final String DEFAULT_REMOTE_SERVER = "127.0.0.1";
 
-    private static final String THREAD_NAME = "OpenVPNManagementThread";
-
-    private static final int NETWORK_TAG = 0x42;
-
-    private final IBinder mBinder = new IOpenVPNServiceInternal.Stub() {
+    private final IBinder mBinder = new IOpenVpnServiceInternal.Stub() {
         @Override
-        public void stopVPN() {
+        public void disconnectVpn() {
             try {
                 Connection connection = ManagementConnection.getInstance();
                 if (connection.isConnected()) {
-                    connection.stopOpenVPN();
+                    connection.stopVpn();
                 }
             } catch (IOException e) {
                 //noinspection ProhibitedExceptionThrown
@@ -94,59 +77,22 @@ public final class OpenVPNService extends Service
         }
     };
 
+    private final boolean mDisplayByteCount = true;
+
+    private boolean mPostNotification = false;
+
+    // TODO: test
+    private boolean mSendBroadcast = false;
+
     /**
      * the connection start time in UTC milliseconds (could be some time in the past)
      */
     private long mStartTime;
 
-    private final boolean mDisplayByteCount = true;
-
-    private boolean mPostNotification = false;
-
-    private boolean mSendBroadcast = false;
-
     @Nullable
     private Thread mThread = null;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private static void logUsage(Context context, long start, long end, int uid, int tag) {
-        NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
-        if (networkStatsManager != null) {
-            long usage = recordUsage(networkStatsManager, start, end, uid, tag);
-            Log.d(TAG, String.format("Usage: %s", humanReadableByteCount(context, usage, false))); //NON-NLS
-            // long totalData = recordUsage(networkStatsManager, start, end, uid, NetworkStats.Bucket.TAG_NONE);
-            // Log.d(TAG, String.format("App usage: %s", humanReadableByteCount(context, totalData, false))); //NON-NLS
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private static long recordUsage(@NonNull NetworkStatsManager networkStatsManager, long startTime, long endTime, int uid, int tag) {
-        long totalUsage = 0L;
-        try {
-            int networkType = ConnectivityManager.TYPE_WIFI;
-            NetworkStats stats = networkStatsManager.queryDetailsForUidTag(networkType, "", startTime, endTime, uid, tag);
-            totalUsage = getTotalUsage(stats);
-        } catch (SecurityException e) {
-            Log.e(TAG, "Exception querying network detail.", e); //NON-NLS
-        }
-        return totalUsage;
-    }
-
-    @SuppressWarnings("MethodCallInLoopCondition")
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private static long getTotalUsage(@Nullable NetworkStats stats) {
-        long bytes = 0L;
-        if (stats != null) {
-            NetworkStats.Bucket bucket = new NetworkStats.Bucket();
-            while (stats.hasNextBucket() && stats.getNextBucket(bucket)) {
-                bytes += bucket.getRxBytes() + bucket.getTxBytes();
-            }
-            stats.close();
-        }
-        return bytes;
-    }
-
-    @SuppressWarnings("MethodWithMultipleReturnPoints")
+    @SuppressWarnings({ "MethodWithMultipleReturnPoints", "WeakerAccess" })
     public static int getIconByConnectionStatus(@NonNull ConnectionStatus level) {
         switch (level) {
             case LEVEL_CONNECTED:
@@ -162,7 +108,7 @@ public final class OpenVPNService extends Service
         }
     }
 
-    @SuppressWarnings({ "MethodWithMultipleReturnPoints", "OverlyComplexMethod", "OverlyLongMethod" })
+    @SuppressWarnings({ "MethodWithMultipleReturnPoints", "OverlyComplexMethod", "OverlyLongMethod", "WeakerAccess" })
     public static int getLocalizedState(@NonNull String state) {
         switch (state) {
             case VpnStatus.ADD_ROUTES:
@@ -199,7 +145,7 @@ public final class OpenVPNService extends Service
     }
 
     @NonNull
-    @SuppressWarnings({ "OverlyComplexMethod", "MagicNumber", "ImplicitNumericConversion", "BooleanParameter" })
+    @SuppressWarnings({ "OverlyComplexMethod", "MagicNumber", "ImplicitNumericConversion", "BooleanParameter", "WeakerAccess" })
     public static String humanReadableByteCount(@NonNull Context context, long bytes, boolean speed) {
         Resources res = context.getResources();
         float unit = speed ? 1000.0F : 1024.0F;
@@ -233,6 +179,54 @@ public final class OpenVPNService extends Service
         return res.getString(R.string.byteSizeSuffix, roundedString, units);
     }
 
+    @NonNull
+    @SuppressWarnings({ "TypeMayBeWeakened", "MethodWithTooManyParameters" })
+    private static Notification getNotification(@NonNull Context context, @NonNull String title, @NonNull String text,
+                                                @NonNull String channel, long when, @IdRes int icon) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel);
+        builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+        builder.setContentText(text);
+        builder.setContentTitle(title);
+        builder.setLocalOnly(true);
+        builder.setOngoing(true);
+        builder.setOnlyAlertOnce(true);
+        builder.setShowWhen(false);
+        builder.setSmallIcon(icon);
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        builder.setWhen(when);
+        if (Constants.BG_CHANNEL_ID.equals(channel)) {
+            Intent intent = new Intent(context, DisconnectActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            // The notification action icons are still required and continue to be used on older versions of Android
+            builder.addAction(R.drawable.ic_close_white, context.getString(R.string.vpn_action_close), pendingIntent);
+            builder.setUsesChronometer(true);
+        }
+        return builder.build();
+    }
+
+    @SuppressLint("WrongConstant")
+    @RequiresApi(Build.VERSION_CODES.O)
+    private static void setUpNotificationChannels(@NonNull Context context) {
+        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
+        // Real-time notification of OpenVPN bandwidth usage
+        {
+            String name = context.getString(R.string.vpn_channel_name_background);
+            String description = context.getString(R.string.vpn_channel_description_background);
+            NotificationChannel channel = new NotificationChannel(Constants.BG_CHANNEL_ID, name, NotificationManagerCompat.IMPORTANCE_LOW);
+            channel.setDescription(description);
+            mNotificationManager.createNotificationChannel(channel);
+        }
+        // Real-time notification of OpenVPN state changes
+        {
+            String name = context.getString(R.string.vpn_channel_name_status);
+            String description = context.getString(R.string.vpn_channel_description_status);
+            NotificationChannel channel = new NotificationChannel(Constants.NEW_STATUS_CHANNEL_ID, name,
+                    NotificationManagerCompat.IMPORTANCE_DEFAULT);
+            channel.setDescription(description);
+            mNotificationManager.createNotificationChannel(channel);
+        }
+    }
+
     private static boolean isMainThread() {
         return Thread.currentThread() == Looper.getMainLooper().getThread();
     }
@@ -254,21 +248,21 @@ public final class OpenVPNService extends Service
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand"); //NON-NLS
-        if ((intent != null) && IntentConstants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
+        if ((intent != null) && Constants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
             return START_NOT_STICKY;
         }
-        if ((intent != null) && IntentConstants.ACTION_START_SERVICE_STICKY.equals(intent.getAction())) {
+        if ((intent != null) && Constants.ACTION_START_SERVICE_STICKY.equals(intent.getAction())) {
             return START_REDELIVER_INTENT;
         }
         if (intent == null) {
             throw new IllegalArgumentException("intent can't be null");
         }
 
-        mPostNotification = intent.getBooleanExtra(IntentConstants.EXTRA_POST_NOTIFICATION, false);
-        mSendBroadcast = intent.getBooleanExtra(IntentConstants.EXTRA_SEND_BROADCAST, false);
+        mPostNotification = intent.getBooleanExtra(Constants.EXTRA_POST_NOTIFICATION, false);
+        mSendBroadcast = intent.getBooleanExtra(Constants.EXTRA_SEND_BROADCAST, false);
 
-        String host = StringUtils.defaultIfBlank(intent.getStringExtra(IntentConstants.EXTRA_HOST), DEFAULT_REMOTE_SERVER);
-        int port = intent.getIntExtra(IntentConstants.EXTRA_PORT, DEFAULT_REMOTE_PORT);
+        String host = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_HOST), DEFAULT_REMOTE_SERVER);
+        int port = intent.getIntExtra(Constants.EXTRA_PORT, DEFAULT_REMOTE_PORT);
 
         // Always show notification here to avoid problem with startForeground timeout
         {
@@ -276,15 +270,15 @@ public final class OpenVPNService extends Service
             String text = getString(R.string.vpn_msg_launch);
             String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_disconnected));
 
-            Notification notification = getNotification(this, title, text, NEW_STATUS_CHANNEL_ID, 0L, icon);
-            startForeground(NEW_STATUS_CHANNEL_ID.hashCode(), notification);
+            Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, 0L, icon);
+            startForeground(Constants.NEW_STATUS_CHANNEL_ID.hashCode(), notification);
         }
         // Connect the management interface in a background thread
         Thread thread = new Thread(() -> {
             try {
                 // TODO: only in debug?
                 // When a socket is created, it inherits the tag of its creating thread
-                // TrafficStats.setThreadStatsTag(NETWORK_TAG);
+                // TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);
                 Connection connection = ManagementConnection.getInstance();
                 //noinspection ConstantConditions
                 connection.connect(host, port);
@@ -300,7 +294,7 @@ public final class OpenVPNService extends Service
     @Override
     public IBinder onBind(@Nullable Intent intent) {
         Log.d(TAG, "onBind"); //NON-NLS
-        return ((intent != null) && IntentConstants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) ? mBinder : null;
+        return ((intent != null) && Constants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) ? mBinder : null;
     }
 
     @Override
@@ -318,7 +312,9 @@ public final class OpenVPNService extends Service
         //     long now = System.currentTimeMillis();
         //     long fourWeeksAgo = now - (DateUtils.WEEK_IN_MILLIS * 4L);
         //     long oneDaysAhead = now + (DateUtils.DAY_IN_MILLIS * 2L);
-        //     logUsage(this, fourWeeksAgo, oneDaysAhead, android.os.Process.myUid(), NETWORK_TAG);
+        //     long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, android.os.Process.myUid(), Constants.THREAD_STATS_TAG);
+        //     // long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, android.os.Process.myUid(), android.app.usage.NetworkStats.Bucket.TAG_NONE);
+        //     Log.d(TAG, String.format("Usage: %s", humanReadableByteCount(this, usage, false))); //NON-NLS
         // }
 
         {
@@ -355,8 +351,8 @@ public final class OpenVPNService extends Service
             String text = getString(R.string.vpn_msg_byte_count, sIn, sDiffIn, sOut, sDiffOut);
             String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_connected));
 
-            Notification notification = getNotification(this, title, text, BG_CHANNEL_ID, mStartTime, icon);
-            startForeground(BG_CHANNEL_ID.hashCode(), notification);
+            Notification notification = getNotification(this, title, text, Constants.BG_CHANNEL_ID, mStartTime, icon);
+            startForeground(Constants.BG_CHANNEL_ID.hashCode(), notification);
         }
     }
 
@@ -378,7 +374,7 @@ public final class OpenVPNService extends Service
         }
         // Start a background thread that handles incoming messages of the management interface
         Connection connection = ManagementConnection.getInstance();
-        mThread = new Thread(connection, THREAD_NAME);
+        mThread = new Thread(connection, Constants.THREAD_NAME);
         // Report death-by-uncaught-exception
         mThread.setUncaughtExceptionHandler(this);
         mThread.start();
@@ -419,6 +415,7 @@ public final class OpenVPNService extends Service
                 }
                 break;
             case VERBOSE:
+            case UNKNOWN:
                 break;
         }
     }
@@ -432,7 +429,7 @@ public final class OpenVPNService extends Service
 
         ConnectionStatus level = VpnStatus.getLevel(name, message);
         if (mSendBroadcast) {
-            doSendBroadcast(this, name, message);
+            Utils.doSendBroadcast(this, name, message);
         }
         if (mPostNotification) {
             if (level == ConnectionStatus.LEVEL_CONNECTED) {
@@ -454,8 +451,8 @@ public final class OpenVPNService extends Service
                 text = prefix + address;
             }
 
-            Notification notification = getNotification(this, title, text, NEW_STATUS_CHANNEL_ID, 0L, icon);
-            startForeground(NEW_STATUS_CHANNEL_ID.hashCode(), notification);
+            Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, 0L, icon);
+            startForeground(Constants.NEW_STATUS_CHANNEL_ID.hashCode(), notification);
         }
     }
 
@@ -490,60 +487,5 @@ public final class OpenVPNService extends Service
 
         Handler handler = new Handler(getMainLooper());
         handler.post(this::stopSelf);
-    }
-
-    @SuppressLint("WrongConstant")
-    @RequiresApi(Build.VERSION_CODES.O)
-    private static void setUpNotificationChannels(@NonNull Context context) {
-        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
-        // Real-time notification of OpenVPN bandwidth usage
-        {
-            String name = context.getString(R.string.vpn_channel_name_background);
-            String description = context.getString(R.string.vpn_channel_description_background);
-            NotificationChannel channel = new NotificationChannel(OpenVPNService.BG_CHANNEL_ID, name, NotificationManagerCompat.IMPORTANCE_LOW);
-            channel.setDescription(description);
-            mNotificationManager.createNotificationChannel(channel);
-        }
-        // Real-time notification of OpenVPN state changes
-        {
-            String name = context.getString(R.string.vpn_channel_name_status);
-            String description = context.getString(R.string.vpn_channel_description_status);
-            NotificationChannel channel = new NotificationChannel(OpenVPNService.NEW_STATUS_CHANNEL_ID, name, NotificationManagerCompat.IMPORTANCE_DEFAULT);
-            channel.setDescription(description);
-            mNotificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    private static void doSendBroadcast(@NonNull Context context, @NonNull String state, @NonNull String message) {
-        Intent intent = new Intent();
-        intent.setAction(IntentConstants.ACTION_VPN_STATE_CHANGED);
-        intent.putExtra(IntentConstants.EXTRA_STATE, state);
-        intent.putExtra(IntentConstants.EXTRA_MESSAGE, message);
-        context.sendBroadcast(intent, android.Manifest.permission.ACCESS_NETWORK_STATE);
-    }
-
-    @NonNull
-    @SuppressWarnings({ "TypeMayBeWeakened", "MethodWithTooManyParameters" })
-    private static Notification getNotification(@NonNull Context context, @NonNull String title, @NonNull String text,
-                                                @NonNull String channel, long when, @IdRes int icon) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel);
-        builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
-        builder.setContentText(text);
-        builder.setContentTitle(title);
-        builder.setLocalOnly(true);
-        builder.setOngoing(true);
-        builder.setOnlyAlertOnce(true);
-        builder.setShowWhen(false);
-        builder.setSmallIcon(icon);
-        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        builder.setWhen(when);
-        if (BG_CHANNEL_ID.equals(channel)) {
-            Intent intent = new Intent(context, DisconnectVPN.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            // The notification action icons are still required and continue to be used on older versions of Android
-            builder.addAction(R.drawable.ic_close_white, context.getString(R.string.vpn_action_close), pendingIntent);
-            builder.setUsesChronometer(true);
-        }
-        return builder.build();
     }
 }

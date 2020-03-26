@@ -1,6 +1,6 @@
-package com.getsixtyfour.openvpnmgmt.listeners;
+package com.getsixtyfour.openvpnmgmt.core;
 
-import com.getsixtyfour.openvpnmgmt.core.LogLevel;
+import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,13 +38,6 @@ public class LogManager {
         for (OnRecordChangedListener listener : mListeners) {
             listener.onRecordChanged(mRecord);
         }
-    }
-
-    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
-    @FunctionalInterface
-    public interface OnRecordChangedListener {
-
-        void onRecordChanged(@NotNull OpenVpnLogRecord record);
     }
 
     @SuppressWarnings("PublicInnerClass")

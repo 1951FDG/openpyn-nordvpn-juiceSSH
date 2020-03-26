@@ -1,4 +1,6 @@
-package com.getsixtyfour.openvpnmgmt.listeners;
+package com.getsixtyfour.openvpnmgmt.core;
+
+import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,13 +38,6 @@ public class StateManager {
         for (OnStateChangedListener listener : mListeners) {
             listener.onStateChanged(mState);
         }
-    }
-
-    @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
-    @FunctionalInterface
-    public interface OnStateChangedListener {
-
-        void onStateChanged(@NotNull OpenVpnNetworkState state);
     }
 
     @SuppressWarnings("PublicInnerClass")

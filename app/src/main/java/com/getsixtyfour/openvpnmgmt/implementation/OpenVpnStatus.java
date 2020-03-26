@@ -1,6 +1,6 @@
 package com.getsixtyfour.openvpnmgmt.implementation;
 
-import androidx.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.getsixtyfour.openvpnmgmt.api.Client;
 import com.getsixtyfour.openvpnmgmt.api.Route;

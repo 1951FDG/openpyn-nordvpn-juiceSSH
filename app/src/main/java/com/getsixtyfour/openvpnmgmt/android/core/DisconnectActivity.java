@@ -3,7 +3,7 @@
  * Distributed under the GNU GPL v2 with additional terms. For full terms see the file doc/LICENSE.txt
  */
 
-package com.getsixtyfour.openvpnmgmt.android.activities;
+package com.getsixtyfour.openvpnmgmt.android.core;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,10 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.getsixtyfour.openvpnmgmt.android.constant.IntentConstants;
-import com.getsixtyfour.openvpnmgmt.android.core.IOpenVPNServiceInternal;
-import com.getsixtyfour.openvpnmgmt.android.core.OpenVPNService;
-
 import java.lang.ref.WeakReference;
 
 import io.github.getsixtyfour.openpyn.R;
@@ -37,10 +33,9 @@ import io.github.getsixtyfour.openpyn.R;
  * @author 1951FDG
  */
 
-// TODO: disconnectvpn - rename class to activity
-public class DisconnectVPN extends AppCompatActivity implements DialogInterface.OnClickListener {
+public class DisconnectActivity extends AppCompatActivity implements DialogInterface.OnClickListener {
 
-    private static final String TAG = "DisconnectVPN";
+    private static final String TAG = "DisconnectActivity";
 
     private static final DialogInterface.OnDismissListener ON_DISMISS_LISTENER = (DialogInterface dialog) -> {
         if (dialog instanceof AlertDialog) {
@@ -57,7 +52,7 @@ public class DisconnectVPN extends AppCompatActivity implements DialogInterface.
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG, "onServiceConnected"); //NON-NLS
-            setService(IOpenVPNServiceInternal.Stub.asInterface(service));
+            setService(IOpenVpnServiceInternal.Stub.asInterface(service));
         }
 
         // Called when the connection with the service disconnects unexpectedly
@@ -72,7 +67,7 @@ public class DisconnectVPN extends AppCompatActivity implements DialogInterface.
     private AlertDialog mDialog;
 
     @Nullable
-    private IOpenVPNServiceInternal mService;
+    private IOpenVpnServiceInternal mService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,8 +103,8 @@ public class DisconnectVPN extends AppCompatActivity implements DialogInterface.
         super.onStart();
 
         // Bind to the service
-        Intent intent = new Intent(this, OpenVPNService.class);
-        intent.setAction(IntentConstants.ACTION_START_SERVICE_NOT_STICKY);
+        Intent intent = new Intent(this, OpenVpnService.class);
+        intent.setAction(Constants.ACTION_START_SERVICE_NOT_STICKY);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         if (mDialog != null) {
             mDialog.show();
@@ -167,30 +162,31 @@ public class DisconnectVPN extends AppCompatActivity implements DialogInterface.
     }
 
     @Nullable
-    IOpenVPNServiceInternal getService() {
+    IOpenVpnServiceInternal getService() {
         return mService;
     }
 
-    void setService(@Nullable IOpenVPNServiceInternal service) {
+    void setService(@Nullable IOpenVpnServiceInternal service) {
         mService = service;
     }
 
+    @SuppressWarnings("ClassExplicitlyExtendsThread")
     private static final class ShutdownThread extends Thread {
 
-        private final WeakReference<IOpenVPNServiceInternal> mService;
+        private final WeakReference<IOpenVpnServiceInternal> mService;
 
-        ShutdownThread(IOpenVPNServiceInternal service) {
+        ShutdownThread(IOpenVpnServiceInternal service) {
             mService = new WeakReference<>(service);
         }
 
         @Override
         public void run() {
-            IOpenVPNServiceInternal service = mService.get();
+            IOpenVpnServiceInternal service = mService.get();
             if (service != null) {
                 try {
-                    service.stopVPN();
+                    service.disconnectVpn();
                 } catch (RemoteException e) {
-                    Log.e(TAG, "RemoteException during VPN shutdown", e); //NON-NLS
+                    Log.e(TAG, "RemoteException during OpenVPN shutdown", e); //NON-NLS
                 } catch (RuntimeException e) {
                     Log.e(TAG, "", e);
                 }
