@@ -15,9 +15,6 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 
-/**
- * @author 1951FDG
- */
 @SvcFragment
 @RequireViews(MapViews::class)
 @RequireControlTower(MapControlTower::class)

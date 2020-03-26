@@ -64,9 +64,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashSet
 
-/**
- * @author 1951FDG
- */
 @ControlTower
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)

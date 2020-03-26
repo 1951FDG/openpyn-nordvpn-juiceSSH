@@ -46,6 +46,7 @@ import java.util.Locale;
 import io.github.getsixtyfour.openpyn.R;
 
 /**
+ * @author Arne Schwabe
  * @author 1951FDG
  */
 

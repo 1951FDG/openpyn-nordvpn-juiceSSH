@@ -13,9 +13,6 @@ import kotlinx.android.synthetic.main.fragment_map.view.fab3
 import kotlinx.android.synthetic.main.fragment_map.view.map
 import kotlinx.android.synthetic.main.fragment_map.view.minibar
 
-/**
- * @author 1951FDG
- */
 class MapViews : ActionViews<MapViewsAction>() {
 
     override val layoutResId: Int = R.layout.fragment_map

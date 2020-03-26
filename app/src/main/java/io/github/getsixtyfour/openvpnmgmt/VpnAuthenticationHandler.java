@@ -11,10 +11,6 @@ import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 import io.github.getsixtyfour.openpyn.R;
 import io.github.getsixtyfour.security.SecurityManager;
 
-/**
- * @author 1951FDG
- */
-
 public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
 
     private final Context mContext;
