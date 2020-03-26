@@ -20,8 +20,8 @@ import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
-import com.getsixtyfour.openvpnmgmt.android.Utils.doStartService
 import com.getsixtyfour.openvpnmgmt.android.Constants
+import com.getsixtyfour.openvpnmgmt.android.Utils.doStartService
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.material.floatingactionbutton.FloatingActionButton

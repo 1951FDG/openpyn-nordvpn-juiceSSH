@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.fragment
+package io.github.getsixtyfour.openpyn.settings
 
 import android.app.Activity
 import android.content.Context

@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.fragment
+package io.github.getsixtyfour.openpyn.settings
 
 import android.os.Bundle
 import android.view.View
@@ -7,12 +7,12 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.SettingsActivity.Companion
+import io.github.getsixtyfour.openpyn.settings.SettingsActivity.Companion
 
 /**
- * This fragment shows Management settings preferences only.
+ * This fragment shows API settings preferences only.
  */
-class ManagementPreferenceFragment : PreferenceFragmentCompat() {
+class ApiPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onDetach() {
         super.onDetach()
@@ -25,12 +25,15 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
 
         setHasOptionsMenu(false)
 
-        findPreference<Preference>(getString(R.string.pref_openvpnmgmt_password_key))?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>("pref_geo_client")?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>("pref_api_ipdata")?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>("pref_api_ipinfo")?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>("pref_api_ipstack")?.let(Companion::bindPreferenceSummaryToValue)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         // Load the preferences from an XML resource
-        setPreferencesFromResource(R.xml.pref_openvpnmgmt, rootKey)
+        setPreferencesFromResource(R.xml.pref_api, rootKey)
         setTitle(requireActivity())
     }
 

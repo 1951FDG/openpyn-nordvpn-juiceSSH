@@ -1,13 +1,11 @@
-package io.github.getsixtyfour.openpyn.map
+package io.github.getsixtyfour.openpyn.map.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources.NotFoundException
 import android.location.Location
-import android.text.SpannableString
+import android.util.Xml
 import android.view.animation.AccelerateInterpolator
-import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -15,37 +13,20 @@ import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
-import com.antoniocarlon.map.CameraUpdateAnimator.Animation
-import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
-import com.google.android.gms.maps.CameraUpdateFactory
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.json.responseJson
+import com.github.kittinunf.result.Result
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition.Builder
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.jayrave.moshi.pristineModels.PristineModelsJsonAdapterFactory
 import com.mayurrokade.minibar.UserMessage
-import com.squareup.moshi.FromJson
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.ToJson
-import com.squareup.moshi.Types
 import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.logException
-import io.github.getsixtyfour.openpyn.utils.CITY
-import io.github.getsixtyfour.openpyn.utils.COUNTRY
-import io.github.getsixtyfour.openpyn.utils.FLAG
-import io.github.getsixtyfour.openpyn.utils.IP
-import io.github.getsixtyfour.openpyn.utils.LAT
-import io.github.getsixtyfour.openpyn.utils.LOCATION
-import io.github.getsixtyfour.openpyn.utils.LONG
-import io.github.getsixtyfour.openpyn.utils.MultiSelectMapper
+import io.github.getsixtyfour.openpyn.map.createJsonArray
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
-import io.github.getsixtyfour.openpyn.utils.PrintArray
-import io.github.getsixtyfour.openpyn.utils.THREAT
-import io.github.getsixtyfour.openpyn.utils.createJson2
 import io.github.getsixtyfour.security.SecurityManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -65,15 +46,296 @@ import org.jetbrains.anko.verticalLayout
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.io.StringWriter
 import java.util.HashSet
 import java.util.Locale
-import kotlin.math.pow
+
+operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
+
+const val CATEGORIES: String = "categories"
+const val NAME: String = "name"
+const val DEDICATED: String = "Dedicated IP"
+const val DOUBLE: String = "Double VPN"
+const val OBFUSCATED: String = "Obfuscated Servers"
+const val ONION: String = "Onion Over VPN"
+const val P2P: String = "P2P"
+const val STANDARD: String = "Standard VPN servers"
+
+const val COUNTRY: String = "country"
+
+const val FLAG: String = "flag"
+
+const val LOCATION: String = "location"
+const val LAT: String = "lat"
+const val LONG: String = "long"
+
+const val SERVER: String = "https://api.nordvpn.com/server"
+
+// extended
+
+const val CITY: String = "city"
+const val IP: String = "ip"
+const val THREAT: String = "threat"
 
 const val TIME_MILLIS: Long = 600
 const val DURATION: Long = 7000
+
+@Suppress("unused")
+@WorkerThread
+fun generateXML() {
+    // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
+    SERVER.httpGet().responseJson { _, _, result ->
+        when (result) {
+            is Result.Failure -> {
+                val e = result.getException()
+                Log.error(e.javaClass.simpleName, e)
+            }
+            is Result.Success -> {
+                val mutableMap = mutableMapOf<String, String>()
+                val jsonArray = result.get().array()
+                for (res in jsonArray) {
+                    if (res.getString(COUNTRY) !in mutableMap) {
+                        mutableMap[res.getString(COUNTRY)] = res.getString(FLAG).toLowerCase(Locale.ROOT)
+                    }
+                }
+                val sortedMap = mutableMap.toSortedMap(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
+                val serializer = Xml.newSerializer()
+                val writer = StringWriter()
+                try {
+                    serializer.setOutput(writer)
+                    serializer.startDocument("UTF-8", true)
+                    serializer.startTag("", "head")
+                    serializer.startTag("", "string-array")
+                    serializer.attribute("", "name", "pref_country_entries")
+                    for ((key, _) in sortedMap) {
+                        serializer.startTag("", "item")
+                        serializer.text(key)
+                        serializer.endTag("", "item")
+                    }
+                    serializer.endTag("", "string-array")
+                    serializer.startTag("", "string-array")
+                    serializer.attribute("", "name", "pref_country_values")
+                    for ((_, value) in sortedMap) {
+                        serializer.startTag("", "item")
+                        serializer.text(value)
+                        serializer.endTag("", "item")
+                    }
+                    serializer.endTag("", "string-array")
+                    serializer.endTag("", "head")
+                    serializer.endDocument()
+                    println(writer.toString())
+                } catch (e: FileNotFoundException) {
+                    logException(e)
+                } catch (e: IOException) {
+                    logException(e)
+                } catch (e: JSONException) {
+                    logException(e)
+                }
+            }
+        }
+    }
+}
+
+@Suppress("MagicNumber")
+fun createJson2(type: String, content: JSONObject): JSONObject? {
+    var flag = ""
+    var country = ""
+    var city = ""
+    var lat = 0.0
+    var lon = 0.0
+    var ip = ""
+    var threat: JSONObject? = null
+
+    when (type) {
+        "ipapi" -> {
+            flag = content.optString("countryCode")
+            country = content.optString("country")
+            city = content.optString("city")
+            lat = content.optDouble("lat", 0.0)
+            lon = content.optDouble("lon", 0.0)
+            ip = content.optString("query")
+        }
+        "ipdata" -> {
+            flag = content.optString("country_code")
+            country = content.optString("country_name")
+            city = content.optString("city")
+            lat = content.optDouble("latitude", 0.0)
+            lon = content.optDouble("longitude", 0.0)
+            ip = content.optString("ip")
+
+            threat = content.optJSONObject("threat")
+        }
+        "ipinfo" -> {
+            flag = content.optString("country")
+            city = content.optString("city")
+            lat = java.lang.Double.valueOf(content.optString("loc").split(",")[0])
+            lon = java.lang.Double.valueOf(content.optString("loc").split(",")[1])
+            ip = content.optString("ip")
+        }
+        "ipstack" -> {
+            flag = content.optString("country_code")
+            country = content.optString("country_name")
+            city = content.optString("city")
+            lat = content.optDouble("latitude", 0.0)
+            lon = content.optDouble("longitude", 0.0)
+            ip = content.optString("ip")
+        }
+    }
+
+    if (flag.isNotEmpty() && city.isNotEmpty() && lat != 0.0 && lon != 0.0 && ip.isNotEmpty()) {
+        return JSONObject().apply {
+            put(FLAG, flag.toLowerCase(Locale.ROOT))
+            put(COUNTRY, country)
+            put(CITY, city)
+            put(LAT, lat)
+            put(LONG, lon)
+            put(IP, ip)
+
+            putOpt(THREAT, threat)
+        }
+    }
+
+    return null
+}
+
+@WorkerThread
+@Suppress("MagicNumber")
+fun createJson(): JSONArray? {
+    fun populateFeatures(res: JSONObject, features: JSONObject) {
+        val categories = res.getJSONArray(CATEGORIES)
+
+        for (category in categories) {
+            val name = category.getString(NAME)
+
+            when {
+                name.equals(DEDICATED, true) -> features.put(DEDICATED, true)
+                name.equals(DOUBLE, true) -> features.put(DOUBLE, true)
+                name.equals(OBFUSCATED, true) -> features.put(OBFUSCATED, true)
+                name.equals(ONION, true) -> features.put(ONION, true)
+                name.equals(P2P, true) -> features.put(P2P, true)
+                name.equals(STANDARD, true) -> features.put(STANDARD, true)
+                else -> {
+                    logException(Exception(name))
+                    Log.error(name)
+                }
+            }
+        }
+    }
+
+    val timeout = 10000
+    val timeoutRead = 10000
+    // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
+    val (_, _, result) = SERVER.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
+    when (result) {
+        is Result.Failure -> {
+            val e = result.getException()
+            Log.error(e.javaClass.simpleName, e)
+        }
+        is Result.Success -> {
+            val jsonObj = JSONObject()
+            val content = result.get().array() //JSONArray
+            for (res in content) {
+                val location = res.getJSONObject(LOCATION)
+                var json: JSONObject? = jsonObj.optJSONObject(location.toString())
+
+                if (json == null) {
+                    json = JSONObject().apply {
+                        put(FLAG, res.getString(FLAG).toLowerCase(Locale.ROOT))
+                        put(COUNTRY, res.getString(COUNTRY))
+                        put(LOCATION, res.getJSONObject(LOCATION))
+                    }
+                    val features = JSONObject().apply {
+                        put(DEDICATED, false)
+                        put(DOUBLE, false)
+                        put(OBFUSCATED, false)
+                        put(ONION, false)
+                        put(P2P, false)
+                        put(STANDARD, false)
+                    }
+                    populateFeatures(res, features)
+
+                    json.put(CATEGORIES, features)
+
+                    jsonObj.put(location.toString(), json)
+                } else {
+                    val features = json.getJSONObject(CATEGORIES)
+                    populateFeatures(res, features)
+                }
+            }
+
+            try {
+                val jsonArray = JSONArray()
+                val keys = jsonObj.keys()
+                while (keys.hasNext()) {
+                    val key = keys.next()
+                    val value = jsonObj.getJSONObject(key)
+                    val jsonArr = JSONArray()
+                    val features = value.getJSONObject(CATEGORIES)
+
+                    if (features.getBoolean(DEDICATED)) {
+                        jsonArr.put(JSONObject().put(NAME, DEDICATED))
+                    }
+
+                    if (features.getBoolean(DOUBLE)) {
+                        jsonArr.put(JSONObject().put(NAME, DOUBLE))
+                    }
+
+                    if (features.getBoolean(OBFUSCATED)) {
+                        jsonArr.put(JSONObject().put(NAME, OBFUSCATED))
+                    }
+
+                    if (features.getBoolean(ONION)) {
+                        jsonArr.put(JSONObject().put(NAME, ONION))
+                    }
+
+                    if (features.getBoolean(P2P)) {
+                        jsonArr.put(JSONObject().put(NAME, P2P))
+                    }
+
+                    if (features.getBoolean(STANDARD)) {
+                        jsonArr.put(JSONObject().put(NAME, STANDARD))
+                    }
+                    val json = JSONObject().apply {
+                        put(FLAG, value.getString(FLAG))
+                        put(COUNTRY, value.getString(COUNTRY))
+                        put(LOCATION, value.getJSONObject(LOCATION))
+                        put(CATEGORIES, jsonArr)
+                    }
+
+                    jsonArray.put(json)
+                }
+
+                if (jsonArray.length() > 0) {
+                    return jsonArray
+                }
+            } catch (e: JSONException) {
+                logException(e)
+            }
+        }
+    }
+
+    return null
+}
+
+fun sortJsonArray(jsonArray: JSONArray): JSONArray? {
+    val array = ArrayList<JSONObject>()
+    for (res in jsonArray) {
+        array.add(res)
+    }
+
+    array.sortWith(
+        compareBy({ it.getString(COUNTRY) }, { it.getJSONObject(LOCATION).getDouble(LAT) }, { it.getJSONObject(LOCATION).getDouble(LONG) })
+    )
+    val result = JSONArray()
+    for (res in array) {
+        result.put(res)
+    }
+    return result
+}
+
+fun stringifyJsonArray(jsonArray: JSONArray): String? = sortJsonArray(jsonArray)?.run { toString(2) }
 
 @Suppress("ComplexMethod", "MagicNumber")
 fun showThreats(activity: Activity, jsonObj: JSONObject) {
@@ -221,216 +483,6 @@ fun showThreats(activity: Activity, jsonObj: JSONObject) {
     }
 }
 
-fun initPrintArray(context: Context, countries: List<MultiSelectable>, hashSet: HashSet<CharSequence>): HashSet<CharSequence> {
-    val length = hashSet.size
-    val defaultSelectedIdsList = ArrayList<Int>(length)
-    countries.forEach {
-        (it as? MultiSelectModelExtra)?.let { selectable ->
-            if (hashSet.contains(selectable.tag)) {
-                defaultSelectedIdsList.add(selectable.id)
-            }
-        }
-    }
-    val defValue = defaultSelectedIdsList.joinToString(separator = PrintArray.delimiter)
-    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-    val prefSelectedIdsList = PrintArray.getListInt("pref_country_values", defValue, preferences)
-    val currentFlags = HashSet<CharSequence>(length)
-    val currentIds = ArrayList<Int>(length)
-    val currentCountries = ArrayList<MultiSelectable>(countries.size)
-    countries.forEach {
-        (it as? MultiSelectModelExtra)?.let { selectable ->
-            val id = selectable.id
-            val tag = selectable.tag
-
-            if (hashSet.contains(tag)) {
-                currentCountries.add(it)
-
-                if (prefSelectedIdsList.contains(id)) {
-                    currentFlags.add(tag)
-                    currentIds.add(id)
-                }
-            }
-        }
-    }
-
-    PrintArray.apply {
-        setHint(R.string.search_hint)
-        setItems(currentCountries)
-        setCheckedItems(currentIds)
-    }
-
-    return currentFlags
-}
-
-@Suppress("unused", "SpellCheckingInspection")
-fun fileBackedTileProvider(): MapBoxOfflineTileProvider {
-    // Use a file backed SQLite database
-    val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-    Log.debug(tileProvider.toString())
-    return tileProvider
-}
-
-@Suppress("unused", "SpellCheckingInspection")
-fun memoryBackedTileProvider(): MapBoxOfflineTileProvider {
-    // Use a memory backed SQLite database
-    val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro", null)
-    Log.debug(tileProvider.toString())
-    return tileProvider
-}
-
-fun getCountryBoundaries(context: Context): CountryBoundaries? {
-    try {
-        return CountryBoundaries.load(context.assets.open("boundaries.ser"))
-    } catch (e: FileNotFoundException) {
-        logException(e)
-    } catch (e: IOException) {
-        logException(e)
-    }
-
-    return null
-}
-
-@Suppress("ComplexMethod")
-fun getCurrentPosition(
-    context: Context,
-    countryBoundaries: CountryBoundaries?,
-    lastLocation: Location?,
-    flags: HashSet<CharSequence>,
-    jsonObj: JSONObject?,
-    jsonArr: JSONArray? = null
-): LatLng {
-    @Suppress("MagicNumber")
-    fun getDefaultLatLng(): LatLng {
-        return LatLng(51.514125, -0.093689)
-    }
-
-    fun getLatLng(flag: CharSequence, latLng: LatLng, jsonArr: JSONArray): LatLng {
-        val latLngList = arrayListOf<LatLng>()
-        var match = false
-
-        loop@ for (res in jsonArr) {
-            val pass = flag == res.getString(FLAG)
-
-            if (pass) {
-                val location = res.getJSONObject(LOCATION)
-                val element = LatLng(
-                    location.getDouble(LAT), location.getDouble(LONG)
-                )
-
-                match = element == latLng
-                when {
-                    match -> break@loop
-                    else -> latLngList.add(element)
-                }
-            }
-        }
-
-        if (latLngList.isNotEmpty() && !match) {
-            val results = FloatArray(latLngList.size)
-
-            latLngList.withIndex().forEach { (index, it) ->
-                val result = FloatArray(1)
-                Location.distanceBetween(latLng.latitude, latLng.longitude, it.latitude, it.longitude, result)
-                results[index] = result[0]
-            }
-            val result = results.min()
-            if (result != null) {
-                val index = results.indexOf(result)
-                return latLngList[index]
-            }
-        }
-
-        return latLng
-    }
-
-    fun latLng(jsonArr: JSONArray?, flags: HashSet<CharSequence>, flag: CharSequence, lat: Double, lon: Double): LatLng = when {
-        jsonArr != null && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
-        else -> LatLng(lat, lon)
-    }
-
-    fun getString(ids: List<String>?): String = when {
-        ids.isNullOrEmpty() -> "is nowhere"
-        else -> "is in: " + ids.joinToString()
-    }
-
-    fun getFlag(list: List<String>?): String = when {
-        list != null && list.isNotEmpty() -> list[0].toLowerCase(Locale.ROOT)
-        else -> ""
-    }
-
-    fun getFLag(countryBoundaries: CountryBoundaries?, lon: Double, lat: Double): String {
-        var t = System.nanoTime()
-        val ids = countryBoundaries?.getIds(lon, lat)
-        t = System.nanoTime() - t
-        @Suppress("MagicNumber") val i = 1000
-        Log.debug(getString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
-        return getFlag(ids)
-    }
-
-    var latLng = getDefaultLatLng()
-
-    when {
-        jsonObj != null -> {
-            val lat = jsonObj.getDouble(LAT)
-            val lon = jsonObj.getDouble(LONG)
-            val flag = jsonObj.getString(FLAG)
-            Log.debug("is in: $flag")
-            latLng = latLng(jsonArr, flags, flag, lat, lon)
-        }
-        jsonArr != null -> lastLocation?.let {
-            val lat = it.latitude
-            val lon = it.longitude
-            val flag = getFLag(countryBoundaries, lon, lat)
-            latLng = latLng(jsonArr, flags, flag, lat, lon)
-        }
-/*
-        ContextCompat.checkSelfPermission(
-            context, permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED -> {
-            val task = FusedLocationProviderClient(context).lastLocation
-            try {
-                // Block on the task for a maximum of 500 milliseconds, otherwise time out.
-                Tasks.await(task, TIME_MILLIS, TimeUnit.MILLISECONDS)?.let {
-                    val lat = it.latitude
-                    val lon = it.longitude
-                    val flag = getFLag(countryBoundaries, lon, lat)
-                    latLng = latLng(jsonArr, flags, flag, lat, lon)
-                }
-            } catch (e: ExecutionException) {
-                Log.error(e.toString())
-            } catch (e: InterruptedException) {
-                logException(e)
-            } catch (e: TimeoutException) {
-                Log.error(e.toString())
-            }
-        }
-*/
-    }
-    Log.debug(latLng.toString())
-    return latLng
-}
-
-operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
-
-fun createCameraUpdates(): ArrayList<Animation> {
-    // Load all map tiles
-    @Suppress("MagicNumber") val z = 3
-    //val z = tileProvider!!.minimumZoom.toInt()
-    val rows = 2.0.pow(z.toDouble()).toInt() - 1
-    val cameraUpdates = ArrayList<Animation>(rows)
-    // Traverse through all rows
-    for (y in 0..rows) {
-        for (x in 0..rows) {
-            val bounds = MapBoxOfflineTileProvider.calculateTileBounds(x, y, z)
-            val cameraPosition = Builder().target(bounds.northeast).build()
-            val animation = Animation(CameraUpdateFactory.newCameraPosition(cameraPosition))
-            // Add animations
-            cameraUpdates.add(animation)
-        }
-    }
-    return cameraUpdates
-}
-
 fun createMarkers(
     context: Context,
     jsonArray: JSONArray,
@@ -525,7 +577,7 @@ fun createMarkers(
     return Pair(flags, markers)
 }
 
-internal fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessage.Builder {
+fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessage.Builder {
     // val country = it.getString(COUNTRY)
     // val lat = it.getDouble(LAT)
     // val lon = it.getDouble(LONG)
@@ -536,59 +588,10 @@ internal fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessa
     return UserMessage.Builder().apply {
         with(context.applicationContext)
         setBackgroundColor(R.color.accent_material_indigo_200).setTextColor(android.R.color.white)
-        setMessage(message).setDuration(DURATION).setShowInterpolator(AccelerateInterpolator())
+        setMessage(message).setDuration(DURATION).setShowInterpolator(
+            AccelerateInterpolator()
+        )
         setDismissInterpolator(AccelerateInterpolator())
-    }
-}
-
-internal fun getCurrentFlags(countries: List<MultiSelectable>, selectedIds: ArrayList<Int>): HashSet<CharSequence> {
-    val currentFlags = HashSet<CharSequence>(selectedIds.size)
-    countries.forEach {
-        (it as? MultiSelectModelExtra)?.let { selectable ->
-            if (selectedIds.contains(selectable.id)) {
-                currentFlags.add(selectable.tag)
-            }
-        }
-    }
-    return currentFlags
-}
-
-@Suppress("MagicNumber")
-fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
-    val json = context.resources.openRawResource(id).bufferedReader().use { it.readText() }
-    val factory = PristineModelsJsonAdapterFactory.Builder().also { it.add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
-    val moshi = Moshi.Builder().add(factory.build()).add(object {
-        @ToJson
-        @Suppress("unused")
-        fun toJson(value: CharSequence): String {
-            return value.toString()
-        }
-
-        @FromJson
-        @Suppress("unused")
-        fun fromJson(value: String): CharSequence {
-            return SpannableString(value)
-        }
-    }).build()
-    val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
-    val adapter: JsonAdapter<List<MultiSelectModelExtra>> = moshi.adapter(listType)
-    return adapter.nonNull().fromJson(json).orEmpty()
-}
-
-private fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, String>>) {
-    for ((id, ext) in list) {
-        try {
-            val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
-            if (!file.exists()) {
-                copyRawResourceToFile(context, id, file)
-            }
-        } catch (e: NotFoundException) {
-            logException(e)
-        } catch (e: FileNotFoundException) {
-            logException(e)
-        } catch (e: IOException) {
-            logException(e)
-        }
     }
 }
 
@@ -614,36 +617,6 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray {
     // Log new countries, if any
     logDifference(set2.subtract(set1), "new")
     return jsonArray
-}
-
-fun createJsonArray(context: Context, id: Int, ext: String): JSONArray {
-    try {
-        val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
-        if (!file.exists()) {
-            copyRawResourceToFile(context, id, file)
-        }
-        val json = file.bufferedReader().use {
-            it.readText()
-        }
-        return JSONArray(json)
-    } catch (e: NotFoundException) {
-        logException(e)
-    } catch (e: FileNotFoundException) {
-        logException(e)
-    } catch (e: IOException) {
-        logException(e)
-    } catch (e: JSONException) {
-        logException(e)
-    }
-    return JSONArray()
-}
-
-private fun copyRawResourceToFile(context: Context, id: Int, file: File) {
-    context.resources.openRawResource(id).use { input ->
-        file.outputStream().buffered().use { output ->
-            input.copyTo(output)
-        }
-    }
 }
 
 @Suppress("TooGenericExceptionCaught")
@@ -707,4 +680,122 @@ suspend fun createGeoJson(context: Context): JSONObject? {
     }
 
     return null
+}
+
+@Suppress("ComplexMethod")
+fun getCurrentPosition(
+    context: Context,
+    countryBoundaries: CountryBoundaries?,
+    lastLocation: Location?,
+    flags: HashSet<CharSequence>,
+    jsonObj: JSONObject?,
+    jsonArr: JSONArray? = null
+): LatLng {
+    @Suppress("MagicNumber")
+    fun getDefaultLatLng(): LatLng {
+        return LatLng(51.514125, -0.093689)
+    }
+
+    fun getLatLng(flag: CharSequence, latLng: LatLng, jsonArr: JSONArray): LatLng {
+        val latLngList = arrayListOf<LatLng>()
+        var match = false
+
+        loop@ for (res in jsonArr) {
+            val pass = flag == res.getString(FLAG)
+
+            if (pass) {
+                val location = res.getJSONObject(LOCATION)
+                val element = LatLng(location.getDouble(LAT), location.getDouble(LONG))
+
+                match = element == latLng
+                when {
+                    match -> break@loop
+                    else -> latLngList.add(element)
+                }
+            }
+        }
+
+        if (latLngList.isNotEmpty() && !match) {
+            val results = FloatArray(latLngList.size)
+
+            latLngList.withIndex().forEach { (index, it) ->
+                val result = FloatArray(1)
+                Location.distanceBetween(latLng.latitude, latLng.longitude, it.latitude, it.longitude, result)
+                results[index] = result[0]
+            }
+            val result = results.min()
+            if (result != null) {
+                val index = results.indexOf(result)
+                return latLngList[index]
+            }
+        }
+
+        return latLng
+    }
+
+    fun latLng(jsonArr: JSONArray?, flags: HashSet<CharSequence>, flag: CharSequence, lat: Double, lon: Double): LatLng = when {
+        jsonArr != null && flags.contains(flag) -> getLatLng(flag, LatLng(lat, lon), jsonArr)
+        else -> LatLng(lat, lon)
+    }
+
+    fun getString(ids: List<String>?): String = when {
+        ids.isNullOrEmpty() -> "is nowhere"
+        else -> "is in: " + ids.joinToString()
+    }
+
+    fun getFlag(list: List<String>?): String = when {
+        list != null && list.isNotEmpty() -> list[0].toLowerCase(Locale.ROOT)
+        else -> ""
+    }
+
+    fun getFLag(countryBoundaries: CountryBoundaries?, lon: Double, lat: Double): String {
+        var t = System.nanoTime()
+        val ids = countryBoundaries?.getIds(lon, lat)
+        t = System.nanoTime() - t
+        @Suppress("MagicNumber") val i = 1000
+        Log.debug(getString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
+        return getFlag(ids)
+    }
+
+    var latLng = getDefaultLatLng()
+
+    when {
+        jsonObj != null -> {
+            val lat = jsonObj.getDouble(LAT)
+            val lon = jsonObj.getDouble(LONG)
+            val flag = jsonObj.getString(FLAG)
+            Log.debug("is in: $flag")
+            latLng = latLng(jsonArr, flags, flag, lat, lon)
+        }
+        jsonArr != null -> lastLocation?.let {
+            val lat = it.latitude
+            val lon = it.longitude
+            val flag = getFLag(countryBoundaries, lon, lat)
+            latLng = latLng(jsonArr, flags, flag, lat, lon)
+        }
+/*
+        ContextCompat.checkSelfPermission(
+            context, permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED -> {
+            val task = FusedLocationProviderClient(context).lastLocation
+            try {
+                // Block on the task for a maximum of 500 milliseconds, otherwise time out.
+                Tasks.await(task, TIME_MILLIS, TimeUnit.MILLISECONDS)?.let {
+                    val lat = it.latitude
+                    val lon = it.longitude
+                    val flag = getFLag(countryBoundaries, lon, lat)
+                    latLng = latLng(jsonArr, flags, flag, lat, lon)
+                }
+            } catch (e: ExecutionException) {
+                Log.error(e.toString())
+            } catch (e: InterruptedException) {
+                logException(e)
+            } catch (e: TimeoutException) {
+                Log.error(e.toString())
+            }
+        }
+*/
+    }
+    Log.debug(latLng.toString())
+    return latLng
 }

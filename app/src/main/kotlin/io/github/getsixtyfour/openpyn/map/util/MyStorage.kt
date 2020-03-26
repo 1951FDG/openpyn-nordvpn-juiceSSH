@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.utils
+package io.github.getsixtyfour.openpyn.map.util
 
 import android.content.Context
 import androidx.preference.PreferenceManager

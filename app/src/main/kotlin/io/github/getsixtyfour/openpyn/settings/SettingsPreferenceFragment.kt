@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.fragment
+package io.github.getsixtyfour.openpyn.settings
 
 import android.os.Bundle
 import android.view.Menu
@@ -9,8 +9,8 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.SettingsActivity.Companion
 import io.github.getsixtyfour.openpyn.onRefreshItemSelected
+import io.github.getsixtyfour.openpyn.settings.SettingsActivity.Companion
 
 /**
  * This fragment shows General settings preferences only.

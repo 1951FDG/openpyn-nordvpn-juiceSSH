@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.fragment
+package io.github.getsixtyfour.openpyn.dialog
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

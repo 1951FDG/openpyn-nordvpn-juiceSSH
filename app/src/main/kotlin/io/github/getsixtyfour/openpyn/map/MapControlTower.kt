@@ -29,9 +29,14 @@ import com.naver.android.svc.annotation.RequireViews
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.logException
-import io.github.getsixtyfour.openpyn.utils.LazyMarkerStorage
-import io.github.getsixtyfour.openpyn.utils.PrintArray
-import io.github.getsixtyfour.openpyn.utils.SubmitCallbackListener
+import io.github.getsixtyfour.openpyn.map.util.LazyMarkerStorage
+import io.github.getsixtyfour.openpyn.map.util.PrintArray
+import io.github.getsixtyfour.openpyn.map.util.SubmitCallbackListener
+import io.github.getsixtyfour.openpyn.map.util.createGeoJson
+import io.github.getsixtyfour.openpyn.map.util.createMarkers
+import io.github.getsixtyfour.openpyn.map.util.createUserMessage
+import io.github.getsixtyfour.openpyn.map.util.getCurrentPosition
+import io.github.getsixtyfour.openpyn.map.util.jsonArray
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.view.map
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -372,9 +377,9 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         val (hashSet, hashMap) = withContext(Default) {
             createMarkers(applicationContext, mJsonArray, mCountries, mGoogleMap!!, mFavorites, onLevelChangeCallback)
         }
-        mFlags = withContext(Default) { initPrintArray(applicationContext, mCountries, hashSet) }
+        mFlags = withContext(Default) { setUpPrintArray(applicationContext, mCountries, hashSet) }
         mMarkers = hashMap
-        mAnimations = createCameraUpdates()
+        mAnimations = getCameraUpdates()
         val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, mFlags, jsonObj, mJsonArray)
         val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
             isCallback = true

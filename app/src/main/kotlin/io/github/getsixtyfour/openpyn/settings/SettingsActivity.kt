@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn
+package io.github.getsixtyfour.openpyn.settings
 
 import android.app.Activity
 import android.content.Context
@@ -10,10 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import io.github.getsixtyfour.openpyn.fragment.AboutPreferenceFragment
-import io.github.getsixtyfour.openpyn.fragment.ApiPreferenceFragment
-import io.github.getsixtyfour.openpyn.fragment.ManagementPreferenceFragment
-import io.github.getsixtyfour.openpyn.fragment.SettingsPreferenceFragment
+import io.github.getsixtyfour.openpyn.R
+import io.github.getsixtyfour.openpyn.setProgressToolBar
 import kotlinx.android.synthetic.main.mm2d_pac_content.toolbar
 import net.mm2d.preference.Header
 import net.mm2d.preference.PreferenceActivityCompat
