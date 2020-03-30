@@ -11,6 +11,7 @@ import android.os.Looper
 import androidx.annotation.MainThread
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
+import io.github.getsixtyfour.openpyn.AppConfig
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
 import java.io.IOException
@@ -117,6 +118,10 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     @Suppress("MagicNumber")
     fun hostAvailable(host: String, port: Int): Boolean {
         debug("Verifying host availability: $host:$port")
+        if (!AppConfig.ONLINE) {
+            return false
+        }
+
         try {
             Socket().use { socket ->
                 socket.connect(InetSocketAddress(host, port), 2000)

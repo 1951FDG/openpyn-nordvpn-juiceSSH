@@ -16,7 +16,7 @@ class AppBlockCanaryContext : BlockCanaryContext() {
     }
 
     override fun displayNotification(): Boolean {
-        return BuildConfig.DEBUG
+        return true
     }
 
     override fun provideWhiteList(): List<String> {

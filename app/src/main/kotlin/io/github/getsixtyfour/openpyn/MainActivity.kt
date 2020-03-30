@@ -18,16 +18,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.loader.app.LoaderManager
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
-import com.getsixtyfour.openvpnmgmt.android.Constants
-import com.getsixtyfour.openvpnmgmt.android.Utils.doStartService
-import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPRConsentState
 import com.michaelflisar.gdprdialog.helper.GDPRPreperationData
@@ -37,7 +31,6 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.apkSignatures
 import io.github.getsixtyfour.ktextension.handleUpdate
 import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
@@ -47,7 +40,6 @@ import io.github.getsixtyfour.ktextension.verifySigningCertificate
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog.NoticeDialogListener
 import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
 import io.github.getsixtyfour.openpyn.utils.Toaster
-import io.github.getsixtyfour.openvpnmgmt.VpnAuthenticationHandler
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
@@ -74,7 +66,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
     private var mAppSettingsDialogShown: Boolean = false
     // TODO: remove container reference
     val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
-    private val mSetup by lazy { getGDPR(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert_Custom) }
+    private val mSetup by lazy { getGDPR(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert_Custom) }
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
     private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
@@ -90,49 +82,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         setSnackBarManager(this, mSnackProgressBarManager)
 
         showGDPRIfNecessary(this, mSetup)
+
+        startVpnService(this)
         // TODO: remove after beta release test
         error(apkSignatures.toString())
 
-        // val api = GoogleApiAvailability.getInstance()
-        // when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
-        //     ConnectionResult.SUCCESS -> onActivityResult(GOOGLE_REQUEST_CODE, RESULT_OK, null)
-        //     //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, GOOGLE_REQUEST_CODE)
-        //     else -> error(api.getErrorString(errorCode))
-        // }
-
-        // if (isJuiceSSHInstalled()) {
-        //     if (hasPermissions(this, PERMISSION_READ, PERMISSION_OPEN_SESSIONS)) onPermissionsGranted(PERMISSION_REQUEST_CODE)
-        // }
-
-        // run {
-        //     /*PreferenceManager.getDefaultSharedPreferences(this).edit().apply {
-        //         // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
-        //         putString(getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
-        //         // Default management port used by Openpyn
-        //         putString(getString(R.string.pref_openvpnmgmt_port_key), "7015")
-        //         apply()
-        //     }*/
-        //     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        //     val openvpnmgmt = preferences.getBoolean(this.getString(R.string.pref_openvpnmgmt_key), false)
-        //     if (openvpnmgmt) {
-        //         val handler = VpnAuthenticationHandler(this)
-        //         val host = VpnAuthenticationHandler.getHost(this)
-        //         val port = VpnAuthenticationHandler.getPort(this)
-        //         val shouldPostByteCount = VpnAuthenticationHandler.shouldPostByteCount(this)
-        //         val shouldPostStateChange = VpnAuthenticationHandler.shouldPostStateChange(this)
-        //         val bundle = Bundle().apply {
-        //             putBoolean(Constants.EXTRA_POST_BYTE_COUNT_NOTIFICATION, shouldPostByteCount)
-        //             putBoolean(Constants.EXTRA_POST_STATE_NOTIFICATION, shouldPostStateChange)
-        //             putString(Constants.EXTRA_HOST, host)
-        //             putInt(Constants.EXTRA_PORT, port)
-        //         }
-        //         // TODO: do this elsewhere e.g. in Service, add missing intent extras and create handler in Service
-        //         val connection = ManagementConnection.getInstance()
-        //         connection.setUsernamePasswordHandler(handler)
-        //
-        //         doStartService(this, bundle)
-        //     }
-        // }
+        /*val api = GoogleApiAvailability.getInstance()
+        when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
+            ConnectionResult.SUCCESS -> onActivityResult(GOOGLE_REQUEST_CODE, RESULT_OK, null)
+            //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, GOOGLE_REQUEST_CODE)
+            else -> error(api.getErrorString(errorCode))
+        }*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -153,10 +113,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
             }
         }
 
-        // if (requestCode == GOOGLE_REQUEST_CODE) {
-        //     if (resultCode == RESULT_OK) {
-        //     }
-        // }
+        /*if (requestCode == GOOGLE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+            }
+        }*/
 
         // MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)
     }
@@ -229,13 +189,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         info("ConsentState: ${consentState.logString()}")
 
         if (consentState.consent.isPersonalConsent) {
-            val debug = BuildConfig.DEBUG
-            if (!debug) {
-                val core = CrashlyticsCore.Builder().disabled(debug).build()
-                Fabric.with(this, Crashlytics.Builder().core(core).build())
-
-                FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(true)
-            }
+            initCrashlytics(this)
         }
     }
 

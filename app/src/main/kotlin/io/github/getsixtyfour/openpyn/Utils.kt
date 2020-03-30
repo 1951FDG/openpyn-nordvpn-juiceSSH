@@ -6,7 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources.NotFoundException
 import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.StrictMode
 import android.view.MenuItem
+import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -16,8 +20,13 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
+import com.getsixtyfour.openvpnmgmt.android.Constants
+import com.getsixtyfour.openvpnmgmt.android.Utils
+import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPR.IGDPRCallback
 import com.michaelflisar.gdprdialog.GDPRDefinitions
@@ -33,6 +42,7 @@ import io.github.getsixtyfour.openpyn.map.util.createJson
 import io.github.getsixtyfour.openpyn.map.util.stringifyJsonArray
 import io.github.getsixtyfour.openpyn.settings.SettingsActivity
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
+import io.github.getsixtyfour.openvpnmgmt.VpnAuthenticationHandler
 import org.jetbrains.anko.activityUiThread
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete
@@ -58,20 +68,28 @@ fun <T : FragmentActivity> getCurrentNavigationFragment(activity: T): Fragment? 
     }
 }
 
-fun getGDPR(theme: Int): GDPRSetup = with(
-    GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)
-) {
-    withCustomDialogTheme(theme)
-    withForceSelection(true)
-    withNoToolbarTheme(false)
-    withShowPaidOrFreeInfoText(false)
+fun <T : Activity> getGDPR(activity: T, @StyleRes theme: Int): GDPRSetup {
+    GDPR.getInstance().init(activity)
+    return with(
+        GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)
+    ) {
+        withCustomDialogTheme(theme)
+        withForceSelection(true)
+        withNoToolbarTheme(false)
+        withShowPaidOrFreeInfoText(false)
+    }
 }
 
 fun <T> showGDPRIfNecessary(activity: T, setup: GDPRSetup) where T : AppCompatActivity, T : IGDPRCallback {
-    val debug = BuildConfig.DEBUG
-    if (!debug) {
-        GDPR.getInstance().checkIfNeedsToBeShown(activity, setup)
+    if (!AppConfig.GDPR) {
+        return
     }
+
+    if (isRunningTest()) {
+        return
+    }
+
+    GDPR.getInstance().checkIfNeedsToBeShown(activity, setup)
 }
 
 fun <T : Activity> onAboutItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
@@ -91,7 +109,6 @@ fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETE
     toolbar?.showProgress(true)
 
     activity.doAsync {
-        val debug = BuildConfig.DEBUG
         var jsonArray: JSONArray? = null
         var json: String? = null
         var thrown = true
@@ -101,7 +118,7 @@ fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETE
 
         if (jsonArray != null) {
             json = when {
-                debug -> stringifyJsonArray(jsonArray)
+                BuildConfig.DEBUG -> stringifyJsonArray(jsonArray)
                 else -> jsonArray.toString()
             }
         }
@@ -251,4 +268,83 @@ fun isRunningTest(): Boolean = try {
     true
 } catch (e: ClassNotFoundException) {
     false
+}
+
+fun <T : Activity> startVpnService(activity: T) {
+    /*PreferenceManager.getDefaultSharedPreferences(activity).edit().apply {
+        // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
+        putString(activity.getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
+        // Default management port used by Openpyn
+        putString(activity.getString(R.string.pref_openvpnmgmt_port_key), "7015")
+        apply()
+    }*/
+    val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
+    val openvpnmgmt = preferences.getBoolean(activity.getString(R.string.pref_openvpnmgmt_key), false)
+    if (openvpnmgmt) {
+        val handler = VpnAuthenticationHandler(activity)
+        val host = VpnAuthenticationHandler.getHost(activity)
+        val port = VpnAuthenticationHandler.getPort(activity)
+        val shouldPostByteCount = VpnAuthenticationHandler.shouldPostByteCount(activity)
+        val shouldPostStateChange = VpnAuthenticationHandler.shouldPostStateChange(activity)
+        val bundle = Bundle().apply {
+            putBoolean(Constants.EXTRA_POST_BYTE_COUNT_NOTIFICATION, shouldPostByteCount)
+            putBoolean(Constants.EXTRA_POST_STATE_NOTIFICATION, shouldPostStateChange)
+            putString(Constants.EXTRA_HOST, host)
+            putInt(Constants.EXTRA_PORT, port)
+        }
+        // TODO: do this elsewhere e.g. in Service, add missing intent extras and create handler in Service
+        val connection = ManagementConnection.getInstance()
+        connection.setUsernamePasswordHandler(handler)
+
+        Utils.doStartService(activity, bundle)
+    }
+}
+
+fun <T : Context> initCrashlytics(context: T) {
+    val debug = BuildConfig.DEBUG
+    if (debug) return
+    val core = CrashlyticsCore.Builder().disabled(debug).build()
+    Fabric.with(context, Crashlytics.Builder().core(core).build())
+    FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
+}
+
+fun initStrictMode() {
+    if (!AppConfig.STRICT_MODE) {
+        return
+    }
+
+    StrictMode.setThreadPolicy(
+        StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build()
+    )
+
+    StrictMode.setVmPolicy(
+        StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build()
+    )
+}
+
+@SuppressLint("PrivateApi")
+fun <T : Context> isEmulator(context: T): Boolean {
+    // TODO: add connectivity check for 10.0.2.2 on debug machine
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
+        context.classLoader.loadClass("android.os.SystemProperties").let {
+            if ((it.getMethod("get", String::class.java).invoke(it, "ro.kernel.qemu") as String) == "1") {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+fun <T : Context> saveEmulatorPreferences(context: T) {
+    if (!AppConfig.EMULATOR) {
+        return
+    }
+
+    PreferenceManager.getDefaultSharedPreferences(context).edit().apply {
+        // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
+        putString(context.getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
+        // Default management port used by Openpyn
+        putString(context.getString(R.string.pref_openvpnmgmt_port_key), "7015")
+        apply()
+    }
 }

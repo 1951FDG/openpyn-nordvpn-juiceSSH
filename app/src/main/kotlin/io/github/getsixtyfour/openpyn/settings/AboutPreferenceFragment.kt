@@ -82,8 +82,6 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         root.addPreference(category)
 
-        val debug = BuildConfig.DEBUG
-        if (!debug) {
             category.addPreference(getSwitchPreference(
                 activity,
                 GDPR.getInstance().consentState.consent.isPersonalConsent,
@@ -108,7 +106,6 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
                     return@OnPreferenceChangeListener true
                 }
             ))
-        }
 
         category.addPreference(getPreference(
             activity,
