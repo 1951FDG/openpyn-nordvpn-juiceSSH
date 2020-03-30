@@ -5,7 +5,7 @@
     <SwitchPreference
         android:defaultValue="false"
         android:key="@string/pref_openvpnmgmt_key"
-        android:summary="@string/pref_description_openvpnmgmt"
+        android:summary="@string/pref_openvpnmgmt_summary"
         android:title="@string/pref_openvpnmgmt" />
     <EditTextPreference
         android:defaultValue="@string/pref_openvpnmgmt_host_default"
@@ -23,19 +23,35 @@
         android:singleLine="true"
         android:title="@string/pref_openvpnmgmt_port"
         app:useSimpleSummaryProvider="true" />
-    <EditTextPreference
-        android:defaultValue="@string/pref_openvpnmgmt_username_default"
+    <PreferenceCategory
         android:dependency="@string/pref_openvpnmgmt_key"
-        android:key="@string/pref_openvpnmgmt_username_key"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_openvpnmgmt_username"
-        app:useSimpleSummaryProvider="true" />
-    <io.github.getsixtyfour.security.SecuredEditTextPreference
-        android:defaultValue="@string/pref_openvpnmgmt_password_default"
+        android:title="@string/category_notifications">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_openvpnmgmt_bandwidth_usage_key"
+            android:summary="@string/pref_openvpnmgmt_bandwidth_usage_summary"
+            android:title="@string/pref_openvpnmgmt_bandwidth_usage" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_openvpnmgmt_state_changes_key"
+            android:summary="@string/pref_openvpnmgmt_state_changes_summary"
+            android:title="@string/pref_openvpnmgmt_state_changes" />
+    </PreferenceCategory>
+    <PreferenceCategory
         android:dependency="@string/pref_openvpnmgmt_key"
-        android:key="@string/pref_openvpnmgmt_password_key"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_openvpnmgmt_password" />
+        android:title="@string/category_advanced">
+        <EditTextPreference
+            android:defaultValue="@string/pref_openvpnmgmt_username_default"
+            android:key="@string/pref_openvpnmgmt_username_key"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_openvpnmgmt_username"
+            app:useSimpleSummaryProvider="true" />
+        <io.github.getsixtyfour.security.SecuredEditTextPreference
+            android:defaultValue="@string/pref_openvpnmgmt_password_default"
+            android:key="@string/pref_openvpnmgmt_password_key"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_openvpnmgmt_password" />
+    </PreferenceCategory>
 </PreferenceScreen>

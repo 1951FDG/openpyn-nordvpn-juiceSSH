@@ -47,6 +47,16 @@ public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
                 context.getString(R.string.pref_openvpnmgmt_username_default));
     }
 
+    public static boolean shouldPostByteCount(@NonNull Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getBoolean(context.getString(R.string.pref_openvpnmgmt_bandwidth_usage_key), true);
+    }
+
+    public static boolean shouldPostStateChange(@NonNull Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getBoolean(context.getString(R.string.pref_openvpnmgmt_state_changes_key), true);
+    }
+
     @NonNull
     @Override
     public String getUserName() {
