@@ -57,6 +57,6 @@ public final class SecuredEditTextPreference extends EditTextPreference implemen
 
     @Override
     protected void onSetInitialValue(@Nullable Object defaultValue) {
-        super.setText(getPersistedString(null));
+        super.setText(getPersistedString((String) defaultValue));
     }
 }
