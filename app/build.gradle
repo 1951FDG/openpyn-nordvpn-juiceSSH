@@ -301,10 +301,8 @@ dependencies {
     //implementation 'com.github.armcha:ElasticView:0.2.0'
 }
 
-def keystorePropertiesFile = rootProject.file('keystore.properties')
-if (keystorePropertiesFile.isFile()) {
-    def keystoreProperties = new Properties()
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+def keystoreProperties = loadProperties('keystore.properties')
+if (!keystoreProperties.isEmpty()) {
     android.signingConfigs.create('release', {
         keyAlias keystoreProperties['keyAlias']
         keyPassword keystoreProperties['keyPassword']
@@ -312,4 +310,24 @@ if (keystorePropertiesFile.isFile()) {
         storePassword keystoreProperties['storePassword']
     })
     android.buildTypes['release'].signingConfig = android.signingConfigs['release']
+}
+
+def apiProperties = loadProperties('api.properties')
+if (!apiProperties.isEmpty()) {
+    android.buildTypes['debug'].resValue('string', 'api_key_ipdata', apiProperties['keyIpdata'])
+    android.buildTypes['debug'].resValue('string', 'api_key_ipinfo', apiProperties['keyIpinfo'])
+    android.buildTypes['debug'].resValue('string', 'api_key_ipstack', apiProperties['keyIpstack'])
+
+    android.buildTypes['release'].resValue('string', 'api_key_ipdata', '')
+    android.buildTypes['release'].resValue('string', 'api_key_ipinfo', '')
+    android.buildTypes['release'].resValue('string', 'api_key_ipstack', '')
+}
+
+private Properties loadProperties(String string) {
+    def properties = new Properties()
+    def file = rootProject.file(string)
+    if (file.isFile()) {
+        properties.load(new FileInputStream(file))
+    }
+    return properties
 }

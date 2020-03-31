@@ -83,6 +83,9 @@ fastlane/report.xml
 app/.cxx
 app/release/output.json
 app/src/main/obj
-keystore.properties
 tiles/
 world/.thumb.png
+
+# Gradle properties
+api.properties
+keystore.properties
