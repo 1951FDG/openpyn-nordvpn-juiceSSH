@@ -13,10 +13,10 @@ if (!apiProperties.isEmpty()) {
     android.buildTypes['debug'].resValue('string', 'api_key_ipdata', apiProperties['keyIpdata'])
     android.buildTypes['debug'].resValue('string', 'api_key_ipinfo', apiProperties['keyIpinfo'])
     android.buildTypes['debug'].resValue('string', 'api_key_ipstack', apiProperties['keyIpstack'])
-    android.buildTypes['release'].resValue('string', 'api_key_ipdata', '')
-    android.buildTypes['release'].resValue('string', 'api_key_ipinfo', '')
-    android.buildTypes['release'].resValue('string', 'api_key_ipstack', '')
 }
+android.defaultConfig.resValue('string', 'api_key_ipdata', '')
+android.defaultConfig.resValue('string', 'api_key_ipinfo', '')
+android.defaultConfig.resValue('string', 'api_key_ipstack', '')
 
 private Properties loadProperties(String string) {
     def properties = new Properties()
