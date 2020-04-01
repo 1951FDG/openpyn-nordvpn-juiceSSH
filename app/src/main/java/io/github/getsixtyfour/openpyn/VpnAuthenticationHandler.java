@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openvpnmgmt;
+package io.github.getsixtyfour.openpyn;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,8 +8,7 @@ import androidx.preference.PreferenceManager;
 
 import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 
-import io.github.getsixtyfour.openpyn.R;
-import io.github.getsixtyfour.security.SecurityManager;
+import io.github.getsixtyfour.openpyn.security.SecurityManager;
 
 public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
 

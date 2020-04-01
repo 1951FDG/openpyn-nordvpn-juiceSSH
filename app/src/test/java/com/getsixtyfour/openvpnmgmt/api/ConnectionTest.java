@@ -1,9 +1,8 @@
-package com.getsixtyfour.openvpnmgmt.net;
+package com.getsixtyfour.openvpnmgmt.api;
 
-import com.getsixtyfour.openvpnmgmt.api.Client;
-import com.getsixtyfour.openvpnmgmt.api.Connection;
-import com.getsixtyfour.openvpnmgmt.api.Route;
-import com.getsixtyfour.openvpnmgmt.api.Status;
+import com.getsixtyfour.openvpnmgmt.net.Commands;
+import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
+import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;

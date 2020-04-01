@@ -4,8 +4,8 @@ package com.getsixtyfour.openvpnmgmt.net;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "UtilityClass", "SpellCheckingInspection" })
-final class Commands {
+@SuppressWarnings({ "UtilityClass", "SpellCheckingInspection", "WeakerAccess" })
+public final class Commands {
 
     /**
      * auth-retry none — Client will exit with a fatal error.
@@ -13,11 +13,11 @@ final class Commands {
      * auth-retry interact — Client will requery for an username/password and/or private key password before attempting a reconnection.
      */
 
-    static final String AUTH_COMMAND = "auth-retry %s";
+    public static final String AUTH_COMMAND = "auth-retry %s";
 
-    static final String BYTECOUNT_COMMAND = "bytecount %d";
+    public static final String BYTECOUNT_COMMAND = "bytecount %d";
 
-    static final String HELP_COMMAND = "help";
+    public static final String HELP_COMMAND = "help";
 
     /**
      * hold         -- show current hold flag, 0=off, 1=on.
@@ -26,7 +26,7 @@ final class Commands {
      * hold release -- leave hold state and start OpenVPN, but do not alter the current hold flag setting.
      */
 
-    static final String HOLD_COMMAND = "hold%s";
+    public static final String HOLD_COMMAND = "hold%s";
 
     /**
      * log on     -- Enable real-time output of log messages.
@@ -36,16 +36,16 @@ final class Commands {
      * log 20     -- Show the most recent 20 lines of log file history.
      */
 
-    static final String LOG_COMMAND = "log%s";
+    public static final String LOG_COMMAND = "log%s";
 
-    static final String PASSWORD_COMMAND = "password '%s' %s";
+    public static final String PASSWORD_COMMAND = "password '%s' %s";
 
     /**
      * The signal command will send a signal to the OpenVPN daemon.
      * The signal can be one of SIGHUP, SIGTERM, SIGUSR1, or SIGUSR2.
      */
 
-    static final String SIGNAL_COMMAND = "signal %s";
+    public static final String SIGNAL_COMMAND = "signal %s";
 
     /**
      * state        -- Print current OpenVPN state.
@@ -56,13 +56,13 @@ final class Commands {
      * state on all -- Atomically show state history while at the same time enable real-time state notification of future state transitions.
      */
 
-    static final String STATE_COMMAND = "state%s";
+    public static final String STATE_COMMAND = "state%s";
 
-    static final String STATUS_COMMAND = "status";
+    public static final String STATUS_COMMAND = "status";
 
-    static final String USERNAME_COMMAND = "username '%s' %s";
+    public static final String USERNAME_COMMAND = "username '%s' %s";
 
-    static final String VERSION_COMMAND = "version";
+    public static final String VERSION_COMMAND = "version";
 
     private Commands() {
     }

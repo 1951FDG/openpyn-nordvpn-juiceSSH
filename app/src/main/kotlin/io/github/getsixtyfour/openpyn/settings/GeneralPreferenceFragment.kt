@@ -15,7 +15,7 @@ import io.github.getsixtyfour.openpyn.settings.SettingsActivity.Companion
 /**
  * This fragment shows General settings preferences only.
  */
-class SettingsPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartFragmentCallback {
+class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartFragmentCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

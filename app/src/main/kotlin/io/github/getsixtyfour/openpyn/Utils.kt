@@ -42,7 +42,6 @@ import io.github.getsixtyfour.openpyn.map.util.createJson
 import io.github.getsixtyfour.openpyn.map.util.stringifyJsonArray
 import io.github.getsixtyfour.openpyn.settings.SettingsActivity
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
-import io.github.getsixtyfour.openvpnmgmt.VpnAuthenticationHandler
 import org.jetbrains.anko.activityUiThread
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete

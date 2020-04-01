@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.security;
+package io.github.getsixtyfour.openpyn.security;
 
 import android.content.Context;
 import android.text.InputType;

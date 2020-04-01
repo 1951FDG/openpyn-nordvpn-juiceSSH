@@ -1,6 +1,4 @@
-package com.getsixtyfour.openvpnmgmt.net;
-
-import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
+package com.getsixtyfour.openvpnmgmt.utils;
 
 import org.jetbrains.annotations.NonNls;
 import org.junit.*;

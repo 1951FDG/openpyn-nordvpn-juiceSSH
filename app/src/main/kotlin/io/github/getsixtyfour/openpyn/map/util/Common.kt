@@ -27,7 +27,7 @@ import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.map.createJsonArray
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
-import io.github.getsixtyfour.security.SecurityManager
+import io.github.getsixtyfour.openpyn.security.SecurityManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.features.DefaultRequest

@@ -53,7 +53,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         AboutPreferenceFragment::class.java.name -> true
         ApiPreferenceFragment::class.java.name -> true
         ManagementPreferenceFragment::class.java.name -> true
-        SettingsPreferenceFragment::class.java.name -> true
+        GeneralPreferenceFragment::class.java.name -> true
         else -> false
     }
 
@@ -193,7 +193,7 @@ class SettingsActivity : PreferenceActivityCompat() {
 
         fun startSettingsFragment(activity: Activity) {
             val intent = Intent(activity, SettingsActivity::class.java).apply {
-                putExtra(EXTRA_SHOW_FRAGMENT, SettingsPreferenceFragment::class.java.name)
+                putExtra(EXTRA_SHOW_FRAGMENT, GeneralPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
             ContextCompat.startActivity(activity, intent, null)

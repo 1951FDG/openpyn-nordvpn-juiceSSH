@@ -16,21 +16,21 @@
             android:title="@string/pref_geo_client" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_category_api_keys">
-        <io.github.getsixtyfour.security.SecuredEditTextPreference
+        <io.github.getsixtyfour.openpyn.security.SecuredEditTextPreference
             android:dependency="pref_geo"
             android:defaultValue="@string/api_key_ipdata"
             android:key="pref_api_ipdata"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_api_ipdata" />
-        <io.github.getsixtyfour.security.SecuredEditTextPreference
+        <io.github.getsixtyfour.openpyn.security.SecuredEditTextPreference
             android:dependency="pref_geo"
             android:defaultValue="@string/api_key_ipinfo"
             android:key="pref_api_ipinfo"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_api_ipinfo" />
-        <io.github.getsixtyfour.security.SecuredEditTextPreference
+        <io.github.getsixtyfour.openpyn.security.SecuredEditTextPreference
             android:dependency="pref_geo"
             android:defaultValue="@string/api_key_ipstack"
             android:key="pref_api_ipstack"

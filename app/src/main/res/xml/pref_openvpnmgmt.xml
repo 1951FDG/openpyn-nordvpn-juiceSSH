@@ -47,7 +47,7 @@
             android:singleLine="true"
             android:title="@string/pref_openvpnmgmt_username"
             app:useSimpleSummaryProvider="true" />
-        <io.github.getsixtyfour.security.SecuredEditTextPreference
+        <io.github.getsixtyfour.openpyn.security.SecuredEditTextPreference
             android:defaultValue="@string/pref_openvpnmgmt_password_default"
             android:key="@string/pref_openvpnmgmt_password_key"
             android:selectAllOnFocus="true"
