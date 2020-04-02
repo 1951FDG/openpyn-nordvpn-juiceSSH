@@ -13,12 +13,13 @@
  *
  * The Original Code is Krystian Bigaj code.
  *
- * The Initial Developer of the Original Code is
- * Krystian Bigaj (krystian.bigaj@gmail.com).
+ * The Initial Developer of the Original Code is Krystian Bigaj.
  * Portions created by the Initial Developer are Copyright (C) 2011
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Krystian Bigaj <krystian.bigaj@gmail.com>
+ *   1951FDG <1951FDG@users.noreply.github.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -94,7 +95,11 @@ struct ndk_file
  * sqlite3_vfs.xOpen - open database file.
  * Implemented using AAssetManager_open
  */
-static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, int flags, int *pOutFlags)
+static int ndkOpen(sqlite3_vfs *pVfs,
+	const char *zPath,
+	sqlite3_file *pFile,
+	int flags,
+	int *pOutFlags)
 {
 	const ndk_vfs *ndk = reinterpret_cast<ndk_vfs *>(pVfs);
 	auto *file = reinterpret_cast<ndk_file *>(pFile);
@@ -102,14 +107,14 @@ static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, in
 	// pMethod must be set to NULL, even if xOpen call fails.
 	//
 	// http://www.sqlite.org/c3ref/io_methods.html
-	// "The only way to prevent a call to xClose following a failed sqlite3_vfs.xOpen
-	// is for the sqlite3_vfs.xOpen to set the sqlite3_file.pMethods element to NULL."
+	// "The only way to prevent a call to xClose following a failed
+	// sqlite3_vfs.xOpen is for the sqlite3_vfs.xOpen to set the
+	// sqlite3_file.pMethods element to NULL."
 	file->pMethod = nullptr;
 
 	// Allow only for opening main database file as read-only.
 	// Opening JOURNAL/TEMP/WAL/etc. files will make call fails.
-	// We don't need it, as DB opened from 'assets' .apk cannot
-	// be modified
+	// We don't need it, as DB opened from 'assets' .apk cannot be modified
 	if (!zPath ||
 		(flags & SQLITE_OPEN_DELETEONCLOSE) ||
 		!(flags & SQLITE_OPEN_READONLY) ||
@@ -128,14 +133,16 @@ static int ndkOpen(sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, in
 		return SQLITE_CANTOPEN;
 	}
 
-	// Get pointer to database. This call can fail in case for example
-	// out of memory. If file inside .apk is compressed, then whole
-	// file must be allocated and read into memory.
-	// If file is not compressed (inside .apk/zip), then this functions returns pointer
-	// to memory-mapped address in .apk file, so doesn't need to allocate
-	// explicit additional memory.
-	// As for today there is no simple way to set if specific file
-	// must be compressed or not. You can control it only by file extension.
+	// Get pointer to database.
+	// This call can fail in case for example out of memory.
+	// If file inside .apk is compressed, then whole file must be allocated and
+	// read into memory.
+	// If file is not compressed (inside .apk/zip), then this functions returns
+	// pointer to memory-mapped address in .apk file, so doesn't need to
+	// allocate explicit additional memory.
+	// As for today there is no simple way to set if specific file must be
+	// compressed or not.
+	// You can control it only by file extension.
 	// Google for: android kNoCompressExt
 	const void *buf = AAsset_getBuffer(asset);
 	if (!buf)
@@ -168,7 +175,10 @@ static int ndkDelete(sqlite3_vfs *, const char *, int)
  * sqlite3_vfs.xAccess - tests if file exists and/or can be read.
  * Implemented using AAssetManager_open
  */
-static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags, int *pResOut)
+static int ndkAccess(sqlite3_vfs *pVfs,
+	const char *zPath,
+	int flags,
+	int *pResOut)
 {
 	const ndk_vfs *ndk = reinterpret_cast<ndk_vfs *>(pVfs);
 
@@ -179,7 +189,8 @@ static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags, int *pResO
 		case SQLITE_ACCESS_EXISTS:
 		case SQLITE_ACCESS_READ:
 		{
-			AAsset *asset = AAssetManager_open(ndk->mgr, zPath, AASSET_MODE_RANDOM);
+			AAsset *asset =
+				AAssetManager_open(ndk->mgr, zPath, AASSET_MODE_RANDOM);
 			if (asset)
 			{
 				AAsset_close(asset);
@@ -198,7 +209,10 @@ static int ndkAccess(sqlite3_vfs *pVfs, const char *zPath, int flags, int *pResO
  * sqlite3_vfs.xFullPathname - all paths are root paths to 'assets' directory,
  * so just return copy of input path
  */
-static int ndkFullPathname(sqlite3_vfs *pVfs, const char *zPath, int nOut, char *zOut)
+static int ndkFullPathname(sqlite3_vfs *pVfs,
+	const char *zPath,
+	int nOut,
+	char *zOut)
 {
 	if (!zPath)
 	{
@@ -287,7 +301,6 @@ static int ndkFileClose(sqlite3_file *pFile)
 		file->buf = nullptr;
 		file->len = 0;
 	}
-
 	return SQLITE_OK;
 }
 
@@ -295,7 +308,10 @@ static int ndkFileClose(sqlite3_file *pFile)
  * sqlite3_file.xRead - database read from asset memory.
  * See: AAsset_getBuffer in ndkOpen
  */
-static int ndkFileRead(sqlite3_file *pFile, void *pBuf, int amt, sqlite3_int64 offset)
+static int ndkFileRead(sqlite3_file *pFile,
+	void *pBuf,
+	int amt,
+	sqlite3_int64 offset)
 {
 	const ndk_file *file = reinterpret_cast<ndk_file *>(pFile);
 	int got;
@@ -325,14 +341,14 @@ static int ndkFileRead(sqlite3_file *pFile, void *pBuf, int amt, sqlite3_int64 o
 		else
 		{
 			// http://www.sqlite.org/c3ref/io_methods.html
-			// "If xRead() returns SQLITE_IOERR_SHORT_READ it must also
-			// fill in the unread portions of the buffer with zeros.
+			// "If xRead() returns SQLITE_IOERR_SHORT_READ it must also fill in
+			// the unread portions of the buffer with zeros.
 			// A VFS that fails to zero-fill short reads might seem to work.
-			// However, failure to zero-fill short reads will eventually lead
-			// to database corruption."
+			// However, failure to zero-fill short reads will eventually lead to
+			// database corruption."
 			//
-			// It might be not a problem in read-only databases,
-			// but do it as documentation says
+			// It might be not a problem in read-only databases, but do it as
+			// documentation says
 			rc = SQLITE_IOERR_SHORT_READ;
 			memset(&((char *) pBuf)[got], 0, amt - got);
 		}
@@ -435,7 +451,10 @@ static int ndkFileDeviceCharacteristics(sqlite3_file *)
 /*
  * Register into SQLite. For more information see sqlite3ndk.h
  */
-int sqlite3_ndk_init(AAssetManager *assetMgr, const char *vfsName, int makeDflt, const char *osVfs)
+int sqlite3_ndk_init(AAssetManager *assetMgr,
+	const char *vfsName,
+	int makeDflt,
+	const char *osVfs)
 {
 	static ndk_vfs ndkVfs;
 	int rc;
@@ -460,7 +479,9 @@ int sqlite3_ndk_init(AAssetManager *assetMgr, const char *vfsName, int makeDflt,
 		}
 	}
 
-	// Find os VFS. Used to redirect xRandomness, xSleep, xCurrentTime, ndkCurrentTimeInt64 calls
+	// Find os VFS.
+	// Used to redirect xRandomness, xSleep, xCurrentTime, ndkCurrentTimeInt64
+	// calls
 	ndkVfs.vfsDefault = sqlite3_vfs_find(osVfs);
 	if (ndkVfs.vfsDefault == nullptr)
 	{
@@ -527,7 +548,7 @@ int sqlite3_ndk_init(AAssetManager *assetMgr, const char *vfsName, int makeDflt,
 
 	if (rc != SQLITE_OK)
 	{
-		// sqlite3_vfs_register could fails in case of sqlite3_initialize failure
+		// sqlite3_vfs_register could fail in case of sqlite3_initialize failure
 		ndkVfs.mgr = nullptr;
 	}
 
@@ -539,56 +560,70 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 	JNIEnv *env;
 	if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK)
 	{
-		return -1;
+		return JNI_ERR;
 	}
-/*
 
-	int rc;
-	if ( (rc = sqlite3_config(SQLITE_CONFIG_SINGLETHREAD)) != SQLITE_OK ) {
-		ERROR("Can not config sqlite3 threads: sqlite3_config returned %d.", rc);
-	} else {
+	/*int rc;
+	if ((rc = sqlite3_config(SQLITE_CONFIG_SINGLETHREAD)) != SQLITE_OK)
+	{
+		ERROR("Can not config sqlite3 threads: sqlite3_config returned %d.",
+			  rc);
+	}
+	else
+	{
 		VERBOSE("SUCCESS: sqlite3_config returned %d.", rc);
-	}
+	}*/
 
-*/
-	const char *version_str = sqlite3_libversion();
-	VERBOSE("found sqlite library version %s thread safe %d", version_str, sqlite3_threadsafe());
+	VERBOSE("found sqlite library version %s thread safe %d",
+		sqlite3_libversion(), sqlite3_threadsafe());
 
 	jclass cActivityThread = env->FindClass("android/app/ActivityThread");
-	if (cActivityThread == JNI_FALSE) { return JNI_ERR; }
+	if (cActivityThread == JNI_FALSE)
+	{
+		return JNI_ERR;
+	}
 
 	jmethodID mCurrentActivityThread = env->GetStaticMethodID(
 		cActivityThread,
 		"currentActivityThread",
 		"()Landroid/app/ActivityThread;");
-	if (mCurrentActivityThread == JNI_FALSE) { return JNI_ERR; }
-	jobject gActivity = env->CallStaticObjectMethod(cActivityThread, mCurrentActivityThread);
+	if (mCurrentActivityThread == JNI_FALSE)
+	{
+		return JNI_ERR;
+	}
+
+	jobject gActivityThread = env->CallStaticObjectMethod(
+		cActivityThread,
+		mCurrentActivityThread);
 
 	jmethodID mGetApplication = env->GetMethodID(
-		env->GetObjectClass(gActivity),
+		env->GetObjectClass(gActivityThread),
 		"getApplication",
 		"()Landroid/app/Application;");
-	if (mGetApplication == JNI_FALSE) { return JNI_ERR; }
-	jobject gApplication = env->CallObjectMethod(gActivity, mGetApplication);
+	if (mGetApplication == JNI_FALSE)
+	{
+		return JNI_ERR;
+	}
 
-	jclass cContext = env->FindClass("android/content/Context");
-	if (cContext == JNI_FALSE) { return JNI_ERR; }
-
-	jmethodID mGetApplicationContext = env->GetMethodID(
-		cContext,
-		"getApplicationContext",
-		"()Landroid/content/Context;");
-	if (mGetApplicationContext == JNI_FALSE) { return JNI_ERR; }
-	jobject gApplicationContext = env->CallObjectMethod(gApplication, mGetApplicationContext);
+	jobject gApplication = env->CallObjectMethod(
+		gActivityThread,
+		mGetApplication);
 
 	jmethodID mGetAssets = env->GetMethodID(
-		env->GetObjectClass(gApplicationContext),
+		env->GetObjectClass(gApplication),
 		"getAssets",
 		"()Landroid/content/res/AssetManager;");
-	if (mGetAssets == JNI_FALSE) { return JNI_ERR; }
-	jobject gAssetManager = env->CallObjectMethod(gApplicationContext, mGetAssets);
+	if (mGetAssets == JNI_FALSE)
+	{
+		return JNI_ERR;
+	}
+
+	jobject gAssetManager = env->CallObjectMethod(
+		gApplication,
+		mGetAssets);
 
 	jobject assetManager = env->NewGlobalRef(gAssetManager);
+
 	AAssetManager *assetMgr = AAssetManager_fromJava(env, assetManager);
 	assert(assetMgr != nullptr);
 

@@ -13,12 +13,13 @@
  *
  * The Original Code is Krystian Bigaj code.
  *
- * The Initial Developer of the Original Code is
- * Krystian Bigaj (krystian.bigaj@gmail.com).
+ * The Initial Developer of the Original Code is Krystian Bigaj.
  * Portions created by the Initial Developer are Copyright (C) 2011
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Krystian Bigaj <krystian.bigaj@gmail.com>
+ *   1951FDG <1951FDG@users.noreply.github.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -87,8 +88,8 @@
  *     ...
  */
 int sqlite3_ndk_init(AAssetManager *assetMgr,
-					 const char *vfsName = SQLITE_NDK_VFS_NAME,
-					 int makeDflt = SQLITE_NDK_VFS_MAKE_DEFAULT,
-					 const char *osVfs = SQLITE_NDK_VFS_PARENT_VFS);
+	const char *vfsName = SQLITE_NDK_VFS_NAME,
+	int makeDflt = SQLITE_NDK_VFS_MAKE_DEFAULT,
+	const char *osVfs = SQLITE_NDK_VFS_PARENT_VFS);
 
 #endif
