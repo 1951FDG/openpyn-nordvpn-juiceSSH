@@ -41,11 +41,8 @@ import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.view.map
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.async
@@ -75,24 +72,21 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         get() = screen.requireContext().applicationContext
     private val map by lazy { views.rootView.map }
     private val mHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
-        GlobalScope.launch(Main) {
-            screen.toolBar?.hideProgress(true)
-        }
+        // TODO: add dialog
+        screen.toolBar?.hideProgress(true)
         this.error("", e)
         logException(e)
     }
-    private lateinit var mMarkers: HashMap<LatLng, LazyMarker>
-    private lateinit var mFlags: HashSet<CharSequence>
-    private lateinit var mAnimations: ArrayList<Animation>
     private var mGoogleMap: GoogleMap? = null
     private var mCameraUpdateAnimator: CameraUpdateAnimator? = null
     private val mMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
     //set by async
     private lateinit var mCountries: List<MultiSelectable>
     private lateinit var mCountryBoundaries: CountryBoundaries
-    private lateinit var mFavorites: ArrayList<LazyMarker>
     private lateinit var mJsonArray: JSONArray
     private lateinit var mTileProvider: MapBoxOfflineTileProvider
+    private lateinit var mMarkers: HashMap<LatLng, LazyMarker>
+    private lateinit var mFlags: HashSet<CharSequence>
     @ObsoleteCoroutinesApi
     @ExperimentalCoroutinesApi
     private val mSendChannel = actor<Context>(coroutineContext, Channel.RENDEZVOUS) {
@@ -344,44 +338,46 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         }
     }
 
-    private fun loadData() = launch(mHandler) {
+    private fun CoroutineScope.loadData() = launch(mHandler) {
         screen.toolBar?.showProgress(true)
 
-        val countries = async(IO) { countryList(applicationContext, R.raw.emojis) }
-        val countryBoundaries = async(IO) { getCountryBoundaries(applicationContext) }
-        val favorites = async(IO) { LazyMarkerStorage(FAVORITE_KEY).loadFavorites(applicationContext) }
-        val jsonArray = async(IO) { jsonArray(applicationContext, R.raw.nordvpn, ".json") }
-        val tileProvider = async(IO) { fileBackedTileProvider() }
-        val jsonObj = async(IO) { createGeoJson(applicationContext) }
+        val animations: ArrayList<Animation> = withContext(IO) {
+            val countries = async { countryList(applicationContext, R.raw.emojis) }
+            val countryBoundaries = async { getCountryBoundaries(applicationContext) }
+            val jsonArray = async { jsonArray(applicationContext, R.raw.nordvpn, ".json") }
+            val tileProvider = async { fileBackedTileProvider() }
+            val favorites = async { LazyMarkerStorage(FAVORITE_KEY).loadFavorites(applicationContext) }
+            val jsonObj = async { createGeoJson(applicationContext) }
 
-        mCountries = countries.await()
-        mTileProvider = tileProvider.await()
-        mCountryBoundaries = countryBoundaries.await()
-        mFavorites = favorites.await()
-        mJsonArray = jsonArray.await()
+            mCountries = countries.await()
+            mCountryBoundaries = countryBoundaries.await()
+            mJsonArray = jsonArray.await()
+            mTileProvider = tileProvider.await()
+            val list = favorites.await()
+            val json = jsonObj.await()
+
+            val (hashSet, hashMap) = createMarkers(applicationContext, mJsonArray, mCountries, mGoogleMap!!, list, onLevelChangeCallback)
+            mFlags = setUpPrintArray(applicationContext, mCountries, hashSet)
+            mMarkers = hashMap
+            val animations = getCameraUpdates()
+            val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, mFlags, json, mJsonArray)
+            val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
+                isCallback = true
+                isAnimate = true
+                isClosest = true
+                tag = json
+                target = latLng
+            }
+            animations.add(animation)
+            animations
+        }
 
         screen.toolBar?.hideProgress(true)
 
-        showData(jsonObj.await())
+        loadMap(animations)
     }
 
-    private suspend fun showData(jsonObj: JSONObject?) {
-        val (hashSet, hashMap) = withContext(Default) {
-            createMarkers(applicationContext, mJsonArray, mCountries, mGoogleMap!!, mFavorites, onLevelChangeCallback)
-        }
-        mFlags = withContext(Default) { setUpPrintArray(applicationContext, mCountries, hashSet) }
-        mMarkers = hashMap
-        mAnimations = getCameraUpdates()
-        val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, mFlags, jsonObj, mJsonArray)
-        val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
-            isCallback = true
-            isAnimate = true
-            isClosest = true
-            tag = jsonObj
-            target = latLng
-        }
-        mAnimations.add(animation)
-
+    private fun loadMap(animations: ArrayList<Animation>) {
         mGoogleMap?.let {
             it.addTileOverlay(TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false))
             it.setMaxZoomPreference(mTileProvider.maximumZoom)
@@ -397,7 +393,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
             it.uiSettings?.isScrollGesturesEnabled = true
             it.uiSettings?.isZoomGesturesEnabled = true
 
-            mCameraUpdateAnimator = CameraUpdateAnimator(it, mAnimations, this)
+            mCameraUpdateAnimator = CameraUpdateAnimator(it, animations, this)
             mCameraUpdateAnimator?.animatorListener = this
 
             // Load map
