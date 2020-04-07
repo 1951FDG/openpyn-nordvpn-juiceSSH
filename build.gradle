@@ -70,6 +70,8 @@ allprojects {
         excludeDirs += file('app/src/main/obj')
 
         excludeDirs += file('config/detekt')
+        excludeDirs += file('config/checkstyle')
+        excludeDirs += file('config/lib')
 
         excludeDirs += file('fastlane')
         excludeDirs += file('svg')
