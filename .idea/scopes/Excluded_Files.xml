@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Excluded Files" pattern="file[openpyn-nordvpn-juiceSSH]:api.properties||file[openpyn-nordvpn-juiceSSH]:keystore.properties||file[app]:src/main/res/values/google_maps_api.xml||file[app]:src/release/res/values/values.xml" />
+</component>
