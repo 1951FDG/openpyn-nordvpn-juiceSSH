@@ -76,7 +76,7 @@ internal fun setUpPrintArray(context: Context, countries: List<MultiSelectable>,
 internal fun fileBackedTileProvider(): MapBoxOfflineTileProvider {
     // Use a file backed SQLite database
     val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-    Log.debug(tileProvider.toString())
+    Log.debug("$tileProvider")
     return tileProvider
 }
 
@@ -84,20 +84,12 @@ internal fun fileBackedTileProvider(): MapBoxOfflineTileProvider {
 internal fun memoryBackedTileProvider(): MapBoxOfflineTileProvider {
     // Use a memory backed SQLite database
     val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro", null)
-    Log.debug(tileProvider.toString())
+    Log.debug("$tileProvider")
     return tileProvider
 }
 
-internal fun getCountryBoundaries(context: Context): CountryBoundaries? {
-    try {
-        return CountryBoundaries.load(context.assets.open("boundaries.ser"))
-    } catch (e: FileNotFoundException) {
-        logException(e)
-    } catch (e: IOException) {
-        logException(e)
-    }
-
-    return null
+internal fun getCountryBoundaries(context: Context): CountryBoundaries {
+    return CountryBoundaries.load(context.assets.open("boundaries.ser"))
 }
 
 internal fun getCameraUpdates(): ArrayList<Animation> {
@@ -148,7 +140,7 @@ internal fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, Strin
     }
 }
 
-internal fun copyRawResourceToFile(context: Context, id: Int, file: File) {
+internal fun copyRawResourceToFile(context: Context, @RawRes id: Int, file: File) {
     context.resources.openRawResource(id).use { input ->
         file.outputStream().buffered().use { output ->
             input.copyTo(output)
@@ -156,7 +148,7 @@ internal fun copyRawResourceToFile(context: Context, id: Int, file: File) {
     }
 }
 
-internal fun createJsonArray(context: Context, id: Int, ext: String): JSONArray {
+internal fun createJsonArray(context: Context, @RawRes id: Int, ext: String): JSONArray {
     try {
         val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
         if (!file.exists()) {
@@ -185,15 +177,11 @@ internal fun countryList(context: Context, @RawRes id: Int): List<MultiSelectabl
     val moshi = Moshi.Builder().add(factory.build()).add(object {
         @ToJson
         @Suppress("unused")
-        fun toJson(value: CharSequence): String {
-            return value.toString()
-        }
+        fun toJson(value: CharSequence): String = "$value"
 
         @FromJson
         @Suppress("unused")
-        fun fromJson(value: String): CharSequence {
-            return SpannableString(value)
-        }
+        fun fromJson(value: String): CharSequence = SpannableString(value)
     }).build()
     val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
     val adapter: JsonAdapter<List<MultiSelectModelExtra>> = moshi.adapter(listType)

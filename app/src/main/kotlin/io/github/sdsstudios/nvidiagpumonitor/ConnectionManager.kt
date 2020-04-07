@@ -101,13 +101,9 @@ class ConnectionManager(
         stopClient()
     }
 
-    fun isConnected(): Boolean {
-        return mSessionId > 0
-    }
+    fun isConnected(): Boolean = mSessionId > 0
 
-    fun isConnectingOrDisconnecting(): Boolean {
-        return mSessionRunning
-    }
+    fun isConnectingOrDisconnecting(): Boolean = mSessionRunning
 
     fun toggleConnection(activity: Activity, id: UUID, requestCode: Int) {
         if (isConnectingOrDisconnecting()) return

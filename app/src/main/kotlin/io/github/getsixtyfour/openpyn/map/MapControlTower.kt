@@ -89,10 +89,10 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     private val mMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
     //set by async
     private lateinit var mCountries: List<MultiSelectable>
-    private var mCountryBoundaries: CountryBoundaries? = null
+    private lateinit var mCountryBoundaries: CountryBoundaries
     private lateinit var mFavorites: ArrayList<LazyMarker>
     private lateinit var mJsonArray: JSONArray
-    private var mTileProvider: MapBoxOfflineTileProvider? = null
+    private lateinit var mTileProvider: MapBoxOfflineTileProvider
     @ObsoleteCoroutinesApi
     @ExperimentalCoroutinesApi
     private val mSendChannel = actor<Context>(coroutineContext, Channel.RENDEZVOUS) {
@@ -130,18 +130,19 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
 
         mCameraUpdateAnimator?.onDestroy()
 
-        mGoogleMap?.let {
-            map.onDestroy()
-        }
+        mGoogleMap?.let { map.onDestroy() }
 
         mSendChannel.close()
-        mTileProvider?.close()
+
+        if (::mTileProvider.isInitialized) {
+            mTileProvider.close()
+        }
+
         cancel()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
-
         mGoogleMap?.let { loadData() }
     }
 
@@ -150,7 +151,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     override fun onCameraIdle() {
-        val bounds = mGoogleMap!!.projection.visibleRegion.latLngBounds
+        val bounds = (mGoogleMap ?: return).projection.visibleRegion.latLngBounds
 
         mMarkers.forEach { (key, value) ->
             if (bounds.contains(key) && mFlags.contains(value.tag)) {
@@ -271,7 +272,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         } else {
             (animation.tag as? JSONObject)?.let {
                 views.showMiniBar(createUserMessage(screen.requireActivity(), it).build())
-                // showThreats(screen.requireActivity(), it)
+                /*showThreats(screen.requireActivity(), it)*/
             }
         }
     }
@@ -305,14 +306,10 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     fun onSessionCancelled() {
-        info("onSessionCancelled")
-
         views.toggleConnectButton(false)
     }
 
     fun onSessionStarted() {
-        info("onSessionStarted")
-
         views.toggleConnectButton(true)
 
         views.hideListAndLocationButton()
@@ -330,8 +327,6 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     fun onSessionFinished() {
-        info("onSessionFinished")
-
         views.toggleConnectButton(false)
 
         views.showListAndLocationButton()
@@ -389,15 +384,15 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
 
         mGoogleMap?.let {
             it.addTileOverlay(TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false))
-            it.setMaxZoomPreference(mTileProvider!!.maximumZoom)
-            it.setMinZoomPreference(mTileProvider!!.minimumZoom)
+            it.setMaxZoomPreference(mTileProvider.maximumZoom)
+            it.setMinZoomPreference(mTileProvider.minimumZoom)
             it.setOnInfoWindowClickListener(this)
             it.setOnMapClickListener(this)
             it.setOnMarkerClickListener(this)
             it.setOnMapLoadedCallback(this)
 
-            // val params = fab1.layoutParams as ConstraintLayout.LayoutParams
-            // it.setPadding(0, 0, 0, params.height + params.bottomMargin)
+            /*val params = fab1.layoutParams as ConstraintLayout.LayoutParams
+            it.setPadding(0, 0, 0, params.height + params.bottomMargin)*/
 
             it.uiSettings?.isScrollGesturesEnabled = true
             it.uiSettings?.isZoomGesturesEnabled = true
@@ -412,7 +407,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     private fun animateCamera(jsonObj: JSONObject?, closest: Boolean = false, execute: Boolean = true) {
-        // check if not already animating
+        // Check if not already animating
         mCameraUpdateAnimator?.let {
             if (!it.isAnimating) {
                 val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, mFlags, jsonObj, mJsonArray)

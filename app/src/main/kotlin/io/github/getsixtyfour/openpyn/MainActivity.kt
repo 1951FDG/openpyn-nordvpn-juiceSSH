@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Toast
+import androidx.annotation.ArrayRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
     private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
-    // private var dialog: MorphDialog? = null
+    /*private var dialog: MorphDialog? = null*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
 
         startVpnService(this)
         // TODO: remove after beta release test
-        error(apkSignatures.toString())
+        error("$apkSignatures")
 
         /*val api = GoogleApiAvailability.getInstance()
         when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
 
         if (requestCode == UPDATE_REQUEST_CODE) {
             if (resultCode != RESULT_OK) {
-                // If the update is cancelled or fails, you can request to start the update again.
+                // If the update is cancelled or fails, you can request to start the update again
                 error("Update flow failed! Result code: $resultCode")
             }
         }
@@ -118,7 +119,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
             }
         }*/
 
-        // MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)
+        /*MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)*/
     }
 
     override fun onResume() {
@@ -185,7 +186,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
     }
 
     override fun onConsentInfoUpdate(consentState: GDPRConsentState, isNewState: Boolean) {
-        // consent is known, handle this
+        // Consent is known, handle this
         info("ConsentState: ${consentState.logString()}")
 
         if (consentState.consent.isPersonalConsent) {
@@ -194,7 +195,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
     }
 
     override fun onConsentNeedsToBeRequested(data: GDPRPreperationData?) {
-        // forward the result and show the dialog
+        // Forward the result and show the dialog
         GDPR.getInstance().showDialog(this, mSetup, data?.location)
     }
 
@@ -202,13 +203,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
     override fun onClick(v: View?) {
         val id = checkNotNull(v).id
 
-        fun getEntryForValue(value: String, vararg ids: Int): String {
-            return resources.getStringArray(ids[0])[resources.getStringArray(ids[1]).indexOf(value)]
+        fun getEntryForValue(@ArrayRes entryArrayId: Int, @ArrayRes valueArrayId: Int, value: String): String {
+            return resources.getStringArray(entryArrayId)[resources.getStringArray(valueArrayId).indexOf(value)]
         }
 
         fun element(location: Coordinate?, flag: String, server: String, country: String): String = when {
             flag.isNotEmpty() -> {
-                val name = getEntryForValue(flag, R.array.pref_country_entries, R.array.pref_country_values)
+                val name = getEntryForValue(R.array.pref_country_entries, R.array.pref_country_values, flag)
                 if (location != null) {
                     // Enforce Locale to English for double to string conversion
                     val latitude = "%.7f".format(Locale.ENGLISH, location.latitude)
@@ -223,7 +224,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
                 getString(R.string.vpn_name_server, server)
             }
             country.isNotEmpty() -> {
-                getString(R.string.vpn_name_country, getEntryForValue(country, R.array.pref_country_entries, R.array.pref_country_values))
+                getString(R.string.vpn_name_country, getEntryForValue(R.array.pref_country_entries, R.array.pref_country_values, country))
             }
             else -> {
                 getString(R.string.empty)
@@ -231,7 +232,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         }
 
         fun message(): String {
-            val (location, flag) = this.positionAndFlagForSelectedMarker()
+            val (location, flag) = positionAndFlagForSelectedMarker()
             val preferences = PreferenceManager.getDefaultSharedPreferences(this)
             val server = preferences.getString("pref_server", "")!!
             val country = preferences.getString("pref_country", "")!!
@@ -259,14 +260,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         mConnectionManager?.let {
             if (mConnectionListAdapter?.count ?: 0 > 0) {
                 if (!it.isConnected()) {
-                    // dialog = showMessageDialog(v)
+                    /*dialog = showMessageDialog(v)*/
                     val action = MapFragmentDirections.actionMapFragmentToPreferenceDialogFragment(message())
                     Navigation.findNavController(v).navigate(action)
                 } else {
                     toggleConnection()
                 }
             } else {
-                // showWarningDialog(v)
+                /*showWarningDialog(v)*/
                 AlertDialog.Builder(this).apply {
                     setTitle(R.string.title_error)
                     setMessage(R.string.error_juicessh_server)
@@ -313,7 +314,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
     override fun onCompleted(exitCode: Int) {
         toolbar.hideProgress(true)
 
-        Toast.makeText(this, exitCode.toString(), Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "$exitCode", Toast.LENGTH_LONG).show()
 
         when (exitCode) {
             0 -> {
@@ -390,6 +391,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         const val UPDATE_REQUEST_CODE: Int = 1
         const val PERMISSION_REQUEST_CODE: Int = 2
         const val JUICESSH_REQUEST_CODE: Int = 3
-        // private const val GOOGLE_REQUEST_CODE = 4
+        /*private const val GOOGLE_REQUEST_CODE = 4*/
     }
 }

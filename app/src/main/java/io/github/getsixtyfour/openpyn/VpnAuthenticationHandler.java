@@ -25,25 +25,10 @@ public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
                 context.getString(R.string.pref_openvpnmgmt_host_default));
     }
 
-    @NonNull
-    public static String getPassword(@NonNull Context context) {
-        SecurityManager securityManager = SecurityManager.getInstance(context);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return securityManager.decryptString(preferences.getString(context.getString(R.string.pref_openvpnmgmt_password_key),
-                context.getString(R.string.pref_openvpnmgmt_password_default)));
-    }
-
     public static int getPort(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return Integer.parseInt(preferences.getString(context.getString(R.string.pref_openvpnmgmt_port_key),
                 context.getString(R.string.pref_openvpnmgmt_port_default)));
-    }
-
-    @NonNull
-    public static String getUserName(@NonNull Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(context.getString(R.string.pref_openvpnmgmt_username_key),
-                context.getString(R.string.pref_openvpnmgmt_username_default));
     }
 
     public static boolean shouldPostByteCount(@NonNull Context context) {
@@ -57,14 +42,29 @@ public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
     }
 
     @NonNull
+    private static String getUserName(@NonNull Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(context.getString(R.string.pref_openvpnmgmt_username_key),
+                context.getString(R.string.pref_openvpnmgmt_username_default));
+    }
+
+    @NonNull
     @Override
     public String getUserName() {
         return getUserName(mContext);
     }
 
     @NonNull
+    private static String getUserPass(@NonNull Context context) {
+        SecurityManager securityManager = SecurityManager.getInstance(context);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return securityManager.decryptString(preferences.getString(context.getString(R.string.pref_openvpnmgmt_password_key),
+                context.getString(R.string.pref_openvpnmgmt_password_default)));
+    }
+
+    @NonNull
     @Override
     public String getUserPass() {
-        return getPassword(mContext);
+        return getUserPass(mContext);
     }
 }

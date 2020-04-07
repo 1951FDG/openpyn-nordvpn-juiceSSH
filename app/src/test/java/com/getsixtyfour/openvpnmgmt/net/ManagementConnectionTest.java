@@ -5,17 +5,18 @@ import com.getsixtyfour.openvpnmgmt.core.LogManager.OpenVpnLogRecord;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 
-import junit.framework.AssertionFailedError;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.junit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import org.junit.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author 1951FDG
@@ -50,29 +51,22 @@ public class ManagementConnectionTest {
             method.setAccessible(true);
             method.invoke(sConnection, argObjects);
         } catch (NoSuchMethodException e) {
-            // Should happen only rarely, because most times the
-            // specified method should exist. If it does happen, just let
-            // the test fail so the programmer can fix the problem.
-            throw new AssertionFailedError(e.getMessage());
+            // Should happen only rarely, because most times the specified method should exist.
+            // If it does happen, just let the test fail so the programmer can fix the problem.
+            throw new AssertionError(e);
         } catch (SecurityException e) {
-            // Should happen only rarely, because the setAccessible(true)
-            // should be allowed in when running unit tests. If it does
-            // happen, just let the test fail so the programmer can fix
-            // the problem.
-            throw new AssertionFailedError(e.getMessage());
+            // Should happen only rarely, because the setAccessible(true) should be allowed in when running unit tests.
+            // If it does happen, just let the test fail so the programmer can fix the problem.
+            throw new AssertionError(e);
         } catch (IllegalAccessException e) {
-            // Should never happen, because setting accessible flag to
-            // true. If setting accessible fails, should throw a security
-            // exception at that point and never get to the invoke. But
-            // just in case, wrap it in a TestFailedException and let a
-            // human figure it out.
-            throw new AssertionFailedError(e.getMessage());
+            // Should never happen, because setting accessible flag to true.
+            // If setting accessible fails, should throw a security exception at that point and never get to the invoke.
+            // But just in case, wrap it in a AssertionError and let a human figure it out.
+            throw new AssertionError(e);
         } catch (IllegalArgumentException e) {
-            // Should happen only rarely, because usually the right
-            // number and types of arguments will be passed. If it does
-            // happen, just let the test fail so the programmer can fix
-            // the problem.
-            throw new AssertionFailedError(e.getMessage());
+            // Should happen only rarely, because usually the right number and types of arguments will be passed.
+            // If it does happen, just let the test fail so the programmer can fix the problem.
+            throw new AssertionError(e);
         }
     }
 
@@ -145,13 +139,15 @@ public class ManagementConnectionTest {
         invokeParseInput(line);
         line = ">PASSWORD:Need 'Auth' username/password";
         sConnection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
-            @NotNull
+            @SuppressWarnings("NullableProblems")
+            @Nullable
             @Override
             public String getUserName() {
                 return null;
             }
 
-            @NotNull
+            @SuppressWarnings("NullableProblems")
+            @Nullable
             @Override
             public String getUserPass() {
                 return null;
@@ -160,8 +156,6 @@ public class ManagementConnectionTest {
         try {
             invokeParseInput(line);
         } catch (InvocationTargetException e) {
-            // throw the InvocationTargetException unless the target
-            // exception is NullPointerException, which is expected
             Throwable targetException = e.getTargetException();
             if (targetException instanceof IOException) {
                 throw (IOException) targetException;

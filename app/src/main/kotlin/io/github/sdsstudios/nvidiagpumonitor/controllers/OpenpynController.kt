@@ -30,7 +30,7 @@ class OpenpynController(
     override fun onCompleted(exitCode: Int) {
         super.onCompleted(exitCode)
 
-        info(exitCode.toString())
+        info("$exitCode")
 
         when (exitCode) {
             143 -> {
@@ -151,8 +151,8 @@ class OpenpynController(
             server.isNotEmpty() -> options.append(" --server $server")
             country.isNotEmpty() -> options.append(" ${code(country)}")
         }
-        //if area:
-        //openpyn_options += " --area " + area
+        /*if area:
+            openpyn_options += " --area " + area*/
         if (tcp) options.append(" --tcp")
         if (load.isNotEmpty()) options.append(" --max-load $load")
         if (top.isNotEmpty()) options.append(" --top-servers $top")
@@ -166,21 +166,21 @@ class OpenpynController(
         if (obfuscated) options.append(" --anti-ddos")
         if (netflix) options.append(" --netflix")
         if (test) options.append(" --test")
-        //if internally_allowed
-        //open_ports = ""
-        //for port_number in internally_allowed:
-        //open_ports += " " + port_number
-        //openpyn_options += " --allow" + open_ports
+        /*if internally_allowed
+        open_ports = ""
+        for port_number in internally_allowed:
+        open_ports += " " + port_number
+        openpyn_options += " --allow" + open_ports*/
         if (patch) options.append(" --skip-dns-patch")
         if (silent) options.append(" --silent")
         if (nvram) options.append(" --nvram " + preferences.getString("pref_nvram_client", "5"))
         if (openvpn.isNotEmpty()) options.append(" --openvpn-options '$openvpn'")
-        if (location != null) options.append(" --location " + location.latitude.toString() + " " + location.longitude.toString())
-        val openpyn = options.toString()
+        if (location != null) options.append(" --location ${location.latitude} ${location.longitude}")
+        val openpyn = "$options"
         info(openpyn)
-        // the file /etc/profile is only loaded for a login shell, this is a non-interactive shell
-        // command = "echo \$PATH ; echo \$-"
+        // The file /etc/profile is only loaded for a login shell, this is a non-interactive shell
         startCommand = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; $openpyn"
+        /*startCommand = "echo \$PATH ; echo \$-"*/
         info(startCommand)
 
         if (super.start(pluginClient, sessionId, sessionKey)) {

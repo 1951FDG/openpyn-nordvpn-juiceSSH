@@ -35,14 +35,6 @@ public final class Utils {
         context.stopService(intent);
     }
 
-    static void doSendBroadcast(@NonNull Context context, @NonNull String state, @NonNull String message) {
-        Intent intent = new Intent();
-        intent.setAction(Constants.ACTION_VPN_STATE_CHANGED);
-        intent.putExtra(Constants.EXTRA_STATE, state);
-        intent.putExtra(Constants.EXTRA_MESSAGE, message);
-        context.sendBroadcast(intent, android.Manifest.permission.ACCESS_NETWORK_STATE);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static long getTotalUsage(@NonNull Context context, long start, long end, int uid, int tag) {
         long result = 0L;
@@ -71,5 +63,13 @@ public final class Utils {
             stats.close();
         }
         return bytes;
+    }
+
+    static void doSendBroadcast(@NonNull Context context, @NonNull String state, @NonNull String message) {
+        Intent intent = new Intent();
+        intent.setAction(Constants.ACTION_VPN_STATE_CHANGED);
+        intent.putExtra(Constants.EXTRA_STATE, state);
+        intent.putExtra(Constants.EXTRA_MESSAGE, message);
+        context.sendBroadcast(intent, android.Manifest.permission.ACCESS_NETWORK_STATE);
     }
 }

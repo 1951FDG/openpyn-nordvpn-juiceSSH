@@ -15,7 +15,7 @@ import com.google.maps.android.projection.SphericalMercatorProjection;
 abstract class AbstractTileProvider implements TileProvider {
     //region Class variables
 
-    // Tile dimension, in pixels.
+    // Tile dimension, in pixels
     private static final int TILE_DIM = 512;
 
     //endregion
@@ -54,9 +54,9 @@ abstract class AbstractTileProvider implements TileProvider {
         double maxX = (x + 1) * tileWidth;
         double minY = y * tileWidth;
         double maxY = (y + 1) * tileWidth;
-        SphericalMercatorProjection sProjection = new SphericalMercatorProjection(worldWidth);
-        LatLng sw = sProjection.toLatLng(new Point(minX, maxY));
-        LatLng ne = sProjection.toLatLng(new Point(maxX, minY));
+        SphericalMercatorProjection projection = new SphericalMercatorProjection(worldWidth);
+        LatLng sw = projection.toLatLng(new Point(minX, maxY));
+        LatLng ne = projection.toLatLng(new Point(maxX, minY));
         return new LatLngBounds(sw, ne);
     }
 

@@ -19,18 +19,18 @@ import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Locale;
 import java.util.Objects;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Arne Schwabe
@@ -132,12 +132,15 @@ public final class ManagementConnection extends AbstractConnection implements Co
         if (!isConnected()) {
             throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
         }
+
         StringBuilder sb = new StringBuilder(256);
-        BufferedReader in = getBufferedReader();
+
         BufferedWriter out = getBufferedWriter();
         out.write(command);
         out.newLine();
         out.flush();
+
+        BufferedReader in = getBufferedReader();
         @NonNls String line;
         while ((line = in.readLine()) != null) {
             if (!line.isEmpty()) {
@@ -150,6 +153,12 @@ public final class ManagementConnection extends AbstractConnection implements Co
             }
         }
         return sb.toString();
+    }
+
+    @NotNull
+    @Override
+    protected Logger getLogger() {
+        return LOGGER;
     }
 
     @NotNull
@@ -167,14 +176,14 @@ public final class ManagementConnection extends AbstractConnection implements Co
     @NotNull
     @Override
     public Status getVpnStatus() throws IOException {
-        String output = executeCommand(Commands.STATUS_COMMAND);
-        OpenVpnStatus ovs = new OpenVpnStatus();
         try {
+            String output = executeCommand(Commands.STATUS_COMMAND);
+            OpenVpnStatus ovs = new OpenVpnStatus();
             ovs.setCommandOutput(output);
+            return ovs;
         } catch (OpenVpnParseException e) {
             throw new IOException(e);
         }
-        return ovs;
     }
 
     @NotNull
@@ -187,6 +196,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
             return line.substring(Constants.OPEN_VPN_VERSION_PREFIX.length() + 1);
         }
         return "";
+    }
+
+    @Override
+    public boolean isConnected() {
+        return super.isConnected();
     }
 
     @Override
@@ -219,13 +233,14 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
         {
             try {
+                // TODO: enable username/password input
                 // managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, ARG_INTERACT));
                 managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
                 managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Constants.ARG_ON));
                 managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, Constants.ARG_ON));
                 managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, Constants.ARG_RELEASE));
                 BufferedReader in = getBufferedReader();
-                String line;
+                @NonNls String line;
                 while ((line = in.readLine()) != null) {
                     if (!line.isEmpty()) {
                         // LOGGER.info("Read from socket line: {}", line);
@@ -241,8 +256,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
         LOGGER.info("TERMINATED");
 
         Thread thread = Thread.currentThread();
-        UncaughtExceptionHandler eh = thread.getUncaughtExceptionHandler();
-        if ((eh != null) && (!(eh instanceof ThreadGroup))) {
+        Thread.UncaughtExceptionHandler eh = thread.getUncaughtExceptionHandler();
+        if ((eh != null) && !(eh instanceof ThreadGroup)) {
             eh.uncaughtException(thread, new ThreadDeath());
         }
     }
@@ -281,7 +296,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
-            listener.onConnectError(e);
+            listener.onConnectError(Thread.currentThread(), e);
         }
     }
 
@@ -383,7 +398,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void processHold(String argument) throws IOException {
         // Close connection if AUTH has failed
-        if (argument.startsWith(Constants.WAITING_FOR_HOLD_RELEASE_PREFIX) && (mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED)) {
+        if ((mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED) && argument.startsWith(Constants.WAITING_FOR_HOLD_RELEASE_PREFIX)) {
             LOGGER.error("Verification Error");
             throw new IOException(Constants.STREAM_CLOSED);
         }
@@ -448,16 +463,16 @@ public final class ManagementConnection extends AbstractConnection implements Co
             int p2 = argument.indexOf(s, p1 + 1);
             @NonNls String type = argument.substring(p1 + 1, p2);
             LOGGER.info("OpenVPN requires Authentication type {}", type);
-            String handlerUsername = null;
-            String handlerPassword = null;
+            String strUsername = null;
+            String strPassword = null;
             UsernamePasswordHandler handler = mUsernamePasswordHandler;
             if (handler != null) {
-                handlerUsername = handler.getUserName();
-                handlerPassword = handler.getUserPass();
+                strUsername = handler.getUserName();
+                strPassword = handler.getUserPass();
             }
-
-            String username = StringUtils.isBlank(handlerUsername) ? "..." : StringUtils.escapeString(handlerUsername);
-            String password = StringUtils.isBlank(handlerPassword) ? "..." : StringUtils.escapeString(handlerPassword);
+            String ellipsis = "...";
+            String username = StringUtils.isBlank(strUsername) ? ellipsis : StringUtils.escapeString(strUsername);
+            String password = StringUtils.isBlank(strPassword) ? ellipsis : StringUtils.escapeString(strPassword);
             if ("Auth".equals(type)) {
                 managementCommand(String.format(Locale.ROOT, Commands.USERNAME_COMMAND, type, username));
                 managementCommand(String.format(Locale.ROOT, Commands.PASSWORD_COMMAND, type, password));

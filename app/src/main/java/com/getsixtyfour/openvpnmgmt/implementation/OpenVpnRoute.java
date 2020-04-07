@@ -3,9 +3,6 @@ package com.getsixtyfour.openvpnmgmt.implementation;
 import com.getsixtyfour.openvpnmgmt.api.Route;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -16,6 +13,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
@@ -45,17 +45,15 @@ public class OpenVpnRoute implements Route {
                 //noinspection ConstantConditions
                 throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_REAL_CONNECTION_STRING, strings[2]));
             }
-            InetAddress virtualAddress = InetAddress.getByName(strings[0]);
-            InetAddress realAddress = InetAddress.getByName(realConnection[0]);
-            int port = Integer.parseInt(realConnection[1]);
-            InetSocketAddress realIpSocket = new InetSocketAddress(realAddress, port);
             SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ROOT);
             Date parsedDate = sdf.parse(strings[3]);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(parsedDate);
+            InetAddress realAddress = InetAddress.getByName(realConnection[0]);
+            int port = Integer.parseInt(realConnection[1]);
             mCommonName = strings[1];
-            mVirtualIpAddress = virtualAddress;
-            mRealIpAddress = realIpSocket;
+            mVirtualIpAddress = InetAddress.getByName(strings[0]);
+            mRealIpAddress = new InetSocketAddress(realAddress, port);
             mLastRef = calendar;
         } catch (NumberFormatException e) {
             throw new OpenVpnParseException(Constants.CANNOT_PARSE_PORT_NUMBER, e);

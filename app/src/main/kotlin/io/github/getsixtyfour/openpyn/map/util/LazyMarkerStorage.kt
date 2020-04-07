@@ -15,15 +15,11 @@ class LazyMarkerStorage(key: String) : MyStorage<LazyMarker>(key) {
         val moshi = Moshi.Builder().add(object {
             @ToJson
             @Suppress("unused")
-            fun toJson(value: LatLng): Map<String, Double> {
-                return mapOf(LAT to value.latitude, LONG to value.longitude)
-            }
+            fun toJson(value: LatLng): Map<String, Double> = mapOf(LAT to value.latitude, LONG to value.longitude)
 
             @FromJson
             @Suppress("unused")
-            fun fromJson(value: Map<String, Double>): LatLng {
-                return LatLng(value.getValue(LAT), value.getValue(LONG))
-            }
+            fun fromJson(value: Map<String, Double>): LatLng = LatLng(value.getValue(LAT), value.getValue(LONG))
         }).build()
         val listType = Types.newParameterizedType(List::class.java, LazyMarker::class.java)
         return moshi.adapter(listType)

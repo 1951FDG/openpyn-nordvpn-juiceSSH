@@ -1,10 +1,10 @@
 package com.getsixtyfour.openvpnmgmt.api;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Calendar;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Maksym Shkolnyi aka maskimko

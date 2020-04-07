@@ -1,11 +1,11 @@
 package com.getsixtyfour.openvpnmgmt.core;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Arne Schwabe
@@ -32,9 +32,6 @@ public class TrafficHistory {
     private TrafficDataPoint mLastMinuteUsedForHours;
 
     private TrafficDataPoint mLastSecondUsedForMinute;
-
-    public TrafficHistory() {
-    }
 
     @NotNull
     public static LinkedList<TrafficDataPoint> getDummyList() {
@@ -88,7 +85,6 @@ public class TrafficHistory {
 
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     private void removeAndAverage(TrafficDataPoint newTdp, boolean useSeconds) {
-        HashSet<TrafficDataPoint> toRemove = new HashSet<>(10);
         long timePeriod;
         LinkedList<TrafficDataPoint> tpList;
         LinkedList<TrafficDataPoint> nextList;
@@ -112,6 +108,7 @@ public class TrafficHistory {
             } else {
                 mLastMinuteUsedForHours = newTdp;
             }
+            HashSet<TrafficDataPoint> toRemove = new HashSet<>(10);
             for (TrafficDataPoint tph : tpList) {
                 // List is iterated from oldest to newest, remember first one that we did not
                 if (((newTdp.mTimestamp - tph.mTimestamp) / timePeriod) >= PERIODS_TO_KEEP) {
@@ -157,14 +154,14 @@ public class TrafficHistory {
         /**
          * the number of bytes that have been received from the server
          */
-        public final long mInBytes;
+        final long mInBytes;
 
         /**
          * the number of bytes that have been sent to the server
          */
-        public final long mOutBytes;
+        final long mOutBytes;
 
-        public final long mTimestamp;
+        final long mTimestamp;
 
         public TrafficDataPoint(long inBytes, long outBytes, long timestamp) {
             mInBytes = inBytes;

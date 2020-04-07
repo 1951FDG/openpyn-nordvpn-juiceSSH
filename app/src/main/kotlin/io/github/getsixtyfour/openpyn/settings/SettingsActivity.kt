@@ -79,7 +79,7 @@ class SettingsActivity : PreferenceActivityCompat() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                // Override home navigation button to call onBackPressed (b/35152749).
+                // Override home navigation button to call onBackPressed (b/35152749)
                 onBackPressed()
                 true
             }
@@ -107,6 +107,7 @@ class SettingsActivity : PreferenceActivityCompat() {
     }*/
     companion object {
 
+        /*
         /**
          * When starting this activity, the invoking Intent can contain this extra
          * boolean that the header list should not be displayed. This is most often
@@ -114,35 +115,35 @@ class SettingsActivity : PreferenceActivityCompat() {
          * the activity to display a specific fragment that the user has navigated
          * to.
          */
-        // const val EXTRA_NO_HEADERS: String = ":android:no_headers"
+        const val EXTRA_NO_HEADERS: String = ":android:no_headers"
         /**
          * When starting this activity, the invoking Intent can contain this extra
          * string to specify which fragment should be initially displayed.
          */
-        // const val EXTRA_SHOW_FRAGMENT: String = ":android:show_fragment"
+        const val EXTRA_SHOW_FRAGMENT: String = ":android:show_fragment"
         /**
          * When starting this activity and using {@link #EXTRA_SHOW_FRAGMENT},
          * this extra can also be specified to supply a Bundle of arguments to pass
          * to that fragment when it is instantiated during the initial creation
          * of PreferenceActivityCompat.
          */
-        // const val EXTRA_SHOW_FRAGMENT_ARGUMENTS: String = ":android:show_fragment_args"
+        const val EXTRA_SHOW_FRAGMENT_ARGUMENTS: String = ":android:show_fragment_args"
         /**
          * A preference value change listener that updates the preference's summary
          * to reflect its new value.
          */
-        val sBindPreferenceSummaryToValueListener: Preference.OnPreferenceChangeListener
+         */
+        private val sBindPreferenceSummaryToValueListener: Preference.OnPreferenceChangeListener
             get() = Preference.OnPreferenceChangeListener { preference, value ->
-                val stringValue = value.toString()
+                val stringValue = "$value"
 
                 if (preference is ListPreference) {
-                    // For list preferences, look up the correct display value in the preference's 'entries' list.
+                    // For list preferences, look up the correct display value in the preference's 'entries' list
                     val index = preference.findIndexOfValue(stringValue)
-                    // Set the summary to reflect the new value.
+                    // Set the summary to reflect the new value
                     preference.summary = if (index >= 0) preference.entries[index] else null
                 } else {
-                    // For all other preferences, set the summary to the value's
-                    // simple string representation.
+                    // For all other preferences, set the summary to the value's simple string representation
                     when {
                         stringValue.isEmpty() -> preference.summary = "Not set"
                         preference.key.equals("pref_api_ipdata", true) -> preference.summary = "Available (SSL)"
@@ -168,9 +169,9 @@ class SettingsActivity : PreferenceActivityCompat() {
          * @see sBindPreferenceSummaryToValueListener
          */
         fun bindPreferenceSummaryToValue(preference: Preference) {
-            // Set the listener to watch for value changes.
+            // Set the listener to watch for value changes
             preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
-            // Trigger the listener immediately with the preference's current value.
+            // Trigger the listener immediately with the preference's current value
             val newValue = getDefaultSharedPreferences(preference.context).getString(preference.key, "")
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, newValue)
         }
@@ -199,7 +200,7 @@ class SettingsActivity : PreferenceActivityCompat() {
             ContextCompat.startActivity(activity, intent, null)
         }
 
-        fun validate(preference: Preference, str: String): Boolean {
+        private fun validate(preference: Preference, str: String): Boolean {
             val regex = Regex("""^[a-z]{2}\d{1,4}$""")
             if (regex.matches(str)) {
                 val set = preference.context.resources.getTextArray(R.array.pref_country_values).toHashSet().apply {

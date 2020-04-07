@@ -6,6 +6,7 @@ import android.content.Context
 import android.location.Location
 import android.util.Xml
 import android.view.animation.AccelerateInterpolator
+import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -54,6 +55,7 @@ import java.util.Locale
 
 operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
+// categories
 const val CATEGORIES: String = "categories"
 const val NAME: String = "name"
 const val DEDICATED: String = "Dedicated IP"
@@ -62,23 +64,21 @@ const val OBFUSCATED: String = "Obfuscated Servers"
 const val ONION: String = "Onion Over VPN"
 const val P2P: String = "P2P"
 const val STANDARD: String = "Standard VPN servers"
-
+// country
 const val COUNTRY: String = "country"
-
+// flag
 const val FLAG: String = "flag"
-
+// location
 const val LOCATION: String = "location"
 const val LAT: String = "lat"
 const val LONG: String = "long"
-
+// server
 const val SERVER: String = "https://api.nordvpn.com/server"
-
 // extended
-
 const val CITY: String = "city"
 const val IP: String = "ip"
 const val THREAT: String = "threat"
-
+// time
 const val TIME_MILLIS: Long = 600
 const val DURATION: Long = 7000
 
@@ -125,7 +125,7 @@ fun generateXML() {
                     serializer.endTag("", "string-array")
                     serializer.endTag("", "head")
                     serializer.endDocument()
-                    println(writer.toString())
+                    println("$writer")
                 } catch (e: FileNotFoundException) {
                     logException(e)
                 } catch (e: IOException) {
@@ -238,7 +238,7 @@ fun createJson(): JSONArray? {
             val content = result.get().array() //JSONArray
             for (res in content) {
                 val location = res.getJSONObject(LOCATION)
-                var json: JSONObject? = jsonObj.optJSONObject(location.toString())
+                var json: JSONObject? = jsonObj.optJSONObject("$location")
 
                 if (json == null) {
                     json = JSONObject().apply {
@@ -258,7 +258,7 @@ fun createJson(): JSONArray? {
 
                     json.put(CATEGORIES, features)
 
-                    jsonObj.put(location.toString(), json)
+                    jsonObj.put("$location", json)
                 } else {
                     val features = json.getJSONObject(CATEGORIES)
                     populateFeatures(res, features)
@@ -495,61 +495,62 @@ fun createMarkers(
         // Replace the aliases by their unicode
         return (countries.find { (it as? MultiSelectModelExtra)?.tag == input } as? MultiSelectModelExtra)?.unicode ?: input
     }
-    // fun netflix(flag: CharSequence?): Boolean = when (flag) {
-    //     "us" -> true
-    //     "ca" -> true
-    //     "nl" -> true
-    //     "jp" -> true
-    //     "gb" -> true
-    //     "gr" -> true
-    //     "mx" -> true
-    //     else -> false
-    // }
+    /*fun netflix(flag: CharSequence?): Boolean = when (flag) {
+        "us" -> true
+        "ca" -> true
+        "nl" -> true
+        "jp" -> true
+        "gb" -> true
+        "gr" -> true
+        "mx" -> true
+        else -> false
+    }
+    val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val netflix = preferences.getBoolean("pref_netflix", false)
+    val dedicated = preferences.getBoolean("pref_dedicated", false)
+    val double = preferences.getBoolean("pref_double", false)
+    val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
+    val onion = preferences.getBoolean("pref_tor", false)
+    val p2p = preferences.getBoolean("pref_p2p", false)*/
     val length = jsonArray.length()
     val flags = HashSet<CharSequence>(length)
     val markers = HashMap<LatLng, LazyMarker>(length)
     val iconDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1)
-    // val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    // val netflix = preferences.getBoolean("pref_netflix", false)
-    // val dedicated = preferences.getBoolean("pref_dedicated", false)
-    // val double = preferences.getBoolean("pref_double", false)
-    // val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
-    // val onion = preferences.getBoolean("pref_tor", false)
-    // val p2p = preferences.getBoolean("pref_p2p", false)
+
     for (res in jsonArray) {
         val flag = res.getString(FLAG)
-        // var pass = when {
-        //     netflix -> netflix(flag)
-        //     dedicated -> false
-        //     double -> false
-        //     obfuscated -> false
-        //     onion -> false
-        //     p2p -> false
-        //     else -> true
-        // }
-        // if (!pass && !netflix) {
-        //     val categories = res.getJSONArray(CATEGORIES)
-        //
-        //     loop@ for (category in categories) {
-        //         val name = category.getString(NAME)
-        //         pass = when {
-        //             dedicated and (name == DEDICATED) -> true
-        //             double and (name == DOUBLE) -> true
-        //             obfuscated and (name == OBFUSCATED) -> true
-        //             onion and (name == ONION) -> true
-        //             p2p and (name == P2P) -> true
-        //             else -> false
-        //         }
-        //
-        //         if (pass) {
-        //             break@loop
-        //         }
-        //     }
-        // }
-        //
-        // if (!pass) {
-        //     continue
-        // }
+        /*var pass = when {
+            netflix -> netflix(flag)
+            dedicated -> false
+            double -> false
+            obfuscated -> false
+            onion -> false
+            p2p -> false
+            else -> true
+        }
+        if (!pass && !netflix) {
+            val categories = res.getJSONArray(CATEGORIES)
+
+            loop@ for (category in categories) {
+                val name = category.getString(NAME)
+                pass = when {
+                    dedicated and (name == DEDICATED) -> true
+                    double and (name == DOUBLE) -> true
+                    obfuscated and (name == OBFUSCATED) -> true
+                    onion and (name == ONION) -> true
+                    p2p and (name == P2P) -> true
+                    else -> false
+                }
+
+                if (pass) {
+                    break@loop
+                }
+            }
+        }
+
+        if (!pass) {
+            continue
+        }*/
         val country = res.getString(COUNTRY)
         val emoji = parseToUnicode(countries, flag)
         val location = res.getJSONObject(LOCATION)
@@ -578,9 +579,9 @@ fun createMarkers(
 }
 
 fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessage.Builder {
-    // val country = it.getString(COUNTRY)
-    // val lat = it.getDouble(LAT)
-    // val lon = it.getDouble(LONG)
+    /*val country = jsonObj.getString(COUNTRY)
+    val lat = jsonObj.getDouble(LAT)
+    val lon = jsonObj.getDouble(LONG)*/
     val city = jsonObj.getString(CITY)
     val flag = jsonObj.getString(FLAG).toUpperCase(Locale.ROOT)
     val ip = jsonObj.getString(IP)
@@ -595,7 +596,7 @@ fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessage.Builde
     }
 }
 
-fun jsonArray(context: Context, id: Int, ext: String): JSONArray {
+fun jsonArray(context: Context, @RawRes id: Int, ext: String): JSONArray {
     fun logDifference(set: Set<CharSequence>, string: CharSequence) {
         set.forEach {
             val message = "$string $it"
@@ -619,7 +620,7 @@ fun jsonArray(context: Context, id: Int, ext: String): JSONArray {
     return jsonArray
 }
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "ReplaceNotNullAssertionWithElvisReturn")
 @SuppressLint("WrongThread")
 @WorkerThread
 suspend fun createGeoJson(context: Context): JSONObject? {
@@ -692,9 +693,7 @@ fun getCurrentPosition(
     jsonArr: JSONArray? = null
 ): LatLng {
     @Suppress("MagicNumber")
-    fun getDefaultLatLng(): LatLng {
-        return LatLng(51.514125, -0.093689)
-    }
+    fun getDefaultLatLng(): LatLng = LatLng(51.514125, -0.093689)
 
     fun getLatLng(flag: CharSequence, latLng: LatLng, jsonArr: JSONArray): LatLng {
         val latLngList = arrayListOf<LatLng>()
@@ -740,7 +739,7 @@ fun getCurrentPosition(
 
     fun getString(ids: List<String>?): String = when {
         ids.isNullOrEmpty() -> "is nowhere"
-        else -> "is in: " + ids.joinToString()
+        else -> "is in: ${ids.joinToString()}"
     }
 
     fun getFlag(list: List<String>?): String = when {
@@ -753,7 +752,7 @@ fun getCurrentPosition(
         val ids = countryBoundaries?.getIds(lon, lat)
         t = System.nanoTime() - t
         @Suppress("MagicNumber") val i = 1000
-        Log.debug(getString(ids) + " (in " + "%.3f".format(t / i / i.toFloat()) + "ms)")
+        Log.debug("${getString(ids)} (in ${"%.3f".format(t / i / i.toFloat())}ms)")
         return getFlag(ids)
     }
 
@@ -779,7 +778,7 @@ fun getCurrentPosition(
         ) == PackageManager.PERMISSION_GRANTED -> {
             val task = FusedLocationProviderClient(context).lastLocation
             try {
-                // Block on the task for a maximum of 500 milliseconds, otherwise time out.
+                // Block on the task for a maximum of 500 milliseconds, otherwise time out
                 Tasks.await(task, TIME_MILLIS, TimeUnit.MILLISECONDS)?.let {
                     val lat = it.latitude
                     val lon = it.longitude
@@ -796,6 +795,6 @@ fun getCurrentPosition(
         }
 */
     }
-    Log.debug(latLng.toString())
+    Log.debug("$latLng")
     return latLng
 }

@@ -583,31 +583,18 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 		return JNI_ERR;
 	}
 
-	jmethodID mCurrentActivityThread = env->GetStaticMethodID(
+	jmethodID mCurrentApplication = env->GetStaticMethodID(
 		cActivityThread,
-		"currentActivityThread",
-		"()Landroid/app/ActivityThread;");
-	if (mCurrentActivityThread == JNI_FALSE)
-	{
-		return JNI_ERR;
-	}
-
-	jobject gActivityThread = env->CallStaticObjectMethod(
-		cActivityThread,
-		mCurrentActivityThread);
-
-	jmethodID mGetApplication = env->GetMethodID(
-		env->GetObjectClass(gActivityThread),
-		"getApplication",
+		"currentApplication",
 		"()Landroid/app/Application;");
-	if (mGetApplication == JNI_FALSE)
+	if (mCurrentApplication == JNI_FALSE)
 	{
 		return JNI_ERR;
 	}
 
-	jobject gApplication = env->CallObjectMethod(
-		gActivityThread,
-		mGetApplication);
+	jobject gApplication = env->CallStaticObjectMethod(
+		cActivityThread,
+		mCurrentApplication);
 
 	jmethodID mGetAssets = env->GetMethodID(
 		env->GetObjectClass(gApplication),
@@ -639,6 +626,11 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 	}
 
 	VERBOSE("sqlite3_ndk_init OK");
+
+	// release
+	env->DeleteLocalRef(cActivityThread);
+	env->DeleteLocalRef(gApplication);
+	env->DeleteLocalRef(gAssetManager);
 
 	return JNI_VERSION_1_6;
 }

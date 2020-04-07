@@ -1,14 +1,15 @@
 package com.abdeveloper.library;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import io.github.getsixtyfour.openpyn.R;
 
@@ -23,7 +24,7 @@ public class MultiSelectModelExtra extends MultiSelectModel {
 
     private String mUnicode;
 
-    public MultiSelectModelExtra(int id, @NonNull CharSequence name, int resId, @NonNull String tag, @NonNull String unicode) {
+    public MultiSelectModelExtra(int id, @NonNull CharSequence name, @DrawableRes int resId, @NonNull String tag, @NonNull String unicode) {
         super(id, name, resId);
         mTag = tag;
         mUnicode = unicode;
@@ -41,7 +42,7 @@ public class MultiSelectModelExtra extends MultiSelectModel {
         if (mInt == 0) {
             int drawableId = 0;
             try {
-                Class res = R.drawable.class;
+                Class<R.drawable> res = R.drawable.class;
                 CharSequence charSequence = getName();
                 Matcher matcher = COMPILE.matcher(charSequence.toString());
                 String s = matcher.replaceAll("_");

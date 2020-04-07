@@ -12,7 +12,6 @@ import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -21,6 +20,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -37,11 +37,11 @@ import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
-import org.jetbrains.annotations.NonNls;
-
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Locale;
+
+import org.jetbrains.annotations.NonNls;
 
 import io.github.getsixtyfour.openpyn.R;
 
@@ -107,6 +107,7 @@ public final class OpenVpnService extends Service
         }
     }
 
+    @StringRes
     @SuppressWarnings({ "MethodWithMultipleReturnPoints", "OverlyComplexMethod", "OverlyLongMethod", "WeakerAccess" })
     public static int getLocalizedState(@NonNull String state) {
         switch (state) {
@@ -144,7 +145,7 @@ public final class OpenVpnService extends Service
     }
 
     @NonNull
-    @SuppressWarnings({ "OverlyComplexMethod", "MagicNumber", "ImplicitNumericConversion", "BooleanParameter", "WeakerAccess" })
+    @SuppressWarnings({ "OverlyComplexMethod", "MagicNumber", "ImplicitNumericConversion", "WeakerAccess" })
     public static String humanReadableByteCount(@NonNull Context context, long bytes, boolean speed) {
         Resources res = context.getResources();
         float unit = speed ? 1000.0F : 1024.0F;
@@ -194,7 +195,7 @@ public final class OpenVpnService extends Service
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.setWhen(when);
 
-        if (Constants.BG_CHANNEL_ID.equals(channel) || !mPostByteCountNotification) {
+        if (!mPostByteCountNotification || Constants.BG_CHANNEL_ID.equals(channel)) {
             Intent intent = new Intent(context, DisconnectActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             // The notification action icons are still required and continue to be used on older versions of Android
@@ -207,14 +208,14 @@ public final class OpenVpnService extends Service
     @SuppressLint("WrongConstant")
     @RequiresApi(Build.VERSION_CODES.O)
     private static void setUpNotificationChannels(@NonNull Context context) {
-        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         // Real-time notification of OpenVPN bandwidth usage
         {
             String name = context.getString(R.string.vpn_channel_name_background);
             String description = context.getString(R.string.vpn_channel_description_background);
             NotificationChannel channel = new NotificationChannel(Constants.BG_CHANNEL_ID, name, NotificationManagerCompat.IMPORTANCE_LOW);
             channel.setDescription(description);
-            mNotificationManager.createNotificationChannel(channel);
+            notificationManager.createNotificationChannel(channel);
         }
         // Real-time notification of OpenVPN state changes
         {
@@ -223,12 +224,8 @@ public final class OpenVpnService extends Service
             NotificationChannel channel = new NotificationChannel(Constants.NEW_STATUS_CHANNEL_ID, name,
                     NotificationManagerCompat.IMPORTANCE_DEFAULT);
             channel.setDescription(description);
-            mNotificationManager.createNotificationChannel(channel);
+            notificationManager.createNotificationChannel(channel);
         }
-    }
-
-    private static boolean isMainThread() {
-        return Thread.currentThread() == Looper.getMainLooper().getThread();
     }
 
     @Override
@@ -280,7 +277,7 @@ public final class OpenVpnService extends Service
             try {
                 // TODO: only in debug?
                 // When a socket is created, it inherits the tag of its creating thread
-                // TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);
+                /*TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);*/
                 Connection connection = ManagementConnection.getInstance();
                 //noinspection ConstantConditions
                 connection.connect(host, port);
@@ -310,14 +307,15 @@ public final class OpenVpnService extends Service
         Log.d(TAG, "onDestroy"); //NON-NLS
 
         // TODO: only in debug?
-        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        //     long now = System.currentTimeMillis();
-        //     long fourWeeksAgo = now - (DateUtils.WEEK_IN_MILLIS * 4L);
-        //     long oneDaysAhead = now + (DateUtils.DAY_IN_MILLIS * 2L);
-        //     long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, android.os.Process.myUid(), Constants.THREAD_STATS_TAG);
-        //     // long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, android.os.Process.myUid(), android.app.usage.NetworkStats.Bucket.TAG_NONE);
-        //     Log.d(TAG, String.format("Usage: %s", humanReadableByteCount(this, usage, false))); //NON-NLS
-        // }
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            long now = System.currentTimeMillis();
+            long fourWeeksAgo = now - (DateUtils.WEEK_IN_MILLIS * 4L);
+            long oneDaysAhead = now + (DateUtils.DAY_IN_MILLIS * 2L);
+            int uid = android.os.Process.myUid();
+            long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, Constants.THREAD_STATS_TAG);
+            // long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, android.app.usage.NetworkStats.Bucket.TAG_NONE);
+            Log.d(TAG, String.format("Usage: %s", humanReadableByteCount(this, usage, false))); //NON-NLS
+        }*/
 
         {
             if (mThread != null) {
@@ -347,12 +345,12 @@ public final class OpenVpnService extends Service
         }
 
         long byteCountInterval = ManagementConnection.BYTE_COUNT_INTERVAL.longValue();
-        String sIn = humanReadableByteCount(this, in, false);
-        String sDiffIn = humanReadableByteCount(this, diffIn / byteCountInterval, true);
-        String sOut = humanReadableByteCount(this, out, false);
-        String sDiffOut = humanReadableByteCount(this, diffOut / byteCountInterval, true);
+        String strIn = humanReadableByteCount(this, in, false);
+        String strDiffIn = humanReadableByteCount(this, diffIn / byteCountInterval, true);
+        String strOut = humanReadableByteCount(this, out, false);
+        String strDiffOut = humanReadableByteCount(this, diffOut / byteCountInterval, true);
         int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_CONNECTED);
-        String text = getString(R.string.vpn_msg_byte_count, sIn, sDiffIn, sOut, sDiffOut);
+        String text = getString(R.string.vpn_msg_byte_count, strIn, strDiffIn, strOut, strDiffOut);
         String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_connected));
 
         Notification notification = getNotification(this, title, text, Constants.BG_CHANNEL_ID, mStartTime, icon);
@@ -360,26 +358,26 @@ public final class OpenVpnService extends Service
     }
 
     @Override
-    public void onConnectError(@NonNull Throwable e) {
+    public void onConnectError(@NonNull Thread t, @NonNull Throwable e) {
         Log.d(TAG, "onConnectError"); //NON-NLS
-        if (isMainThread()) {
+        if (t.equals(getMainLooper().getThread())) {
             Log.e(TAG, "", new NetworkOnMainThreadException());
         }
 
-        uncaughtException(Thread.currentThread(), e);
+        uncaughtException(t, e);
     }
 
     @Override
     public void onConnected() {
         Log.d(TAG, "onConnected"); //NON-NLS
-        if (isMainThread()) {
+        if (Thread.currentThread().equals(getMainLooper().getThread())) {
             Log.e(TAG, "", new NetworkOnMainThreadException());
         }
         // Start a background thread that handles incoming messages of the management interface
         Connection connection = ManagementConnection.getInstance();
         mThread = new Thread(connection, Constants.THREAD_NAME);
         // Report death-by-uncaught-exception
-        mThread.setUncaughtExceptionHandler(this);
+        mThread.setUncaughtExceptionHandler(this); // Apps can replace the default handler, but not the pre handler
         mThread.start();
 
         Log.i(TAG, String.format("OpenVPN Management started in background thread: \"%s\"", mThread.getName())); //NON-NLS
@@ -388,7 +386,7 @@ public final class OpenVpnService extends Service
     @Override
     public void onDisconnected() {
         Log.d(TAG, "onDisconnected"); //NON-NLS
-        if (isMainThread()) {
+        if (Thread.currentThread().equals(getMainLooper().getThread())) {
             Log.w(TAG, "", new NetworkOnMainThreadException());
         }
     }
@@ -419,6 +417,7 @@ public final class OpenVpnService extends Service
                 break;
             case VERBOSE:
             case UNKNOWN:
+            default:
                 break;
         }
     }
@@ -462,12 +461,11 @@ public final class OpenVpnService extends Service
         }
     }
 
-    @SuppressWarnings({ "HardCodedStringLiteral", "HardcodedLineSeparator" })
+    @SuppressWarnings({ "HardCodedStringLiteral", "HardcodedLineSeparator", "StringBufferWithoutInitialCapacity" })
     private static void logUncaught(@NonNull String threadName, @Nullable String processName, int pid, @NonNull Throwable e) {
         StringBuilder message = new StringBuilder();
-        // The "FATAL EXCEPTION" string is still used on Android even though
-        // apps can set a custom UncaughtExceptionHandler that renders uncaught
-        // exceptions non-fatal.
+        // The "FATAL EXCEPTION" string is still used on Android even though apps can set a custom
+        // UncaughtExceptionHandler that renders uncaught exceptions non-fatal
         message.append("FATAL EXCEPTION: ").append(threadName).append("\n");
         if (processName != null) {
             message.append("Process: ").append(processName).append(", ");
@@ -478,20 +476,17 @@ public final class OpenVpnService extends Service
 
     @Override
     public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
-        // Apps can replace the default handler, but not the pre handler.
-        // Logs a message when a thread encounters an uncaught exception. Handled by the pre handler.
-        // logUncaught(t.getName(), getPackageName(), android.os.Process.myPid(), e);
+        // Logs a message when a thread encounters an uncaught exception
+        // logUncaught(t.getName(), getPackageName(), android.os.Process.myPid(), e); // Handled by the pre handler
 
-        if (isMainThread()) {
-            Log.e(TAG, "", new NetworkOnMainThreadException());
-        }
-
-        boolean background = t != getMainLooper().getThread();
-        if (background && (e instanceof ThreadDeath)) {
+        if (e instanceof ThreadDeath) {
             Log.i(TAG, String.format("OpenVPN Management stopped in background thread: \"%s\"", t.getName())); //NON-NLS
         }
 
-        Handler handler = new Handler(getMainLooper());
-        handler.post(this::stopSelf);
+        if (t.equals(getMainLooper().getThread())) {
+            stopSelf();
+        } else {
+            new Handler(getMainLooper()).post(this::stopSelf);
+        }
     }
 }

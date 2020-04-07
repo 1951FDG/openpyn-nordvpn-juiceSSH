@@ -6,13 +6,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NonNls;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+
+import org.jetbrains.annotations.NonNls;
 
 import io.requery.android.database.sqlite.SQLiteCursor;
 import io.requery.android.database.sqlite.SQLiteDatabase;
@@ -151,7 +151,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
      * @throws OutOfMemoryError if an array of the required size cannot be allocated
      */
     @SuppressWarnings({ "ForLoopWithMissingComponent", "MethodCallInLoopCondition", "NestedAssignment", "ValueOfIncrementOrDecrementUsed",
-            "NumericCastThatLosesPrecision", "unused" })
+            "NumericCastThatLosesPrecision", "unused", "TooBroadScope" })
     private static byte[] read(InputStream source, int initialSize) throws IOException {
         int capacity = initialSize;
         byte[] buf = new byte[capacity];
@@ -194,10 +194,10 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
      */
     @Override
     public void close() {
-        if ((mCursor != null) && (!mCursor.isClosed())) {
+        if ((mCursor != null) && !mCursor.isClosed()) {
             mCursor.close();
         }
-        if ((mDatabase != null) && (mDatabase.isOpen())) {
+        if ((mDatabase != null) && mDatabase.isOpen()) {
             mDatabase.close();
         }
     }
@@ -213,7 +213,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
     @Nullable
     @Override
     public synchronized byte[] getBytes(int x, int y, int zoom) {
-        // Log.e(TAG, String.format("%d %d %d", zoom, x, ((1 << zoom) - 1 - y)));
+        /*Log.e(TAG, String.format("%d %d %d", zoom, x, ((1 << zoom) - 1 - y)));*/
         String[] bindArgs = { Integer.toString(zoom), Integer.toString(x), Integer.toString((1 << zoom) - 1 - y) };
         mQuery.bindString(3, bindArgs[2]); // row
         mQuery.bindString(2, bindArgs[1]); // column

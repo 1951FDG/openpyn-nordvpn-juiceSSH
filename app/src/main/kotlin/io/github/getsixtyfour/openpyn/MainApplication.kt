@@ -19,6 +19,6 @@ open class MainApplication : Application() {
     }
 
     protected open fun installBlockCanary() {
-        // no-op, BlockCanary is disabled in production.
+        // No-op, BlockCanary is disabled in production
     }
 }

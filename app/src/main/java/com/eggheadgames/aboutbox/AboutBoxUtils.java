@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 public final class AboutBoxUtils {
 
     public static final String playStoreAppURI = "https://play.google.com/store/apps/details?id=";
+
     public static final String amznStoreAppURI = "https://www.amazon.com/gp/mas/dl/android?p=";
 
     private AboutBoxUtils() {
@@ -26,7 +27,7 @@ public final class AboutBoxUtils {
             activity.getPackageManager().getPackageInfo("com.facebook.katana", 0);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/" + name));
             ContextCompat.startActivity(activity, intent, null);
-        } catch (PackageManager.NameNotFoundException | ActivityNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException | ActivityNotFoundException ignored) {
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/" + name));
                 ContextCompat.startActivity(activity, intent, null);
@@ -45,7 +46,7 @@ public final class AboutBoxUtils {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + name));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ContextCompat.startActivity(activity, intent, null);
-        } catch (PackageManager.NameNotFoundException | ActivityNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException | ActivityNotFoundException ignored) {
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + name));
                 ContextCompat.startActivity(activity, intent, null);
@@ -68,6 +69,8 @@ public final class AboutBoxUtils {
             case AMAZON:
                 appURI = "amzn://apps/android?p=" + packageName;
                 webURI = amznStoreAppURI + packageName;
+                break;
+            default:
                 break;
         }
         openApplication(activity, appURI, webURI);
@@ -95,6 +98,8 @@ public final class AboutBoxUtils {
                 appURI = "amzn://apps/android?showAll=1&p=" + packageName;
                 webURI = "http://www.amazon.com/gp/mas/dl/android?showAll=1&p=" + packageName;
                 break;
+            default:
+                break;
         }
         openApplication(activity, appURI, webURI);
     }
@@ -103,7 +108,7 @@ public final class AboutBoxUtils {
         AboutConfig config = AboutConfig.getInstance();
         try {
             ContextCompat.startActivity(activity, new Intent(Intent.ACTION_VIEW, Uri.parse(appURI)), null);
-        } catch (ActivityNotFoundException e1) {
+        } catch (ActivityNotFoundException ignored) {
             try {
                 openHTMLPage(activity, webURI);
             } catch (ActivityNotFoundException e2) {

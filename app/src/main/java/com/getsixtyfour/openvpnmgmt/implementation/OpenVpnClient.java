@@ -3,9 +3,6 @@ package com.getsixtyfour.openvpnmgmt.implementation;
 import com.getsixtyfour.openvpnmgmt.api.Client;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -15,6 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
@@ -53,12 +53,10 @@ public class OpenVpnClient implements Client {
             Date parsedDate = sdf.parse(strings[4]);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(parsedDate);
-            long rb = Long.parseLong(strings[2]);
-            long sb = Long.parseLong(strings[3]);
             mCommonName = strings[0];
             mIpAddress = realIpSocket;
-            mReceivedBytes = rb;
-            mSentBytes = sb;
+            mReceivedBytes = Long.parseLong(strings[2]);
+            mSentBytes = Long.parseLong(strings[3]);
             mConnectedSince = calendar;
         } catch (NumberFormatException e) {
             throw new OpenVpnParseException(Constants.CANNOT_PARSE_PORT_NUMBER, e);

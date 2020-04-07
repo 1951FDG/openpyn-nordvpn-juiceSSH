@@ -84,7 +84,7 @@ public class CheckableFloatingActionButton extends FloatingActionButton implemen
         mOnCheckedChangeListener = listener;
     }
 
-    @SuppressWarnings("PublicInnerClass")
+    @SuppressWarnings({ "PublicInnerClass", "WeakerAccess" })
     @FunctionalInterface
     public interface OnCheckedChangeListener {
 

@@ -26,7 +26,7 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
         findPreference<Preference>("pref_country")?.let(Companion::bindPreferenceSummaryToValue)
         findPreference<Preference>("pref_max_load")?.let(Companion::bindPreferenceSummaryToValue)
         findPreference<Preference>("pref_top_servers")?.let(Companion::bindPreferenceSummaryToValue)
-        // findPreference<Preference>("pref_pings")?.let(Companion::bindPreferenceSummaryToValue)
+        /*findPreference<Preference>("pref_pings")?.let(Companion::bindPreferenceSummaryToValue)*/
         findPreference<Preference>("pref_log_level")?.let(Companion::bindPreferenceSummaryToValue)
         findPreference<Preference>("pref_nvram_client")?.let(Companion::bindPreferenceSummaryToValue)
     }

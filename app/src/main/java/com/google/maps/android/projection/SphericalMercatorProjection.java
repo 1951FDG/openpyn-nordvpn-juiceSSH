@@ -22,7 +22,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.geometry.Point;
 
 public class SphericalMercatorProjection {
-    final double mWorldWidth;
+
+    private final double mWorldWidth;
 
     public SphericalMercatorProjection(double worldWidth) {
         mWorldWidth = worldWidth;

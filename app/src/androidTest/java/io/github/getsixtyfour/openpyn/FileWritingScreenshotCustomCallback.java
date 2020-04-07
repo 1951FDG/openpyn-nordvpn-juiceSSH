@@ -2,9 +2,9 @@ package io.github.getsixtyfour.openpyn;
 
 import android.content.Context;
 
-import org.jetbrains.annotations.NonNls;
-
 import java.io.File;
+
+import org.jetbrains.annotations.NonNls;
 
 import tools.fastlane.screengrab.FileWritingScreenshotCallback;
 

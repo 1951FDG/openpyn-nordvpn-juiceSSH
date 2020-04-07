@@ -5,12 +5,6 @@ import com.getsixtyfour.openvpnmgmt.api.Route;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +17,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
@@ -63,7 +64,6 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
     private Calendar mUpdateTime = null;
 
     private static Calendar parseUpdatedTime(String updatedString) throws OpenVpnParseException {
-        Calendar ut;
         try {
             String[] components = updatedString.split(",");
             if (components.length != 2) {
@@ -73,11 +73,10 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
             Date parsedDate = sdf.parse(components[1]);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(parsedDate);
-            ut = calendar;
+            return calendar;
         } catch (ParseException e) {
             throw new OpenVpnParseException("Cannot parse update time string", e);
         }
-        return ut;
     }
 
     @NotNull

@@ -2,10 +2,10 @@ package com.getsixtyfour.openvpnmgmt.core;
 
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author 1951FDG

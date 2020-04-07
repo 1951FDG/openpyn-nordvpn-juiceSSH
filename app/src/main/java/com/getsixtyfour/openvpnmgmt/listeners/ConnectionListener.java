@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ConnectionListener {
 
-    void onConnectError(@NotNull Throwable e);
+    void onConnectError(@NotNull Thread t, @NotNull Throwable e);
 
     void onConnected();
 

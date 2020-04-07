@@ -26,13 +26,15 @@ public final class ShareUtil {
 
         String shareMessage = config.shareMessage;
 
-        if (!TextUtils.isEmpty(config.packageName) && (config.buildType != null)) {
+        if ((config.buildType != null) && !TextUtils.isEmpty(config.packageName)) {
             switch (config.buildType) {
                 case GOOGLE:
                     shareMessage = shareMessage + AboutBoxUtils.playStoreAppURI + config.packageName;
                     break;
                 case AMAZON:
                     shareMessage = shareMessage + AboutBoxUtils.amznStoreAppURI + config.packageName;
+                    break;
+                default:
                     break;
             }
         }

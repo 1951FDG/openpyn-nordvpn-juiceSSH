@@ -3,6 +3,7 @@ package io.github.getsixtyfour.openpyn.utils
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.Size
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 // import androidx.navigation.Navigation
@@ -31,27 +32,27 @@ object PrintArray {
     lateinit var checkedItemsList: ArrayList<Int>
     const val delimiter: String = "‚‗‚"
 
-    fun setHint(hint: Int): PrintArray {
+    fun setHint(@StringRes hint: Int): PrintArray {
         PrintArray.hint = hint
         return this
     }
 
-    fun setTitle(title: Int): PrintArray {
+    fun setTitle(@StringRes title: Int): PrintArray {
         PrintArray.title = title
         return this
     }
 
-    fun setPositiveTitle(title: Int): PrintArray {
+    fun setPositiveTitle(@StringRes title: Int): PrintArray {
         positiveTitle = title
         return this
     }
 
-    fun setNegativeTitle(title: Int): PrintArray {
+    fun setNegativeTitle(@StringRes title: Int): PrintArray {
         negativeTitle = title
         return this
     }
 
-    fun setNeutralTitle(title: Int): PrintArray {
+    fun setNeutralTitle(@StringRes title: Int): PrintArray {
         neutralTitle = title
         return this
     }
@@ -176,8 +177,8 @@ object PrintArray {
                 }
             })
             // TODO: change to nav, setup onAttachFragment in activity or setup onAttach in class itself, or ?
-            // val action = MapFragmentDirections.actionMapFragmentToMultiSelectDialogFragment()
-            // Navigation.findNavController(context.findViewById(R.id.map)).navigate(action)
+            /*val action = MapFragmentDirections.actionMapFragmentToMultiSelectDialogFragment()
+            Navigation.findNavController(context.findViewById(R.id.map)).navigate(action)*/
             show(context.supportFragmentManager, null)
         }
     }

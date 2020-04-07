@@ -1,9 +1,5 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
-import org.jetbrains.annotations.NonNls;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -13,6 +9,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import org.slf4j.Logger;
+
 /**
  * @author 1951FDG
  */
@@ -20,9 +18,6 @@ import java.nio.charset.StandardCharsets;
 abstract class AbstractConnection implements Closeable {
 
     private static final int DEFAULT_CHAR_BUFFER_SIZE = 8192;
-
-    @NonNls
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractConnection.class);
 
     private BufferedReader mBufferedReader;
 
@@ -57,7 +52,23 @@ abstract class AbstractConnection implements Closeable {
         }
     }
 
-    public void connect(String host, Integer port) throws IOException {
+    public String getHost() {
+        return mHost;
+    }
+
+    public Integer getPort() {
+        return mPort;
+    }
+
+    public boolean isKeepAlive() {
+        return mKeepAlive;
+    }
+
+    public void setKeepAlive(boolean keepAlive) {
+        mKeepAlive = keepAlive;
+    }
+
+    protected void connect(String host, Integer port) throws IOException {
         if (isConnected()) {
             throw new IOException("already connected");
         }
@@ -72,29 +83,21 @@ abstract class AbstractConnection implements Closeable {
         connect();
     }
 
-    public void disconnect() {
-        LOGGER.info("Disconnecting");
+    @SuppressWarnings("OverlyBroadThrowsClause")
+    private void connect() throws IOException {
+        getLogger().info("Connecting to {}:{}", mHost, mPort); //NON-NLS
+        mSocket = new Socket(mHost, mPort);
+        InputStreamReader in = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
+        mBufferedReader = new BufferedReader(in, DEFAULT_CHAR_BUFFER_SIZE);
+        OutputStreamWriter out = new OutputStreamWriter(mSocket.getOutputStream(), StandardCharsets.UTF_8);
+        mBufferedWriter = new BufferedWriter(out, DEFAULT_CHAR_BUFFER_SIZE);
+        mSocket.setKeepAlive(mKeepAlive);
+        mSocket.setTcpNoDelay(true);
+    }
+
+    protected void disconnect() {
+        getLogger().info("Disconnecting"); //NON-NLS
         closeQuietly();
-    }
-
-    public String getHost() {
-        return mHost;
-    }
-
-    public Integer getPort() {
-        return mPort;
-    }
-
-    public boolean isConnected() {
-        return (mSocket != null) && mSocket.isConnected() && !mSocket.isClosed();
-    }
-
-    public boolean isKeepAlive() {
-        return mKeepAlive;
-    }
-
-    public void setKeepAlive(boolean keepAlive) {
-        mKeepAlive = keepAlive;
     }
 
     protected BufferedReader getBufferedReader() {
@@ -105,15 +108,9 @@ abstract class AbstractConnection implements Closeable {
         return mBufferedWriter;
     }
 
-    @SuppressWarnings("OverlyBroadThrowsClause")
-    private void connect() throws IOException {
-        LOGGER.info("Connecting to {}:{}", mHost, mPort);
-        mSocket = new Socket(mHost, mPort);
-        InputStreamReader in = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
-        mBufferedReader = new BufferedReader(in, DEFAULT_CHAR_BUFFER_SIZE);
-        OutputStreamWriter out = new OutputStreamWriter(mSocket.getOutputStream(), StandardCharsets.UTF_8);
-        mBufferedWriter = new BufferedWriter(out, DEFAULT_CHAR_BUFFER_SIZE);
-        mSocket.setKeepAlive(mKeepAlive);
-        mSocket.setTcpNoDelay(true);
+    protected abstract Logger getLogger();
+
+    protected boolean isConnected() {
+        return (mSocket != null) && mSocket.isConnected() && !mSocket.isClosed();
     }
 }

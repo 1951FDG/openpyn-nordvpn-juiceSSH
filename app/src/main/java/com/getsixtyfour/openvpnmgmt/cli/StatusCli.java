@@ -4,17 +4,19 @@ import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 
+import java.io.IOException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
 import org.jetbrains.annotations.NonNls;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
@@ -27,6 +29,12 @@ public final class StatusCli {
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusCli.class);
 
+    private static final String HELP = "help";
+
+    private static final String HOST = "host";
+
+    private static final String PORT = "port";
+
     private StatusCli() {
     }
 
@@ -35,22 +43,22 @@ public final class StatusCli {
         Integer port = 0;
         try {
             @NonNls Options opts = new Options();
-            opts.addOption("H", "host", true, "OpenVPN server management interface address");
-            opts.addOption("P", "port", true, "Management interface port");
-            opts.addOption("h", "help", false, "Print usage information");
+            opts.addOption("H", HOST, true, "OpenVPN server management interface address");
+            opts.addOption("P", PORT, true, "Management interface port");
+            opts.addOption("h", HELP, false, "Print usage information");
             CommandLineParser parser = new DefaultParser();
             @NonNls CommandLine cmd = parser.parse(opts, args);
-            if (cmd.hasOption("help")) {
+            if (cmd.hasOption(HELP)) {
                 printInfo(opts);
                 System.exit(0);
             }
-            if (!cmd.hasOption("host") || !cmd.hasOption("port")) {
+            if (!cmd.hasOption(HOST) || !cmd.hasOption(PORT)) {
                 printInfo(opts);
                 LOGGER.error("Missing required options");
                 System.exit(1);
             }
-            host = cmd.getOptionValue("host");
-            port = Integer.valueOf(cmd.getOptionValue("port"));
+            host = cmd.getOptionValue(HOST);
+            port = Integer.valueOf(cmd.getOptionValue(PORT));
         } catch (ParseException e) {
             LOGGER.error("Cannot parse arguments", e);
         }

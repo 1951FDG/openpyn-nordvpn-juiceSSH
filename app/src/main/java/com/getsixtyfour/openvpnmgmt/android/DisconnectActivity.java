@@ -32,7 +32,7 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
 
     private static final String TAG = "DisconnectActivity";
 
-    private static final DialogInterface.OnDismissListener ON_DISMISS_LISTENER = (DialogInterface dialog) -> {
+    private static final DialogInterface.OnDismissListener ON_DISMISS_LISTENER = dialog -> {
         if (dialog instanceof AlertDialog) {
             Activity ownerActivity = ((AlertDialog) dialog).getOwnerActivity();
             if (ownerActivity != null) {
@@ -69,10 +69,10 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
         super.onCreate(savedInstanceState);
 
         int themeResId;
-        // TypedValue outValue = new TypedValue();
-        // Theme theme = getTheme();
-        // theme.resolveAttribute(R.attr.alertDialogTheme, outValue, true);
-        // themeResId = outValue.resourceId;
+        /*TypedValue outValue = new TypedValue();
+        Theme theme = getTheme();
+        theme.resolveAttribute(R.attr.alertDialogTheme, outValue, true);
+        themeResId = outValue.resourceId;*/
         Resources resources = getResources();
         Configuration configuration = resources.getConfiguration();
         int currentNightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;

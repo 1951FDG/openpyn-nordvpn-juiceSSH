@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NonNls;
  * @author 1951FDG
  */
 
-@SuppressWarnings("UtilityClass")
+@SuppressWarnings({ "UtilityClass", "ConstantExpression" })
 public final class Constants {
 
     @SuppressWarnings("WeakerAccess")

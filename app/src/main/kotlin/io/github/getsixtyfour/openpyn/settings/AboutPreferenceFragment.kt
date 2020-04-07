@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.preference.Preference
@@ -31,7 +33,6 @@ import com.michaelflisar.gdprdialog.GDPRLocation.UNDEFINED
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.ktextension.verifyInstallerId
-import io.github.getsixtyfour.openpyn.BuildConfig
 import io.github.getsixtyfour.openpyn.R
 
 /**
@@ -82,30 +83,30 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         root.addPreference(category)
 
-            category.addPreference(getSwitchPreference(
-                activity,
-                GDPR.getInstance().consentState.consent.isPersonalConsent,
-                R.string.egab_telemetry,
-                "Automatically sends usage statistics and crash reports to Google",
-                R.drawable.ic_firebase_black_24dp,
-                OnPreferenceChangeListener { preference, value ->
-                    if (value as Boolean) {
-                        // user consent given: he accepts personal data usage
-                        val consentState = GDPRConsentState(activity, PERSONAL_CONSENT, UNDEFINED)
-                        GDPR.getInstance().setConsent(consentState)
-                    } else {
-                        // user consent given: he accept non personal data only
-                        val consentState = GDPRConsentState(activity, NON_PERSONAL_CONSENT_ONLY, UNDEFINED)
-                        GDPR.getInstance().setConsent(consentState)
-                    }
-                    val core = CrashlyticsCore.Builder().disabled(!value).build()
-                    Fabric.with(preference.context.applicationContext, Crashlytics.Builder().core(core).build())
-
-                    FirebaseAnalytics.getInstance(preference.context.applicationContext).setAnalyticsCollectionEnabled(value)
-
-                    return@OnPreferenceChangeListener true
+        category.addPreference(getSwitchPreference(
+            activity,
+            GDPR.getInstance().consentState.consent.isPersonalConsent,
+            R.string.egab_telemetry,
+            "Automatically sends usage statistics and crash reports to Google",
+            R.drawable.ic_firebase_black_24dp,
+            OnPreferenceChangeListener { preference, value ->
+                if (value as Boolean) {
+                    // User consent given: user accepts personal data usage
+                    val consentState = GDPRConsentState(activity, PERSONAL_CONSENT, UNDEFINED)
+                    GDPR.getInstance().setConsent(consentState)
+                } else {
+                    // User consent given: user accepts non personal data only
+                    val consentState = GDPRConsentState(activity, NON_PERSONAL_CONSENT_ONLY, UNDEFINED)
+                    GDPR.getInstance().setConsent(consentState)
                 }
-            ))
+                val core = CrashlyticsCore.Builder().disabled(!value).build()
+                Fabric.with(preference.context.applicationContext, Crashlytics.Builder().core(core).build())
+
+                FirebaseAnalytics.getInstance(preference.context.applicationContext).setAnalyticsCollectionEnabled(value)
+
+                return@OnPreferenceChangeListener true
+            }
+        ))
 
         category.addPreference(getPreference(
             activity,
@@ -213,7 +214,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun getPreference(
-        context: Context, titleResId: Int?, summary: String?, iconResId: Int?, listener: OnPreferenceClickListener?
+        context: Context, @StringRes titleResId: Int?, summary: String?, @DrawableRes iconResId: Int?, listener: OnPreferenceClickListener?
     ): Preference {
         val preference = Preference(context)
         iconResId?.let { preference.icon = ContextCompat.getDrawable(context, it) }
@@ -224,7 +225,10 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun getSwitchPreference(
-        context: Context, defaultValue: Boolean, titleResId: Int?, summary: String?, iconResId: Int?, listener: OnPreferenceChangeListener?
+        context: Context,
+        defaultValue: Boolean, @StringRes titleResId: Int?,
+        summary: String?, @DrawableRes iconResId: Int?,
+        listener: OnPreferenceChangeListener?
     ): Preference {
         val preference = SwitchPreference(context)
         preference.setDefaultValue(defaultValue)

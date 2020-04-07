@@ -4,9 +4,9 @@ import com.getsixtyfour.openvpnmgmt.core.TrafficHistory.LastDiff;
 import com.getsixtyfour.openvpnmgmt.core.TrafficHistory.TrafficDataPoint;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author 1951FDG

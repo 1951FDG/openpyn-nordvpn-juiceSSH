@@ -118,7 +118,7 @@ fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETE
         if (jsonArray != null) {
             json = when {
                 BuildConfig.DEBUG -> stringifyJsonArray(jsonArray)
-                else -> jsonArray.toString()
+                else -> "$jsonArray"
             }
         }
 
@@ -225,7 +225,7 @@ fun populateAboutConfig() {
     val versionCode = BuildConfig.VERSION_CODE
     val buildType = BuildConfig.BUILD_TYPE.capitalize()
     val aboutConfig = AboutConfig.getInstance()
-    // general info
+    // General info
     aboutConfig.appName = "openpyn-nordvpn-juiceSSH"
     aboutConfig.appIcon = R.mipmap.ic_launcher
     aboutConfig.version = "$buildType $versionName ($versionCode)"
@@ -234,23 +234,23 @@ fun populateAboutConfig() {
     aboutConfig.webHomePage = aboutConfig.companyHtmlPath + "/" + aboutConfig.appName
     aboutConfig.buildType = AboutConfig.BuildType.GOOGLE
     aboutConfig.packageName = BuildConfig.APPLICATION_ID
-    // custom analytics, dialog and share
+    // Custom analytics, dialog and share
     aboutConfig.analytics = object : IAnalytic {
         override fun logUiEvent(s: String, s1: String) {
-            // handle log events.
+            // Handle log events
         }
 
         override fun logException(e: Exception, b: Boolean) {
-            // handle exception events.
+            // Handle exception events
             logException(e)
         }
     }
-    // email
+    // Email
     aboutConfig.emailAddress = "support@1951fdg.com"
     aboutConfig.emailSubject = ""
     aboutConfig.emailBody = ""
     aboutConfig.emailBodyPrompt = ""
-    // share
+    // Share
     aboutConfig.shareMessage = ""
     aboutConfig.sharingTitle = "Share"
 }
@@ -270,13 +270,6 @@ fun isRunningTest(): Boolean = try {
 }
 
 fun <T : Activity> startVpnService(activity: T) {
-    /*PreferenceManager.getDefaultSharedPreferences(activity).edit().apply {
-        // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
-        putString(activity.getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
-        // Default management port used by Openpyn
-        putString(activity.getString(R.string.pref_openvpnmgmt_port_key), "7015")
-        apply()
-    }*/
     val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
     val openvpnmgmt = preferences.getBoolean(activity.getString(R.string.pref_openvpnmgmt_key), false)
     if (openvpnmgmt) {
@@ -327,7 +320,7 @@ fun <T : Context> isEmulator(context: T): Boolean {
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
         context.classLoader.loadClass("android.os.SystemProperties").let {
             if ((it.getMethod("get", String::class.java).invoke(it, "ro.kernel.qemu") as String) == "1") {
-                return true
+                return@isEmulator true
             }
         }
     }
@@ -339,11 +332,11 @@ fun <T : Context> saveEmulatorPreferences(context: T) {
         return
     }
 
-    PreferenceManager.getDefaultSharedPreferences(context).edit().apply {
+    PreferenceManager.getDefaultSharedPreferences(context).edit().let {
         // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
-        putString(context.getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
+        it.putString(context.getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
         // Default management port used by Openpyn
-        putString(context.getString(R.string.pref_openvpnmgmt_port_key), "7015")
-        apply()
+        it.putString(context.getString(R.string.pref_openvpnmgmt_port_key), "7015")
+        it.apply()
     }
 }

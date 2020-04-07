@@ -4,14 +4,16 @@ import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 import com.getsixtyfour.openvpnmgmt.implementation.OpenVpnCommand;
 import com.getsixtyfour.openvpnmgmt.implementation.OpenVpnStatus;
 
-import org.jetbrains.annotations.NonNls;
-import org.junit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
+
+import org.jetbrains.annotations.NonNls;
+
+import org.junit.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Maksym Shkolnyi aka maskimko
