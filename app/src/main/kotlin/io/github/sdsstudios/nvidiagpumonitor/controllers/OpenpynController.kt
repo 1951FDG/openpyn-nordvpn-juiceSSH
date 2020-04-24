@@ -134,16 +134,25 @@ class OpenpynController(
         val port = preferences.getString(
             mCtx.getString(R.string.pref_openvpnmgmt_port_key), mCtx.getString(R.string.pref_openvpnmgmt_port_default)
         )!!
+        val password = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_password_file_key), "")!!
         val username = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_username_key), "")!!
-        val password = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_password_key), "")!!
+        val userpass = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_userpass_key), "")!!
+
         if (openvpnmgmt) {
             silent = true
-            openvpn = "--management $host ${port.toInt()} --management-up-down"
 
-            if (username.isNotEmpty() && password.isNotEmpty()) {
-                options.append(" --application")
-                openvpn = "$openvpn --auth-nocache --auth-retry interact --management-hold --management-query-passwords"
+            openvpn = "--management $host ${port.toInt()}"
+
+            if (password.isNotEmpty()) {
+                openvpn = "$openvpn $password"
             }
+
+            if (username.isNotEmpty() && userpass.isNotEmpty()) {
+                openvpn = "$openvpn --auth-nocache --auth-retry interact --management-hold --management-query-passwords"
+                options.append(" --application")
+            }
+
+            openvpn = "$openvpn --management-up-down"
         }
 
         when {

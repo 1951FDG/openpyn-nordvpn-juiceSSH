@@ -34,6 +34,8 @@ public interface Connection extends Runnable {
     //region ManagementConnection (Background)
     void connect(@NotNull String host, @NotNull Integer port) throws IOException;
 
+    void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException;
+
     void disconnect();
     //endregion
 

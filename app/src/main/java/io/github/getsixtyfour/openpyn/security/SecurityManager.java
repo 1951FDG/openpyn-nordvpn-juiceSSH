@@ -7,7 +7,10 @@ import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -30,9 +33,11 @@ public final class SecurityManager {
 
     private static final String TAG = "SecurityManager";
 
-    private static final String TRANSFORMATION = "AES/GCM/NoPadding";
+    private static final char[] EMPTY_CHAR_ARRAY = new char[0];
 
     private static final int IV_LENGTH = 16;
+
+    private static final String TRANSFORMATION = "AES/GCM/NoPadding";
 
     private static volatile SecurityManager sInstance = null;
 
@@ -83,20 +88,29 @@ public final class SecurityManager {
         return result;
     }
 
-    @NonNull
+    @SuppressWarnings("MagicCharacter")
+    private static char[] toChars(byte[] array) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(array, 0, array.length);
+        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(byteBuffer);
+        char[] chars = Arrays.copyOf(charBuffer.array(), charBuffer.limit());
+        Arrays.fill(charBuffer.array(), '\u0000');
+        Arrays.fill(byteBuffer.array(), (byte) 0);
+        return chars;
+    }
+
+    @Nullable
     @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches" })
-    public String decryptString(@NonNull String stringToDecrypt) {
+    public char[] decrypt(@NonNull String stringToDecrypt) {
         if (stringToDecrypt.isEmpty()) {
-            return stringToDecrypt;
+            return EMPTY_CHAR_ARRAY;
         }
-        String output = stringToDecrypt;
         try {
             byte[] encryptedBytes = Base64.decode(stringToDecrypt, Base64.DEFAULT);
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             AlgorithmParameterSpec ivSpec = new IvParameterSpec(encryptedBytes, 0, IV_LENGTH);
             cipher.init(Cipher.DECRYPT_MODE, mSecretKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(encryptedBytes, IV_LENGTH, encryptedBytes.length - IV_LENGTH);
-            output = new String(cipherBytes, StandardCharsets.UTF_8);
+            return toChars(cipherBytes);
         } catch (NoSuchAlgorithmException ignored) {
         } catch (NoSuchPaddingException ignored) {
         } catch (InvalidKeyException ignored) {
@@ -105,16 +119,21 @@ public final class SecurityManager {
         } catch (BadPaddingException ignored) {
         } catch (InvalidAlgorithmParameterException ignored) {
         }
-        return output;
+        return null;
     }
 
-    @NonNull
+    @Nullable
+    public String decryptString(@NonNull String stringToDecrypt) {
+        char[] chars = decrypt(stringToDecrypt);
+        return (chars != null) ? new String(chars) : null;
+    }
+
+    @Nullable
     @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches" })
-    public String encryptString(@NonNull String stringToEncrypt) {
+    public char[] encrypt(@NonNull String stringToEncrypt) {
         if (stringToEncrypt.isEmpty()) {
-            return stringToEncrypt;
+            return EMPTY_CHAR_ARRAY;
         }
-        String output = stringToEncrypt;
         try {
             byte[] clearText = stringToEncrypt.getBytes(StandardCharsets.UTF_8);
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -124,7 +143,8 @@ public final class SecurityManager {
             AlgorithmParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.ENCRYPT_MODE, mSecretKey, ivSpec);
             byte[] cipherBytes = cipher.doFinal(clearText);
-            output = new String(Base64.encode(concat(iv, cipherBytes), Base64.NO_WRAP), StandardCharsets.UTF_8);
+            byte[] encryptedBytes = Base64.encode(concat(iv, cipherBytes), Base64.NO_WRAP);
+            return toChars(encryptedBytes);
         } catch (NoSuchAlgorithmException ignored) {
         } catch (NoSuchPaddingException ignored) {
         } catch (InvalidKeyException ignored) {
@@ -133,6 +153,12 @@ public final class SecurityManager {
         } catch (BadPaddingException ignored) {
         } catch (InvalidAlgorithmParameterException ignored) {
         }
-        return output;
+        return null;
+    }
+
+    @Nullable
+    public String encryptString(@NonNull String stringToEncrypt) {
+        char[] chars = encrypt(stringToEncrypt);
+        return (chars != null) ? new String(chars) : null;
     }
 }

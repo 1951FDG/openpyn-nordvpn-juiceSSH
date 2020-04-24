@@ -638,19 +638,19 @@ suspend fun createGeoJson(context: Context): JSONObject? {
         if (geo) {
             when (api) {
                 "ipdata" -> {
-                    token = SecurityManager.getInstance(context).decryptString(ipdata)
+                    token = SecurityManager.getInstance(context).decryptString(ipdata).toString()
                     server = "https://api.ipdata.co?api-key=$token&$fields"
                     // server = "https://api.ipdata.co?api-key=$token&$fields,threat"
                 }
                 "ipinfo" -> {
-                    token = SecurityManager.getInstance(context).decryptString(ipinfo)
+                    token = SecurityManager.getInstance(context).decryptString(ipinfo).toString()
                     server = when {
                         token.isNotEmpty() -> "https://ipinfo.io/geo?token=$token"
                         else -> "https://ipinfo.io/geo"
                     }
                 }
                 "ipstack" -> {
-                    token = SecurityManager.getInstance(context).decryptString(ipstack)
+                    token = SecurityManager.getInstance(context).decryptString(ipstack).toString()
                     server = "http://api.ipstack.com/check?access_key=$token&$fields"
                 }
             }

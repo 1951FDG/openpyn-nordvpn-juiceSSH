@@ -276,6 +276,7 @@ fun <T : Activity> startVpnService(activity: T) {
         val handler = VpnAuthenticationHandler(activity)
         val host = VpnAuthenticationHandler.getHost(activity)
         val port = VpnAuthenticationHandler.getPort(activity)
+        val password = VpnAuthenticationHandler.getPassword(activity)
         val shouldPostByteCount = VpnAuthenticationHandler.shouldPostByteCount(activity)
         val shouldPostStateChange = VpnAuthenticationHandler.shouldPostStateChange(activity)
         val bundle = Bundle().apply {
@@ -283,6 +284,7 @@ fun <T : Activity> startVpnService(activity: T) {
             putBoolean(Constants.EXTRA_POST_STATE_NOTIFICATION, shouldPostStateChange)
             putString(Constants.EXTRA_HOST, host)
             putInt(Constants.EXTRA_PORT, port)
+            putCharArray(Constants.EXTRA_PASSWORD, password)
         }
         // TODO: do this elsewhere e.g. in Service, add missing intent extras and create handler in Service
         val connection = ManagementConnection.getInstance()

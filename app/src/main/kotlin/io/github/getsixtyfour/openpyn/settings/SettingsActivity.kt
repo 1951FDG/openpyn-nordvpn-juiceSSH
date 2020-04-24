@@ -144,15 +144,17 @@ class SettingsActivity : PreferenceActivityCompat() {
                     preference.summary = if (index >= 0) preference.entries[index] else null
                 } else {
                     // For all other preferences, set the summary to the value's simple string representation
+                    val ctx = preference.context
                     when {
                         stringValue.isEmpty() -> preference.summary = "Not set"
+                        preference.key.equals(ctx.getString(R.string.pref_openvpnmgmt_password_key), true) -> preference.summary = "Password has been set"
+                        preference.key.equals(ctx.getString(R.string.pref_openvpnmgmt_userpass_key), true) -> preference.summary = "Password has been set"
                         preference.key.equals("pref_api_ipdata", true) -> preference.summary = "Available (SSL)"
                         preference.key.equals("pref_api_ipinfo", true) -> preference.summary = "Available (SSL)"
                         preference.key.startsWith("pref_api", true) -> preference.summary = "Available"
                         preference.key.equals("pref_server", true) && !validate(preference, stringValue) -> {
                             return@OnPreferenceChangeListener false
                         }
-                        preference.key.equals("pref_management_password", true) -> preference.summary = "Password has been set"
                         else -> preference.summary = stringValue
                     }
                 }

@@ -92,10 +92,15 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @Override
     public void connect(@NotNull String host, @NotNull Integer port) throws IOException {
+        connect(host, port, null);
+    }
+
+    @Override
+    public void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
         if (!isConnected()) {
             //noinspection OverlyBroadCatchBlock
             try {
-                super.connect(host, port);
+                super.connect(host, port, password);
                 // TODO: may cause crash, must process here, since run is still running
                 // Ensures state listeners are notified of current state if OpenVPN is already connected
                 {

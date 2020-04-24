@@ -336,25 +336,27 @@
 
     <string name="pref_openvpnmgmt_host">Host</string>
     <string name="pref_openvpnmgmt_port">Port</string>
-    <string name="pref_openvpnmgmt_username">Username</string>
     <string name="pref_openvpnmgmt_password">Password</string>
-    <string name="pref_openvpnmgmt_bandwidth_usage">OpenVPN bandwidth usage</string>
-    <string name="pref_openvpnmgmt_state_changes">OpenVPN state changes</string>
-
-    <string name="pref_openvpnmgmt_summary">Request real-time notifications on changes</string>
-    <string name="pref_openvpnmgmt_bandwidth_usage_summary">Real-time notification of bandwidth usage</string>
-    <string name="pref_openvpnmgmt_state_changes_summary">Real-time notification of state changes</string>
+    <string name="pref_openvpnmgmt_password_file">Password file</string>
+    <string name="pref_openvpnmgmt_username">VPN username</string>
+    <string name="pref_openvpnmgmt_userpass">VPN password</string>
+    <string name="pref_openvpnmgmt_bandwidth_usage">Show bandwidth usage notifications</string>
+    <string name="pref_openvpnmgmt_state_changes">Show state change notifications</string>
 
     <string name="pref_openvpnmgmt_key" translatable="false">pref_management_enabled</string>
     <string name="pref_openvpnmgmt_host_key" translatable="false">pref_management_address</string>
     <string name="pref_openvpnmgmt_port_key" translatable="false">pref_management_port</string>
-    <string name="pref_openvpnmgmt_username_key" translatable="false">pref_management_username</string>
     <string name="pref_openvpnmgmt_password_key" translatable="false">pref_management_password</string>
+    <string name="pref_openvpnmgmt_password_file_key" translatable="false">pref_management_password_file</string>
+    <string name="pref_openvpnmgmt_username_key" translatable="false">pref_management_username</string>
+    <string name="pref_openvpnmgmt_userpass_key" translatable="false">pref_management_userpass</string>
     <string name="pref_openvpnmgmt_bandwidth_usage_key" translatable="false">pref_management_bandwidth_usage</string>
     <string name="pref_openvpnmgmt_state_changes_key" translatable="false">pref_management_state_changes</string>
 
     <string name="pref_openvpnmgmt_host_default" translatable="false">127.0.0.1</string>
     <string name="pref_openvpnmgmt_port_default" translatable="false">23</string>
-    <string name="pref_openvpnmgmt_username_default" translatable="false" />
     <string name="pref_openvpnmgmt_password_default" translatable="false" />
+    <string name="pref_openvpnmgmt_password_file_default" translatable="false" />
+    <string name="pref_openvpnmgmt_username_default" translatable="false" />
+    <string name="pref_openvpnmgmt_userpass_default" translatable="false" />
 </resources>

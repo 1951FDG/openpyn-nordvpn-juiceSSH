@@ -261,6 +261,7 @@ public final class OpenVpnService extends Service
 
         String host = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_HOST), DEFAULT_REMOTE_SERVER);
         int port = intent.getIntExtra(Constants.EXTRA_PORT, DEFAULT_REMOTE_PORT);
+        char[] password = intent.getCharArrayExtra(Constants.EXTRA_PASSWORD);
 
         // Always show notification here to avoid problem with startForeground timeout
         {
@@ -280,7 +281,7 @@ public final class OpenVpnService extends Service
                 /*TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);*/
                 Connection connection = ManagementConnection.getInstance();
                 //noinspection ConstantConditions
-                connection.connect(host, port);
+                connection.connect(host, port, password);
             } catch (IOException ignored) {
             }
         });

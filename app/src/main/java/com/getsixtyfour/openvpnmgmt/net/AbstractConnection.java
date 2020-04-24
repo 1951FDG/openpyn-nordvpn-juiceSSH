@@ -9,6 +9,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import org.jetbrains.annotations.Nullable;
+
 import org.slf4j.Logger;
 
 /**
@@ -68,7 +70,7 @@ abstract class AbstractConnection implements Closeable {
         mKeepAlive = keepAlive;
     }
 
-    protected void connect(String host, Integer port) throws IOException {
+    protected void connect(String host, Integer port, char[] password) throws IOException {
         if (isConnected()) {
             throw new IOException("already connected");
         }
@@ -80,19 +82,24 @@ abstract class AbstractConnection implements Closeable {
         }
         mHost = host;
         mPort = port;
-        connect();
+        connect(password);
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
-    private void connect() throws IOException {
+    private void connect(@Nullable char[] password) throws IOException {
         getLogger().info("Connecting to {}:{}", mHost, mPort); //NON-NLS
         mSocket = new Socket(mHost, mPort);
+        mSocket.setKeepAlive(mKeepAlive);
+        mSocket.setTcpNoDelay(true);
         InputStreamReader in = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
         mBufferedReader = new BufferedReader(in, DEFAULT_CHAR_BUFFER_SIZE);
         OutputStreamWriter out = new OutputStreamWriter(mSocket.getOutputStream(), StandardCharsets.UTF_8);
         mBufferedWriter = new BufferedWriter(out, DEFAULT_CHAR_BUFFER_SIZE);
-        mSocket.setKeepAlive(mKeepAlive);
-        mSocket.setTcpNoDelay(true);
+        if (password != null) {
+            mBufferedWriter.write(password);
+            mBufferedWriter.newLine();
+            mBufferedWriter.flush();
+        }
     }
 
     protected void disconnect() {

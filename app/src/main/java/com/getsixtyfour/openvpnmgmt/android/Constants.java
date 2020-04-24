@@ -51,6 +51,9 @@ public final class Constants {
     public static final String EXTRA_PORT = INTENT_PACKAGE_PREFIX + ".extra.PORT";
 
     @NonNls
+    public static final String EXTRA_PASSWORD = INTENT_PACKAGE_PREFIX + ".extra.PASSWORD";
+
+    @NonNls
     public static final String ACTION_START_SERVICE_NOT_STICKY = INTENT_PACKAGE_PREFIX + ".action.START_SERVICE_NOT_STICKY";
 
     @NonNls

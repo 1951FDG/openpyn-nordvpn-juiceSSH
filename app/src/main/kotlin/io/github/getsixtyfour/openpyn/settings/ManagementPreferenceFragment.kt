@@ -26,6 +26,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
         setHasOptionsMenu(false)
 
         findPreference<Preference>(getString(R.string.pref_openvpnmgmt_password_key))?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<Preference>(getString(R.string.pref_openvpnmgmt_userpass_key))?.let(Companion::bindPreferenceSummaryToValue)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
