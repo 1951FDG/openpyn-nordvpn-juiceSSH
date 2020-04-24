@@ -25,6 +25,7 @@
     <io.github.getsixtyfour.openpyn.security.SecuredEditTextPreference
         android:defaultValue="@string/pref_openvpnmgmt_password_default"
         android:dependency="@string/pref_openvpnmgmt_key"
+        android:dialogLayout="@layout/abc_preference_dialog_edittext_copy"
         android:key="@string/pref_openvpnmgmt_password_key"
         android:selectAllOnFocus="true"
         android:singleLine="true"
@@ -61,6 +62,7 @@
             app:useSimpleSummaryProvider="true" />
         <io.github.getsixtyfour.openpyn.security.SecuredEditTextPreference
             android:defaultValue="@string/pref_openvpnmgmt_userpass_default"
+            android:dialogLayout="@layout/abc_preference_dialog_edittext_copy"
             android:key="@string/pref_openvpnmgmt_userpass_key"
             android:selectAllOnFocus="true"
             android:singleLine="true"

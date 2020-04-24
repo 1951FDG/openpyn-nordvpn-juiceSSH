@@ -10,35 +10,37 @@ import androidx.annotation.Nullable;
 import androidx.preference.EditTextPreference;
 import androidx.preference.EditTextPreference.OnBindEditTextListener;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 public final class SecuredEditTextPreference extends EditTextPreference implements OnBindEditTextListener {
 
     private final SecurityManager mSecurityManager = SecurityManager.getInstance(getContext());
 
     public SecuredEditTextPreference(@NonNull Context context) {
         super(context);
-        setOnBindEditTextListener(this);
+        // setOnBindEditTextListener(this);
     }
 
     public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        setOnBindEditTextListener(this);
+        // setOnBindEditTextListener(this);
     }
 
     public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setOnBindEditTextListener(this);
+        // setOnBindEditTextListener(this);
     }
 
     public SecuredEditTextPreference(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        setOnBindEditTextListener(this);
+        // setOnBindEditTextListener(this);
     }
 
     @Nullable
     @Override
     public String getText() {
         String text = super.getText();
-        return ((text == null) || (text.isEmpty())) ? text : mSecurityManager.decryptString(text);
+        return ((text == null) || text.isEmpty()) ? text : mSecurityManager.decryptString(text);
     }
 
     @Override
@@ -53,6 +55,13 @@ public final class SecuredEditTextPreference extends EditTextPreference implemen
     @Override
     public void onBindEditText(@NonNull EditText editText) {
         editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        // Place cursor at the end
+        editText.setSelection(editText.getText().length());
+        // Add a trailing icon to toggle between the password being displayed as plain-text or disguised
+        if ((editText.getParent() != null) && (editText.getParent().getParent() != null) && (editText.getParent()
+                .getParent() instanceof TextInputLayout)) {
+            ((TextInputLayout) editText.getParent().getParent()).setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+        }
     }
 
     @Override

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="pref_server">Server name</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="pref_server">Server</string>
+    <string name="pref_server_error">Server must be a NordVPN server</string>
+    <string name="pref_server_helper_text">The VPN server name</string>
 
     <string name="pref_country">Country</string>
 
@@ -265,9 +267,9 @@
 
     <string-array name="pref_geo_client_entries">
         <item>IPApi</item>
-        <item>IPData (requires API Key)</item>
+        <item>IPData</item>
         <item>IPInfo</item>
-        <item>IPStack (requires API Key)</item>
+        <item>IPStack</item>
     </string-array>
 
     <string-array name="pref_geo_client_values" translatable="false">
@@ -321,6 +323,10 @@
         <item>50</item>
     </string-array>
 
+    <string name="not_set" tools:override="true">Not set</string>
+    <string name="password_set">Password has been set</string>
+    <string name="key_set">Key has been set</string>
+
     <string name="pref_category_support">Support</string>
     <string name="pref_category_other">Other</string>
 
@@ -333,6 +339,15 @@
     <string name="category_advanced">Advanced</string>
 
     <string name="pref_openvpnmgmt">Management interface</string>
+
+    <string name="pref_openvpnmgmt_host_error_2">Host must be an IP address</string>
+    <string name="pref_openvpnmgmt_host_error">Host must be a local IP address</string>
+    <string name="pref_openvpnmgmt_port_error">Port must be between 0 and 65535</string>
+    <string name="pref_openvpnmgmt_path_error">Path must be a posix file path</string>
+
+    <string name="pref_openvpnmgmt_host_helper_text">The host IP address</string>
+    <string name="pref_openvpnmgmt_port_helper_text">The host port number</string>
+    <string name="pref_openvpnmgmt_path_helper_text">The host password file</string>
 
     <string name="pref_openvpnmgmt_host">Host</string>
     <string name="pref_openvpnmgmt_port">Port</string>

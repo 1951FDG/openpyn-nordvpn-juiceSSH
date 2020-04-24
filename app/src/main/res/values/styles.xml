@@ -28,6 +28,7 @@
     <style name="PreferenceThemeOverlay.Custom" parent="@style/PreferenceThemeOverlay">
         <!--<item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>-->
         <item name="checkBoxPreferenceStyle">@style/Preference.CheckBoxPreference.Material.Custom</item>
+        <item name="editTextPreferenceStyle">@style/Preference.DialogPreference.EditTextPreference.Material.Custom</item>
 
     </style>
 
@@ -39,11 +40,20 @@
 
     </style>
 
+    <style name="Preference.DialogPreference.EditTextPreference.Material.Custom" parent="@style/Preference.DialogPreference.EditTextPreference.Material">
+        <item name="android:dialogLayout">@layout/abc_preference_dialog_edittext</item>
+    </style>
+
     <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.MaterialComponents.Light.Bridge">
         <!-- Original AppCompat attributes. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorError">@color/colorPrimary</item>
+        <item name="colorOnError">@android:color/white</item>
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>
 
     </style>
 

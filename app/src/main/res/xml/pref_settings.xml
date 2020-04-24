@@ -14,7 +14,8 @@
             android:entries="@array/pref_country_entries"
             android:entryValues="@array/pref_country_values"
             android:key="pref_country"
-            android:title="@string/pref_country" />
+            android:title="@string/pref_country"
+            app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="pref_tcp"
@@ -26,25 +27,29 @@
             android:entries="@array/pref_max_load_entries"
             android:entryValues="@array/pref_max_load_values"
             android:key="pref_max_load"
-            android:title="@string/pref_max_load" />
+            android:title="@string/pref_max_load"
+            app:useSimpleSummaryProvider="true" />
         <ListPreference
             android:defaultValue="10"
             android:entries="@array/pref_top_servers_entries"
             android:entryValues="@array/pref_top_servers_values"
             android:key="pref_top_servers"
-            android:title="@string/pref_top_servers" />
+            android:title="@string/pref_top_servers"
+            app:useSimpleSummaryProvider="true" />
         <!--<ListPreference
             android:defaultValue="3"
             android:entries="@array/pref_pings_entries"
             android:entryValues="@array/pref_pings_values"
             android:key="pref_pings"
-            android:title="@string/pref_pings" />-->
+            android:title="@string/pref_pings"
+            app:useSimpleSummaryProvider="true" />-->
         <ListPreference
             android:defaultValue="25"
             android:entries="@array/pref_log_level_entries"
             android:entryValues="@array/pref_log_level_values"
             android:key="pref_log_level"
-            android:title="@string/pref_log_level" />
+            android:title="@string/pref_log_level"
+            app:useSimpleSummaryProvider="true" />
         <Preference
             android:title="@string/title_openvpnmgmt"
             app:fragment="io.github.getsixtyfour.openpyn.settings.ManagementPreferenceFragment" />
@@ -85,5 +90,6 @@
             android:entries="@array/pref_nvram_client_entries"
             android:entryValues="@array/pref_nvram_client_values"
             android:key="pref_nvram_client"
-            android:title="@string/pref_nvram_client" />
+            android:title="@string/pref_nvram_client"
+            app:useSimpleSummaryProvider="true" />
 </PreferenceScreen>

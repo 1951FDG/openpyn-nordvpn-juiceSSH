@@ -9,7 +9,6 @@ import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.setProgressToolBar
 import kotlinx.android.synthetic.main.mm2d_pac_content.toolbar
@@ -143,18 +142,10 @@ class SettingsActivity : PreferenceActivityCompat() {
                     // Set the summary to reflect the new value
                     preference.summary = if (index >= 0) preference.entries[index] else null
                 } else {
-                    // For all other preferences, set the summary to the value's simple string representation
                     val ctx = preference.context
                     when {
-                        stringValue.isEmpty() -> preference.summary = "Not set"
-                        preference.key.equals(ctx.getString(R.string.pref_openvpnmgmt_password_key), true) -> preference.summary = "Password has been set"
-                        preference.key.equals(ctx.getString(R.string.pref_openvpnmgmt_userpass_key), true) -> preference.summary = "Password has been set"
-                        preference.key.equals("pref_api_ipdata", true) -> preference.summary = "Available (SSL)"
-                        preference.key.equals("pref_api_ipinfo", true) -> preference.summary = "Available (SSL)"
-                        preference.key.startsWith("pref_api", true) -> preference.summary = "Available"
-                        preference.key.equals("pref_server", true) && !validate(preference, stringValue) -> {
-                            return@OnPreferenceChangeListener false
-                        }
+                        stringValue.isEmpty() -> preference.summary = ctx.getString(R.string.not_set)
+                        // For all other preferences, set the summary to the value's simple string representation
                         else -> preference.summary = stringValue
                     }
                 }
@@ -174,7 +165,7 @@ class SettingsActivity : PreferenceActivityCompat() {
             // Set the listener to watch for value changes
             preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
             // Trigger the listener immediately with the preference's current value
-            val newValue = getDefaultSharedPreferences(preference.context).getString(preference.key, "")
+            val newValue = preference.sharedPreferences.getString(preference.key, "")
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, newValue)
         }
 
@@ -200,18 +191,6 @@ class SettingsActivity : PreferenceActivityCompat() {
                 putExtra(EXTRA_NO_HEADERS, true)
             }
             ContextCompat.startActivity(activity, intent, null)
-        }
-
-        private fun validate(preference: Preference, str: String): Boolean {
-            val regex = Regex("""^[a-z]{2}\d{1,4}$""")
-            if (regex.matches(str)) {
-                val set = preference.context.resources.getTextArray(R.array.pref_country_values).toHashSet().apply {
-                    add("uk")
-                }
-                return set.contains(str.take(2))
-            }
-
-            return false
         }
     }
 }

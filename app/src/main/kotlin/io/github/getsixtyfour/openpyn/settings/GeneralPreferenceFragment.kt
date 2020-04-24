@@ -5,12 +5,14 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
+import com.google.android.material.textfield.TextInputLayout
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.onRefreshItemSelected
-import io.github.getsixtyfour.openpyn.settings.SettingsActivity.Companion
 
 /**
  * This fragment shows General settings preferences only.
@@ -22,13 +24,17 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
 
         setHasOptionsMenu(true)
 
-        findPreference<Preference>("pref_server")?.let(Companion::bindPreferenceSummaryToValue)
-        findPreference<Preference>("pref_country")?.let(Companion::bindPreferenceSummaryToValue)
-        findPreference<Preference>("pref_max_load")?.let(Companion::bindPreferenceSummaryToValue)
-        findPreference<Preference>("pref_top_servers")?.let(Companion::bindPreferenceSummaryToValue)
-        /*findPreference<Preference>("pref_pings")?.let(Companion::bindPreferenceSummaryToValue)*/
-        findPreference<Preference>("pref_log_level")?.let(Companion::bindPreferenceSummaryToValue)
-        findPreference<Preference>("pref_nvram_client")?.let(Companion::bindPreferenceSummaryToValue)
+        findPreference<EditTextPreference>("pref_server")?.run {
+            setOnBindEditTextListener {
+                it.addTextChangedListener(it.textInputLayout()?.serverErrorTextWatcher)
+            }
+            summaryProvider = Preference.SummaryProvider<EditTextPreference> {
+                when (val text = it.text) {
+                    null, "" -> it.context.getString(R.string.not_set)
+                    else -> "$text.nordvpn.com"
+                }
+            }
+        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -70,5 +76,35 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
         fragmentManager.beginTransaction().replace((requireView().parent as View).id, fragment).addToBackStack(null).commit()
 
         return true
+    }
+
+    companion object {
+        internal val TextInputLayout.serverErrorTextWatcher: AbstractTextWatcher
+            get() = object : AbstractTextWatcher(this) {
+                val array = context.resources.getTextArray(R.array.pref_country_values)
+                val regex = Regex("""^[a-z]{2}\d{1,4}$""")
+                val message = ctx.getString(R.string.pref_server_error)
+                override val submitButtonId: Int
+                    get() = android.R.id.button1
+
+                init {
+                    textInputLayout.helperText = ctx.getString(R.string.pref_server_helper_text)
+                }
+
+                override fun validate(s: String): String? = if (s.isEmpty()) null else try {
+                    require(regex.matches(s)) { message }
+                    require(isServerName(s.take(2))) { message }
+                    null
+                } catch (e: Exception) {
+                    e.message
+                }
+
+                fun isServerName(name: String): Boolean = when (name) {
+                    "uk" -> true
+                    else -> array.contains(name)
+                }
+            }
+
+        fun EditText.textInputLayout(): TextInputLayout? = (parent.parent as? TextInputLayout)
     }
 }
