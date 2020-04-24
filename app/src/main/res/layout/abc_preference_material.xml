@@ -15,7 +15,7 @@
     tools:ignore="Overdraw">
 
     <include layout="@layout/image_frame"
-        tools:ignore="PrivateResource" />
+        tools:ignore="PrivateResource"/>
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -32,7 +32,7 @@
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:ellipsize="marquee"
             tools:text="@tools:sample/lorem"
-            tools:ignore="SelectableText" />
+            tools:ignore="SelectableText"/>
 
         <TextView
             android:id="@android:id/summary"
@@ -47,10 +47,20 @@
             android:maxLines="10"
             style="@style/PreferenceSummaryTextStyle"
             tools:text="@tools:sample/lorem/random"
-            tools:ignore="PrivateResource,SelectableText" />
+            tools:ignore="PrivateResource,SelectableText"/>
 
     </RelativeLayout>
 
     <!-- Preference should place its actual preference widget here. -->
-    <include layout="@layout/abc_preference_widget" />
+    <LinearLayout
+        android:id="@android:id/widget_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="end|center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingRight="0dp"
+        android:paddingEnd="0dp"
+        android:orientation="vertical"/>
+
 </LinearLayout>
