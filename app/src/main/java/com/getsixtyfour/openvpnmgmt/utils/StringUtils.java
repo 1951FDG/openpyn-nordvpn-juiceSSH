@@ -119,12 +119,9 @@ public final class StringUtils {
      * @return String with escaped values, {@code null} if null string input
      */
     @Nullable
-    public static String escapeString(@Nullable CharSequence cs) {
-        if (cs == null) {
-            return null;
-        }
-        if (cs.length() == 0) {
-            return "";
+    public static CharSequence escapeString(@Nullable CharSequence cs) {
+        if ((cs == null) || (cs.length() == 0)) {
+            return cs;
         }
         return escapeBashStyleString(cs);
     }
@@ -136,35 +133,24 @@ public final class StringUtils {
      * @return the escaped string
      */
     private static String escapeBashStyleString(CharSequence cs) {
-        StringBuilder writer = new StringBuilder(cs.length() << 1);
-        escapeBashStyleString(writer, cs);
-        return writer.toString();
-    }
-
-    /**
-     * <p>Worker method for the {@link #escapeString(CharSequence)} method.</p>
-     *
-     * @param out the StringBuilder to receive the escaped string
-     * @param cs  the CharSequence to escape values in, may be null
-     */
-    @SuppressWarnings("MagicCharacter")
-    private static void escapeBashStyleString(StringBuilder out, CharSequence cs) {
+        StringBuilder sb = new StringBuilder(cs.length() << 1);
         int sz = cs.length();
         for (int i = 0; i < sz; i++) {
             char ch = cs.charAt(i);
             switch (ch) {
                 case '\\':
-                    out.append('\\');
-                    out.append('\\');
+                    sb.append('\\');
+                    sb.append('\\');
                     break;
                 case '"':
-                    out.append('\\');
-                    out.append('"');
+                    sb.append('\\');
+                    sb.append('"');
                     break;
                 default:
-                    out.append(ch);
+                    sb.append(ch);
                     break;
             }
         }
+        return sb.toString();
     }
 }

@@ -173,7 +173,7 @@ internal fun createJsonArray(context: Context, @RawRes id: Int, ext: String): JS
 @Suppress("MagicNumber")
 internal fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
     val json = context.resources.openRawResource(id).bufferedReader().use { it.readText() }
-    val factory = PristineModelsJsonAdapterFactory.Builder().also { it.add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
+    val factory = PristineModelsJsonAdapterFactory.Builder().apply { add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
     val moshi = Moshi.Builder().add(factory.build()).add(object {
         @ToJson
         @Suppress("unused")

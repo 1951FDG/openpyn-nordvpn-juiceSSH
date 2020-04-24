@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.NetworkOnMainThreadException;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -448,7 +449,7 @@ public final class OpenVpnService extends Service
             // (x) optional address of remote server (OpenVPN 2.1 or higher)
             // (y) optional port of remote server (OpenVPN 2.4 or higher)
             // (x) and (y) are shown for ASSIGN_IP and CONNECTED states
-            if ((VpnStatus.ASSIGN_IP.equals(name) || VpnStatus.CONNECTED.equals(name)) && !StringUtils.isBlank(address)) {
+            if ((VpnStatus.ASSIGN_IP.equals(name) || VpnStatus.CONNECTED.equals(name)) && !TextUtils.isEmpty(address)) {
                 @NonNls String prefix = null;
                 if (!port.isEmpty()) {
                     prefix = "1194".equals(port) ? "UDP" : "TCP";

@@ -37,11 +37,11 @@ class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, false) {
         }
     }
 
-    fun getConnectionId(position: Int): UUID? = getItem(position)?.run {
-        val columnIndex = getColumnIndex(Connections.COLUMN_ID)
+    fun getConnectionId(position: Int): UUID? = getItem(position)?.let {
+        val columnIndex = it.getColumnIndex(Connections.COLUMN_ID)
 
         if (columnIndex > -1) {
-            UUID.fromString(getString(columnIndex))
+            UUID.fromString(it.getString(columnIndex))
         } else {
             null
         }

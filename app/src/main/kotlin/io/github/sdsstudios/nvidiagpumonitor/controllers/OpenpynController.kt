@@ -23,6 +23,7 @@ class OpenpynController(
     override val regex: Regex = Regex("""\d+""")
     private var test = false
     private var nvram = false
+
     @Suppress("MagicNumber")
     private var buffer = StringBuilder(256)
 
@@ -99,7 +100,7 @@ class OpenpynController(
     @Suppress("ComplexMethod", "LongMethod")
     override fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         fun code(iso: String): String = when (iso) {
-            "gb" -> "uk" // "domain":"uk1000.nordvpn.com", res["domain"][:2]
+            "gb" -> "uk"
             else -> iso
         }
 

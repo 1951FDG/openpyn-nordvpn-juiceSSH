@@ -16,6 +16,7 @@ import io.github.getsixtyfour.openpyn.R
 class PreferenceDialog : AppCompatDialogFragment(), DialogInterface.OnClickListener {
 
     private val mArgs: PreferenceDialogArgs by navArgs()
+
     // Use this instance of the interface to deliver action events
     private var mListener: NoticeDialogListener? = null
 
@@ -53,7 +54,7 @@ class PreferenceDialog : AppCompatDialogFragment(), DialogInterface.OnClickListe
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = context as NoticeDialogListener
+            mListener = context as NoticeDialogListener?
         } catch (e: ClassCastException) {
             // The activity doesn't implement the interface, throw exception
             throw ClassCastException("$context must implement NoticeDialogListener")

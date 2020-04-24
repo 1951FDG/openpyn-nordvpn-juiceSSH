@@ -16,7 +16,7 @@
 
     <string name="vpn_title_status" translatable="false">OpenVPN: %s</string>
     <string name="vpn_msg_byte_count" translatable="false"><xliff:g example="8.0 Mbit/s" id="d/l speed">↓%2$s</xliff:g> <xliff:g example="1.0 MB" id="downloaded">%1$s</xliff:g> - <xliff:g example="8.0 Mbit/s" id="u/l speed">↑%4$s</xliff:g> <xliff:g example="1.0 MB" id="uploaded">%3$s</xliff:g></string>
-    <string name="vpn_msg_launch">Connecting to OpenVPN Management Interface…</string>
+    <string name="vpn_msg_launch">Connecting to OpenVPN management interface…</string>
 
     <string name="vpn_title_disconnect">Disconnect VPN</string>
     <string name="vpn_msg_disconnect">Are you sure you want to disconnect?</string>

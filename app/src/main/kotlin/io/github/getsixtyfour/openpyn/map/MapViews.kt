@@ -92,10 +92,10 @@ class MapViews : ActionViews<MapViewsAction>() {
     }
 
     fun showMap() {
-        map.findViewWithTag<ImageView>("GoogleWatermark")?.let {
-            it.visibility = View.INVISIBLE
+        map.findViewWithTag<ImageView>("GoogleWatermark")?.run {
+            visibility = View.INVISIBLE
             /*
-            val params = it.layoutParams as RelativeLayout.LayoutParams
+            val params = layoutParams as RelativeLayout.LayoutParams
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
             params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)

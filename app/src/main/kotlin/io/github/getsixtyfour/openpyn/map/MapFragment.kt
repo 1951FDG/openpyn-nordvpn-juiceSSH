@@ -27,9 +27,9 @@ class MapFragment : AbstractMapFragment(), AnkoLogger, OnCommandExecuteListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        views.findViewById<MapView>(R.id.map)?.let {
-            it.onCreate(savedInstanceState)
-            it.getMapAsync(controlTower)
+        views.findViewById<MapView>(R.id.map)?.run {
+            onCreate(savedInstanceState)
+            getMapAsync(controlTower)
         }
     }
 
