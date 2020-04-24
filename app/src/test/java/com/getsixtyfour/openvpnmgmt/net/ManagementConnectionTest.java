@@ -137,6 +137,8 @@ public class ManagementConnectionTest {
         invokeParseInput(line);
         line = ">PASSWORD:Verification Failed: 'Auth'";
         invokeParseInput(line);
+        line = ">PASSWORD:Verification Failed: 'Private Key'";
+        invokeParseInput(line);
         line = ">PASSWORD:Need 'Auth' username/password";
         sConnection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
             @SuppressWarnings("NullableProblems")
