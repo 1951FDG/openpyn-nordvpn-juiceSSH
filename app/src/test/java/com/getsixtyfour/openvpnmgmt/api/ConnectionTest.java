@@ -44,13 +44,13 @@ public class ConnectionTest {
         sConnection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
             @NotNull
             @Override
-            public String getUserName() {
+            public String getUser() {
                 return "";
             }
 
             @NotNull
             @Override
-            public String getUserPass() {
+            public String getPassword() {
                 return "";
             }
         });

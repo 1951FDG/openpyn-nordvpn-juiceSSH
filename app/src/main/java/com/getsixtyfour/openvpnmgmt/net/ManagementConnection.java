@@ -468,16 +468,16 @@ public final class ManagementConnection extends AbstractConnection implements Co
             int p2 = argument.indexOf(s, p1 + 1);
             @NonNls String type = argument.substring(p1 + 1, p2);
             LOGGER.info("OpenVPN requires Authentication type {}", type);
-            String strUsername = null;
-            String strPassword = null;
+            CharSequence strUsername = null;
+            CharSequence strPassword = null;
             UsernamePasswordHandler handler = mUsernamePasswordHandler;
             if (handler != null) {
-                strUsername = handler.getUserName();
-                strPassword = handler.getUserPass();
+                strUsername = handler.getUser();
+                strPassword = handler.getPassword();
             }
             String ellipsis = "...";
-            String username = StringUtils.isBlank(strUsername) ? ellipsis : StringUtils.escapeString(strUsername);
-            String password = StringUtils.isBlank(strPassword) ? ellipsis : StringUtils.escapeString(strPassword);
+            CharSequence username = StringUtils.defaultIfBlank(StringUtils.escapeString(strUsername), ellipsis);
+            CharSequence password = StringUtils.defaultIfBlank(StringUtils.escapeString(strPassword), ellipsis);
             if ("Auth".equals(type)) {
                 managementCommand(String.format(Locale.ROOT, Commands.USERNAME_COMMAND, type, username));
                 managementCommand(String.format(Locale.ROOT, Commands.PASSWORD_COMMAND, type, password));

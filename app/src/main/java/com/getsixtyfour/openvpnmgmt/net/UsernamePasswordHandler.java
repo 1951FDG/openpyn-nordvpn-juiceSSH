@@ -1,6 +1,6 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author 1951FDG
@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UsernamePasswordHandler {
 
-    @NotNull
-    String getUserName();
+    @Nullable
+    CharSequence getUser();
 
-    @NotNull
-    String getUserPass();
+    @Nullable
+    CharSequence getPassword();
 }

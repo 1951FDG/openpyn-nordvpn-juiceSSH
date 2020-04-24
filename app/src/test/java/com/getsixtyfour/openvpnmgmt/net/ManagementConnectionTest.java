@@ -142,14 +142,14 @@ public class ManagementConnectionTest {
             @SuppressWarnings("NullableProblems")
             @Nullable
             @Override
-            public String getUserName() {
+            public String getUser() {
                 return null;
             }
 
             @SuppressWarnings("NullableProblems")
             @Nullable
             @Override
-            public String getUserPass() {
+            public String getPassword() {
                 return null;
             }
         });

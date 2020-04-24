@@ -57,9 +57,9 @@ public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
                 context.getString(R.string.pref_openvpnmgmt_username_default));
     }
 
-    @NonNull
+    @Nullable
     @Override
-    public String getUserName() {
+    public String getUser() {
         return getUserName(mContext);
     }
 
@@ -71,9 +71,9 @@ public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
                 context.getString(R.string.pref_openvpnmgmt_userpass_default)));
     }
 
-    @NonNull
+    @Nullable
     @Override
-    public String getUserPass() {
+    public String getPassword() {
         return getUserPass(mContext);
     }
 }
