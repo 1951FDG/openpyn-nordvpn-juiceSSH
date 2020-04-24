@@ -28,8 +28,12 @@ public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
 
     public static int getPort(@NonNull Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return Integer.parseInt(preferences.getString(context.getString(R.string.pref_openvpnmgmt_port_key),
-                context.getString(R.string.pref_openvpnmgmt_port_default)));
+        try {
+            return Integer.parseInt(preferences.getString(context.getString(R.string.pref_openvpnmgmt_port_key),
+                    context.getString(R.string.pref_openvpnmgmt_port_default)));
+        } catch (NumberFormatException ignored) {
+            return Integer.parseInt(context.getString(R.string.pref_openvpnmgmt_port_default));
+        }
     }
 
     @Nullable
