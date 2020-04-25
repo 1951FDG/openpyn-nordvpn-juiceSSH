@@ -97,37 +97,36 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @Override
     public void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
-        if (!isConnected()) {
-            //noinspection OverlyBroadCatchBlock
-            try {
-                super.connect(host, port, password);
-                // TODO: may cause crash, must process here, since run is still running
-                // Ensures state listeners are notified of current state if OpenVPN is already connected
-                {
-                    String result = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
-                    String[] lines = result.split(System.lineSeparator());
-                    String argument = (lines.length >= 1) ? lines[lines.length - 1] : "";
-                    if (!argument.isEmpty() && !argument.contains(VpnStatus.AUTH_FAILURE)) {
-                        processState(argument);
-                    }
-                }
-                onConnected();
-            } catch (IOException e) {
-                onConnectError(e);
-                throw e;
-            } catch (Exception e) {
-                onConnectError(e);
-                throw new IOException(e);
+        if (isConnected()) {
+            return;
+        }
+        //noinspection OverlyBroadCatchBlock
+        try {
+            super.connect(host, port, password);
+            // Ensures state listeners are notified of current state if OpenVPN is already connected
+            String result = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
+            String[] lines = result.split(System.lineSeparator());
+            String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
+            if (!line.isEmpty() && !line.contains(VpnStatus.AUTH_FAILURE)) {
+                processState(line);
             }
+            onConnected();
+        } catch (IOException e) {
+            onConnectError(e);
+            throw e;
+        } catch (Exception e) {
+            onConnectError(e);
+            throw new IOException(e);
         }
     }
 
     @Override
     public void disconnect() {
-        if (isConnected()) {
-            super.disconnect();
-            onDisconnected();
+        if (!isConnected()) {
+            return;
         }
+        super.disconnect();
+        onDisconnected();
     }
 
     @NotNull
@@ -238,8 +237,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
         {
             try {
-                // TODO: enable username/password input
-                // managementCommand(String.format(Locale.ROOT, Commands.AUTH_COMMAND, ARG_INTERACT));
                 managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
                 managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Constants.ARG_ON));
                 managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, Constants.ARG_ON));
