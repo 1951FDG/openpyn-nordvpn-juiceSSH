@@ -95,7 +95,7 @@ abstract class AbstractConnection implements Closeable {
         mBufferedReader = new BufferedReader(in, DEFAULT_CHAR_BUFFER_SIZE);
         OutputStreamWriter out = new OutputStreamWriter(mSocket.getOutputStream(), StandardCharsets.UTF_8);
         mBufferedWriter = new BufferedWriter(out, DEFAULT_CHAR_BUFFER_SIZE);
-        if (password != null) {
+        if ((password != null) && (password.length != 0)) {
             mBufferedWriter.write(password);
             mBufferedWriter.newLine();
             mBufferedWriter.flush();

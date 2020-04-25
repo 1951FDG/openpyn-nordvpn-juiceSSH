@@ -38,6 +38,8 @@ public class ConnectionTest {
 
     private final Integer mPort = Integer.valueOf(mBundle.getString("management.port"));
 
+    private final char[] mPassword = mBundle.getString("management.password").toCharArray();
+
     @BeforeClass
     public static void setUpClass() {
         sConnection = ManagementConnection.getInstance();
@@ -67,7 +69,7 @@ public class ConnectionTest {
     @Test(expected = IOException.class)
     public void testConnect() throws IOException {
         LOGGER.info("connect");
-        sConnection.connect(mHost, mPort);
+        sConnection.connect(mHost, mPort, mPassword);
         Assert.assertTrue(sConnection.isConnected());
         sConnection.run();
     }
@@ -79,7 +81,7 @@ public class ConnectionTest {
     public void testExecuteCommand() throws IOException {
         LOGGER.info("executeCommand");
         if (!sConnection.isConnected()) {
-            sConnection.connect(mHost, mPort);
+            sConnection.connect(mHost, mPort, mPassword);
         }
         String result = sConnection.executeCommand(Commands.HELP_COMMAND);
         Assert.assertNotEquals("", result);
@@ -95,7 +97,7 @@ public class ConnectionTest {
     public void testGetManagementVersion() throws IOException {
         LOGGER.info("getManagementVersion");
         if (!sConnection.isConnected()) {
-            sConnection.connect(mHost, mPort);
+            sConnection.connect(mHost, mPort, mPassword);
         }
         String result = sConnection.getManagementVersion();
         Assert.assertNotEquals("", result);
@@ -109,7 +111,7 @@ public class ConnectionTest {
     public void testGetVpnVersion() throws IOException {
         LOGGER.info("getVpnVersion");
         if (!sConnection.isConnected()) {
-            sConnection.connect(mHost, mPort);
+            sConnection.connect(mHost, mPort, mPassword);
         }
         String result = sConnection.getVpnVersion();
         Assert.assertNotEquals("", result);
@@ -123,7 +125,7 @@ public class ConnectionTest {
     public void testGetVpnStatus() throws IOException {
         LOGGER.info("getVpnStatus");
         if (!sConnection.isConnected()) {
-            sConnection.connect(mHost, mPort);
+            sConnection.connect(mHost, mPort, mPassword);
         }
         Status result = sConnection.getVpnStatus();
         Assert.assertNotNull(result.getUpdateTime());
@@ -151,7 +153,7 @@ public class ConnectionTest {
     public void testRun() throws IOException {
         LOGGER.info("run");
         if (!sConnection.isConnected()) {
-            sConnection.connect(mHost, mPort);
+            sConnection.connect(mHost, mPort, mPassword);
         }
         sConnection.run();
         Assert.assertFalse(sConnection.isConnected());
@@ -164,7 +166,7 @@ public class ConnectionTest {
     public void testStopVpn() throws IOException {
         LOGGER.info("stopVpn");
         if (!sConnection.isConnected()) {
-            sConnection.connect(mHost, mPort);
+            sConnection.connect(mHost, mPort, mPassword);
         }
         Assert.assertTrue(sConnection.isConnected());
         sConnection.stopVpn();

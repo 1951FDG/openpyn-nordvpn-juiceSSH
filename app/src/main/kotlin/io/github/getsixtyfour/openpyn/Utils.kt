@@ -337,8 +337,8 @@ fun <T : Context> saveEmulatorPreferences(context: T) {
     PreferenceManager.getDefaultSharedPreferences(context).edit().let {
         // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
         it.putString(context.getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
-        // Default management port used by Openpyn
-        it.putString(context.getString(R.string.pref_openvpnmgmt_port_key), "7015")
+        // The default port for Telnet client connections is 23
+        it.putString(context.getString(R.string.pref_openvpnmgmt_port_key), "23")
         it.apply()
     }
 }
