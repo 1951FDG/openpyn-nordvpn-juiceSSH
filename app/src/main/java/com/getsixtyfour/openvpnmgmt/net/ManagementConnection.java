@@ -339,6 +339,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
             // TODO:
             LOGGER.error(line.substring(Constants.ERROR_PREFIX.length() + 1));
             // throw new IOException(STREAM_CLOSED);
+        } else if (line.startsWith(Constants.ENTER_PASSWORD_PREFIX)) {
+            parseInput(line.substring(Constants.ENTER_PASSWORD_PREFIX.length()));
         } else {
             LOGGER.error("Got unrecognized line: {}", line);
         }

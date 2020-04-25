@@ -13,6 +13,9 @@ final class Constants {
     static final String AUTH_TOKEN_PREFIX = "Auth-Token:";
 
     @NonNls
+    static final String ENTER_PASSWORD_PREFIX = "ENTER PASSWORD:";
+
+    @NonNls
     static final String ERROR_PREFIX = "ERROR:";
 
     @NonNls
