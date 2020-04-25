@@ -32,6 +32,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
+import es.dmoral.toasty.Toasty
 import io.github.getsixtyfour.ktextension.apkSignatures
 import io.github.getsixtyfour.ktextension.handleUpdate
 import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
@@ -308,20 +309,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
     override fun onError(error: Int, reason: String) {
         toolbar.hideProgress(true)
 
-        Toast.makeText(this, reason, Toast.LENGTH_LONG).show()
+        Toasty.error(this, reason, Toasty.LENGTH_LONG, false).show()
+        error(String)
     }
 
     override fun onCompleted(exitCode: Int) {
         toolbar.hideProgress(true)
 
-        Toast.makeText(this, "$exitCode", Toast.LENGTH_LONG).show()
-
         when (exitCode) {
             0 -> {
+                Toasty.success(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
                 info("Success")
             }
             -1, 1 -> {
-                info("Failure")
+                Toasty.error(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
+                error("Failure")
+            }
+            else -> {
+                Toasty.error(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
+                error("Unknown failure")
             }
         }
     }
