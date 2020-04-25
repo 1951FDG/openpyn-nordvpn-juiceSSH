@@ -334,10 +334,10 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 throw new IOException(e);
             }
         } else if (line.startsWith(Constants.SUCCESS_PREFIX)) {
-            LOGGER.info(line);
+            LOGGER.info(line.substring(Constants.SUCCESS_PREFIX.length() + 1));
         } else if (line.startsWith(Constants.ERROR_PREFIX)) {
             // TODO:
-            LOGGER.error(line);
+            LOGGER.error(line.substring(Constants.ERROR_PREFIX.length() + 1));
             // throw new IOException(STREAM_CLOSED);
         } else {
             LOGGER.error("Got unrecognized line: {}", line);
