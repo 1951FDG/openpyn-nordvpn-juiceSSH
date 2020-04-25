@@ -42,17 +42,23 @@ public interface Connection extends Runnable {
     //region OpenVpnConnection
     boolean isVpnActive();
 
-    boolean addByteCountListener(@NotNull OnByteCountChangedListener listener);
+    boolean addOnByteCountChangedListener(@NotNull OnByteCountChangedListener listener);
 
-    boolean addLogListener(@NotNull OnRecordChangedListener listener);
+    boolean removeOnByteCountChangedListener(@NotNull OnByteCountChangedListener listener);
 
-    boolean addStateListener(@NotNull OnStateChangedListener listener);
+    void clearOnByteCountChangedListeners();
 
-    boolean removeByteCountListener(@NotNull OnByteCountChangedListener listener);
+    boolean addOnRecordChangedListener(@NotNull OnRecordChangedListener listener);
 
-    boolean removeLogListener(@NotNull OnRecordChangedListener listener);
+    boolean removeOnRecordChangedListener(@NotNull OnRecordChangedListener listener);
 
-    boolean removeStateListener(@NotNull OnStateChangedListener listener);
+    void clearOnRecordChangedListeners();
+
+    boolean addOnStateChangedListener(@NotNull OnStateChangedListener listener);
+
+    boolean removeOnStateChangedListener(@NotNull OnStateChangedListener listener);
+
+    void clearOnStateChangedListeners();
 
     void setConnectionListener(@Nullable ConnectionListener connectionListener);
 

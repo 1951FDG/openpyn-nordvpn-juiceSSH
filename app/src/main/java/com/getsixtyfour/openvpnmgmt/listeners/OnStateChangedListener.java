@@ -1,6 +1,6 @@
 package com.getsixtyfour.openvpnmgmt.listeners;
 
-import com.getsixtyfour.openvpnmgmt.core.StateManager.OpenVpnNetworkState;
+import com.getsixtyfour.openvpnmgmt.model.OpenVpnNetworkState;
 
 import org.jetbrains.annotations.NotNull;
 

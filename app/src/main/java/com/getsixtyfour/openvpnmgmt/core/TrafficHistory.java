@@ -154,14 +154,14 @@ public class TrafficHistory {
         /**
          * the number of bytes that have been received from the server
          */
-        final long mInBytes;
+        public final long mInBytes;
 
         /**
          * the number of bytes that have been sent to the server
          */
-        final long mOutBytes;
+        public final long mOutBytes;
 
-        final long mTimestamp;
+        public final long mTimestamp;
 
         public TrafficDataPoint(long inBytes, long outBytes, long timestamp) {
             mInBytes = inBytes;

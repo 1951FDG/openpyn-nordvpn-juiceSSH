@@ -1,7 +1,7 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
-import com.getsixtyfour.openvpnmgmt.core.LogManager.OpenVpnLogRecord;
+import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 
@@ -76,7 +76,7 @@ public class ManagementConnectionTest {
     @SuppressWarnings("Convert2Lambda")
     @Test
     public void testProcessByteCount() throws InvocationTargetException {
-        sConnection.addByteCountListener(new OnByteCountChangedListener() {
+        sConnection.addOnByteCountChangedListener(new OnByteCountChangedListener() {
             @Override
             public void onByteCountChanged(long in, long out, long diffIn, long diffOut) {
                 Assert.assertEquals(1L, in);
@@ -107,10 +107,10 @@ public class ManagementConnectionTest {
                     Assert.assertEquals(LogLevel.VERBOSE, record.getLevel());
                 }
             };
-            sConnection.addLogListener(listener);
+            sConnection.addOnRecordChangedListener(listener);
             @NonNls String line = ">LOG:,,";
             invokeParseInput(line);
-            sConnection.removeLogListener(listener);
+            sConnection.removeOnRecordChangedListener(listener);
         }
         {
             OnRecordChangedListener listener = new OnRecordChangedListener() {
@@ -120,10 +120,10 @@ public class ManagementConnectionTest {
                     LOGGER.error("{}", record.getMessage());
                 }
             };
-            sConnection.addLogListener(listener);
+            sConnection.addOnRecordChangedListener(listener);
             @NonNls String line = ">LOG:,N,event_wait";
             invokeParseInput(line);
-            sConnection.removeLogListener(listener);
+            sConnection.removeOnRecordChangedListener(listener);
         }
     }
 

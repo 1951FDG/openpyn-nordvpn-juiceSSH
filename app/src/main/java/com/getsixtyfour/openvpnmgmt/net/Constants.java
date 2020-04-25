@@ -52,6 +52,9 @@ final class Constants {
     static final String ARG_ON = " on";
 
     @NonNls
+    static final String ARG_ON_1 = " on 1";
+
+    @NonNls
     static final String ARG_RELEASE = " release";
 
     @NonNls

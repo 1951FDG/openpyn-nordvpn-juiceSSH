@@ -1,6 +1,6 @@
 package com.getsixtyfour.openvpnmgmt.listeners;
 
-import com.getsixtyfour.openvpnmgmt.core.LogManager.OpenVpnLogRecord;
+import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
 
 import org.jetbrains.annotations.NotNull;
 

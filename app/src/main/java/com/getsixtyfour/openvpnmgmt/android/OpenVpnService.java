@@ -28,8 +28,8 @@ import androidx.core.app.NotificationManagerCompat;
 import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
-import com.getsixtyfour.openvpnmgmt.core.LogManager.OpenVpnLogRecord;
-import com.getsixtyfour.openvpnmgmt.core.StateManager.OpenVpnNetworkState;
+import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
+import com.getsixtyfour.openvpnmgmt.model.OpenVpnNetworkState;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
 import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
@@ -236,9 +236,9 @@ public final class OpenVpnService extends Service
         }
         {
             Connection connection = ManagementConnection.getInstance();
-            connection.addByteCountListener(this);
-            connection.addLogListener(this);
-            connection.addStateListener(this);
+            connection.addOnByteCountChangedListener(this);
+            connection.addOnRecordChangedListener(this);
+            connection.addOnStateChangedListener(this);
             connection.setConnectionListener(this);
         }
     }
@@ -333,9 +333,9 @@ public final class OpenVpnService extends Service
             thread.start();
 
             Connection connection = ManagementConnection.getInstance();
-            connection.removeByteCountListener(this);
-            connection.removeLogListener(this);
-            connection.removeStateListener(this);
+            connection.removeOnByteCountChangedListener(this);
+            connection.removeOnRecordChangedListener(this);
+            connection.removeOnStateChangedListener(this);
             connection.setConnectionListener(null);
         }
     }
