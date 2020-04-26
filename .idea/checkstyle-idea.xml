@@ -9,11 +9,12 @@
         <entry key="location-1" value="BUNDLED:(bundled):Google Checks" />
         <entry key="location-2" value="LOCAL_FILE:$PROJECT_DIR$/config/checkstyle/checkstyle-addons-checks.xml:Checkstyle Addons" />
         <entry key="location-3" value="LOCAL_FILE:$PROJECT_DIR$/config/checkstyle/google_checks.xml:Google" />
-        <entry key="location-4" value="LOCAL_FILE:$PROJECT_DIR$/config/checkstyle/sevntu-checks.xml:SevNTU" />
+        <entry key="location-4" value="PROJECT_RELATIVE:$PROJECT_DIR$/config/checkstyle/project_checks.xml:Project Checks" />
+        <entry key="location-5" value="LOCAL_FILE:$PROJECT_DIR$/config/checkstyle/sevntu-checks.xml:SevNTU" />
         <entry key="property-3.org.checkstyle.google.suppressionfilter.config" value="google_suppressions.xml" />
         <entry key="property-3.org.checkstyle.google.suppressionxpathfilter.config" value="" />
         <entry key="scan-before-checkin" value="false" />
-        <entry key="scanscope" value="JavaOnlyWithTests" />
+        <entry key="scanscope" value="AllSourcesWithTests" />
         <entry key="suppress-errors" value="false" />
         <entry key="thirdparty-classpath" value="$PROJECT_DIR$/config/lib/sevntu-checkstyle-idea-extension-1.37.1.jar;$PROJECT_DIR$/config/lib/checkstyle-addons-6.0.1-all.jar" />
       </map>
