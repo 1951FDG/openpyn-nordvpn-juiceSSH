@@ -9,8 +9,7 @@ import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
+import mu.KLogger
 
 class OpenpynController(
     ctx: Context,
@@ -18,8 +17,9 @@ class OpenpynController(
     private var mSessionExecuteListener: OnSessionExecuteListener?,
     private var mCommandExecuteListener: OnCommandExecuteListener?,
     private var mOnOutputLineListener: OnOutputLineListener?
-) : BaseController(ctx, liveData), AnkoLogger {
+) : BaseController(ctx, liveData) {
 
+    override val logger: KLogger = logger()
     override val regex: Regex = Regex("""\d+""")
     private var test = false
     private var nvram = false
@@ -31,16 +31,16 @@ class OpenpynController(
     override fun onCompleted(exitCode: Int) {
         super.onCompleted(exitCode)
 
-        info("$exitCode")
+        logger.info { "$exitCode" }
 
         when (exitCode) {
             143 -> {
-                info("Terminated")
+                logger.info("Terminated")
                 return
             }
             -1 -> {
-                info("Terminated \"abnormal\"")
-                info(startCommand)
+                logger.info("Terminated \"abnormal\"")
+                logger.info(startCommand)
             }
         }
 
@@ -48,7 +48,7 @@ class OpenpynController(
     }
 
     override fun onOutputLine(line: String) {
-        info(line)
+        logger.info(line)
 
         when {
             line.startsWith("Killing the running openvpn", true) -> mCommandExecuteListener?.onDisconnect()
@@ -188,11 +188,11 @@ class OpenpynController(
         if (openvpn.isNotEmpty()) options.append(" --openvpn-options '$openvpn'")
         if (location != null) options.append(" --location ${location.latitude} ${location.longitude}")
         val openpyn = "$options"
-        info(openpyn)
+        logger.info(openpyn)
         // The file /etc/profile is only loaded for a login shell, this is a non-interactive shell
         startCommand = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; $openpyn"
         /*startCommand = "echo \$PATH ; echo \$-"*/
-        info(startCommand)
+        logger.info(startCommand)
 
         if (super.start(pluginClient, sessionId, sessionKey)) {
             return true
@@ -205,7 +205,7 @@ class OpenpynController(
             test || nvram -> ""
             else -> "sudo openpyn --kill"
         }
-        info(stopCommand)
+        logger.info(stopCommand)
 
         if (super.kill(pluginClient, sessionId, sessionKey)) {
             return true

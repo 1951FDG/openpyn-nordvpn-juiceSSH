@@ -1,9 +1,9 @@
 package io.github.getsixtyfour.openpyn
 
 import android.content.Context
-import android.util.Log
 import com.github.moduth.blockcanary.BlockCanaryContext
 import com.github.moduth.blockcanary.internal.BlockInfo
+import mu.KLogging
 
 class AppBlockCanaryContext : BlockCanaryContext() {
 
@@ -25,6 +25,8 @@ class AppBlockCanaryContext : BlockCanaryContext() {
 
     override fun onBlock(context: Context?, blockInfo: BlockInfo?) {
         super.onBlock(context, blockInfo)
-        blockInfo?.buildException()?.let { Log.e(this.javaClass.simpleName, "", it) }
+        blockInfo?.buildException()?.let { logger.error(it) { "" } }
     }
+
+    companion object : KLogging()
 }

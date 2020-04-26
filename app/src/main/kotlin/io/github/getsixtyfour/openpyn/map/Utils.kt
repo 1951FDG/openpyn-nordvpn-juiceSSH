@@ -17,12 +17,12 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.Types
-import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.utils.MultiSelectMapper
 import io.github.getsixtyfour.openpyn.utils.PrintArray
+import mu.KotlinLogging
 import org.json.JSONArray
 import org.json.JSONException
 import java.io.File
@@ -30,6 +30,8 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.HashSet
 import kotlin.math.pow
+
+private val logger = KotlinLogging.logger {}
 
 internal fun setUpPrintArray(context: Context, countries: List<MultiSelectable>, hashSet: HashSet<CharSequence>): HashSet<CharSequence> {
     val length = hashSet.size
@@ -76,7 +78,7 @@ internal fun setUpPrintArray(context: Context, countries: List<MultiSelectable>,
 internal fun fileBackedTileProvider(): MapBoxOfflineTileProvider {
     // Use a file backed SQLite database
     val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
-    Log.debug("$tileProvider")
+    logger.debug { "$tileProvider" }
     return tileProvider
 }
 
@@ -84,7 +86,7 @@ internal fun fileBackedTileProvider(): MapBoxOfflineTileProvider {
 internal fun memoryBackedTileProvider(): MapBoxOfflineTileProvider {
     // Use a memory backed SQLite database
     val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro", null)
-    Log.debug("$tileProvider")
+    logger.debug { "$tileProvider" }
     return tileProvider
 }
 

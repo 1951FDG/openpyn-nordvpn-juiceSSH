@@ -3,10 +3,10 @@ package io.github.sdsstudios.nvidiagpumonitor
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.loader.content.CursorLoader
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
+import mu.KLogging
 
 class ConnectionLoader(
     context: Context, uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?
@@ -18,9 +18,11 @@ class ConnectionLoader(
         try {
             cursor = super.loadInBackground()
         } catch (e: IllegalStateException) {
-            Log.e(this.javaClass.simpleName, "", e)
+            logger.error(e) { "" }
         }
 
         return cursor
     }
+
+    companion object : KLogging()
 }

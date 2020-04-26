@@ -53,7 +53,7 @@ public class StatusTest {
      */
     @Test
     public void testGetClientList() {
-        LOGGER.info("getClientList");
+        LOGGER.debug("getClientList");
         List<Client> result = sInstance.getClients();
         Assert.assertEquals(1L, result.size());
     }
@@ -63,7 +63,7 @@ public class StatusTest {
      */
     @Test
     public void testGetRoutes() {
-        LOGGER.info("getRoutes");
+        LOGGER.debug("getRoutes");
         Set<Route> result = sInstance.getRoutes();
         Assert.assertEquals(1L, result.size());
     }
@@ -74,7 +74,7 @@ public class StatusTest {
     @SuppressWarnings("UseOfObsoleteDateTimeApi")
     @Test
     public void testGetUpdateTime() {
-        LOGGER.info("getUpdateTime");
+        LOGGER.debug("getUpdateTime");
         Calendar result = sInstance.getUpdateTime();
         Assert.assertNotNull(result);
     }

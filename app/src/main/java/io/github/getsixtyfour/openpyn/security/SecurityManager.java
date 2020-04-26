@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.Settings.Secure;
 import android.util.Base64;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,8 +27,16 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.jetbrains.annotations.NonNls;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @SuppressWarnings("Singleton")
 public final class SecurityManager {
+
+    @NonNls
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityManager.class);
 
     private static final String TAG = "SecurityManager";
 
@@ -57,7 +64,7 @@ public final class SecurityManager {
             key = Arrays.copyOf(key, IV_LENGTH);
             mSecretKey = new SecretKeySpec(key, "AES");
         } catch (NoSuchAlgorithmException e) {
-            Log.wtf(TAG, e);
+            LOGGER.error("", e);
         }
     }
 

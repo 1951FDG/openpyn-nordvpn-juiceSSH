@@ -28,7 +28,7 @@ public class StringUtilsTest {
      */
     @Test
     public void testEscapeString() {
-        LOGGER.info("escapeString");
+        LOGGER.debug("escapeString");
         Assert.assertEquals(mExpected, StringUtils.escapeString(mOriginal));
     }
 }

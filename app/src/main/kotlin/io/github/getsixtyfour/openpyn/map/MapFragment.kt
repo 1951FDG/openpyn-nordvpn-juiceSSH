@@ -11,14 +11,13 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
+import mu.KLogging
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 
 @SvcFragment
 @RequireViews(MapViews::class)
 @RequireControlTower(MapControlTower::class)
-class MapFragment : AbstractMapFragment(), AnkoLogger, OnCommandExecuteListener, OnSessionStartedListener, OnSessionFinishedListener {
+class MapFragment : AbstractMapFragment(), OnCommandExecuteListener, OnSessionStartedListener, OnSessionFinishedListener {
 
     val toolBar: ProgressToolbar? by lazy {
         requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
@@ -34,32 +33,34 @@ class MapFragment : AbstractMapFragment(), AnkoLogger, OnCommandExecuteListener,
     }
 
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
-        info("positionAndFlagForSelectedMarker")
+        logger.debug("positionAndFlagForSelectedMarker")
         return controlTower.positionAndFlagForSelectedMarker()
     }
 
     override fun onConnect() {
-        info("onConnect")
+        logger.debug("onConnect")
         controlTower.onConnect()
     }
 
     override fun onDisconnect() {
-        info("onDisconnect")
+        logger.debug("onDisconnect")
         controlTower.onDisconnect()
     }
 
     override fun onSessionCancelled() {
-        info("onSessionCancelled")
+        logger.debug("onSessionCancelled")
         controlTower.onSessionCancelled()
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
-        info("onSessionStarted")
+        logger.debug("onSessionStarted")
         controlTower.onSessionStarted()
     }
 
     override fun onSessionFinished() {
-        info("onSessionFinished")
+        logger.debug("onSessionFinished")
         controlTower.onSessionFinished()
     }
+
+    companion object : KLogging()
 }

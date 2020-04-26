@@ -12,7 +12,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -20,6 +19,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.ref.WeakReference;
+
+import org.jetbrains.annotations.NonNls;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.getsixtyfour.openpyn.R;
 
@@ -30,7 +34,8 @@ import io.github.getsixtyfour.openpyn.R;
 
 public class DisconnectActivity extends AppCompatActivity implements DialogInterface.OnClickListener {
 
-    private static final String TAG = "DisconnectActivity";
+    @NonNls
+    static final Logger LOGGER = LoggerFactory.getLogger(DisconnectActivity.class);
 
     private static final DialogInterface.OnDismissListener ON_DISMISS_LISTENER = dialog -> {
         if (dialog instanceof AlertDialog) {
@@ -46,14 +51,14 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
         // Called when the connection with the service is established
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d(TAG, "onServiceConnected"); //NON-NLS
+            LOGGER.info("onServiceConnected");
             setService(IOpenVpnServiceInternal.Stub.asInterface(service));
         }
 
         // Called when the connection with the service disconnects unexpectedly
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.e(TAG, "onServiceDisconnected"); //NON-NLS
+            LOGGER.error("onServiceDisconnected");
             setService(null);
         }
     };
@@ -89,7 +94,7 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
         builder.setOnDismissListener(ON_DISMISS_LISTENER);
         mDialog = builder.create();
         mDialog.setOwnerActivity(this);
-        Log.d(TAG, "onCreate"); //NON-NLS
+        LOGGER.debug("onCreate");
     }
 
     @MainThread
@@ -104,21 +109,21 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
         if (mDialog != null) {
             mDialog.show();
         }
-        Log.d(TAG, "onStart"); //NON-NLS
+        LOGGER.debug("onStart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        Log.d(TAG, "onResume"); //NON-NLS
+        LOGGER.debug("onResume");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        Log.d(TAG, "onPause"); //NON-NLS
+        LOGGER.debug("onPause");
     }
 
     @MainThread
@@ -133,7 +138,7 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
         if (mDialog != null) {
             mDialog.hide();
         }
-        Log.d(TAG, "onStop"); //NON-NLS
+        LOGGER.debug("onStop");
     }
 
     @Override
@@ -145,7 +150,7 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
             mDialog.dismiss();
             mDialog = null;
         }
-        Log.d(TAG, "onDestroy"); //NON-NLS
+        LOGGER.debug("onDestroy");
     }
 
     @Override
@@ -181,9 +186,9 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
                 try {
                     service.disconnectVpn();
                 } catch (RemoteException e) {
-                    Log.e(TAG, "RemoteException during OpenVPN shutdown", e); //NON-NLS
+                    LOGGER.error("RemoteException during OpenVPN shutdown", e);
                 } catch (RuntimeException e) {
-                    Log.e(TAG, "", e);
+                    LOGGER.error("", e);
                 }
             }
         }

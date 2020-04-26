@@ -9,7 +9,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.Toast
 import androidx.annotation.ArrayRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -53,13 +52,11 @@ import kotlinx.android.synthetic.main.activity_main.spinner
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.error
-import org.jetbrains.anko.info
+import mu.KLogging
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 
-class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR.IGDPRCallback, OnClickListener, NoticeDialogListener,
+class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallback, OnClickListener, NoticeDialogListener,
     OnLoaderChangedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
     CoroutineScope by MainScope() {
 
@@ -87,13 +84,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
 
         startVpnService(this)
         // TODO: remove after beta release test
-        error("$apkSignatures")
+        logException(Exception("$apkSignatures"))
 
         /*val api = GoogleApiAvailability.getInstance()
         when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
             ConnectionResult.SUCCESS -> onActivityResult(GOOGLE_REQUEST_CODE, RESULT_OK, null)
             //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, GOOGLE_REQUEST_CODE)
-            else -> error(api.getErrorString(errorCode))
+            else -> logger.error { api.getErrorString(errorCode) }
         }*/
     }
 
@@ -111,7 +108,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         if (requestCode == UPDATE_REQUEST_CODE) {
             if (resultCode != RESULT_OK) {
                 // If the update is cancelled or fails, you can request to start the update again
-                error("Update flow failed! Result code: $resultCode")
+                logger.error { "Update flow failed! Result code: $resultCode" }
             }
         }
 
@@ -188,7 +185,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
 
     override fun onConsentInfoUpdate(consentState: GDPRConsentState, isNewState: Boolean) {
         // Consent is known, handle this
-        info("ConsentState: ${consentState.logString()}")
+        logger.info { "ConsentState: ${consentState.logString()}" }
 
         if (consentState.consent.isPersonalConsent) {
             initCrashlytics(this)
@@ -310,7 +307,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         toolbar.hideProgress(true)
 
         Toasty.error(this, reason, Toasty.LENGTH_LONG, false).show()
-        error(String)
+        logger.error(reason)
     }
 
     override fun onCompleted(exitCode: Int) {
@@ -319,15 +316,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         when (exitCode) {
             0 -> {
                 Toasty.success(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
-                info("Success")
+                logger.info("Success")
             }
             -1, 1 -> {
                 Toasty.error(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
-                error("Failure")
+                logger.error("Failure")
             }
             else -> {
                 Toasty.error(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
-                error("Unknown failure")
+                logger.error("Unknown failure")
             }
         }
     }
@@ -393,7 +390,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AnkoLogger, GDPR
         }
     }
 
-    companion object {
+    companion object : KLogging() {
         const val UPDATE_REQUEST_CODE: Int = 1
         const val PERMISSION_REQUEST_CODE: Int = 2
         const val JUICESSH_REQUEST_CODE: Int = 3

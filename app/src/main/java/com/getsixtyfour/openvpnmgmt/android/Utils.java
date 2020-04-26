@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,18 +36,13 @@ public final class Utils {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static long getTotalUsage(@NonNull Context context, long start, long end, int uid, int tag) {
-        long result = 0L;
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
         if (networkStatsManager != null) {
-            try {
-                int networkType = NetworkCapabilities.TRANSPORT_WIFI;
-                NetworkStats stats = networkStatsManager.queryDetailsForUidTag(networkType, "", start, end, uid, tag);
-                result = getTotalUsage(stats);
-            } catch (SecurityException e) {
-                Log.e(NetworkStats.class.getSimpleName(), "Exception querying network detail.", e); //NON-NLS
-            }
+            int networkType = NetworkCapabilities.TRANSPORT_WIFI;
+            NetworkStats stats = networkStatsManager.queryDetailsForUidTag(networkType, "", start, end, uid, tag);
+            return getTotalUsage(stats);
         }
-        return result;
+        return 0L;
     }
 
     @SuppressWarnings("MethodCallInLoopCondition")

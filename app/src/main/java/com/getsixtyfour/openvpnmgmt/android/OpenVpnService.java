@@ -15,7 +15,6 @@ import android.os.IBinder;
 import android.os.NetworkOnMainThreadException;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -44,6 +43,9 @@ import java.util.Locale;
 
 import org.jetbrains.annotations.NonNls;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.github.getsixtyfour.openpyn.R;
 
 /**
@@ -56,7 +58,8 @@ public final class OpenVpnService extends Service
         implements OnRecordChangedListener, OnStateChangedListener, OnByteCountChangedListener, ConnectionListener,
         UncaughtExceptionHandler {
 
-    private static final String TAG = "OpenVpnService";
+    @NonNls
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnService.class);
 
     private static final int DEFAULT_REMOTE_PORT = 23;
 
@@ -245,7 +248,7 @@ public final class OpenVpnService extends Service
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand"); //NON-NLS
+        LOGGER.debug("onStartCommand");
         if ((intent != null) && Constants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
             return START_NOT_STICKY;
         }
@@ -294,19 +297,19 @@ public final class OpenVpnService extends Service
     @Nullable
     @Override
     public IBinder onBind(@Nullable Intent intent) {
-        Log.d(TAG, "onBind"); //NON-NLS
+        LOGGER.debug("onBind");
         return ((intent != null) && Constants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) ? mBinder : null;
     }
 
     @Override
     public boolean onUnbind(@Nullable Intent intent) {
-        Log.d(TAG, "onUnbind"); //NON-NLS
+        LOGGER.debug("onUnbind");
         return super.onUnbind(intent);
     }
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy"); //NON-NLS
+        LOGGER.debug("onDestroy");
 
         // TODO: only in debug?
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -314,9 +317,13 @@ public final class OpenVpnService extends Service
             long fourWeeksAgo = now - (DateUtils.WEEK_IN_MILLIS * 4L);
             long oneDaysAhead = now + (DateUtils.DAY_IN_MILLIS * 2L);
             int uid = android.os.Process.myUid();
-            long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, Constants.THREAD_STATS_TAG);
-            // long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, android.app.usage.NetworkStats.Bucket.TAG_NONE);
-            Log.d(TAG, String.format("Usage: %s", humanReadableByteCount(this, usage, false))); //NON-NLS
+            try {
+                long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, Constants.THREAD_STATS_TAG);
+                // long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, android.app.usage.NetworkStats.Bucket.TAG_NONE);
+                LOGGER.info("Usage: {}", humanReadableByteCount(this, usage, false));
+            } catch (SecurityException e) {
+                LOGGER.error("Exception querying network detail.", e);
+            }
         }*/
 
         {
@@ -361,9 +368,9 @@ public final class OpenVpnService extends Service
 
     @Override
     public void onConnectError(@NonNull Thread t, @NonNull Throwable e) {
-        Log.d(TAG, "onConnectError"); //NON-NLS
+        LOGGER.debug("onConnectError");
         if (t.equals(getMainLooper().getThread())) {
-            Log.e(TAG, "", new NetworkOnMainThreadException());
+            LOGGER.error("", new NetworkOnMainThreadException());
         }
 
         uncaughtException(t, e);
@@ -371,9 +378,9 @@ public final class OpenVpnService extends Service
 
     @Override
     public void onConnected() {
-        Log.d(TAG, "onConnected"); //NON-NLS
+        LOGGER.debug("onConnected");
         if (Thread.currentThread().equals(getMainLooper().getThread())) {
-            Log.e(TAG, "", new NetworkOnMainThreadException());
+            LOGGER.error("", new NetworkOnMainThreadException());
         }
         // Start a background thread that handles incoming messages of the management interface
         Connection connection = ManagementConnection.getInstance();
@@ -382,14 +389,14 @@ public final class OpenVpnService extends Service
         mThread.setUncaughtExceptionHandler(this); // Apps can replace the default handler, but not the pre handler
         mThread.start();
 
-        Log.i(TAG, String.format("OpenVPN Management started in background thread: \"%s\"", mThread.getName())); //NON-NLS
+        LOGGER.info("OpenVPN Management started in background thread: \"{}\"", mThread.getName());
     }
 
     @Override
     public void onDisconnected() {
-        Log.d(TAG, "onDisconnected"); //NON-NLS
+        LOGGER.debug("onDisconnected");
         if (Thread.currentThread().equals(getMainLooper().getThread())) {
-            Log.w(TAG, "", new NetworkOnMainThreadException());
+            LOGGER.warn("", new NetworkOnMainThreadException());
         }
     }
 
@@ -398,23 +405,23 @@ public final class OpenVpnService extends Service
         LogLevel value = record.getLevel();
         switch (value) {
             case ERROR:
-                if (Log.isLoggable(TAG, Log.ERROR)) {
-                    Log.e(TAG, record.getMessage());
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("{}", record.getMessage());
                 }
                 break;
             case WARNING:
-                if (Log.isLoggable(TAG, Log.WARN)) {
-                    Log.w(TAG, record.getMessage());
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("{}", record.getMessage());
                 }
                 break;
             case INFO:
-                if (Log.isLoggable(TAG, Log.INFO)) {
-                    Log.i(TAG, record.getMessage());
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("{}", record.getMessage());
                 }
                 break;
             case DEBUG:
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, record.getMessage());
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("{}", record.getMessage());
                 }
                 break;
             case VERBOSE:
@@ -473,7 +480,7 @@ public final class OpenVpnService extends Service
             message.append("Process: ").append(processName).append(", ");
         }
         message.append("PID: ").append(pid);
-        Log.e(TAG, message.toString(), e);
+        LOGGER.error(message.toString(), e);
     }
 
     @Override
@@ -482,7 +489,7 @@ public final class OpenVpnService extends Service
         // logUncaught(t.getName(), getPackageName(), android.os.Process.myPid(), e); // Handled by the pre handler
 
         if (e instanceof ThreadDeath) {
-            Log.i(TAG, String.format("OpenVPN Management stopped in background thread: \"%s\"", t.getName())); //NON-NLS
+            LOGGER.info("OpenVPN Management stopped in background thread: \"{}\"", t.getName());
         }
 
         if (t.equals(getMainLooper().getThread())) {

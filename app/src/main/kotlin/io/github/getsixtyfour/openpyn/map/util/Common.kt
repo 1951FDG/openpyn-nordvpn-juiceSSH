@@ -22,7 +22,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mayurrokade.minibar.UserMessage
-import de.jupf.staticlog.Log
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.logException
@@ -37,6 +36,7 @@ import io.ktor.client.statement.HttpStatement
 import io.ktor.client.statement.readText
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
+import mu.KotlinLogging
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.linearLayout
@@ -52,6 +52,8 @@ import java.io.IOException
 import java.io.StringWriter
 import java.util.HashSet
 import java.util.Locale
+
+private val logger = KotlinLogging.logger {}
 
 operator fun JSONArray.iterator(): Iterator<JSONObject> = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
 
@@ -90,7 +92,7 @@ fun generateXML() {
         when (result) {
             is Result.Failure -> {
                 val e = result.getException()
-                Log.error(e.javaClass.simpleName, e)
+                logger.error(e) { "" }
             }
             is Result.Success -> {
                 val mutableMap = mutableMapOf<String, String>()
@@ -218,7 +220,7 @@ fun createJson(): JSONArray? {
                 name.equals(STANDARD, true) -> features.put(STANDARD, true)
                 else -> {
                     logException(Exception(name))
-                    Log.error(name)
+                    logger.error(name)
                 }
             }
         }
@@ -231,7 +233,7 @@ fun createJson(): JSONArray? {
     when (result) {
         is Result.Failure -> {
             val e = result.getException()
-            Log.error(e.javaClass.simpleName, e)
+            logger.error(e) { "" }
         }
         is Result.Success -> {
             val jsonObj = JSONObject()
@@ -340,7 +342,7 @@ fun stringifyJsonArray(jsonArray: JSONArray): String? = sortJsonArray(jsonArray)
 @Suppress("ComplexMethod", "MagicNumber")
 fun showThreats(activity: Activity, jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
-    Log.info(threats.toString())
+    logger.info { threats.toString() }
 
     if (threats != null) {
         val tor = threats.getBoolean("is_tor")
@@ -601,7 +603,7 @@ fun jsonArray(context: Context, @RawRes id: Int, ext: String): JSONArray {
         set.forEach {
             val message = "$string $it"
             logException(Exception(message))
-            Log.error(message)
+            logger.error(message)
         }
     }
 
@@ -668,11 +670,11 @@ suspend fun createGeoJson(context: Context): JSONObject? {
                     jsonObject = JSONObject(json)
                 }
             } catch (e: TimeoutCancellationException) {
-                Log.info(e.javaClass.simpleName, e)
+                logger.warn(e) { "" }
             } catch (e: Throwable) {
-                Log.error(e.javaClass.simpleName, e)
+                logger.error(e) { "" }
             } finally {
-                Log.debug("$api: ${jsonObject.toString()}")
+                logger.info { "$api: ${jsonObject.toString()}" }
             }
 
             client.close()
@@ -747,12 +749,13 @@ fun getCurrentPosition(
         else -> ""
     }
 
+    // TODO: lastLocation is not being used anymore
     fun getFLag(countryBoundaries: CountryBoundaries?, lon: Double, lat: Double): String {
         var t = System.nanoTime()
         val ids = countryBoundaries?.getIds(lon, lat)
         t = System.nanoTime() - t
         @Suppress("MagicNumber") val i = 1000
-        Log.debug("${getString(ids)} (in ${"%.3f".format(t / i / i.toFloat())}ms)")
+        logger.info { "${getString(ids)} (in ${"%.3f".format(t / i / i.toFloat())}ms)" }
         return getFlag(ids)
     }
 
@@ -763,7 +766,7 @@ fun getCurrentPosition(
             val lat = jsonObj.getDouble(LAT)
             val lon = jsonObj.getDouble(LONG)
             val flag = jsonObj.getString(FLAG)
-            Log.debug("is in: $flag")
+            logger.info { "is in: $flag" }
             latLng = latLng(jsonArr, flags, flag, lat, lon)
         }
         jsonArr != null -> lastLocation?.let {
@@ -786,15 +789,15 @@ fun getCurrentPosition(
                     latLng = latLng(jsonArr, flags, flag, lat, lon)
                 }
             } catch (e: ExecutionException) {
-                Log.error(e.toString())
+                logger.error(e) { "" }
             } catch (e: InterruptedException) {
                 logException(e)
             } catch (e: TimeoutException) {
-                Log.error(e.toString())
+                logger.warn(e) { "" }
             }
         }
 */
     }
-    Log.debug("$latLng")
+    logger.info { "$latLng" }
     return latLng
 }

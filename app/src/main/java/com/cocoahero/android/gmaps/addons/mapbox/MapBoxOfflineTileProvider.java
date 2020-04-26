@@ -1,7 +1,6 @@
 package com.cocoahero.android.gmaps.addons.mapbox;
 
 import android.database.Cursor;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +12,9 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.jetbrains.annotations.NonNls;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.requery.android.database.sqlite.SQLiteCursor;
 import io.requery.android.database.sqlite.SQLiteDatabase;
@@ -40,7 +42,8 @@ import org.sqlite.database.sqlite.SQLiteStatement;*/
 @SuppressWarnings("FieldNotUsedInToString")
 public final class MapBoxOfflineTileProvider extends AbstractTileProvider implements Closeable {
 
-    private static final String TAG = "MBTileProvider";
+    @NonNls
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapBoxOfflineTileProvider.class);
 
     /**
      * buffer size used for reading and writing
@@ -126,12 +129,12 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
         database.execSQL("CREATE VIEW IF NOT EXISTS tiles AS " + "SELECT map.zoom_level AS zoom_level," + "map.tile_column AS tile_column,"
                 + "map.tile_row AS tile_row," + "images.tile_data AS tile_data " + "FROM map JOIN images ON images.tile_id = map.tile_id");
         database.execSQL("DETACH db");
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
+        if (LOGGER.isDebugEnabled()) {
             String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name!='android_metadata' order by name";
             try (Cursor cursor = database.rawQuery(sql, null)) {
                 if (cursor.moveToFirst()) {
                     while (!cursor.isAfterLast()) {
-                        Log.d(TAG, cursor.getString(0));
+                        LOGGER.debug("{}", cursor.getString(0));
                         cursor.moveToNext();
                     }
                 }
@@ -234,7 +237,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
         try (AutoCloseInputStream fis = new AutoCloseInputStream(pfd)) {
             tile = new Tile(TILE_DIM, TILE_DIM, read(fis, BUFFER_SIZE << 4));
         } catch (IOException e) {
-            Log.e(TAG, "", e);
+            LOGGER.error("", e);
         }*/
         //endregion sqliteX
     }

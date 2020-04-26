@@ -12,13 +12,12 @@ import androidx.annotation.MainThread
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 import io.github.getsixtyfour.openpyn.AppConfig
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
+import mu.KLogging
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
 
-class NetworkInfo internal constructor(private val connectivityManager: ConnectivityManager) : LiveData<Boolean>(), AnkoLogger {
+class NetworkInfo internal constructor(private val connectivityManager: ConnectivityManager) : LiveData<Boolean>() {
     private val mLock = Any()
     @Volatile
     private var mMainHandler: Handler? = null
@@ -52,42 +51,42 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
             @Suppress("MagicNumber")
             override fun onAvailable(network: Network?) {
                 // Network available
-                debug("Network available")
+                logger.debug("Network available")
                 // Get network type
                 val netCap: NetworkCapabilities? = connectivityManager.getNetworkCapabilities(network)
                 netCap?.let {
                     when {
                         it.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                            debug("Connectivity: CELLULAR")
+                            logger.debug("Connectivity: CELLULAR")
                         }
                         it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                            debug("Connectivity: WIFI")
+                            logger.debug("Connectivity: WIFI")
                         }
                         it.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> {
-                            debug("Connectivity: BLUETOOTH")
+                            logger.debug("Connectivity: BLUETOOTH")
                         }
                         it.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                            debug("Connectivity: ETHERNET")
+                            logger.debug("Connectivity: ETHERNET")
                         }
                         it.hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> {
-                            debug("Connectivity: VPN")
+                            logger.debug("Connectivity: VPN")
                         }
                         it.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE) -> {
-                            debug("Connectivity: WIFI_AWARE")
+                            logger.debug("Connectivity: WIFI_AWARE")
                         }
                         it.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN) -> {
-                            debug("Connectivity: LOWPAN")
+                            logger.debug("Connectivity: LOWPAN")
                         }
                     }
                 }
                 // Verify internet access
                 if (hostAvailable("google.com", 80)) {
                     // Internet access
-                    debug("Internet Access Detected")
+                    logger.debug("Internet Access Detected")
                     postValue(true)
                 } else {
                     // No internet access
-                    debug("Unable to access Internet")
+                    logger.debug("Unable to access Internet")
                     postValue(false)
                 }
 
@@ -96,7 +95,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
 
             override fun onLost(network: Network?) {
                 // No network available
-                debug("Network not available")
+                logger.debug("Network not available")
                 postValue(false)
 
                 notifyNetworkChangeToAll(network)
@@ -115,7 +114,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     // Verify host availability
     @Suppress("MagicNumber")
     fun hostAvailable(host: String, port: Int): Boolean {
-        debug("Verifying host availability: $host:$port")
+        logger.debug("Verifying host availability: $host:$port")
         if (!AppConfig.ONLINE) {
             return false
         }
@@ -125,19 +124,19 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
                 socket.connect(InetSocketAddress(host, port), 2000)
                 socket.close()
                 // Host available
-                debug("Host: $host:$port is available")
+                logger.debug { "Host: $host:$port is available" }
                 return@hostAvailable true
             }
         } catch (e: IOException) {
             // Host unreachable or timeout
-            debug("Host: $host:$port is not available")
+            logger.debug { "Host: $host:$port is not available" }
             return false
         }
     }
 
     // Notify network change to all listeners
     fun notifyNetworkChangeToAll(network: Network?) {
-        debug("notifyStateToAll")
+        logger.debug("notifyStateToAll")
         for (listener in listeners) {
             notifyNetworkChange(listener, network)
         }
@@ -145,21 +144,21 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
 
     // Notify network change
     private fun notifyNetworkChange(listener: NetworkInfoListener, network: Network?) {
-        debug("notifyState")
+        logger.debug("notifyState")
         executeOnMainThread(Runnable { listener.networkStatusChange(network) })
     }
 
     // Add a listener
     @Suppress("unused")
     fun addListener(listener: NetworkInfoListener) {
-        debug("addListener")
+        logger.debug("addListener")
         listeners.add(listener)
     }
 
     // Remove a listener
     @Suppress("unused")
     fun removeListener(listener: NetworkInfoListener) {
-        debug("removeListener")
+        logger.debug("removeListener")
         listeners.remove(listener)
     }
 
@@ -173,7 +172,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     }
 
     // Static content
-    companion object {
+    companion object : KLogging() {
 
         var ns: NetworkInfo? = null
 

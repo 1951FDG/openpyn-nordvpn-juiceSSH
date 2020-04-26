@@ -68,7 +68,7 @@ public class ConnectionTest {
      */
     @Test(expected = IOException.class)
     public void testConnect() throws IOException {
-        LOGGER.info("connect");
+        LOGGER.debug("connect");
         sConnection.connect(mHost, mPort, mPassword);
         Assert.assertTrue(sConnection.isConnected());
         sConnection.run();
@@ -79,7 +79,7 @@ public class ConnectionTest {
      */
     @Test
     public void testExecuteCommand() throws IOException {
-        LOGGER.info("executeCommand");
+        LOGGER.debug("executeCommand");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort, mPassword);
         }
@@ -87,7 +87,7 @@ public class ConnectionTest {
         Assert.assertNotEquals("", result);
         String[] lines = result.split(System.lineSeparator());
         Assert.assertTrue(lines.length > 1);
-        LOGGER.info(result);
+        LOGGER.debug(result);
     }
 
     /**
@@ -95,13 +95,13 @@ public class ConnectionTest {
      */
     @Test
     public void testGetManagementVersion() throws IOException {
-        LOGGER.info("getManagementVersion");
+        LOGGER.debug("getManagementVersion");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort, mPassword);
         }
         String result = sConnection.getManagementVersion();
         Assert.assertNotEquals("", result);
-        LOGGER.info(result);
+        LOGGER.debug(result);
     }
 
     /**
@@ -109,13 +109,13 @@ public class ConnectionTest {
      */
     @Test
     public void testGetVpnVersion() throws IOException {
-        LOGGER.info("getVpnVersion");
+        LOGGER.debug("getVpnVersion");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort, mPassword);
         }
         String result = sConnection.getVpnVersion();
         Assert.assertNotEquals("", result);
-        LOGGER.info(result);
+        LOGGER.debug(result);
     }
 
     /**
@@ -123,7 +123,7 @@ public class ConnectionTest {
      */
     @Test
     public void testGetVpnStatus() throws IOException {
-        LOGGER.info("getVpnStatus");
+        LOGGER.debug("getVpnStatus");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort, mPassword);
         }
@@ -133,8 +133,8 @@ public class ConnectionTest {
         Assert.assertFalse(clientList.isEmpty());
         Set<Route> routes = result.getRoutes();
         Assert.assertFalse(routes.isEmpty());
-        LOGGER.info(result.toString());
-        LOGGER.info(clientList.toString());
+        LOGGER.debug(result.toString());
+        LOGGER.debug(clientList.toString());
     }
 
     /**
@@ -142,7 +142,7 @@ public class ConnectionTest {
      */
     @Test
     public void testIsVpnActive() {
-        LOGGER.info("isVpnActive");
+        LOGGER.debug("isVpnActive");
         Assert.assertFalse(sConnection.isVpnActive());
     }
 
@@ -151,7 +151,7 @@ public class ConnectionTest {
      */
     @Test(expected = IOException.class)
     public void testRun() throws IOException {
-        LOGGER.info("run");
+        LOGGER.debug("run");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort, mPassword);
         }
@@ -164,7 +164,7 @@ public class ConnectionTest {
      */
     @Test
     public void testStopVpn() throws IOException {
-        LOGGER.info("stopVpn");
+        LOGGER.debug("stopVpn");
         if (!sConnection.isConnected()) {
             sConnection.connect(mHost, mPort, mPassword);
         }

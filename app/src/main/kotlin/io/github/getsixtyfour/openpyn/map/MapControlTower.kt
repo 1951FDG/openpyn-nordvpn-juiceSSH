@@ -54,9 +54,7 @@ import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.error
-import org.jetbrains.anko.info
+import mu.KLogging
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashSet
@@ -64,7 +62,7 @@ import java.util.HashSet
 @ControlTower
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)
-class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallback, OnMapLoadedCallback, OnCameraIdleListener,
+class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoadedCallback, OnCameraIdleListener,
     OnMapClickListener, OnMarkerClickListener, OnInfoWindowClickListener, SubmitCallbackListener, MapViewsAction, AnimatorListener,
     CoroutineScope by MainScope() {
 
@@ -74,7 +72,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     private val mHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
         // TODO: add dialog
         screen.toolBar?.hideProgress(true)
-        this.error("", e)
+        logger.error(e) { "" }
         logException(e)
     }
     private var mGoogleMap: GoogleMap? = null
@@ -272,7 +270,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
     }
 
     override fun onAnimationCancel(animation: Animation) {
-        mMarkers[animation.target]?.let { info("Animation to $it canceled") }
+        mMarkers[animation.target]?.let { logger.info { "Animation to $it canceled" } }
     }
 
     fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
@@ -421,7 +419,7 @@ class MapControlTower : AbstractMapControlTower(), AnkoLogger, OnMapReadyCallbac
         }
     }
 
-    companion object {
+    companion object : KLogging() {
         private const val DELAY_MILLIS: Long = 10000
         private const val FAVORITE_KEY = "pref_favorites"
         val onLevelChangeCallback: OnLevelChangeCallback = object : OnLevelChangeCallback {

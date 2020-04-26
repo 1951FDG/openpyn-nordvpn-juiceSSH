@@ -9,13 +9,12 @@ import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import io.github.getsixtyfour.openpyn.R
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.error
+import mu.KLoggable
 
 @MainThread
 abstract class BaseController(
     protected val mCtx: Context, private val mLiveData: MutableLiveData<Int>
-) : OnSessionExecuteListener, AnkoLogger {
+) : OnSessionExecuteListener, KLoggable {
 
     private var isRunning = false
     abstract val regex: Regex
@@ -28,7 +27,7 @@ abstract class BaseController(
         when (exitCode) {
             127 -> {
                 mLiveData.value = null
-                error("Tried to run a command but the command was not found on the server")
+                logger.error("Tried to run a command but the command was not found on the server")
             }
         }
     }
@@ -39,7 +38,7 @@ abstract class BaseController(
 
     @CallSuper
     override fun onError(error: Int, reason: String) {
-        error(reason)
+        logger.error(reason)
     }
 
     @CallSuper
