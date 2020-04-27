@@ -406,22 +406,22 @@ public final class OpenVpnService extends Service
         switch (value) {
             case ERROR:
                 if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("{}", record.getMessage());
+                    LOGGER.error(record.getMessage());
                 }
                 break;
             case WARNING:
                 if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("{}", record.getMessage());
+                    LOGGER.warn(record.getMessage());
                 }
                 break;
             case INFO:
                 if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("{}", record.getMessage());
+                    LOGGER.info(record.getMessage());
                 }
                 break;
             case DEBUG:
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("{}", record.getMessage());
+                    LOGGER.debug(record.getMessage());
                 }
                 break;
             case VERBOSE:

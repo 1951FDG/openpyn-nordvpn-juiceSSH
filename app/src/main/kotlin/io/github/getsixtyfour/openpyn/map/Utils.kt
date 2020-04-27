@@ -19,7 +19,6 @@ import com.squareup.moshi.ToJson
 import com.squareup.moshi.Types
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.utils.MultiSelectMapper
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import mu.KotlinLogging
@@ -133,11 +132,11 @@ internal fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, Strin
                 copyRawResourceToFile(context, id, file)
             }
         } catch (e: NotFoundException) {
-            logException(e)
+            logger.error(e) { "" }
         } catch (e: FileNotFoundException) {
-            logException(e)
+            logger.error(e) { "" }
         } catch (e: IOException) {
-            logException(e)
+            logger.error(e) { "" }
         }
     }
 }
@@ -161,13 +160,13 @@ internal fun createJsonArray(context: Context, @RawRes id: Int, ext: String): JS
         }
         return JSONArray(json)
     } catch (e: NotFoundException) {
-        logException(e)
+        logger.error(e) { "" }
     } catch (e: FileNotFoundException) {
-        logException(e)
+        logger.error(e) { "" }
     } catch (e: IOException) {
-        logException(e)
+        logger.error(e) { "" }
     } catch (e: JSONException) {
-        logException(e)
+        logger.error(e) { "" }
     }
     return JSONArray()
 }

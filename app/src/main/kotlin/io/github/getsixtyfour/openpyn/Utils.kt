@@ -42,6 +42,9 @@ import io.github.getsixtyfour.openpyn.map.util.createJson
 import io.github.getsixtyfour.openpyn.map.util.stringifyJsonArray
 import io.github.getsixtyfour.openpyn.settings.SettingsActivity
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
+import mu.KLoggable
+import mu.KLogger
+import mu.KotlinLogging
 import org.jetbrains.anko.activityUiThread
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete
@@ -51,6 +54,8 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
+private val logger = KotlinLogging.logger {}
+
 const val SNACK_BAR_JUICESSH: Int = 1
 const val SNACK_BAR_PERMISSIONS: Int = 0
 
@@ -58,7 +63,7 @@ fun <T : FragmentActivity> getCurrentNavigationFragment(activity: T): Fragment? 
     val navHostFragment = activity.supportFragmentManager.primaryNavigationFragment as? NavHostFragment
     val host = navHostFragment?.host
     if (host == null) {
-        logException(IllegalStateException("Fragment $navHostFragment has not been attached yet."))
+        logger.error(IllegalStateException()) { "Fragment $navHostFragment has not been attached yet." }
     }
 
     return when (host) {
@@ -129,11 +134,11 @@ fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETE
                 file.writeText(json)
                 thrown = false
             } catch (e: NotFoundException) {
-                logException(e)
+                logger.error(e) { "" }
             } catch (e: FileNotFoundException) {
-                logException(e)
+                logger.error(e) { "" }
             } catch (e: IOException) {
-                logException(e)
+                logger.error(e) { "" }
             }
         }
 
@@ -235,15 +240,18 @@ fun populateAboutConfig() {
     aboutConfig.buildType = AboutConfig.BuildType.GOOGLE
     aboutConfig.packageName = BuildConfig.APPLICATION_ID
     // Custom analytics, dialog and share
-    aboutConfig.analytics = object : IAnalytic {
+    aboutConfig.analytics = object : IAnalytic, KLoggable {
         override fun logUiEvent(s: String, s1: String) {
             // Handle log events
         }
 
         override fun logException(e: Exception, b: Boolean) {
             // Handle exception events
-            logException(e)
+            logger.error(e) { "" }
         }
+
+        override val logger: KLogger
+            get() = logger()
     }
     // Email
     aboutConfig.emailAddress = "support@1951fdg.com"

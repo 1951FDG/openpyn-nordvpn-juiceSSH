@@ -328,7 +328,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void onConnectError(@NotNull Throwable e) {
         if ((e instanceof IllegalArgumentException) || (e instanceof IOException)) {
-            LOGGER.error("", e);
+            LOGGER.error(e.getMessage());
         } else {
             LOGGER.error("Unknown exception thrown:", e);
         }

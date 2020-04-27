@@ -28,7 +28,6 @@ import com.naver.android.svc.annotation.RequireScreen
 import com.naver.android.svc.annotation.RequireViews
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.map.util.LazyMarkerStorage
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.getsixtyfour.openpyn.utils.SubmitCallbackListener
@@ -73,7 +72,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         // TODO: add dialog
         screen.toolBar?.hideProgress(true)
         logger.error(e) { "" }
-        logException(e)
     }
     private var mGoogleMap: GoogleMap? = null
     private var mCameraUpdateAnimator: CameraUpdateAnimator? = null

@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
 
         startVpnService(this)
         // TODO: remove after beta release test
-        logException(Exception("$apkSignatures"))
+        logger.error(Exception()) { "$apkSignatures" }
 
         /*val api = GoogleApiAvailability.getInstance()
         when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {

@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.mayurrokade.minibar.UserMessage
 import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.logException
 import io.github.getsixtyfour.openpyn.map.createJsonArray
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.security.SecurityManager
@@ -129,11 +128,11 @@ fun generateXML() {
                     serializer.endDocument()
                     println("$writer")
                 } catch (e: FileNotFoundException) {
-                    logException(e)
+                    logger.error(e) { "" }
                 } catch (e: IOException) {
-                    logException(e)
+                    logger.error(e) { "" }
                 } catch (e: JSONException) {
-                    logException(e)
+                    logger.error(e) { "" }
                 }
             }
         }
@@ -219,8 +218,7 @@ fun createJson(): JSONArray? {
                 name.equals(P2P, true) -> features.put(P2P, true)
                 name.equals(STANDARD, true) -> features.put(STANDARD, true)
                 else -> {
-                    logException(Exception(name))
-                    logger.error(name)
+                    logger.error(Exception()) { name }
                 }
             }
         }
@@ -313,7 +311,7 @@ fun createJson(): JSONArray? {
                     return jsonArray
                 }
             } catch (e: JSONException) {
-                logException(e)
+                logger.error(e) { "" }
             }
         }
     }
@@ -601,9 +599,7 @@ fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessage.Builde
 fun jsonArray(context: Context, @RawRes id: Int, ext: String): JSONArray {
     fun logDifference(set: Set<CharSequence>, string: CharSequence) {
         set.forEach {
-            val message = "$string $it"
-            logException(Exception(message))
-            logger.error(message)
+            logger.error(Exception()) { "$string $it" }
         }
     }
 
@@ -791,7 +787,7 @@ fun getCurrentPosition(
             } catch (e: ExecutionException) {
                 logger.error(e) { "" }
             } catch (e: InterruptedException) {
-                logException(e)
+                logger.error(e) { "" }
             } catch (e: TimeoutException) {
                 logger.warn(e) { "" }
             }

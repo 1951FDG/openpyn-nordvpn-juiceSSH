@@ -117,7 +117,7 @@ public class ManagementConnectionTest {
                 @Override
                 public void onRecordChanged(@NotNull OpenVpnLogRecord record) {
                     Assert.assertEquals(LogLevel.ERROR, record.getLevel());
-                    LOGGER.error("{}", record.getMessage());
+                    LOGGER.error(record.getMessage());
                 }
             };
             sConnection.addOnRecordChangedListener(listener);
