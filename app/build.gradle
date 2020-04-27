@@ -238,9 +238,8 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
     // Logger
+    implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'io.github.microutils:kotlin-logging:1.7.9'
-    releaseImplementation "org.slf4j:slf4j-nop:$slf4j_version"
-    debugImplementation "org.slf4j:slf4j-android:$slf4j_version"
     testImplementation "org.slf4j:slf4j-simple:$slf4j_version"
 
     // Permission
