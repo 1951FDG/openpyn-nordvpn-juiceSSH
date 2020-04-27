@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
             ConnectionResult.SUCCESS -> onActivityResult(GOOGLE_REQUEST_CODE, RESULT_OK, null)
             //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, GOOGLE_REQUEST_CODE)
-            else -> logger.error { api.getErrorString(errorCode) }
+            else -> logger.warn { api.getErrorString(errorCode) }
         }*/
     }
 
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         if (requestCode == UPDATE_REQUEST_CODE) {
             if (resultCode != RESULT_OK) {
                 // If the update is cancelled or fails, you can request to start the update again
-                logger.error { "Update flow failed! Result code: $resultCode" }
+                logger.warn { "Update flow failed! Result code: $resultCode" }
             }
         }
 
@@ -320,11 +320,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
             }
             -1, 1 -> {
                 Toasty.error(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
-                logger.error("Failure")
+                logger.warn("Failure")
             }
             else -> {
                 Toasty.error(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
-                logger.error("Unknown failure")
+                logger.warn("Unknown failure")
             }
         }
     }
