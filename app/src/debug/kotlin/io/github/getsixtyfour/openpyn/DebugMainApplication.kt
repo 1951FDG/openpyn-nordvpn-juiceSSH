@@ -1,12 +1,20 @@
 package io.github.getsixtyfour.openpyn
 
+import com.facebook.stetho.Stetho
+import com.facebook.stetho.timber.StethoTree
 import com.github.moduth.blockcanary.BlockCanary
+import timber.log.Timber
 
 @Suppress("unused")
 class DebugMainApplication : MainApplication() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Stetho.initializeWithDefaults(this)
+
+        Timber.plant(Timber.DebugTree())
+        Timber.plant(StethoTree())
 
         if (isEmulator(this)) saveEmulatorPreferences(this)
 
