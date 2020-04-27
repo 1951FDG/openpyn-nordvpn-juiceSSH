@@ -93,7 +93,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public boolean isTraceEnabled() {
-        return isLoggable(Log.VERBOSE);
+        return false;
     }
 
     /**
@@ -103,7 +103,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void trace(String msg) {
-        log(Log.VERBOSE, msg, null);
+        // NOP
     }
 
     /**
@@ -120,7 +120,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void trace(String format, Object arg) {
-        formatAndLog(Log.VERBOSE, format, arg);
+        // NOP
     }
 
     /**
@@ -138,7 +138,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void trace(String format, Object arg1, Object arg2) {
-        formatAndLog(Log.VERBOSE, format, arg1, arg2);
+        // NOP
     }
 
     /**
@@ -155,7 +155,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void trace(String format, Object... arguments) {
-        formatAndLog(Log.VERBOSE, format, arguments);
+        // NOP
     }
 
     /**
@@ -166,7 +166,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void trace(String msg, Throwable t) {
-        log(Log.VERBOSE, msg, t);
+        // NOP
     }
 
     /**
@@ -176,7 +176,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public boolean isDebugEnabled() {
-        return isLoggable(Log.DEBUG);
+        return false;
     }
 
     /**
@@ -186,7 +186,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void debug(String msg) {
-        log(Log.DEBUG, msg, null);
+        // NOP
     }
 
     /**
@@ -202,7 +202,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void debug(String format, Object arg) {
-        formatAndLog(Log.DEBUG, format, arg);
+        // NOP
     }
 
     /**
@@ -220,7 +220,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void debug(String format, Object arg1, Object arg2) {
-        formatAndLog(Log.DEBUG, format, arg1, arg2);
+        // NOP
     }
 
     /**
@@ -237,7 +237,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void debug(String format, Object... arguments) {
-        formatAndLog(Log.DEBUG, format, arguments);
+        // NOP
     }
 
     /**
@@ -248,7 +248,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      */
     @Override
     public void debug(String msg, Throwable t) {
-        log(Log.DEBUG, msg, t);
+        // NOP
     }
 
     /**
@@ -522,7 +522,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      * @return always true
      */
     private boolean isLoggable(int priority) {
-        return Timber.treeCount() > 0;
+        return priority == Log.ERROR;
     }
 
     private void logInternal(int priority, String message, Throwable throwable) {
