@@ -627,7 +627,7 @@
     <inspection_tool class="PackageInMultipleModules" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PackageInfoWithoutPackage" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PackageNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="m_regex" value="[a-z]*" />
+      <option name="m_regex" value="[a-zA-Z_][a-zA-Z0-9_]*" />
       <option name="m_minLength" value="2" />
       <option name="m_maxLength" value="16" />
     </inspection_tool>
