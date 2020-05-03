@@ -61,6 +61,15 @@ final class Constants {
     static final String ARG_SIGTERM = "SIGTERM";
 
     @NonNls
+    static final String ARG_SIGHUP = "SIGHUP";
+
+    @NonNls
+    static final String ARG_SIGUSR1 = "SIGUSR1";
+
+    @NonNls
+    static final String ARG_SIGUSR2 = "SIGUSR2";
+
+    @NonNls
     static final String NOT_SUPPORTED_YET = "Not supported yet";
 
     @NonNls
