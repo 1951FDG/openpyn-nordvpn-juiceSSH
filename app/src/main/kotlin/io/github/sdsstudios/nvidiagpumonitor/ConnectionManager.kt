@@ -8,7 +8,6 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.exceptions.ServiceNotConnectedException
@@ -21,7 +20,15 @@ import io.github.sdsstudios.nvidiagpumonitor.controllers.BaseController
 import io.github.sdsstudios.nvidiagpumonitor.controllers.OpenpynController
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 @MainThread
 class ConnectionManager(
@@ -32,35 +39,43 @@ class ConnectionManager(
     sessionExecuteListener: OnSessionExecuteListener?,
     commandExecuteListener: OnCommandExecuteListener?,
     onOutputLineListener: OnOutputLineListener?
-) : LifecycleObserver, OnClientStartedListener, OnSessionStartedListener, OnSessionFinishedListener {
+) : LifecycleObserver, OnClientStartedListener, OnSessionStartedListener, OnSessionFinishedListener,
+    CoroutineScope by CoroutineScope(Job() + Dispatchers.IO) {
 
     init {
         lifecycleOwner?.lifecycle?.addObserver(this)
     }
 
-    private val openpyn = MutableLiveData<Int>()
     private var mSessionKey = ""
     private var mSessionId = 0
     private var mSessionRunning = false
     private val mClient = PluginClient()
     private val mCtx = ctx.applicationContext
     private val mOpenpynController = OpenpynController(
-        mCtx, openpyn, sessionExecuteListener, commandExecuteListener, onOutputLineListener
+        mCtx, sessionExecuteListener, commandExecuteListener, onOutputLineListener
     )
     private val mControllers: List<BaseController> = listOf(
         mOpenpynController
     )
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        cancel()
+
+        mSessionStartedListener = null
+        mSessionFinishedListener = null
+
+        mControllers.forEach { it.onDestroy() }
+
+        if (isConnected()) mClient.disconnect(mSessionId, mSessionKey)
+
+        stopClient()
+    }
+
     override fun onClientStarted() {
     }
 
     override fun onClientStopped() {
-    }
-
-    override fun onSessionCancelled() {
-        mSessionRunning = false
-
-        mSessionStartedListener?.onSessionCancelled()
     }
 
     override fun onSessionStarted(sessionId: Int, sessionKey: String) {
@@ -72,7 +87,15 @@ class ConnectionManager(
 
         mClient.addSessionFinishedListener(sessionId, sessionKey, this)
 
-        mControllers.forEach { it.start(mClient, mSessionId, mSessionKey) }
+        mControllers.forEach { it.connect(mClient, mSessionId, mSessionKey) }
+    }
+
+    override fun onSessionCancelled() {
+        mSessionId = 0
+        mSessionKey = ""
+        mSessionRunning = false
+
+        mSessionStartedListener?.onSessionCancelled()
     }
 
     override fun onSessionFinished() {
@@ -81,36 +104,22 @@ class ConnectionManager(
         mSessionRunning = false
 
         mSessionFinishedListener?.onSessionFinished()
-
-        mControllers.forEach { it.stop() }
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         mClient.gotActivityResult(requestCode, resultCode, data)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        mSessionStartedListener = null
-        mSessionFinishedListener = null
-
-        mControllers.forEach { it.onDestroy() }
-
-        if (isConnected()) disconnect()
-
-        stopClient()
-    }
-
     fun isConnected(): Boolean = mSessionId > 0
 
     fun isConnectingOrDisconnecting(): Boolean = mSessionRunning
 
-    fun toggleConnection(activity: Activity, id: UUID, requestCode: Int) {
-        if (isConnectingOrDisconnecting()) return
-
-        mSessionRunning = true
-
-        if (isConnected()) disconnect() else connect(activity, id, requestCode)
+    fun toggleConnection(activity: Activity, id: UUID?, requestCode: Int) {
+        when {
+            id == null -> return
+            isConnected() -> disconnect()
+            else -> connect(activity, id, requestCode)
+        }
     }
 
     fun startClient() {
@@ -121,27 +130,37 @@ class ConnectionManager(
         mClient.stop(mCtx)
     }
 
-    private fun connect(activity: Activity, id: UUID, requestCode: Int) {
-        Thread(Runnable {
+    fun connect(activity: Activity, id: UUID, requestCode: Int) {
+        if (isConnectingOrDisconnecting()) return
+
+        mSessionRunning = true
+
+        launch {
             try {
-                mClient.connect(activity, id, this, requestCode)
+                mClient.connect(activity, id, this@ConnectionManager, requestCode)
             } catch (e: ServiceNotConnectedException) {
                 Toast.makeText(mCtx, R.string.error_juicessh_service, Toast.LENGTH_LONG).show()
             }
-        }).start()
+        }
     }
 
+    @OptIn(ExperimentalTime::class)
     @Suppress("MagicNumber")
-    private fun disconnect() {
-        mControllers.forEach { it.kill(mClient, mSessionId, mSessionKey) }
+    fun disconnect() {
+        if (isConnectingOrDisconnecting()) return
 
-        Thread(Runnable {
+        mSessionRunning = true
+
+        mControllers.filter { it.isRunning }.forEach { it.disconnect(mClient, mSessionId, mSessionKey) }
+
+        launch {
             try {
-                Thread.sleep(5000)
+                // Delay is required to receive method calls in OnSessionExecuteListener
+                delay(5.seconds.toLongMilliseconds())
                 mClient.disconnect(mSessionId, mSessionKey)
             } catch (e: ServiceNotConnectedException) {
                 Toast.makeText(mCtx, R.string.error_juicessh_service, Toast.LENGTH_LONG).show()
             }
-        }).start()
+        }
     }
 }

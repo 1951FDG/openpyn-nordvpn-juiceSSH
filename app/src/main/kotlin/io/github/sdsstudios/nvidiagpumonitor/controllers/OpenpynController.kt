@@ -1,7 +1,6 @@
 package io.github.sdsstudios.nvidiagpumonitor.controllers
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.sonelli.juicessh.pluginlibrary.PluginClient
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
@@ -9,20 +8,14 @@ import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import mu.KLogger
+import mu.KLogging
 
 class OpenpynController(
     ctx: Context,
-    liveData: MutableLiveData<Int>,
     private var mSessionExecuteListener: OnSessionExecuteListener?,
     private var mCommandExecuteListener: OnCommandExecuteListener?,
     private var mOnOutputLineListener: OnOutputLineListener?
-) : BaseController(ctx, liveData) {
-
-    override val logger: KLogger = logger()
-    override val regex: Regex = Regex("""\d+""")
-    private var test = false
-    private var nvram = false
+) : BaseController(ctx) {
 
     @Suppress("MagicNumber")
     private var buffer = StringBuilder(256)
@@ -51,8 +44,15 @@ class OpenpynController(
         logger.info(line)
 
         when {
-            line.startsWith("Killing the running openvpn", true) -> mCommandExecuteListener?.onDisconnect()
-            line.startsWith("CONNECTING TO SERVER", true) -> mCommandExecuteListener?.onConnect()
+            line.startsWith("Shutting down safely, please wait until process exits", true) -> {
+                mCommandExecuteListener?.onDisconnect()
+            }
+            line.startsWith("Killing the running openvpn", true) -> {
+                mCommandExecuteListener?.onDisconnect()
+            }
+            line.startsWith("CONNECTING TO SERVER", true) -> {
+                mCommandExecuteListener?.onConnect()
+            }
         }
 
         mSessionExecuteListener?.onOutputLine(line)
@@ -91,14 +91,15 @@ class OpenpynController(
         }
     }
 
-    override fun onError(error: Int, reason: String) {
-        super.onError(error, reason)
+    override fun onError(reason: Int, message: String) {
+        mOnOutputLineListener?.error(message)
+        logger.error(message)
 
-        mSessionExecuteListener?.onError(error, reason)
+        mSessionExecuteListener?.onError(reason, message)
     }
 
     @Suppress("ComplexMethod", "LongMethod")
-    override fun start(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
+    override fun connect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         fun code(iso: String): String = when (iso) {
             "gb" -> "uk"
             else -> iso
@@ -122,10 +123,10 @@ class OpenpynController(
         val onion = preferences.getBoolean("pref_tor", false)
         val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
         val netflix = preferences.getBoolean("pref_netflix", false)
-        test = preferences.getBoolean("pref_test", false)
+        val test = preferences.getBoolean("pref_test", false)
         val patch = preferences.getBoolean("pref_skip_dns_patch", false)
         var silent = preferences.getBoolean("pref_silent", false)
-        nvram = preferences.getBoolean("pref_nvram", false)
+        val nvram = preferences.getBoolean("pref_nvram", false)
         var openvpn = ""
         val options = StringBuilder("openpyn")
         val openvpnmgmt = preferences.getBoolean(mCtx.getString(R.string.pref_openvpnmgmt_key), false)
@@ -188,33 +189,19 @@ class OpenpynController(
         if (openvpn.isNotEmpty()) options.append(" --openvpn-options '$openvpn'")
         if (location != null) options.append(" --location ${location.latitude} ${location.longitude}")
         val openpyn = "$options"
-        logger.info(openpyn)
         // The file /etc/profile is only loaded for a login shell, this is a non-interactive shell
-        startCommand = "[ -f /opt/etc/profile ] && . /opt/etc/profile ; $openpyn"
+        command = "[ -f /etc/profile ] && . /etc/profile ; $openpyn"
         /*startCommand = "echo \$PATH ; echo \$-"*/
-        logger.info(startCommand)
+        logger.info(command)
 
-        if (super.start(pluginClient, sessionId, sessionKey)) {
-            return true
-        }
-        return false
+        return super.connect(pluginClient, sessionId, sessionKey)
     }
 
-    override fun kill(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
-        stopCommand = when {
-            test || nvram -> ""
-            else -> "sudo openpyn --kill"
-        }
-        logger.info(stopCommand)
+    override fun disconnect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
+        command = "sudo openpyn --kill"
+        logger.info(command)
 
-        if (super.kill(pluginClient, sessionId, sessionKey)) {
-            return true
-        }
-        return false
-    }
-
-    override fun convertDataToInt(data: String): Int {
-        return data.toInt()
+        return super.disconnect(pluginClient, sessionId, sessionKey)
     }
 
     override fun onDestroy() {
@@ -223,7 +210,7 @@ class OpenpynController(
         mOnOutputLineListener = null
     }
 
-    companion object {
+    companion object : KLogging() {
         private const val SPAM = "SPAM"
         private const val DEBUG = "DEBUG"
         private const val VERBOSE = "VERBOSE"

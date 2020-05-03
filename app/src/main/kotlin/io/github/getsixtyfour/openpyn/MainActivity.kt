@@ -31,7 +31,6 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-import es.dmoral.toasty.Toasty
 import io.github.getsixtyfour.ktextension.apkSignatures
 import io.github.getsixtyfour.ktextension.handleUpdate
 import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
@@ -307,33 +306,23 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         (getCurrentNavigationFragment(this) as? OnCommandExecuteListener)?.onDisconnect()
     }
 
-    override fun onError(error: Int, reason: String) {
-        toolbar.hideProgress(true)
-
-        Toasty.error(this, reason, Toasty.LENGTH_LONG, false).show()
-        logger.error(reason)
-    }
-
     override fun onCompleted(exitCode: Int) {
         toolbar.hideProgress(true)
 
         when (exitCode) {
-            0 -> {
-                Toasty.success(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
-                logger.info("Success")
-            }
-            -1, 1 -> {
-                Toasty.error(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
-                logger.warn("Failure")
-            }
-            else -> {
-                Toasty.error(this, "$exitCode", Toasty.LENGTH_LONG, false).show()
-                logger.warn("Unknown failure")
+            // TODO: show dialog instead, since this is an important error
+            // command not found (127)
+            127 -> {
+                logger.error("Tried to run a command but the command was not found on the server")
             }
         }
     }
 
     override fun onOutputLine(line: String) {
+    }
+
+    override fun onError(reason: Int, message: String) {
+        toolbar.hideProgress(true)
     }
 
     override fun onSessionCancelled() {
