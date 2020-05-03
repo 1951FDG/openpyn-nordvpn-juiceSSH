@@ -316,6 +316,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
                 logger.error("Tried to run a command but the command was not found on the server")
             }
         }
+
+        mConnectionManager?.let { if (it.isConnected()) it.disconnect() }
     }
 
     override fun onOutputLine(line: String) {
