@@ -68,7 +68,7 @@
     <module name="RegexpSinglelineJava">
       <property name="id" value="ConcurrentHashMapCheck"/>
       <property name="severity" value="error"/>
-      <property name="format" value="ConcurrentHashMap"/>
+      <property name="format" value="java\.util\.concurrent\.ConcurrentHashMap"/>
       <property name="ignoreComments" value="true"/>
       <property name="message" value="ConcurrentHashMap has a bug on some Android versions. Use Collections.synchronizedMap() instead (crbug.com/905903)."/>
     </module>
