@@ -7,7 +7,7 @@ import android.text.TextWatcher
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.textfield.TextInputLayout
-import io.github.getsixtyfour.openpyn.R.id
+import io.github.getsixtyfour.openpyn.R
 
 abstract class AbstractTextWatcher(protected val textInputLayout: TextInputLayout) : TextWatcher {
 
@@ -33,7 +33,7 @@ abstract class AbstractTextWatcher(protected val textInputLayout: TextInputLayou
             }
             else -> {
                 textInputLayout.isErrorEnabled = true
-                val errorView: TextView = textInputLayout.findViewById(id.textinput_error)
+                val errorView: TextView = textInputLayout.findViewById(R.id.textinput_error)
                 errorView.maxLines = 1
                 errorView.ellipsize = END
                 textInputLayout.error = errorText
