@@ -137,7 +137,7 @@ fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETE
             try {
                 val child = activity.resources.getResourceEntryName(R.raw.nordvpn) + ".json"
                 val file = File(activity.getExternalFilesDir(null), child)
-                file.writeText(json)
+                file.writeText("$json\n")
                 thrown = false
             } catch (e: NotFoundException) {
                 logger.error(e) { "" }
