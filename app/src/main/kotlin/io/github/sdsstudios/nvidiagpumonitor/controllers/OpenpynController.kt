@@ -24,16 +24,51 @@ class OpenpynController(
     override fun onCompleted(exitCode: Int) {
         super.onCompleted(exitCode)
 
-        logger.info { "$exitCode" }
+        @Suppress("SpellCheckingInspection") val map by lazy {
+            mapOf(
+                1 to "HUP",
+                2 to "INT",
+                3 to "QUIT",
+                4 to "ILL",
+                5 to "TRAP",
+                6 to "ABRT",
+                8 to "FPE",
+                9 to "KILL",
+                11 to "SEGV",
+                14 to "ALRM",
+                15 to "TERM"
+            )
+        }
 
         when (exitCode) {
-            143 -> {
-                logger.info("Terminated")
-                return
+            // command terminated successfully (0)
+            -1, 0 -> {
+                logger.info { "Openpyn finished with exit code $exitCode" }
             }
-            -1 -> {
-                logger.info("Terminated \"abnormal\"")
-                logger.info(startCommand)
+            // command terminated unsuccessfully (1)
+            // command not executable (126)
+            // command not found (127)
+            1, 126, 127, 128 -> {
+                val message = "Openpyn finished with non-zero exit code $exitCode"
+                mOnOutputLineListener?.error(message)
+                logger.error(message)
+            }
+            // command terminated with signal
+            129, 130, 131, 132, 133, 134, 136, 137, 139, 142 -> {
+                val message = "Openpyn terminated with signal SIG${map[exitCode - 128]}"
+                mOnOutputLineListener?.error(message)
+                logger.error(message)
+            }
+            // command terminated with signal SIGTERM (143 - 128 = 15)
+            143 -> {
+                val message = "Openpyn terminated with signal SIGTERM"
+                mOnOutputLineListener?.warning(message)
+                logger.warn(message)
+            }
+            else -> {
+                val message = "Openpyn finished with non-zero exit code $exitCode"
+                mOnOutputLineListener?.error(message)
+                logger.error(Exception()) { message }
             }
         }
 
