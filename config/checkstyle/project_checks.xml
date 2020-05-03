@@ -34,7 +34,7 @@
   <module name="RegexpSingleline">
     <property name="id" value="DoNotUseAndroidLogCheck"/>
     <property name="severity" value="error"/>
-    <property name="format" value="android\.util\.Log"/>
+    <property name="format" value="import android\.util\.Log"/>
     <property name="message" value="Avoid android.util.Log."/>
   </module>
   <module name="RegexpSingleline">

@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
-import android.util.Log
 import android.view.MenuItem
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
@@ -400,6 +399,6 @@ private class CrashReportingTree : Timber.DebugTree() {
     }
 
     override fun isLoggable(tag: String?, priority: Int): Boolean {
-        return priority == Log.ERROR
+        return priority == android.util.Log.ERROR
     }
 }
