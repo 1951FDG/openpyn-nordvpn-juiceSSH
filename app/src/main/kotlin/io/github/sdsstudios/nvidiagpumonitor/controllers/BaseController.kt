@@ -16,6 +16,11 @@ abstract class BaseController(protected val mCtx: Context) : OnSessionExecuteLis
     var isRunning: Boolean = false
 
     @CallSuper
+    override fun onCompleted(exitCode: Int) {
+        isRunning = false
+    }
+
+    @CallSuper
     open fun connect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean =
         run(pluginClient, sessionId, sessionKey).also { isRunning = it }
 
@@ -23,7 +28,7 @@ abstract class BaseController(protected val mCtx: Context) : OnSessionExecuteLis
     open fun disconnect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean =
         run(pluginClient, sessionId, sessionKey).also { isRunning = it }
 
-    fun run(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
+    private fun run(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         try {
             if (command.isNotEmpty()) {
                 pluginClient.executeCommandOnSession(sessionId, sessionKey, command, this)
@@ -33,11 +38,6 @@ abstract class BaseController(protected val mCtx: Context) : OnSessionExecuteLis
             Toast.makeText(mCtx, R.string.error_juicessh_service, Toast.LENGTH_LONG).show()
         }
         return false
-    }
-
-    @CallSuper
-    override fun onCompleted(exitCode: Int) {
-        isRunning = false
     }
 
     abstract fun onDestroy()

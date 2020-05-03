@@ -12,14 +12,12 @@ import io.github.getsixtyfour.openpyn.R
 abstract class AbstractTextWatcher(protected val textInputLayout: TextInputLayout) : TextWatcher {
 
     protected abstract val submitButtonId: Int
-    private val button by lazy { textInputLayout.rootView.findViewById(submitButtonId) as? Button }
     protected val ctx: Context = textInputLayout.context.applicationContext
+    private val button by lazy { textInputLayout.rootView.findViewById(submitButtonId) as? Button }
 
     init {
         textInputLayout.isHelperTextEnabled = true
     }
-
-    protected abstract fun validate(s: String): String?
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
@@ -41,4 +39,6 @@ abstract class AbstractTextWatcher(protected val textInputLayout: TextInputLayou
             }
         }
     }
+
+    protected abstract fun validate(s: String): String?
 }
