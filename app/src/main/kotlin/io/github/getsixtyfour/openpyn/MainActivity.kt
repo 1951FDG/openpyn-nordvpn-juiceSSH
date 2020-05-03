@@ -55,14 +55,18 @@ import kotlinx.coroutines.MainScope
 import mu.KLogging
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
+import java.util.UUID
 
 class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallback, OnClickListener, NoticeDialogListener,
     OnLoaderChangedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
     CoroutineScope by MainScope() {
 
+    private var mAppSettingsDialogShown: Boolean = false
     private var mConnectionListAdapter: ConnectionListAdapter? = null
     private var mConnectionManager: ConnectionManager? = null
-    private var mAppSettingsDialogShown: Boolean = false
+    private val mConnectionId: UUID?
+        get() = mConnectionListAdapter?.getConnectionId(spinner.selectedItemPosition)
+
     // TODO: remove container reference
     val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
     private val mSetup by lazy { getGDPR(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert_Custom) }
@@ -242,7 +246,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
             content(message())
             positiveText(android.R.string.ok)
             negativeText(android.R.string.cancel)
-            onPositive { _: MorphDialog, _: MorphDialogAction -> toggleConnection() }
+            onPositive { _, _ -> mConnectionManager?.toggleConnection(this, mConnectionId, JUICESSH_REQUEST_CODE) }
             show()
         }*/
 
@@ -262,7 +266,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
                     val action = MapFragmentDirections.actionMapFragmentToPreferenceDialogFragment(message())
                     Navigation.findNavController(v).navigate(action)
                 } else {
-                    toggleConnection()
+                    it.toggleConnection(this, mConnectionId, JUICESSH_REQUEST_CODE)
                 }
             } else {
                 /*showWarningDialog(v)*/
@@ -277,7 +281,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
-        toggleConnection()
+        mConnectionManager?.toggleConnection(this, mConnectionId, JUICESSH_REQUEST_CODE)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
@@ -382,12 +386,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
 
     private fun hasPermissions(context: Context, vararg perms: String): Boolean {
         return perms.none { ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED }
-    }
-
-    private fun toggleConnection() {
-        mConnectionListAdapter?.getConnectionId(spinner.selectedItemPosition)?.let {
-            mConnectionManager?.toggleConnection(this, it, JUICESSH_REQUEST_CODE)
-        }
     }
 
     companion object : KLogging() {
