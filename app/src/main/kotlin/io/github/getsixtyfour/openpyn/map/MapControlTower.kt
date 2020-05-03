@@ -118,6 +118,8 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     override fun onDestroy() {
         super.onDestroy()
 
+        cancel()
+
         mCameraUpdateAnimator?.onDestroy()
 
         mGoogleMap?.let { map.onDestroy() }
@@ -127,8 +129,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         if (::mTileProvider.isInitialized) {
             mTileProvider.close()
         }
-
-        cancel()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

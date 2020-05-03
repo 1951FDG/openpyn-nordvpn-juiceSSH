@@ -90,8 +90,6 @@ class OpenpynController(
             }
         }
 
-        mSessionExecuteListener?.onOutputLine(line)
-
         buffer.append(line)
         val logging = listOf(
             SPAM, DEBUG, VERBOSE, INFO, NOTICE, WARNING, SUCCESS, ERROR, CRITICAL
@@ -124,6 +122,8 @@ class OpenpynController(
                 return@forEach
             }
         }
+
+        mSessionExecuteListener?.onOutputLine(line)
     }
 
     override fun onError(reason: Int, message: String) {
