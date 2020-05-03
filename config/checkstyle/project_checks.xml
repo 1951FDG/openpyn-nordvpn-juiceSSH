@@ -20,6 +20,12 @@
     <property name="message" value="Trailing whitespace"/>
   </module>
   <module name="RegexpSingleline">
+    <property name="id" value="DoNotImportBeyondRCheck"/>
+    <property name="severity" value="error"/>
+    <property name="format" value="io\.github\.getsixtyfour\.openpyn\.R[^;]"/>
+    <property name="message" value="Only import io.github.getsixtyfour.openpyn.R"/>
+  </module>
+  <module name="RegexpSingleline">
     <property name="id" value="DoNotUseAnkoLoggerCheck"/>
     <property name="severity" value="error"/>
     <property name="format" value="org\.jetbrains\.anko\.AnkoLogger"/>
