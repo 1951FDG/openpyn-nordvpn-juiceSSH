@@ -2,6 +2,7 @@ package io.github.getsixtyfour.openpyn
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources.NotFoundException
@@ -36,7 +37,6 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSION
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-import info.hannes.logcat.LogfileActivity
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.openpyn.map.util.createJson
@@ -113,7 +113,7 @@ fun <T : Activity> onGitHubItemSelected(activity: T, @Suppress("UNUSED_PARAMETER
 }
 
 fun <T : Activity> onLogFileSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
-    val intent = Intent(activity, LogfileActivity::class.java)
+    val intent = Intent().apply { component = ComponentName(activity, "info.hannes.logcat.LogfileActivity") }
     ContextCompat.startActivity(activity, intent, null)
 }
 
