@@ -181,6 +181,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
                 generateXML()
                 true
             }
+            R.id.menu_logfile -> {
+                onLogFileSelected(this, item)
+                true
+            }
             */
             else -> super.onOptionsItemSelected(item)
         }

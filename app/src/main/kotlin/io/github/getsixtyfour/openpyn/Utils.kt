@@ -36,6 +36,7 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSION
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
+import info.hannes.logcat.LogfileActivity
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.openpyn.map.util.createJson
@@ -108,6 +109,11 @@ fun <T : Activity> onAboutItemSelected(activity: T, @Suppress("UNUSED_PARAMETER"
 fun <T : Activity> onGitHubItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
     val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
+    ContextCompat.startActivity(activity, intent, null)
+}
+
+fun <T : Activity> onLogFileSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
+    val intent = Intent(activity, LogfileActivity::class.java)
     ContextCompat.startActivity(activity, intent, null)
 }
 

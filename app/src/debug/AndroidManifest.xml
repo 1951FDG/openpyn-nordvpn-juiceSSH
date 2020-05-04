@@ -22,5 +22,12 @@
 
     <application
         android:name=".DebugMainApplication"
-        tools:replace="android:name" />
+        tools:replace="android:name">
+        <activity
+            android:name="info.hannes.logcat.LogfileActivity"
+            android:label="Timber"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Licenses"
+            tools:replace="android:theme" />
+    </application>
 </manifest>

@@ -161,7 +161,7 @@ configurations {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs')
 
     // 1951FDG
     implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.6'
@@ -240,6 +240,10 @@ dependencies {
     // Logger
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'io.github.microutils:kotlin-logging:1.7.9'
+    debugImplementation ('com.github.hannesa2:Logcat:1.8.0') {
+        exclude group: 'com.google.android.material'
+        exclude group: 'com.jakewharton.timber'
+    }
     testImplementation "org.slf4j:slf4j-simple:$slf4j_version"
 
     // Permission
