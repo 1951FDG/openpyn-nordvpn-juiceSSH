@@ -99,10 +99,10 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
                     val consentState = GDPRConsentState(activity, NON_PERSONAL_CONSENT_ONLY, UNDEFINED)
                     GDPR.getInstance().setConsent(consentState)
                 }
-                val core = CrashlyticsCore.Builder().disabled(!value).build()
-                Fabric.with(preference.context.applicationContext, Crashlytics.Builder().core(core).build())
-
-                FirebaseAnalytics.getInstance(preference.context.applicationContext).setAnalyticsCollectionEnabled(value)
+                // You can't stop Crashlytics reporting once you've initialized it in an app session
+                // TODO: show dialog to mention that restart is required
+                val context = preference.context.applicationContext
+                FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(value)
 
                 return@OnPreferenceChangeListener true
             }
