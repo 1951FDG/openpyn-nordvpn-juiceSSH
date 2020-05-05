@@ -2,6 +2,7 @@ package io.github.getsixtyfour.openpyn
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Application
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -30,6 +31,7 @@ import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPR.IGDPRCallback
+import com.michaelflisar.gdprdialog.GDPRConsentState
 import com.michaelflisar.gdprdialog.GDPRDefinitions
 import com.michaelflisar.gdprdialog.GDPRSetup
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
@@ -78,28 +80,21 @@ fun <T : FragmentActivity> getCurrentNavigationFragment(activity: T): Fragment? 
     }
 }
 
-fun <T : Activity> getGDPR(activity: T, @StyleRes theme: Int): GDPRSetup {
-    GDPR.getInstance().init(activity)
-    return with(
-        GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)
-    ) {
+fun <T : Activity> getGDPR(activity: T, @StyleRes theme: Int): GDPRSetup =
+    with(GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)) {
         withCustomDialogTheme(theme)
         withForceSelection(true)
         withNoToolbarTheme(false)
         withShowPaidOrFreeInfoText(false)
     }
-}
 
-fun <T> showGDPRIfNecessary(activity: T, setup: GDPRSetup) where T : AppCompatActivity, T : IGDPRCallback {
-    if (!AppConfig.GDPR) {
-        return
+fun <T> showGDPRIfNecessary(activity: T, instance: GDPR, setup: GDPRSetup) where T : AppCompatActivity, T : IGDPRCallback {
+    when {
+        !AppConfig.GDPR -> return
+        isRunningTest() -> return
+        instance.consentState.consent.isPersonalConsent -> return
+        else -> instance.checkIfNeedsToBeShown(activity, setup)
     }
-
-    if (isRunningTest()) {
-        return
-    }
-
-    GDPR.getInstance().checkIfNeedsToBeShown(activity, setup)
 }
 
 fun <T : Activity> onAboutItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
@@ -313,13 +308,32 @@ fun <T : Activity> startVpnService(activity: T) {
     }
 }
 
-fun <T : Context> initCrashlytics(context: T) {
-    val debug = BuildConfig.DEBUG
-    if (debug) return
-    val core = CrashlyticsCore.Builder().disabled(debug).build()
+fun <T : Application> initCrashlytics(context: T, consentState: GDPRConsentState) {
+    if (consentState.consent.isPersonalConsent) initCrashlytics(context, true)
+}
+
+fun <T : Activity> initCrashlytics(context: T, consentState: GDPRConsentState) {
+    initCrashlytics(context, consentState.consent.isPersonalConsent)
+}
+
+private fun <T : Context> initCrashlytics(context: T, enabled: Boolean) {
+    if (BuildConfig.DEBUG) {
+        return
+    }
+
+    if (Fabric.isInitialized()) {
+        return
+    }
+
+    val core = CrashlyticsCore.Builder().disabled(!enabled).build()
     Fabric.with(context, Crashlytics.Builder().core(core).build())
-    FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
-    Timber.plant(CrashReportingTree()) // A tree which logs important information for crash reporting
+    FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(enabled)
+}
+
+fun <T : Context> initGDPR(context: T): GDPR = GDPR.getInstance().init(context)
+
+fun initTimber() {
+    Timber.plant(CrashReportingTree())
 }
 
 fun initStrictMode() {

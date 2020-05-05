@@ -9,6 +9,10 @@ open class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        initCrashlytics(this, initGDPR(this).consentState)
+
+        initTimber()
+
         setDefaultPreferences(this)
 
         NetworkInfo.getInstance(this)

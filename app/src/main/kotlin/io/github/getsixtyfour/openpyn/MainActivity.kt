@@ -83,10 +83,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
 
         setSnackBarManager(this, mSnackProgressBarManager)
 
-        showGDPRIfNecessary(this, mSetup)
+        showGDPRIfNecessary(this, GDPR.getInstance(), mSetup)
 
         startVpnService(this)
-        // TODO: remove after beta release test
+        // TODO: remove after beta release test, add delay?
         logger.error(Exception()) { "$apkSignatures" }
 
         /*val api = GoogleApiAvailability.getInstance()
@@ -194,9 +194,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         // Consent is known, handle this
         logger.info { "ConsentState: ${consentState.logString()}" }
 
-        if (consentState.consent.isPersonalConsent) {
-            initCrashlytics(this)
-        }
+        initCrashlytics(this, consentState)
     }
 
     override fun onConsentNeedsToBeRequested(data: GDPRPreperationData?) {
