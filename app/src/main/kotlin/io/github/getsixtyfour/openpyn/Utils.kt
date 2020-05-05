@@ -52,6 +52,7 @@ import org.jetbrains.anko.activityUiThread
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.onComplete
 import org.json.JSONArray
+import timber.log.CrashReportingTree
 import timber.log.Timber
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 import java.io.File
@@ -62,10 +63,6 @@ private val logger = KotlinLogging.logger {}
 
 const val SNACK_BAR_JUICESSH: Int = 1
 const val SNACK_BAR_PERMISSIONS: Int = 0
-
-const val PRIORITY: String = "priority"
-const val TAG: String = "tag"
-const val MESSAGE: String = "message"
 
 fun <T : FragmentActivity> getCurrentNavigationFragment(activity: T): Fragment? {
     val navHostFragment = activity.supportFragmentManager.primaryNavigationFragment as? NavHostFragment
@@ -374,51 +371,5 @@ fun <T : Context> saveEmulatorPreferences(context: T) {
         // The default port for Telnet client connections is 23
         it.putString(context.getString(R.string.pref_openvpnmgmt_port_key), "23")
         it.apply()
-    }
-}
-
-private class CrashReportingTree : Timber.DebugTree() {
-    override fun v(message: String?, vararg args: Any?) {
-        // NOP
-    }
-
-    override fun v(t: Throwable?, message: String?, vararg args: Any?) {
-        // NOP
-    }
-
-    override fun v(t: Throwable?) {
-        // NOP
-    }
-
-    override fun d(message: String?, vararg args: Any?) {
-        // NOP
-    }
-
-    override fun d(t: Throwable?, message: String?, vararg args: Any?) {
-        // NOP
-    }
-
-    override fun d(t: Throwable?) {
-        // NOP
-    }
-
-    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        if (t == null) {
-            return
-        }
-
-        if (!Fabric.isInitialized()) {
-            return
-        }
-
-        Crashlytics.setInt(PRIORITY, priority)
-        Crashlytics.setString(TAG, tag)
-        Crashlytics.setString(MESSAGE, message)
-
-        Crashlytics.logException(t)
-    }
-
-    override fun isLoggable(tag: String?, priority: Int): Boolean {
-        return priority == android.util.Log.ERROR
     }
 }
