@@ -263,8 +263,9 @@ dependencies {
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
 
     // Stetho
-    implementation 'com.facebook.stetho:stetho:1.5.1'
-    implementation 'com.facebook.stetho:stetho-timber:1.5.1'
+    debugImplementation ('com.facebook.stetho:stetho-timber:1.5.1') {
+        exclude group: 'com.jakewharton.timber'
+    }
 
     // Test
     testImplementation 'junit:junit:4.13'
