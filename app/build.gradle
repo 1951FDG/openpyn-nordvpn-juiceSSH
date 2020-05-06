@@ -49,7 +49,10 @@ android {
             }
             shrinkResources true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'proguard-rules-release.pro'
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro',
+                    'proguard-rules-release.pro'
         }
         debug {
             // Comment next two lines to run "fastlane beta"

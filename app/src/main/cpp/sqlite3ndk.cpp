@@ -49,14 +49,22 @@
 # define SQLITE_DEFAULT_SECTOR_SIZE 4096
 #endif
 
-#ifndef TAG
-# define TAG "sqlite3ndk"
-#endif
+// Uncomment the line below to enable logging
+//# define TAG "sqlite3ndk"
+
+#ifdef TAG
 #define VERBOSE(...) __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
 #define DEBUG(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
 #define INFO(...) __android_log_print(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
 #define WARN(...) __android_log_print(ANDROID_LOG_WARN, TAG, __VA_ARGS__)
 #define ERROR(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
+#else
+#define VERBOSE(...) // NOP
+#define DEBUG(...) // NOP
+#define INFO(...) // NOP
+#define WARN(...) // NOP
+#define ERROR(...) // NOP
+#endif
 
 /**
  * The ndk_vfs structure is subclass of sqlite3_vfs specific

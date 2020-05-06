@@ -1,78 +1,123 @@
 package timber.log
 
+import android.util.Log
 import com.crashlytics.android.Crashlytics
-import timber.log.Timber.DebugTree
+import timber.log.Timber.Tree
 
-class CrashReportingTree : DebugTree() {
-    override fun v(message: String?, vararg args: Any?) {
+open class CrashReportingTree : Tree() {
+    override fun v(message: String, vararg args: Any) {
         // NOP
     }
 
-    override fun v(t: Throwable?, message: String?, vararg args: Any?) {
+    override fun v(t: Throwable, message: String, vararg args: Any) {
         // NOP
     }
 
-    override fun v(t: Throwable?) {
+    override fun v(t: Throwable) {
         // NOP
     }
 
-    override fun d(message: String?, vararg args: Any?) {
+    override fun d(message: String, vararg args: Any) {
         // NOP
     }
 
-    override fun d(t: Throwable?, message: String?, vararg args: Any?) {
+    override fun d(t: Throwable, message: String, vararg args: Any) {
         // NOP
     }
 
-    override fun d(t: Throwable?) {
+    override fun d(t: Throwable) {
         // NOP
     }
 
-    override fun log(priority: Int, message: String?, vararg args: Any) {
+    override fun i(message: String, vararg args: Any) {
+        // NOP
+    }
+
+    override fun i(t: Throwable, message: String, vararg args: Any) {
+        // NOP
+    }
+
+    override fun i(t: Throwable) {
+        // NOP
+    }
+
+    override fun w(message: String, vararg args: Any) {
+        // NOP
+    }
+
+    override fun w(t: Throwable, message: String, vararg args: Any) {
+        // NOP
+    }
+
+    override fun w(t: Throwable) {
+        // NOP
+    }
+
+    override fun e(message: String, vararg args: Any) {
+        prepareLog(Log.ERROR, null, message, *args)
+    }
+
+    override fun e(t: Throwable, message: String, vararg args: Any) {
+        prepareLog(Log.ERROR, t, message, *args)
+    }
+
+    override fun e(t: Throwable) {
+        prepareLog(Log.ERROR, t, null)
+    }
+
+    override fun wtf(message: String, vararg args: Any) {
+        prepareLog(Log.ERROR, null, message, *args)
+    }
+
+    override fun wtf(t: Throwable, message: String, vararg args: Any) {
+        prepareLog(Log.ERROR, t, message, *args)
+    }
+
+    override fun wtf(t: Throwable) {
+        prepareLog(Log.ERROR, t, null)
+    }
+
+    override fun log(priority: Int, message: String, vararg args: Any) {
         prepareLog(priority, null, message, *args)
     }
 
-    override fun log(priority: Int, t: Throwable?, message: String?, vararg args: Any) {
+    override fun log(priority: Int, t: Throwable, message: String, vararg args: Any) {
         prepareLog(priority, t, message, *args)
     }
 
-    override fun log(priority: Int, t: Throwable?) {
+    override fun log(priority: Int, t: Throwable) {
         prepareLog(priority, t, null)
     }
 
     override fun isLoggable(tag: String?, priority: Int): Boolean {
-        return priority == android.util.Log.ERROR
+        return priority == Log.ERROR
     }
 
-    private fun prepareLog(priority: Int, t: Throwable?, message: String?, vararg args: Any) {
-        // Consume tag even when message is not loggable so that next message is correctly tagged.
-        val tag = this.tag
+    protected fun prepareLog(priority: Int, t: Throwable?, message: String?, vararg args: Any) {
+        // Consume tag even when message is not loggable so that next message is correctly tagged
+        val tag = tag
+
+        if (t == null) {
+            return
+        }
 
         if (!isLoggable(tag, priority)) {
             return
         }
 
-        var msg = message.orEmpty()
+        log(priority, tag, formatMessage(message.orEmpty(), *args), t)
+    }
 
-        if (msg.isEmpty()) {
-            // Swallow message if it's empty and there's no throwable.
-            if (t == null) {
-                return
-            }
-        } else {
-            if (!args.isNullOrEmpty()) {
-                msg = formatMessage(msg, args)
-            }
+    override fun formatMessage(message: String, vararg args: Any): String {
+        return when {
+            message.isEmpty() -> message
+            message.isBlank() -> message
+            args.isNotEmpty() -> message.format(*args)
+            else -> message
         }
-
-        log(priority, tag, msg, t)
     }
 
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        if (t == null) {
-            return
-        }
-
         try {
             // TODO: Add more custom keys
             // Crashlytics supports a maximum of 64 key/value pairs
