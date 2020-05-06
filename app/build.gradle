@@ -24,6 +24,8 @@ apply plugin: 'com.gladed.androidgitversion'
 
 apply plugin: 'io.gitlab.arturbosch.detekt'
 
+apply plugin: 'net.ltgt.errorprone'
+
 //apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -266,6 +268,13 @@ dependencies {
     debugImplementation ('com.facebook.stetho:stetho-timber:1.5.1') {
         exclude group: 'com.jakewharton.timber'
     }
+
+    // Error Prone
+    debugAnnotationProcessor 'com.uber.nullaway:nullaway:0.7.9'
+    debugCompileOnly 'com.jakewharton.nopen:nopen-annotations:1.0.1'
+    errorprone 'com.jakewharton.nopen:nopen-checker:1.0.1'
+    errorprone 'com.google.errorprone:error_prone_core:2.3.4'
+    errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
 
     // Test
     testImplementation 'junit:junit:4.13'

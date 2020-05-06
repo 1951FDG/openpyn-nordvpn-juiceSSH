@@ -16,20 +16,30 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
+
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.1'
+
         classpath 'com.google.android.gms:strict-version-matcher-plugin:1.2.1'
+
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:1.0.2'
+
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.27.0'
+
         classpath 'com.netflix.nebula:gradle-lint-plugin:16.1.1'
 
         classpath 'io.fabric.tools:gradle:1.31.2'
 
         classpath 'gradle.plugin.com.github.konifar.gradle:plugin:0.3.3'
+
         classpath 'com.gladed.androidgitversion:gradle-android-git-version:0.4.13'
+
         classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.5.1'
+
+        classpath 'net.ltgt.gradle:gradle-errorprone-plugin:1.1.1'
 
         //classpath 'com.google.gms:google-services:4.3.3'
 
@@ -90,6 +100,15 @@ allprojects {
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
+
+            options.errorprone {
+                //allDisabledChecksAsWarnings = true
+                disableAllChecks = true
+                disable('Nopen')
+                disable('NullAway')
+                option('NullAway:AnnotatedPackages', 'com.getsixtyfour')
+                excludedPaths = '.*/app/build/.*|.*/almworks/.*|.*/requery/.*|.*/javolution/.*|.*/sqlite/.*'
+            }
         }
     }
 }
