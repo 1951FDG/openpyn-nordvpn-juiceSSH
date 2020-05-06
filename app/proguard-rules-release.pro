@@ -21,6 +21,8 @@
    public static *** println(...);
 }
 
+-keep public class * extends java.lang.Exception
+
 -keep public class androidx.navigation.fragment.NavHostFragment { *; }
 
 -keep public class io.requery.android.database.sqlite.SQLiteCustomFunction { *; }
