@@ -33,12 +33,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("Singleton")
-public final class SecurityManager {
+public final class SecurityCypher {
 
     @NonNls
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityCypher.class);
 
-    private static final String TAG = "SecurityManager";
+    private static final String TAG = "SecurityCypher";
 
     private static final char[] EMPTY_CHAR_ARRAY = new char[0];
 
@@ -46,16 +46,16 @@ public final class SecurityManager {
 
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
 
-    private static volatile SecurityManager sInstance = null;
+    private static volatile SecurityCypher sInstance = null;
 
     private SecretKey mSecretKey;
 
     @SuppressWarnings("unused")
-    private SecurityManager() {
+    private SecurityCypher() {
     }
 
     @SuppressLint("HardwareIds")
-    private SecurityManager(Context context) {
+    private SecurityCypher(Context context) {
         String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         try {
             byte[] key = androidId.getBytes(StandardCharsets.UTF_8);
@@ -70,11 +70,11 @@ public final class SecurityManager {
 
     @SuppressWarnings({ "DoubleCheckedLocking", "SynchronizeOnThis" })
     @NonNull
-    public static SecurityManager getInstance(@NonNull Context context) {
+    public static SecurityCypher getInstance(@NonNull Context context) {
         if (sInstance == null) {
-            synchronized (SecurityManager.class) {
+            synchronized (SecurityCypher.class) {
                 if (sInstance == null) {
-                    sInstance = new SecurityManager(context.getApplicationContext());
+                    sInstance = new SecurityCypher(context.getApplicationContext());
                 }
             }
         }

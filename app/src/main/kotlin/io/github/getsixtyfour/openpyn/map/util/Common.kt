@@ -26,7 +26,7 @@ import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.createJsonArray
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
-import io.github.getsixtyfour.openpyn.security.SecurityManager
+import io.github.getsixtyfour.openpyn.security.SecurityCypher
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.features.DefaultRequest
@@ -636,19 +636,19 @@ suspend fun createGeoJson(context: Context): JSONObject? {
         if (geo) {
             when (api) {
                 "ipdata" -> {
-                    token = SecurityManager.getInstance(context).decryptString(ipdata).toString()
+                    token = SecurityCypher.getInstance(context).decryptString(ipdata).toString()
                     server = "https://api.ipdata.co?api-key=$token&$fields"
                     // server = "https://api.ipdata.co?api-key=$token&$fields,threat"
                 }
                 "ipinfo" -> {
-                    token = SecurityManager.getInstance(context).decryptString(ipinfo).toString()
+                    token = SecurityCypher.getInstance(context).decryptString(ipinfo).toString()
                     server = when {
                         token.isNotEmpty() -> "https://ipinfo.io/geo?token=$token"
                         else -> "https://ipinfo.io/geo"
                     }
                 }
                 "ipstack" -> {
-                    token = SecurityManager.getInstance(context).decryptString(ipstack).toString()
+                    token = SecurityCypher.getInstance(context).decryptString(ipstack).toString()
                     server = "http://api.ipstack.com/check?access_key=$token&$fields"
                 }
             }

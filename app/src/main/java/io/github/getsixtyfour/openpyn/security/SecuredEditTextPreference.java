@@ -14,7 +14,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public final class SecuredEditTextPreference extends EditTextPreference implements OnBindEditTextListener {
 
-    private final SecurityManager mSecurityManager = SecurityManager.getInstance(getContext());
+    private final SecurityCypher mSecurityCypher = SecurityCypher.getInstance(getContext());
 
     public SecuredEditTextPreference(@NonNull Context context) {
         super(context);
@@ -40,7 +40,7 @@ public final class SecuredEditTextPreference extends EditTextPreference implemen
     @Override
     public String getText() {
         String text = super.getText();
-        return ((text == null) || text.isEmpty()) ? text : mSecurityManager.decryptString(text);
+        return ((text == null) || text.isEmpty()) ? text : mSecurityCypher.decryptString(text);
     }
 
     @Override
@@ -48,7 +48,7 @@ public final class SecuredEditTextPreference extends EditTextPreference implemen
         if ((text == null) || text.isEmpty()) {
             super.setText(text);
         } else {
-            super.setText(mSecurityManager.encryptString(text));
+            super.setText(mSecurityCypher.encryptString(text));
         }
     }
 

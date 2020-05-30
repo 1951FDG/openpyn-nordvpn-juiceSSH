@@ -9,7 +9,7 @@ import androidx.preference.PreferenceManager;
 
 import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 
-import io.github.getsixtyfour.openpyn.security.SecurityManager;
+import io.github.getsixtyfour.openpyn.security.SecurityCypher;
 
 public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
 
@@ -38,9 +38,9 @@ public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
 
     @Nullable
     public static char[] getPassword(@NonNull Context context) {
-        SecurityManager securityManager = SecurityManager.getInstance(context);
+        SecurityCypher securityCypher = SecurityCypher.getInstance(context);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return securityManager.decrypt(preferences.getString(context.getString(R.string.pref_openvpnmgmt_password_key),
+        return securityCypher.decrypt(preferences.getString(context.getString(R.string.pref_openvpnmgmt_password_key),
                 context.getString(R.string.pref_openvpnmgmt_password_default)));
     }
 
@@ -69,9 +69,9 @@ public final class VpnAuthenticationHandler implements UsernamePasswordHandler {
 
     @Nullable
     private static String getUserPass(@NonNull Context context) {
-        SecurityManager securityManager = SecurityManager.getInstance(context);
+        SecurityCypher securityCypher = SecurityCypher.getInstance(context);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return securityManager.decryptString(preferences.getString(context.getString(R.string.pref_openvpnmgmt_userpass_key),
+        return securityCypher.decryptString(preferences.getString(context.getString(R.string.pref_openvpnmgmt_userpass_key),
                 context.getString(R.string.pref_openvpnmgmt_userpass_default)));
     }
 
