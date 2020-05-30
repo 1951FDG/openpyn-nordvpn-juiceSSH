@@ -99,14 +99,23 @@ allprojects {
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
-
+            //options.compilerArgs << '-Xlint:all'
+            options.deprecation = true
+            options.failOnError = true
             options.errorprone {
                 //allDisabledChecksAsWarnings = true
                 disableAllChecks = true
-                disable('Nopen')
-                disable('NullAway')
-                option('NullAway:AnnotatedPackages', 'com.getsixtyfour')
+                disable('AlmostJavadoc')
+                disable('AndroidJdkLibsChecker')
+                disable('BooleanParameter')
+                disable('Java7ApiChecker')
+                disable('MissingSummary')
+                //warn('Nopen')
+                //warn('NullAway')
+                disable('StringSplitter')
+                disable('UnnecessaryDefaultInEnumSwitch')
+                disable('Var')
+                option('NullAway:AnnotatedPackages', 'com.antoniocarlon,com.getsixtyfour,io.github.getsixtyfour')
                 excludedPaths = '.*/app/build/.*|.*/almworks/.*|.*/requery/.*|.*/javolution/.*|.*/sqlite/.*'
             }
         }
