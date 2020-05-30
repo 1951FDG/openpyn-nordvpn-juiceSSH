@@ -245,6 +245,7 @@ dependencies {
     // Logger
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'io.github.microutils:kotlin-logging:1.7.9'
+    debugImplementation 'at.favre.lib:slf4j-timber:1.0.1'
     debugImplementation ('com.github.hannesa2:Logcat:1.8.0') {
         exclude group: 'com.google.android.material'
         exclude group: 'com.jakewharton.timber'
