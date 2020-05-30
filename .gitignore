@@ -39,6 +39,7 @@ captures/
 .idea/caches
 .idea/dictionaries
 .idea/gradle.xml
+.idea/jarRepositories.xml
 .idea/kotlinc.xml
 .idea/libraries
 .idea/misc.xml
