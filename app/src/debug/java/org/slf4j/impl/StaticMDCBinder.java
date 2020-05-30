@@ -33,7 +33,7 @@ import org.slf4j.spi.MDCAdapter;
  * @author Ceki G&uuml;lc&uuml;
  * @author Andrey Korzhevskiy <a.korzhevskiy@gmail.com>
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("ALL")
 public class StaticMDCBinder {
 
     /**

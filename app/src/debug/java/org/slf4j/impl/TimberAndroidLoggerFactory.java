@@ -36,9 +36,10 @@ import org.slf4j.Logger;
  *
  * @author Patrick Favre-Bulle <patrick.favrebulle@gmail.com>
  */
+@SuppressWarnings("ALL")
 class TimberAndroidLoggerFactory implements ILoggerFactory {
 
-    static final String ANONYMOUS_TAG = "null";
+    private static final String ANONYMOUS_TAG = "null";
 
     private final ConcurrentMap<String, Logger> loggerMap = new ConcurrentHashMap<>();
 
