@@ -18,11 +18,9 @@ import org.jetbrains.annotations.Nullable;
 public interface Connection extends Runnable {
 
     //region ManagementConnection
-    @Nullable
-    String getHost();
+    @Nullable String getHost();
 
-    @Nullable
-    Integer getPort();
+    @Nullable Integer getPort();
 
     boolean isConnected();
 
@@ -66,20 +64,15 @@ public interface Connection extends Runnable {
     //endregion
 
     //region OpenVpnConnection (Background)
-    @NotNull
-    String executeCommand(@NotNull String command) throws IOException;
+    @NotNull String executeCommand(@NotNull String command) throws IOException;
 
-    @NotNull
-    String getManagementVersion() throws IOException;
+    @NotNull String getManagementVersion() throws IOException;
 
-    @NotNull
-    Status getVpnStatus() throws IOException;
+    @NotNull Status getVpnStatus() throws IOException;
 
-    @NotNull
-    String getVpnVersion() throws IOException;
+    @NotNull String getVpnVersion() throws IOException;
 
     void stopVpn() throws IOException;
     //endregion
-
     // TODO: mark all the methods to be called on background thread using @WorkerThread
 }

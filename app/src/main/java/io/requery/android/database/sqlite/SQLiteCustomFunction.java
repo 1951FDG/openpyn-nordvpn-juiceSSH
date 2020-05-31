@@ -22,6 +22,7 @@ package io.requery.android.database.sqlite;
  *
  * @hide
  */
+@SuppressWarnings("deprecation")
 public final class SQLiteCustomFunction {
     public final String name;
     public final int numArgs;

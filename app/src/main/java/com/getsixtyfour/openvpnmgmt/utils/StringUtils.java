@@ -17,6 +17,7 @@
 
 package com.getsixtyfour.openvpnmgmt.utils;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -105,8 +106,7 @@ public final class StringUtils {
      * @return the passed in CharSequence, or the default
      */
     @SuppressWarnings("StandardVariableNames")
-    @Nullable
-    public static <T extends CharSequence> T defaultIfBlank(@Nullable T str, @Nullable T defaultStr) {
+    public static @NotNull <T extends CharSequence> T defaultIfBlank(@Nullable T str, @NotNull T defaultStr) {
         return isBlank(str) ? defaultStr : str;
     }
 
@@ -118,8 +118,7 @@ public final class StringUtils {
      * @param cs the CharSequence to escape values in, may be null
      * @return String with escaped values, {@code null} if null string input
      */
-    @Nullable
-    public static CharSequence escapeString(@Nullable CharSequence cs) {
+    public static @Nullable CharSequence escapeString(@Nullable CharSequence cs) {
         if ((cs == null) || (cs.length() == 0)) {
             return cs;
         }
@@ -132,6 +131,7 @@ public final class StringUtils {
      * @param cs the CharSequence to escape values in, may be null
      * @return the escaped string
      */
+    @SuppressWarnings("MagicCharacter")
     private static String escapeBashStyleString(CharSequence cs) {
         StringBuilder sb = new StringBuilder(cs.length() << 1);
         int sz = cs.length();

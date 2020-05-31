@@ -4,24 +4,27 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Arne Schwabe
  * @author 1951FDG
  */
 
-public class TrafficHistory {
+@SuppressWarnings("JdkObsolete")
+public final class TrafficHistory {
 
     @SuppressWarnings("WeakerAccess")
     public static final long PERIODS_TO_KEEP = 5L;
 
     @SuppressWarnings("WeakerAccess")
-    public static final long TIME_PERIOD_HOURS = 3600L * 1000L;
+    public static final long TIME_PERIOD_HOURS = TimeUnit.HOURS.toMillis(1L);
 
     @SuppressWarnings("WeakerAccess")
-    public static final long TIME_PERIOD_MINUTES = 60L * 1000L;
+    public static final long TIME_PERIOD_MINUTES = TimeUnit.MINUTES.toMillis(1L);
 
     private final LinkedList<TrafficDataPoint> mHours = new LinkedList<>();
 
@@ -29,34 +32,30 @@ public class TrafficHistory {
 
     private final LinkedList<TrafficDataPoint> mSeconds = new LinkedList<>();
 
-    private TrafficDataPoint mLastMinuteUsedForHours;
+    private @Nullable TrafficDataPoint mLastMinuteUsedForHours = null;
 
-    private TrafficDataPoint mLastSecondUsedForMinute;
+    private @Nullable TrafficDataPoint mLastSecondUsedForMinute = null;
 
-    @NotNull
-    public static LinkedList<TrafficDataPoint> getDummyList() {
+    public static @NotNull LinkedList<TrafficDataPoint> getDummyList() {
         LinkedList<TrafficDataPoint> list = new LinkedList<>();
         list.add(new TrafficDataPoint(0L, 0L, System.currentTimeMillis()));
         return list;
     }
 
-    @NotNull
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    public LastDiff add(long in, long out) {
+    public @NotNull LastDiff add(long in, long out) {
         TrafficDataPoint tdp = new TrafficDataPoint(in, out, System.currentTimeMillis());
         return add(tdp);
     }
 
-    @NotNull
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    public LastDiff add(long in, long out, long timestamp) {
+    public @NotNull LastDiff add(long in, long out, long timestamp) {
         TrafficDataPoint tdp = new TrafficDataPoint(in, out, timestamp);
         return add(tdp);
     }
 
-    @NotNull
     @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-    public LastDiff add(@NotNull TrafficDataPoint tdp) {
+    public @NotNull LastDiff add(@NotNull TrafficDataPoint tdp) {
         TrafficDataPoint lastTdp = mSeconds.isEmpty() ? new TrafficDataPoint(0L, 0L, tdp.mTimestamp) : mSeconds.getLast();
         LastDiff diff = new LastDiff(lastTdp, tdp);
         mSeconds.add(tdp);
@@ -68,18 +67,15 @@ public class TrafficHistory {
         return diff;
     }
 
-    @NotNull
-    public List<TrafficDataPoint> getHours() {
+    public @NotNull List<TrafficDataPoint> getHours() {
         return Collections.unmodifiableList(mHours);
     }
 
-    @NotNull
-    public List<TrafficDataPoint> getMinutes() {
+    public @NotNull List<TrafficDataPoint> getMinutes() {
         return Collections.unmodifiableList(mMinutes);
     }
 
-    @NotNull
-    public List<TrafficDataPoint> getSeconds() {
+    public @NotNull List<TrafficDataPoint> getSeconds() {
         return Collections.unmodifiableList(mSeconds);
     }
 

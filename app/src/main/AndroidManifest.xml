@@ -19,6 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:ignore="LockedOrientationActivity"
         tools:targetApi="n">
         <!-- Public activity launched by launcher -->
         <activity
@@ -26,7 +27,7 @@
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Launcher">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

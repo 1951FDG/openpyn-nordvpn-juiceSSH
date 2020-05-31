@@ -22,6 +22,7 @@
 
     <application
         android:name=".DebugMainApplication"
+        tools:ignore="LockedOrientationActivity"
         tools:replace="android:name">
         <activity
             android:name="info.hannes.logcat.LogfileActivity"

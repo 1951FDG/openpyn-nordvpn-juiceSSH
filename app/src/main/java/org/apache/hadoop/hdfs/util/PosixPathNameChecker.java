@@ -43,6 +43,7 @@ public class PosixPathNameChecker {
      * A valid path will have posix filenames separated by '/'
      * A valid path should not have relative elements ".", ".."
      */
+    @SuppressWarnings("MethodWithMultipleReturnPoints")
     public boolean isValidPath(@NonNull String path) {
         if ((path.length() > MAX_PATH_LENGTH) || !path.startsWith(SEPARATOR)) {
             return false;
@@ -64,6 +65,7 @@ public class PosixPathNameChecker {
      * A posix filename must contain characters A-Za-z0-9._- and - must not be
      * the first character
      */
+    @SuppressWarnings({ "MagicCharacter", "ImplicitNumericConversion", "MethodWithMultipleReturnPoints" })
     public boolean isValidPosixFileName(@NonNull CharSequence name) {
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
@@ -96,7 +98,7 @@ public class PosixPathNameChecker {
      * @param separator a separator char
      * @return an array of strings
      */
-    private String[] split(String str, char separator) {
+    private static String[] split(String str, char separator) {
         // String.split returns a single empty result for splitting the empty
         // string.
         int len = str.length();

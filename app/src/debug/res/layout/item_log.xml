@@ -7,4 +7,5 @@
     android:fontFamily="monospace"
     android:lines="1"
     android:textColor="?android:attr/textColorSecondary"
+    android:textIsSelectable="true"
     tools:text="log content" />

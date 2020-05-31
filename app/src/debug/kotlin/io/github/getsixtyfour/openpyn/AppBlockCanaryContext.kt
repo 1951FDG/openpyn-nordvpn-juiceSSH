@@ -7,24 +7,15 @@ import mu.KLogging
 
 class AppBlockCanaryContext : BlockCanaryContext() {
 
-    override fun provideMonitorDuration(): Int {
-        return 9999
-    }
+    override fun provideMonitorDuration(): Int = 9999
 
-    override fun provideBlockThreshold(): Int {
-        return 500
-    }
+    override fun provideBlockThreshold(): Int = 500
 
-    override fun displayNotification(): Boolean {
-        return true
-    }
+    override fun displayNotification(): Boolean = true
 
-    override fun provideWhiteList(): List<String> {
-        return emptyList()
-    }
+    override fun provideWhiteList(): List<String> = emptyList()
 
     override fun onBlock(context: Context?, blockInfo: BlockInfo?) {
-        super.onBlock(context, blockInfo)
         blockInfo?.buildException()?.let { logger.error(it) { "" } }
     }
 

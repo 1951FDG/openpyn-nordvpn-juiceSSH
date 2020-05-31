@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import io.github.getsixtyfour.openpyn.R;
 
 @SuppressWarnings("TransientFieldInNonSerializableClass")
-public class MultiSelectModelExtra extends MultiSelectModel {
+public final class MultiSelectModelExtra extends MultiSelectModel {
 
     private static final Pattern COMPILE = Pattern.compile(" ");
 
@@ -30,11 +30,10 @@ public class MultiSelectModelExtra extends MultiSelectModel {
         mUnicode = unicode;
     }
 
-    @NotNull
     @Override
-    public String toString() {
-        return "MultiSelectModel{" + "id=" + getId() + ", name=" + getName() + ", resId=" + mInt + ", mTag='" + mTag + "\'" + ", mUnicode='"
-                + mUnicode + "\'" + ", start=" + getStart() + ", end=" + getEnd() + "}";
+    public @NotNull String toString() {
+        return "MultiSelectModel{" + "id=" + getId() + ", name=" + getName() + ", resId=" + mInt + ", mTag='" + mTag + "'" + ", mUnicode='"
+                + mUnicode + "'" + ", start=" + getStart() + ", end=" + getEnd() + "}";
     }
 
     @Override

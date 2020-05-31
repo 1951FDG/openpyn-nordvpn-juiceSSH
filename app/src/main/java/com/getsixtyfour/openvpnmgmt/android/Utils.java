@@ -8,6 +8,7 @@ import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -34,6 +35,7 @@ public final class Utils {
         context.stopService(intent);
     }
 
+    @CheckResult
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static long getTotalUsage(@NonNull Context context, long start, long end, int uid, int tag) {
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
@@ -45,7 +47,7 @@ public final class Utils {
         return 0L;
     }
 
-    @SuppressWarnings("MethodCallInLoopCondition")
+    @CheckResult
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static long getTotalUsage(@Nullable NetworkStats stats) {
         long bytes = 0L;
@@ -64,6 +66,7 @@ public final class Utils {
         intent.setAction(Constants.ACTION_VPN_STATE_CHANGED);
         intent.putExtra(Constants.EXTRA_STATE, state);
         intent.putExtra(Constants.EXTRA_MESSAGE, message);
+        //noinspection UnnecessaryFullyQualifiedName
         context.sendBroadcast(intent, android.Manifest.permission.ACCESS_NETWORK_STATE);
     }
 }

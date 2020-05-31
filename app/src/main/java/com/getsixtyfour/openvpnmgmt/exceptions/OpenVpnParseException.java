@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  */
 
 @SuppressWarnings("SerializableHasSerializationMethods")
-public class OpenVpnParseException extends Exception {
+public final class OpenVpnParseException extends Exception {
 
     private static final long serialVersionUID = -3387516993124229948L;
 

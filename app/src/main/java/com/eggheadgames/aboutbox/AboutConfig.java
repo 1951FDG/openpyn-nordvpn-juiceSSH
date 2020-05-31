@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 
 @SuppressWarnings({ "PublicField", "unused", "FieldNamingConvention" })
 @SuppressLint("UnknownNullness")
-public class AboutConfig {
+public final class AboutConfig {
 
     @SuppressWarnings("PublicInnerClass")
     public enum BuildType {

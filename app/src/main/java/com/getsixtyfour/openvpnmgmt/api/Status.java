@@ -15,11 +15,9 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
 public interface Status {
 
-    @NotNull
-    List<Client> getClients();
+    @NotNull List<Client> getClients();
 
-    @NotNull
-    Set<Route> getRoutes();
+    @NotNull Set<Route> getRoutes();
 
     @Nullable
     Calendar getUpdateTime();

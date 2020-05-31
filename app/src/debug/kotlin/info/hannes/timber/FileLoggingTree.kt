@@ -67,7 +67,6 @@ open class FileLoggingTree(externalCacheDir: File, context: Context? = null, fil
     fun getFileName(): String = file.absolutePath
 
     companion object {
-
         private val LOG_TAG = FileLoggingTree::class.java.simpleName
         private var logImpossible = false
         val lastLogEntry: MutableLiveData<String> = MutableLiveData<String>()

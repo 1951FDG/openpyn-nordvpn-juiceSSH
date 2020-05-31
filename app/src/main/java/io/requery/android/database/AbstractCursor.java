@@ -36,6 +36,7 @@ import java.lang.ref.WeakReference;
  * This is an abstract cursor class that handles a lot of the common code
  * that all cursors need to deal with and is provided for convenience reasons.
  */
+@SuppressWarnings("deprecation")
 public abstract class AbstractCursor implements Cursor {
 
     private static final String TAG = "Cursor";

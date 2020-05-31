@@ -10,12 +10,13 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class CheckableFloatingActionButton extends FloatingActionButton implements Checkable {
+public final class CheckableFloatingActionButton extends FloatingActionButton implements Checkable {
 
     private static final int[] CHECKED_STATE_SET = { android.R.attr.state_checked, };
 
     private boolean mChecked;
 
+    @Nullable
     private OnCheckedChangeListener mOnCheckedChangeListener;
 
     public CheckableFloatingActionButton(@NonNull Context ctx) {

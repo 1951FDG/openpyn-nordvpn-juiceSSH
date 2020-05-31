@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 
 public class PosixUserNameChecker {
 
+    @SuppressWarnings({ "CharacterComparison", "MagicCharacter", "ImplicitNumericConversion", "MethodWithMultipleReturnPoints" })
     public boolean isValidUserName(@NonNull String username) {
         if (username.isEmpty()) {
             return false;

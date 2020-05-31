@@ -36,6 +36,7 @@ import android.os.StatFs;
  *
  * @hide
  */
+@SuppressWarnings("deprecation")
 public final class SQLiteGlobal {
     private static final String TAG = "SQLiteGlobal";
 

@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -21,17 +22,17 @@ abstract class AbstractConnection implements Closeable {
 
     private static final int DEFAULT_CHAR_BUFFER_SIZE = 8192;
 
-    private BufferedReader mBufferedReader;
+    private @Nullable BufferedReader mBufferedReader = null;
 
-    private BufferedWriter mBufferedWriter;
+    private @Nullable BufferedWriter mBufferedWriter = null;
 
-    private String mHost;
+    private @Nullable String mHost = null;
 
     private boolean mKeepAlive;
 
-    private Integer mPort;
+    private @Nullable Integer mPort = null;
 
-    private Socket mSocket;
+    private @Nullable Socket mSocket = null;
 
     @Override
     public void close() throws IOException {
@@ -54,11 +55,11 @@ abstract class AbstractConnection implements Closeable {
         }
     }
 
-    public String getHost() {
+    public @Nullable String getHost() {
         return mHost;
     }
 
-    public Integer getPort() {
+    public @Nullable Integer getPort() {
         return mPort;
     }
 
@@ -70,7 +71,7 @@ abstract class AbstractConnection implements Closeable {
         mKeepAlive = keepAlive;
     }
 
-    protected void connect(String host, Integer port, char[] password) throws IOException {
+    protected void connect(String host, Integer port, @Nullable char[] password) throws IOException {
         if (isConnected()) {
             throw new IOException("already connected");
         }
@@ -80,14 +81,9 @@ abstract class AbstractConnection implements Closeable {
         if (port == null) {
             throw new IllegalArgumentException("port can't be null");
         }
+        getLogger().info("Connecting to {}:{}", mHost, mPort); //NON-NLS
         mHost = host;
         mPort = port;
-        connect(password);
-    }
-
-    @SuppressWarnings("OverlyBroadThrowsClause")
-    private void connect(@Nullable char[] password) throws IOException {
-        getLogger().info("Connecting to {}:{}", mHost, mPort); //NON-NLS
         mSocket = new Socket(mHost, mPort);
         mSocket.setKeepAlive(mKeepAlive);
         mSocket.setTcpNoDelay(true);
@@ -108,11 +104,11 @@ abstract class AbstractConnection implements Closeable {
     }
 
     protected BufferedReader getBufferedReader() {
-        return mBufferedReader;
+        return Objects.requireNonNull(mBufferedReader);
     }
 
     protected BufferedWriter getBufferedWriter() {
-        return mBufferedWriter;
+        return Objects.requireNonNull(mBufferedWriter);
     }
 
     protected abstract Logger getLogger();

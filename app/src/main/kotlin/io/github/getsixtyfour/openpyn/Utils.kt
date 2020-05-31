@@ -60,7 +60,6 @@ import java.io.FileNotFoundException
 import java.io.IOException
 
 private val logger = KotlinLogging.logger {}
-
 const val SNACK_BAR_JUICESSH: Int = 1
 const val SNACK_BAR_PERMISSIONS: Int = 0
 
@@ -77,7 +76,7 @@ fun <T : FragmentActivity> getCurrentNavigationFragment(activity: T): Fragment? 
     }
 }
 
-fun <T : Activity> getGDPR(activity: T, @StyleRes theme: Int): GDPRSetup =
+fun getGDPR(@StyleRes theme: Int): GDPRSetup =
     with(GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)) {
         withCustomDialogTheme(theme)
         withForceSelection(true)

@@ -9,13 +9,13 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-@SuppressWarnings({ "UtilityClass", "HardCodedStringLiteral", "FieldNamingConvention", "StringConcatenation", "WeakerAccess",
+@SuppressWarnings({ "UtilityClass", "HardCodedStringLiteral", "StringConcatenation", "WeakerAccess",
         "ChainedMethodCall", "DynamicRegexReplaceableByCompiledPattern" })
 public final class AboutBoxUtils {
 
-    public static final String playStoreAppURI = "https://play.google.com/store/apps/details?id=";
+    public static final String PLAY_STORE_APP_URI = "https://play.google.com/store/apps/details?id=";
 
-    public static final String amznStoreAppURI = "https://www.amazon.com/gp/mas/dl/android?p=";
+    public static final String AMZN_STORE_APP_URI = "https://www.amazon.com/gp/mas/dl/android?p=";
 
     private AboutBoxUtils() {
         //nothing
@@ -64,13 +64,11 @@ public final class AboutBoxUtils {
         switch (buildType) {
             case GOOGLE:
                 appURI = "market://details?id=" + packageName;
-                webURI = playStoreAppURI + packageName;
+                webURI = PLAY_STORE_APP_URI + packageName;
                 break;
             case AMAZON:
                 appURI = "amzn://apps/android?p=" + packageName;
-                webURI = amznStoreAppURI + packageName;
-                break;
-            default:
+                webURI = AMZN_STORE_APP_URI + packageName;
                 break;
         }
         openApplication(activity, appURI, webURI);

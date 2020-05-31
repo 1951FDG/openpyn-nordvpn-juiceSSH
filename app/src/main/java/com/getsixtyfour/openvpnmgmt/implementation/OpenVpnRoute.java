@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
  */
 
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
-public class OpenVpnRoute implements Route {
+public final class OpenVpnRoute implements Route {
 
     private final String mCommonName;
 
@@ -103,9 +103,8 @@ public class OpenVpnRoute implements Route {
                 .format(mLastRef.getTime()) + "}";
     }
 
-    @Nullable
     @Override
-    public String getCommonName() {
+    public @Nullable String getCommonName() {
         return mCommonName;
     }
 
@@ -115,15 +114,13 @@ public class OpenVpnRoute implements Route {
         return (Calendar) mLastRef.clone();
     }
 
-    @Nullable
     @Override
-    public InetSocketAddress getRealIpAddress() {
+    public @Nullable InetSocketAddress getRealIpAddress() {
         return mRealIpAddress;
     }
 
-    @Nullable
     @Override
-    public InetAddress getVirtualIpAddress() {
+    public @Nullable InetAddress getVirtualIpAddress() {
         return mVirtualIpAddress;
     }
 }

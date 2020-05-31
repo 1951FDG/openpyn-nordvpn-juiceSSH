@@ -521,7 +521,7 @@ class TimberAndroidLoggerAdapter extends MarkerIgnoringBase {
      *
      * @return always true
      */
-    private boolean isLoggable(int priority) {
+    private static boolean isLoggable(@SuppressWarnings("unused") int priority) {
         return priority == Log.ERROR;
     }
 

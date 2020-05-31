@@ -13,14 +13,12 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
 public interface Client {
 
-    @Nullable
-    String getCommonName();
+    @Nullable String getCommonName();
 
     @Nullable
     Calendar getConnectedSince();
 
-    @Nullable
-    InetSocketAddress getIpAddress();
+    @Nullable InetSocketAddress getIpAddress();
 
     long getReceivedBytes();
 

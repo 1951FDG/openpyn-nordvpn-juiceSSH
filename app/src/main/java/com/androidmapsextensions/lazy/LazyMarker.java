@@ -16,6 +16,7 @@
 
 package com.androidmapsextensions.lazy;
 
+import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.Objects;
 
 @SuppressWarnings("FieldNotUsedInToString")
-public class LazyMarker {
+public final class LazyMarker {
 
     @Nullable
     @SuppressWarnings("TransientFieldInNonSerializableClass")
@@ -62,15 +63,15 @@ public class LazyMarker {
 
     public LazyMarker(@NonNull GoogleMap googleMap, @NonNull MarkerOptions options, @Nullable Object tag,
                       @Nullable OnMarkerCreateListener markerCreateListener) {
-        if (options.isVisible()) {
-            createMarker(googleMap, options, tag, markerCreateListener);
-        } else {
-            mMap = googleMap;
-            mMarkerOptions = copy(options);
-            mListener = markerCreateListener;
-        }
+        mMap = googleMap;
+        mMarkerOptions = copy(options);
         mTag = tag;
+        mListener = markerCreateListener;
         mLocation = options.getPosition();
+
+        if (options.isVisible()) {
+            createMarker();
+        }
     }
 
     private static MarkerOptions copy(MarkerOptions options) {
@@ -95,7 +96,7 @@ public class LazyMarker {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (!(obj instanceof LazyMarker)) {
             return false;
         }
         return Objects.equals(mLocation, ((LazyMarker) obj).mLocation);
@@ -120,7 +121,7 @@ public class LazyMarker {
         return mMarkerOptions.getAlpha();
     }
 
-    public void setAlpha(float alpha) {
+    public void setAlpha(@FloatRange(from=0.0, to=1.0)float alpha) {
         if (mMarker != null) {
             mMarker.setAlpha(alpha);
         } else {
@@ -165,7 +166,7 @@ public class LazyMarker {
         return mMarkerOptions.getRotation();
     }
 
-    public void setRotation(float rotation) {
+    public void setRotation(@FloatRange(from=0.0, to=360.0)float rotation) {
         if (mMarker != null) {
             mMarker.setRotation(rotation);
         } else {
@@ -300,7 +301,7 @@ public class LazyMarker {
         }
     }
 
-    public void setAnchor(float anchorU, float anchorV) {
+    public void setAnchor(@FloatRange(from=0.0, to=1.0) float anchorU, @FloatRange(from=0.0, to=1.0) float anchorV) {
         if (mMarker != null) {
             mMarker.setAnchor(anchorU, anchorV);
         } else {
@@ -316,7 +317,7 @@ public class LazyMarker {
         }
     }
 
-    public void setInfoWindowAnchor(float anchorU, float anchorV) {
+    public void setInfoWindowAnchor(@FloatRange(from=0.0, to=1.0) float anchorU, @FloatRange(from=0.0, to=1.0) float anchorV) {
         if (mMarker != null) {
             mMarker.setInfoWindowAnchor(anchorU, anchorV);
         } else {
@@ -344,7 +345,7 @@ public class LazyMarker {
         }
     }
 
-    private void createMarker(GoogleMap googleMap, MarkerOptions options, Object tag, OnMarkerCreateListener markerCreateListener) {
+    private void createMarker(GoogleMap googleMap, MarkerOptions options, @Nullable Object tag, @Nullable OnMarkerCreateListener markerCreateListener) {
         mMarker = googleMap.addMarker(options);
         if (tag != null) {
             mMarker.setTag(tag);

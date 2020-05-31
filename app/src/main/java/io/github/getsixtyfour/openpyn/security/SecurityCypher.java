@@ -46,13 +46,11 @@ public final class SecurityCypher {
 
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
 
+    @Nullable
     private static volatile SecurityCypher sInstance = null;
 
-    private SecretKey mSecretKey;
-
-    @SuppressWarnings("unused")
-    private SecurityCypher() {
-    }
+    @Nullable
+    private SecretKey mSecretKey = null;
 
     @SuppressLint("HardwareIds")
     private SecurityCypher(Context context) {
@@ -106,7 +104,7 @@ public final class SecurityCypher {
     }
 
     @Nullable
-    @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches" })
+    @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches", "MethodWithMultipleReturnPoints" })
     public char[] decrypt(@NonNull String stringToDecrypt) {
         if (stringToDecrypt.isEmpty()) {
             return EMPTY_CHAR_ARRAY;
@@ -136,7 +134,7 @@ public final class SecurityCypher {
     }
 
     @Nullable
-    @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches" })
+    @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches", "MethodWithMultipleReturnPoints" })
     public char[] encrypt(@NonNull String stringToEncrypt) {
         if (stringToEncrypt.isEmpty()) {
             return EMPTY_CHAR_ARRAY;

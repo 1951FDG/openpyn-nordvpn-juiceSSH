@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
-public class OpenVpnStatus extends OpenVpnCommand implements Status {
+public final class OpenVpnStatus extends OpenVpnCommand implements Status {
 
     @NonNls
     private static final Pattern CLIENTS_HEADER = Pattern.compile("^OpenVPN CLIENT LIST");
@@ -104,15 +104,13 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
         return sb.toString();
     }
 
-    @NotNull
     @Override
-    public List<Client> getClients() {
+    public @NotNull List<Client> getClients() {
         return Collections.unmodifiableList(mClients);
     }
 
-    @NotNull
     @Override
-    public Set<Route> getRoutes() {
+    public @NotNull Set<Route> getRoutes() {
         return Collections.unmodifiableSet(mRoutes);
     }
 
@@ -128,7 +126,7 @@ public class OpenVpnStatus extends OpenVpnCommand implements Status {
         super.setCommandOutput(output);
     }
 
-    @SuppressWarnings({ "AssignmentToForLoopParameter", "ValueOfIncrementOrDecrementUsed", "MethodCallInLoopCondition", "ChainedMethodCall",
+    @SuppressWarnings({ "AssignmentToForLoopParameter", "ValueOfIncrementOrDecrementUsed", "ChainedMethodCall",
             "OverlyComplexMethod" })
     @Override
     public void setCommandOutput(@NotNull String[] lines) throws OpenVpnParseException {

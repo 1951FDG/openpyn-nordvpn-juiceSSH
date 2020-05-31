@@ -18,7 +18,7 @@ package com.google.maps.android.geometry;
 
 import androidx.annotation.NonNull;
 
-public class Point {
+public final class Point {
 
     @SuppressWarnings("FieldNamingConvention")
     public final double x;

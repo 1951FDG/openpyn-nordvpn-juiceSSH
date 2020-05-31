@@ -96,14 +96,14 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
 
     private MapBoxOfflineTileProvider(@NonNull SQLiteDatabase database) {
         mDatabase = database;
+        // mBounds = calculateBounds();
+        mMinimumZoom = calculateMinZoomLevel();
+        mMaximumZoom = calculateMaxZoomLevel();
         mQuery = new SQLiteQuery(mDatabase, QUERY, null, null);
         mCursor = new SQLiteCursor(new SQLiteDirectCursorDriver(null, null, null, null), null, mQuery);
 
         /*mQueue = new SQLiteQueue();
         mQueue.start();*/
-        calculateMinZoomLevel();
-        calculateMaxZoomLevel();
-        calculateBounds();
     }
 
     /**
@@ -115,7 +115,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
      * @return the newly opened database
      * @throws android.database.SQLException if the database cannot be opened
      */
-    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral", "MethodCallInLoopCondition", "StringConcatenation" })
+    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral", "StringConcatenation" })
     private static SQLiteDatabase create(@NonNull String path, @Nullable CursorFactory factory) {
         SQLiteDatabase database = SQLiteDatabase
                 .openDatabase(SQLiteDatabaseConfiguration.MEMORY_DB_PATH, factory, SQLiteDatabase.CREATE_IF_NECESSARY);
@@ -153,7 +153,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
      * @throws IOException      if an I/O error occurs reading from the stream
      * @throws OutOfMemoryError if an array of the required size cannot be allocated
      */
-    @SuppressWarnings({ "ForLoopWithMissingComponent", "MethodCallInLoopCondition", "NestedAssignment", "ValueOfIncrementOrDecrementUsed",
+    @SuppressWarnings({ "ForLoopWithMissingComponent", "NestedAssignment", "ValueOfIncrementOrDecrementUsed",
             "NumericCastThatLosesPrecision", "unused", "TooBroadScope" })
     private static byte[] read(InputStream source, int initialSize) throws IOException {
         int capacity = initialSize;

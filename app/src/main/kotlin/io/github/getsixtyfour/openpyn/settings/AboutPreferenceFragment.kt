@@ -16,8 +16,6 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreference
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import com.eggheadgames.aboutbox.AboutBoxUtils
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.share.EmailUtil
@@ -30,7 +28,6 @@ import com.michaelflisar.gdprdialog.GDPRConsent.NON_PERSONAL_CONSENT_ONLY
 import com.michaelflisar.gdprdialog.GDPRConsent.PERSONAL_CONSENT
 import com.michaelflisar.gdprdialog.GDPRConsentState
 import com.michaelflisar.gdprdialog.GDPRLocation.UNDEFINED
-import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.ktextension.verifyInstallerId
 import io.github.getsixtyfour.openpyn.R

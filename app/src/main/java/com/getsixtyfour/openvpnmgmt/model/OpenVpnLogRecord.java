@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jetbrains.annotations.NotNull;
 
-public class OpenVpnLogRecord {
+public final class OpenVpnLogRecord {
 
     /**
      * time in UTC seconds
@@ -29,23 +29,19 @@ public class OpenVpnLogRecord {
         mMessage = message;
     }
 
-    @NotNull
-    public String getTime() {
+    public @NotNull String getTime() {
         return mTime;
     }
 
-    @NotNull
-    public LogLevel getLevel() {
+    public @NotNull LogLevel getLevel() {
         return mLevel;
     }
 
-    @NotNull
-    public String getMessage() {
+    public @NotNull String getMessage() {
         return mMessage;
     }
 
-    @NotNull
-    public Long getMillis() {
+    public @NotNull Long getMillis() {
         return TimeUnit.MILLISECONDS.convert(Long.parseLong(mTime), TimeUnit.SECONDS);
     }
 }

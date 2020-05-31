@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
  */
 
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
-public class OpenVpnClient implements Client {
+public final class OpenVpnClient implements Client {
 
     private final String mCommonName;
 
@@ -76,9 +76,8 @@ public class OpenVpnClient implements Client {
                 .format(mConnectedSince.getTime()) + "}";
     }
 
-    @Nullable
     @Override
-    public String getCommonName() {
+    public @Nullable String getCommonName() {
         return mCommonName;
     }
 
@@ -88,9 +87,8 @@ public class OpenVpnClient implements Client {
         return (Calendar) mConnectedSince.clone();
     }
 
-    @Nullable
     @Override
-    public InetSocketAddress getIpAddress() {
+    public @Nullable InetSocketAddress getIpAddress() {
         return mIpAddress;
     }
 

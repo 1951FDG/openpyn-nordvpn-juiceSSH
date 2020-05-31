@@ -76,6 +76,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     private var mGoogleMap: GoogleMap? = null
     private var mCameraUpdateAnimator: CameraUpdateAnimator? = null
     private val mMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
+
     //set by async
     private lateinit var mCountries: List<MultiSelectable>
     private lateinit var mCountryBoundaries: CountryBoundaries
@@ -83,8 +84,8 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     private lateinit var mTileProvider: MapBoxOfflineTileProvider
     private lateinit var mMarkers: HashMap<LatLng, LazyMarker>
     private lateinit var mFlags: HashSet<CharSequence>
-    @ObsoleteCoroutinesApi
-    @ExperimentalCoroutinesApi
+
+    @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
     private val mSendChannel = actor<Context>(coroutineContext, Channel.RENDEZVOUS) {
         channel.map(IO) { createGeoJson(it) }.consumeEach { animateCamera(it) }
     }
@@ -113,8 +114,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         mGoogleMap?.let { map.onStop() }
     }
 
-    @ObsoleteCoroutinesApi
-    @ExperimentalCoroutinesApi
     override fun onDestroy() {
         super.onDestroy()
 
@@ -227,8 +226,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         }
     }
 
-    @ObsoleteCoroutinesApi
-    @ExperimentalCoroutinesApi
     override fun updateMasterMarkerWithDelay(timeMillis: Long) {
         launch {
             delay(timeMillis)
@@ -389,7 +386,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             it.uiSettings?.isScrollGesturesEnabled = true
             it.uiSettings?.isZoomGesturesEnabled = true
 
-            mCameraUpdateAnimator = CameraUpdateAnimator(it, animations, this)
+            mCameraUpdateAnimator = CameraUpdateAnimator(it, this, animations)
             mCameraUpdateAnimator?.animatorListener = this
 
             // Load map

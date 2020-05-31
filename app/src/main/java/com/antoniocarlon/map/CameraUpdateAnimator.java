@@ -16,6 +16,7 @@
 
 package com.antoniocarlon.map;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
@@ -30,7 +31,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CameraUpdateAnimator implements OnCameraIdleListener {
+public final class CameraUpdateAnimator implements OnCameraIdleListener {
 
     private final ArrayList<Animation> mCameraUpdates;
 
@@ -58,14 +59,14 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
     private boolean mIsZoomGestureEnabled;
 
     public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull OnCameraIdleListener onCameraIdleListener) {
-        this(googleMap, new ArrayList<>(), onCameraIdleListener);
+        this(googleMap, onCameraIdleListener, new ArrayList<>());
     }
 
-    public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull Collection<? extends Animation> animations,
-                                @NonNull OnCameraIdleListener onCameraIdleListener) {
+    @SuppressLint("LambdaLast")
+    public CameraUpdateAnimator(@NonNull GoogleMap googleMap, @NonNull OnCameraIdleListener onCameraIdleListener, @NonNull Collection<Animation> animations) {
         mGoogleMap = googleMap;
-        mCameraUpdates = new ArrayList<>(animations);
         mOnCameraIdleListener = onCameraIdleListener;
+        mCameraUpdates = new ArrayList<>(animations);
     }
 
     private static void startAnimation(@NonNull GoogleMap googleMap, @NonNull Animation animation,
@@ -90,7 +91,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         return mCameraUpdates.add(animation);
     }
 
-    public boolean addAll(@NonNull Collection<? extends Animation> animations) {
+    public boolean addAll(@NonNull Collection<Animation> animations) {
         return mCameraUpdates.addAll(animations);
     }
 
@@ -119,6 +120,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
         return mAnimating;
     }
 
+    @SuppressWarnings({ "FieldMissingNullable", "AssignmentToNull" })
     public void onDestroy() {
         mHandler.removeCallbacksAndMessages(null);
         mCancelableCallback.setAnimatorListener(null);
@@ -217,7 +219,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
     }
 
     @SuppressWarnings("PublicInnerClass")
-    public static class Animation {
+    public static final class Animation {
 
         private final CameraUpdate mCameraUpdate;
 
@@ -229,8 +231,10 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
         private long mDelay;
 
+        @Nullable
         private Object mTag;
 
+        @Nullable
         private LatLng mTarget;
 
         public Animation(@NonNull CameraUpdate cameraUpdate) {
@@ -297,6 +301,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
 
         private Animation mAnimation;
 
+        @Nullable
         private AnimatorListener mAnimatorListener;
 
         CancelableCallback() {
@@ -320,7 +325,7 @@ public class CameraUpdateAnimator implements OnCameraIdleListener {
             mAnimation = animation;
         }
 
-        public void setAnimatorListener(AnimatorListener animatorListener) {
+        public void setAnimatorListener(@Nullable AnimatorListener animatorListener) {
             mAnimatorListener = animatorListener;
         }
     }

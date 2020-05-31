@@ -36,6 +36,7 @@ import java.util.Map;
  * SQLiteCursor is not internally synchronized so code using a SQLiteCursor from multiple
  * threads should perform its own synchronization when using the SQLiteCursor.
  */
+@SuppressWarnings("deprecation")
 public class SQLiteCursor extends AbstractWindowedCursor {
     static final String TAG = "SQLiteCursor";
     static final int NO_COUNT = -1;

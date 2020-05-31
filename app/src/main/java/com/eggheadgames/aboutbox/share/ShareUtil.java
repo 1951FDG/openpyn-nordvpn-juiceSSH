@@ -29,12 +29,10 @@ public final class ShareUtil {
         if ((config.buildType != null) && !TextUtils.isEmpty(config.packageName)) {
             switch (config.buildType) {
                 case GOOGLE:
-                    shareMessage = shareMessage + AboutBoxUtils.playStoreAppURI + config.packageName;
+                    shareMessage = shareMessage + AboutBoxUtils.PLAY_STORE_APP_URI + config.packageName;
                     break;
                 case AMAZON:
-                    shareMessage = shareMessage + AboutBoxUtils.amznStoreAppURI + config.packageName;
-                    break;
-                default:
+                    shareMessage = shareMessage + AboutBoxUtils.AMZN_STORE_APP_URI + config.packageName;
                     break;
             }
         }

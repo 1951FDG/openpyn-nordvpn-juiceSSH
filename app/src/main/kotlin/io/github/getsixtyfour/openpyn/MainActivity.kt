@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.ArrayRes
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
 
     // TODO: remove container reference
     val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
-    private val mSetup by lazy { getGDPR(this, R.style.ThemeOverlay_MaterialComponents_Dialog_Alert_Custom) }
+    private val mSetup by lazy { getGDPR(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert_Custom) }
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
     private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
@@ -132,7 +134,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         }
 
         if (isJuiceSSHInstalled()) {
-            if (hasPermissions(this, PERMISSION_READ, PERMISSION_OPEN_SESSIONS)) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || hasPermissions(this, PERMISSION_READ, PERMISSION_OPEN_SESSIONS)) {
                 mSnackProgressBarManager.dismiss()
                 onPermissionsGranted(PERMISSION_REQUEST_CODE)
             } else {
@@ -377,6 +379,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun hasPermissions(context: Context, vararg perms: String): Boolean {
         return perms.none { ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED }
     }

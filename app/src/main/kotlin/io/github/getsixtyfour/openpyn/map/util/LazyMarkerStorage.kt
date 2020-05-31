@@ -9,9 +9,9 @@ import com.squareup.moshi.ToJson
 import com.squareup.moshi.Types
 
 class LazyMarkerStorage(key: String) : MyStorage<LazyMarker>(key) {
-    override val jsonAdapter: JsonAdapter<List<LazyMarker>> by lazy { jsonAdapter() }
+    override val jsonAdapter: JsonAdapter<List<LazyMarker>> by lazy(::adapter)
 
-    private fun jsonAdapter(): JsonAdapter<List<LazyMarker>> {
+    private fun adapter(): JsonAdapter<List<LazyMarker>> {
         val moshi = Moshi.Builder().add(object {
             @ToJson
             @Suppress("unused")

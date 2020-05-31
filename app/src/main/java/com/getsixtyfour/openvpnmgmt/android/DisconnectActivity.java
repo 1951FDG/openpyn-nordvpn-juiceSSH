@@ -32,19 +32,16 @@ import io.github.getsixtyfour.openpyn.R;
  * @author 1951FDG
  */
 
-public class DisconnectActivity extends AppCompatActivity implements DialogInterface.OnClickListener {
+public final class DisconnectActivity extends AppCompatActivity implements DialogInterface.OnClickListener {
 
     @NonNls
     static final Logger LOGGER = LoggerFactory.getLogger(DisconnectActivity.class);
 
-    private static final DialogInterface.OnDismissListener ON_DISMISS_LISTENER = dialog -> {
-        if (dialog instanceof AlertDialog) {
-            Activity ownerActivity = ((AlertDialog) dialog).getOwnerActivity();
-            if (ownerActivity != null) {
-                ownerActivity.finish();
-            }
-        }
-    };
+    @Nullable
+    private AlertDialog mDialog = null;
+
+    @Nullable
+    private IOpenVpnServiceInternal mService = null;
 
     private final ServiceConnection mConnection = new ServiceConnection() {
 
@@ -63,13 +60,17 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
         }
     };
 
-    @Nullable
-    private AlertDialog mDialog;
-
-    @Nullable
-    private IOpenVpnServiceInternal mService;
+    private static void onDismiss(DialogInterface dialog) {
+        if (dialog instanceof AlertDialog) {
+            Activity ownerActivity = ((AlertDialog) dialog).getOwnerActivity();
+            if (ownerActivity != null) {
+                ownerActivity.finish();
+            }
+        }
+    }
 
     @Override
+    @SuppressWarnings({ "deprecation", "RedundantSuppression" })
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -89,9 +90,11 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
         AlertDialog.Builder builder = new AlertDialog.Builder(this, themeResId);
         builder.setTitle(R.string.vpn_title_disconnect);
         builder.setMessage(R.string.vpn_msg_disconnect);
+        //noinspection UnnecessaryFullyQualifiedName
         builder.setNegativeButton(android.R.string.cancel, null);
+        //noinspection UnnecessaryFullyQualifiedName
         builder.setPositiveButton(android.R.string.ok, this);
-        builder.setOnDismissListener(ON_DISMISS_LISTENER);
+        builder.setOnDismissListener(DisconnectActivity::onDismiss);
         mDialog = builder.create();
         mDialog.setOwnerActivity(this);
         LOGGER.debug("onCreate");
@@ -175,7 +178,7 @@ public class DisconnectActivity extends AppCompatActivity implements DialogInter
 
         private final WeakReference<IOpenVpnServiceInternal> mService;
 
-        ShutdownThread(IOpenVpnServiceInternal service) {
+        ShutdownThread(@Nullable IOpenVpnServiceInternal service) {
             mService = new WeakReference<>(service);
         }
 

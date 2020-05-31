@@ -16,6 +16,8 @@ import android.os.NetworkOnMainThreadException;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 
+import androidx.annotation.CheckResult;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -95,6 +97,8 @@ public final class OpenVpnService extends Service
     @Nullable
     private Thread mThread = null;
 
+    @CheckResult
+    @DrawableRes
     @SuppressWarnings({ "MethodWithMultipleReturnPoints", "WeakerAccess" })
     public static int getIconByConnectionStatus(@NonNull ConnectionStatus level) {
         switch (level) {
@@ -111,6 +115,7 @@ public final class OpenVpnService extends Service
         }
     }
 
+    @CheckResult
     @StringRes
     @SuppressWarnings({ "MethodWithMultipleReturnPoints", "OverlyComplexMethod", "OverlyLongMethod", "WeakerAccess" })
     public static int getLocalizedState(@NonNull String state) {
@@ -148,6 +153,7 @@ public final class OpenVpnService extends Service
         }
     }
 
+    @CheckResult
     @NonNull
     @SuppressWarnings({ "OverlyComplexMethod", "MagicNumber", "ImplicitNumericConversion", "WeakerAccess" })
     public static String humanReadableByteCount(@NonNull Context context, long bytes, boolean speed) {
@@ -237,15 +243,15 @@ public final class OpenVpnService extends Service
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setUpNotificationChannels(this);
         }
-        {
-            Connection connection = ManagementConnection.getInstance();
-            connection.addOnByteCountChangedListener(this);
-            connection.addOnRecordChangedListener(this);
-            connection.addOnStateChangedListener(this);
-            connection.setConnectionListener(this);
-        }
+
+        Connection connection = ManagementConnection.getInstance();
+        connection.addOnByteCountChangedListener(this);
+        connection.addOnRecordChangedListener(this);
+        connection.addOnStateChangedListener(this);
+        connection.setConnectionListener(this);
     }
 
+    @SuppressWarnings("MethodWithMultipleReturnPoints")
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         LOGGER.debug("onStartCommand");
@@ -268,15 +274,13 @@ public final class OpenVpnService extends Service
         char[] password = intent.getCharArrayExtra(Constants.EXTRA_PASSWORD);
 
         // Always show notification here to avoid problem with startForeground timeout
-        {
-            int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_NOT_CONNECTED);
-            String text = getString(R.string.vpn_msg_launch);
-            String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_disconnected));
+        int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_NOT_CONNECTED);
+        String text = getString(R.string.vpn_msg_launch);
+        String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_disconnected));
 
-            Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, System.currentTimeMillis(),
-                    icon);
-            startForeground(Constants.NEW_STATUS_CHANNEL_ID.hashCode(), notification);
-        }
+        Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, System.currentTimeMillis(), icon);
+        startForeground(Constants.NEW_STATUS_CHANNEL_ID.hashCode(), notification);
+
         // Connect the management interface in a background thread
         Thread thread = new Thread(() -> {
             try {
@@ -284,7 +288,6 @@ public final class OpenVpnService extends Service
                 // When a socket is created, it inherits the tag of its creating thread
                 /*TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);*/
                 Connection connection = ManagementConnection.getInstance();
-                //noinspection ConstantConditions
                 connection.connect(host, port, password);
             } catch (IOException ignored) {
             }
@@ -304,7 +307,7 @@ public final class OpenVpnService extends Service
     @Override
     public boolean onUnbind(@Nullable Intent intent) {
         LOGGER.debug("onUnbind");
-        return super.onUnbind(intent);
+        return false;
     }
 
     @Override
@@ -326,25 +329,23 @@ public final class OpenVpnService extends Service
             }
         }*/
 
-        {
-            if (mThread != null) {
-                mThread.setUncaughtExceptionHandler(null);
-                mThread = null;
-            }
-
-            // Disconnect the management interface in a background thread
-            Thread thread = new Thread(() -> {
-                Connection connection = ManagementConnection.getInstance();
-                connection.disconnect();
-            });
-            thread.start();
-
-            Connection connection = ManagementConnection.getInstance();
-            connection.removeOnByteCountChangedListener(this);
-            connection.removeOnRecordChangedListener(this);
-            connection.removeOnStateChangedListener(this);
-            connection.setConnectionListener(null);
+        if (mThread != null) {
+            mThread.setUncaughtExceptionHandler(null);
+            mThread = null;
         }
+
+        // Disconnect the management interface in a background thread
+        Thread thread = new Thread(() -> {
+            Connection connection = ManagementConnection.getInstance();
+            connection.disconnect();
+        });
+        thread.start();
+
+        Connection connection = ManagementConnection.getInstance();
+        connection.removeOnByteCountChangedListener(this);
+        connection.removeOnRecordChangedListener(this);
+        connection.removeOnStateChangedListener(this);
+        connection.setConnectionListener(null);
     }
 
     @Override
@@ -426,8 +427,6 @@ public final class OpenVpnService extends Service
                 break;
             case VERBOSE:
             case UNKNOWN:
-            default:
-                break;
         }
     }
 
@@ -470,7 +469,7 @@ public final class OpenVpnService extends Service
         }
     }
 
-    @SuppressWarnings({ "HardCodedStringLiteral", "HardcodedLineSeparator", "StringBufferWithoutInitialCapacity" })
+    @SuppressWarnings({ "HardCodedStringLiteral", "HardcodedLineSeparator", "StringBufferWithoutInitialCapacity", "unused" })
     private static void logUncaught(@NonNull String threadName, @Nullable String processName, int pid, @NonNull Throwable e) {
         StringBuilder message = new StringBuilder();
         // The "FATAL EXCEPTION" string is still used on Android even though apps can set a custom

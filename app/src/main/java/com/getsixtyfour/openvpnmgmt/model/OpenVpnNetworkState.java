@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jetbrains.annotations.NotNull;
 
-public class OpenVpnNetworkState {
+public final class OpenVpnNetworkState {
 
     /**
      * time in UTC seconds
@@ -46,38 +46,31 @@ public class OpenVpnNetworkState {
         mRemotePort = remotePort;
     }
 
-    @NotNull
-    public String getTime() {
+    public @NotNull String getTime() {
         return mTime;
     }
 
-    @NotNull
-    public String getName() {
+    public @NotNull String getName() {
         return mName;
     }
 
-    @NotNull
-    public String getDescription() {
+    public @NotNull String getDescription() {
         return mDescription;
     }
 
-    @NotNull
-    public String getLocalAddress() {
+    public @NotNull String getLocalAddress() {
         return mLocalAddress;
     }
 
-    @NotNull
-    public String getRemoteAddress() {
+    public @NotNull String getRemoteAddress() {
         return mRemoteAddress;
     }
 
-    @NotNull
-    public String getRemotePort() {
+    public @NotNull String getRemotePort() {
         return mRemotePort;
     }
 
-    @NotNull
-    public Long getMillis() {
+    public @NotNull Long getMillis() {
         return TimeUnit.MILLISECONDS.convert(Long.parseLong(mTime), TimeUnit.SECONDS);
     }
 }

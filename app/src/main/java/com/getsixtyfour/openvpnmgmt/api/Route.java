@@ -14,9 +14,7 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UseOfObsoleteDateTimeApi")
 public interface Route {
 
-    // Virtual Address,Common Name,Real Address,Last Ref
-    @Nullable
-    String getCommonName();
+    @Nullable String getCommonName();
 
     /**
      * As I understand it should return connection date
@@ -26,9 +24,7 @@ public interface Route {
     @Nullable
     Calendar getLastRef();
 
-    @Nullable
-    InetSocketAddress getRealIpAddress();
+    @Nullable InetSocketAddress getRealIpAddress();
 
-    @Nullable
-    InetAddress getVirtualIpAddress();
+    @Nullable InetAddress getVirtualIpAddress();
 }

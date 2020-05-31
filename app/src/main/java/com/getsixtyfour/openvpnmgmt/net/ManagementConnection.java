@@ -43,7 +43,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
 
-    private static volatile ManagementConnection sInstance = null;
+    private static volatile @Nullable ManagementConnection sInstance = null;
 
     private final CopyOnWriteArraySet<OnByteCountChangedListener> mByteCountChangedListeners;
 
@@ -53,11 +53,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private final TrafficHistory mTrafficHistory;
 
-    private ConnectionListener mConnectionListener;
+    private @Nullable ConnectionListener mConnectionListener;
 
     private ConnectionStatus mLastLevel = ConnectionStatus.LEVEL_NOT_CONNECTED;
 
-    private UsernamePasswordHandler mUsernamePasswordHandler;
+    private @Nullable UsernamePasswordHandler mUsernamePasswordHandler;
 
     private ManagementConnection() {
         mByteCountChangedListeners = new CopyOnWriteArraySet<>();
@@ -66,9 +66,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
         mTrafficHistory = new TrafficHistory();
     }
 
-    @NotNull
     @SuppressWarnings({ "DoubleCheckedLocking", "SynchronizeOnThis" })
-    public static ManagementConnection getInstance() {
+    public static @NotNull ManagementConnection getInstance() {
         if (sInstance == null) {
             synchronized (ManagementConnection.class) {
                 if (sInstance == null) {
@@ -168,10 +167,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
         return super.isConnected();
     }
 
-    @NotNull
-    @SuppressWarnings({ "NestedAssignment", "MethodCallInLoopCondition", "MagicNumber" })
     @Override
-    public String executeCommand(@NotNull String command) throws IOException {
+    @SuppressWarnings({ "NestedAssignment", "MagicNumber" })
+    public @NotNull String executeCommand(@NotNull String command) throws IOException {
         if (!isConnected()) {
             throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
         }
@@ -198,15 +196,13 @@ public final class ManagementConnection extends AbstractConnection implements Co
         return sb.toString();
     }
 
-    @NotNull
     @Override
-    protected Logger getLogger() {
+    protected @NotNull Logger getLogger() {
         return LOGGER;
     }
 
-    @NotNull
     @Override
-    public String getManagementVersion() throws IOException {
+    public @NotNull String getManagementVersion() throws IOException {
         String result = executeCommand(Commands.VERSION_COMMAND);
         String[] lines = result.split(System.lineSeparator());
         String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
@@ -216,9 +212,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
         return "";
     }
 
-    @NotNull
     @Override
-    public Status getVpnStatus() throws IOException {
+    public @NotNull Status getVpnStatus() throws IOException {
         try {
             String output = executeCommand(Commands.STATUS_COMMAND);
             OpenVpnStatus ovs = new OpenVpnStatus();
@@ -229,9 +224,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    @NotNull
     @Override
-    public String getVpnVersion() throws IOException {
+    public @NotNull String getVpnVersion() throws IOException {
         String result = executeCommand(Commands.VERSION_COMMAND);
         String[] lines = result.split(System.lineSeparator());
         String line = (lines.length >= 2) ? lines[lines.length - 2] : "";
@@ -250,8 +244,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     public void stopVpn() throws IOException {
         managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, Constants.ARG_SIGTERM));
     }
-
-    @SuppressWarnings({ "NestedAssignment", "MethodCallInLoopCondition" })
+    @SuppressWarnings({ "NestedAssignment", "ThrowSpecificExceptions" })
     @Override
     public void run() {
         if (!isConnected()) {
@@ -354,9 +347,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    @SuppressWarnings({ "IfStatementWithTooManyBranches", "MagicCharacter", "ProhibitedExceptionCaught" })
+    @SuppressWarnings({ "IfStatementWithTooManyBranches", "ProhibitedExceptionCaught" })
     private void parseInput(String line) throws IOException {
-        if (line.startsWith(">") && (line.indexOf(':') > -1)) {
+        if (line.startsWith(">") && line.contains(":")) {
             try {
                 process(line);
             } catch (UnsupportedOperationException e) {
@@ -427,9 +420,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    @SuppressWarnings("MagicCharacter")
     private void processByteCount(String argument) {
-        int comma = argument.indexOf(',');
+        int comma = argument.indexOf(",");
         long in = Long.parseLong(argument.substring(0, comma));
         long out = Long.parseLong(argument.substring(comma + 1));
         TrafficHistory.TrafficDataPoint tdp = new TrafficHistory.TrafficDataPoint(in, out, 0L);
@@ -499,7 +491,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             return;
         }
         if (argument.startsWith(Constants.NEED_PREFIX)) {
-            String s = "\'";
+            String s = "'";
             int p1 = argument.indexOf(s);
             int p2 = argument.indexOf(s, p1 + 1);
             @NonNls String type = argument.substring(p1 + 1, p2);

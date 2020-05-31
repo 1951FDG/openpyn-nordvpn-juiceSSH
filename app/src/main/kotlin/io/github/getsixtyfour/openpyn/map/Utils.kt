@@ -24,6 +24,7 @@ import io.github.getsixtyfour.openpyn.utils.PrintArray
 import mu.KotlinLogging
 import org.json.JSONArray
 import org.json.JSONException
+import java.io.BufferedReader
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -155,9 +156,7 @@ internal fun createJsonArray(context: Context, @RawRes id: Int, ext: String): JS
         if (!file.exists()) {
             copyRawResourceToFile(context, id, file)
         }
-        val json = file.bufferedReader().use {
-            it.readText()
-        }
+        val json = file.bufferedReader().use(BufferedReader::readText)
         return JSONArray(json)
     } catch (e: NotFoundException) {
         logger.error(e) { "" }
@@ -173,7 +172,7 @@ internal fun createJsonArray(context: Context, @RawRes id: Int, ext: String): JS
 
 @Suppress("MagicNumber")
 internal fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
-    val json = context.resources.openRawResource(id).bufferedReader().use { it.readText() }
+    val json = context.resources.openRawResource(id).bufferedReader().use(BufferedReader::readText)
     val factory = PristineModelsJsonAdapterFactory.Builder().apply { add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
     val moshi = Moshi.Builder().add(factory.build()).add(object {
         @ToJson
