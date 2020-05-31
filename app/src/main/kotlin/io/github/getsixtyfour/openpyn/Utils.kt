@@ -45,6 +45,7 @@ import io.github.getsixtyfour.openpyn.map.util.createJson
 import io.github.getsixtyfour.openpyn.map.util.stringifyJsonArray
 import io.github.getsixtyfour.openpyn.settings.SettingsActivity
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
+import io.github.getsixtyfour.openpyn.utils.VpnAuthenticationHandler
 import mu.KLoggable
 import mu.KLogger
 import mu.KotlinLogging
