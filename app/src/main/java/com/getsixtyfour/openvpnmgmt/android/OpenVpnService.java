@@ -65,7 +65,7 @@ public final class OpenVpnService extends Service
 
     private static final int DEFAULT_REMOTE_PORT = 23;
 
-    private static final String DEFAULT_REMOTE_SERVER = "127.0.0.1";
+    private static final String DEFAULT_REMOTE_SERVER = "192.168.1.1";
 
     private final IBinder mBinder = new IOpenVpnServiceInternal.Stub() {
         @Override
