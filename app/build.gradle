@@ -66,21 +66,36 @@ android {
             applicationIdSuffix ".debug"
         }
     }
-    // Morphing-Material-Dialogs uses data binding code
-    dataBinding.enabled = false
-    viewBinding.enabled = true
+    buildFeatures {
+        buildConfig true
+        viewBinding true
+        // Morphing-Material-Dialogs uses data binding code
+        dataBinding false
+        aidl true
+        renderScript false
+        resValues true
+        shaders false
+    }
+    dependenciesInfo {
+        includeInApk false
+        includeInBundle false
+    }
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
             version '3.10.2'
         }
     }
+    sourceSets {
+        debug.java.srcDirs += 'src/debug/kotlin'
+        main.java.srcDirs += 'src/main/kotlin'
+    }
     aaptOptions {
         noCompress 'mbtiles'
     }
     compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -107,17 +122,13 @@ android {
         exclude 'lib/x86/libsqlite4java-android.so'
         exclude 'lib/x86_64/libsqlite4java-android.so'
     }
-    sourceSets {
-        debug.java.srcDirs += 'src/debug/kotlin'
-        main.java.srcDirs += 'src/main/kotlin'
-    }
     testOptions {
-        animationsDisabled = true
+        animationsDisabled true
     }
 }
 
 androidGitVersion {
-    format = '%describe%%-branch%%-dirty%'
+    format '%describe%%-branch%%-dirty%'
 }
 
 detekt {
@@ -233,10 +244,14 @@ dependencies {
 
     // Kotlin
     implementation('org.jetbrains.kotlin:kotlin-stdlib') {
-        force = true
+        version {
+            strictly "$kotlin_version"
+        }
     }
     implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8') {
-        force = true
+        version {
+            strictly "$kotlin_version"
+        }
     }
 
     // LeakCanary
@@ -275,6 +290,7 @@ dependencies {
     debugCompileOnly 'com.jakewharton.nopen:nopen-annotations:1.0.1'
     errorprone 'com.jakewharton.nopen:nopen-checker:1.0.1'
     errorprone 'com.google.errorprone:error_prone_core:2.3.4'
+    //noinspection GradleDynamicVersion
     errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
 
     // Test
@@ -309,11 +325,6 @@ dependencies {
     // Google Maps SDK for Android v.3.0.0 BETA
     //implementation name:'maps-sdk-3.0.0-beta', ext:'aar'
     //implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-
-    // Kotlin
-    //implementation('org.jetbrains.kotlin:kotlin-reflect') {
-    //    force = true
-    //}
 
     // UI
     //implementation('com.afollestad.material-dialogs:core:0.9.6.0') {
