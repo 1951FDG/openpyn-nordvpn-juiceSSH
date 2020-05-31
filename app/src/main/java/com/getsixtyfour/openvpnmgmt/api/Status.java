@@ -1,6 +1,6 @@
 package com.getsixtyfour.openvpnmgmt.api;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -12,13 +12,11 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 
-@SuppressWarnings("UseOfObsoleteDateTimeApi")
 public interface Status {
 
     @NotNull List<Client> getClients();
 
     @NotNull Set<Route> getRoutes();
 
-    @Nullable
-    Calendar getUpdateTime();
+    @Nullable LocalDateTime getUpdateTime();
 }

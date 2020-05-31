@@ -5,13 +5,11 @@ import com.getsixtyfour.openvpnmgmt.api.Route;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
  * @author 1951FDG
  */
 
-@SuppressWarnings("UseOfObsoleteDateTimeApi")
 public final class OpenVpnStatus extends OpenVpnCommand implements Status {
 
     @NonNls
@@ -61,30 +58,25 @@ public final class OpenVpnStatus extends OpenVpnCommand implements Status {
 
     private final Set<Route> mRoutes = new HashSet<>(10);
 
-    private Calendar mUpdateTime = null;
+    private @Nullable LocalDateTime mUpdateTime = null;
 
-    private static Calendar parseUpdatedTime(String updatedString) throws OpenVpnParseException {
+    private static LocalDateTime parseUpdatedTime(String updatedString) throws OpenVpnParseException {
         try {
             String[] components = updatedString.split(",");
             if (components.length != 2) {
                 throw new OpenVpnParseException("Cannot parse update time string. There should be 2 components separated by comma");
             }
-            SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ROOT);
-            Date parsedDate = sdf.parse(components[1]);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(parsedDate);
-            return calendar;
-        } catch (ParseException e) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT, Locale.ENGLISH);
+            return LocalDateTime.parse(components[1], formatter);
+        } catch (DateTimeParseException e) {
             throw new OpenVpnParseException("Cannot parse update time string", e);
         }
     }
 
-    @NotNull
     @Override
-    public String toString() {
-        DateFormat df = DateFormat.getInstance();
+    public @NotNull String toString() {
         StringBuilder sb = new StringBuilder("Updated:\t");
-        sb.append(df.format(mUpdateTime.getTime()));
+        sb.append(mUpdateTime);
         sb.append(System.lineSeparator());
         sb.append("Client List:");
         sb.append(System.lineSeparator());
@@ -114,10 +106,9 @@ public final class OpenVpnStatus extends OpenVpnCommand implements Status {
         return Collections.unmodifiableSet(mRoutes);
     }
 
-    @Nullable
     @Override
-    public Calendar getUpdateTime() {
-        return (mUpdateTime == null) ? null : (Calendar) mUpdateTime.clone();
+    public @Nullable LocalDateTime getUpdateTime() {
+        return mUpdateTime;
     }
 
     @Override

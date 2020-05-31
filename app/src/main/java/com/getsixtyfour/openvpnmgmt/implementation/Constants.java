@@ -4,9 +4,7 @@ import org.jetbrains.annotations.NonNls;
 
 @SuppressWarnings("UtilityClass")
 final class Constants {
-
-    @SuppressWarnings("SpellCheckingInspection")
-    static final String DATE_FORMAT = "EEE MMMM dd HH:mm:ss yyyy";
+    static final String DATE_FORMAT = "EEE MMM dd HH:mm:ss yyyy";
 
     @NonNls
     static final String CANNOT_PARSE_DATE = "Cannot Parse date.";

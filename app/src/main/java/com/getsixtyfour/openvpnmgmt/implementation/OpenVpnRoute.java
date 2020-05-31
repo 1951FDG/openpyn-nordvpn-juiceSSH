@@ -6,11 +6,9 @@ import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -22,12 +20,11 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 
-@SuppressWarnings("UseOfObsoleteDateTimeApi")
 public final class OpenVpnRoute implements Route {
 
     private final String mCommonName;
 
-    private final Calendar mLastRef;
+    private final LocalDateTime mLastRef;
 
     private final InetSocketAddress mRealIpAddress;
 
@@ -45,19 +42,18 @@ public final class OpenVpnRoute implements Route {
                 //noinspection ConstantConditions
                 throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_REAL_CONNECTION_STRING, strings[2]));
             }
-            SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ROOT);
-            Date parsedDate = sdf.parse(strings[3]);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(parsedDate);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT, Locale.ENGLISH);
+            LocalDateTime date = LocalDateTime.parse(strings[3], formatter);
+
             InetAddress realAddress = InetAddress.getByName(realConnection[0]);
             int port = Integer.parseInt(realConnection[1]);
             mCommonName = strings[1];
             mVirtualIpAddress = InetAddress.getByName(strings[0]);
             mRealIpAddress = new InetSocketAddress(realAddress, port);
-            mLastRef = calendar;
+            mLastRef = date;
         } catch (NumberFormatException e) {
             throw new OpenVpnParseException(Constants.CANNOT_PARSE_PORT_NUMBER, e);
-        } catch (ParseException e) {
+        } catch (DateTimeParseException e) {
             throw new OpenVpnParseException(Constants.CANNOT_PARSE_DATE, e);
         } catch (UnknownHostException e) {
             throw new OpenVpnParseException(Constants.CANNOT_PARSE_HOSTNAME, e);
@@ -94,13 +90,10 @@ public final class OpenVpnRoute implements Route {
         return hash;
     }
 
-    @NotNull
     @Override
-    public String toString() {
-        DateFormat df = DateFormat.getInstance();
+    public @NotNull String toString() {
         return "OpenVpnRoute{" + "Virtual IP address " + mVirtualIpAddress.getHostAddress() + ", common name: " + mCommonName
-                + ", real IP address: " + mRealIpAddress + ", source port: " + mRealIpAddress.getPort() + ", last reference: " + df
-                .format(mLastRef.getTime()) + "}";
+                + ", real IP address: " + mRealIpAddress + ", source port: " + mRealIpAddress.getPort() + ", last reference: " + mLastRef + "}";
     }
 
     @Override
@@ -108,10 +101,9 @@ public final class OpenVpnRoute implements Route {
         return mCommonName;
     }
 
-    @Nullable
     @Override
-    public Calendar getLastRef() {
-        return (Calendar) mLastRef.clone();
+    public @Nullable LocalDateTime getLastRef() {
+        return mLastRef;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.getsixtyfour.openvpnmgmt.api;
 
 import java.net.InetSocketAddress;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -10,13 +10,11 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 
-@SuppressWarnings("UseOfObsoleteDateTimeApi")
 public interface Client {
 
     @Nullable String getCommonName();
 
-    @Nullable
-    Calendar getConnectedSince();
+    @Nullable LocalDateTime getConnectedSince();
 
     @Nullable InetSocketAddress getIpAddress();
 

@@ -4,7 +4,7 @@ import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 import com.getsixtyfour.openvpnmgmt.implementation.OpenVpnCommand;
 import com.getsixtyfour.openvpnmgmt.implementation.OpenVpnStatus;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -71,11 +71,10 @@ public class StatusTest {
     /**
      * Test of getUpdateTime method, of class Status.
      */
-    @SuppressWarnings("UseOfObsoleteDateTimeApi")
     @Test
     public void testGetUpdateTime() {
         LOGGER.debug("getUpdateTime");
-        Calendar result = sInstance.getUpdateTime();
+        LocalDateTime result = sInstance.getUpdateTime();
         Assert.assertNotNull(result);
     }
 }
