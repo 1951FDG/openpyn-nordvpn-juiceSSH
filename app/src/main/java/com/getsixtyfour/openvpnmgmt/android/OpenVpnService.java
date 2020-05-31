@@ -18,7 +18,6 @@ import android.text.format.DateUtils;
 
 import androidx.annotation.CheckResult;
 import androidx.annotation.DrawableRes;
-import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -28,13 +27,11 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
-import com.getsixtyfour.openvpnmgmt.core.LogLevel;
 import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
 import com.getsixtyfour.openvpnmgmt.model.OpenVpnNetworkState;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
 import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
-import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
@@ -57,8 +54,7 @@ import io.github.getsixtyfour.openpyn.R;
 
 @SuppressWarnings({ "OverlyComplexClass", "ClassWithTooManyDependencies" })
 public final class OpenVpnService extends Service
-        implements OnRecordChangedListener, OnStateChangedListener, OnByteCountChangedListener, ConnectionListener,
-        UncaughtExceptionHandler {
+        implements ConnectionListener, OnByteCountChangedListener, OnStateChangedListener, UncaughtExceptionHandler {
 
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnService.class);
@@ -192,7 +188,7 @@ public final class OpenVpnService extends Service
     @NonNull
     @SuppressWarnings({ "TypeMayBeWeakened", "MethodWithTooManyParameters" })
     private Notification getNotification(@NonNull Context context, @NonNull String title, @NonNull String text, @NonNull String channel,
-                                         long when, @IdRes int icon) {
+                                         long when, @DrawableRes int icon) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel);
         builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
         builder.setContentText(text);
@@ -246,7 +242,7 @@ public final class OpenVpnService extends Service
 
         Connection connection = ManagementConnection.getInstance();
         connection.addOnByteCountChangedListener(this);
-        connection.addOnRecordChangedListener(this);
+        connection.addOnRecordChangedListener(OpenVpnService::onRecordChanged);
         connection.addOnStateChangedListener(this);
         connection.setConnectionListener(this);
     }
@@ -342,29 +338,10 @@ public final class OpenVpnService extends Service
         thread.start();
 
         Connection connection = ManagementConnection.getInstance();
-        connection.removeOnByteCountChangedListener(this);
-        connection.removeOnRecordChangedListener(this);
-        connection.removeOnStateChangedListener(this);
+        connection.clearOnByteCountChangedListeners();
+        connection.clearOnRecordChangedListeners();
+        connection.clearOnStateChangedListeners();
         connection.setConnectionListener(null);
-    }
-
-    @Override
-    public void onByteCountChanged(long in, long out, long diffIn, long diffOut) {
-        if (!mPostByteCountNotification) {
-            return;
-        }
-
-        long byteCountInterval = ManagementConnection.BYTE_COUNT_INTERVAL.longValue();
-        String strIn = humanReadableByteCount(this, in, false);
-        String strDiffIn = humanReadableByteCount(this, diffIn / byteCountInterval, true);
-        String strOut = humanReadableByteCount(this, out, false);
-        String strDiffOut = humanReadableByteCount(this, diffOut / byteCountInterval, true);
-        int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_CONNECTED);
-        String text = getString(R.string.vpn_msg_byte_count, strIn, strDiffIn, strOut, strDiffOut);
-        String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_connected));
-
-        Notification notification = getNotification(this, title, text, Constants.BG_CHANNEL_ID, mStartTime, icon);
-        startForeground(Constants.BG_CHANNEL_ID.hashCode(), notification);
     }
 
     @Override
@@ -402,27 +379,46 @@ public final class OpenVpnService extends Service
     }
 
     @Override
-    public void onRecordChanged(@NonNull OpenVpnLogRecord record) {
-        LogLevel value = record.getLevel();
-        switch (value) {
+    public void onByteCountChanged(long in, long out, long diffIn, long diffOut) {
+        if (!mPostByteCountNotification) {
+            return;
+        }
+
+        long byteCountInterval = ManagementConnection.BYTE_COUNT_INTERVAL.longValue();
+        String strIn = humanReadableByteCount(this, in, false);
+        String strDiffIn = humanReadableByteCount(this, diffIn / byteCountInterval, true);
+        String strOut = humanReadableByteCount(this, out, false);
+        String strDiffOut = humanReadableByteCount(this, diffOut / byteCountInterval, true);
+        int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_CONNECTED);
+        String text = getString(R.string.vpn_msg_byte_count, strIn, strDiffIn, strOut, strDiffOut);
+        String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_connected));
+
+        Notification notification = getNotification(this, title, text, Constants.BG_CHANNEL_ID, mStartTime, icon);
+        startForeground(Constants.BG_CHANNEL_ID.hashCode(), notification);
+    }
+
+    private static void onRecordChanged(@NonNull OpenVpnLogRecord record) {
+        @NonNls Logger logger = LoggerFactory.getLogger("OpenVPN"); //NON-NLS
+
+        switch (record.getLevel()) {
             case ERROR:
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error(record.getMessage());
+                if (logger.isErrorEnabled()) {
+                    logger.error(record.getMessage());
                 }
                 break;
             case WARNING:
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn(record.getMessage());
+                if (logger.isWarnEnabled()) {
+                    logger.warn(record.getMessage());
                 }
                 break;
             case INFO:
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info(record.getMessage());
+                if (logger.isInfoEnabled()) {
+                    logger.info(record.getMessage());
                 }
                 break;
             case DEBUG:
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(record.getMessage());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(record.getMessage());
                 }
                 break;
             case VERBOSE:
@@ -437,18 +433,19 @@ public final class OpenVpnService extends Service
         @NonNls String address = state.getRemoteAddress();
         @NonNls String port = state.getRemotePort();
 
-        ConnectionStatus level = VpnStatus.getLevel(name, message);
-        boolean isConnected = level == ConnectionStatus.LEVEL_CONNECTED;
-
         if (mSendStateBroadcast) {
             Utils.doSendBroadcast(this, name, message);
         }
+
+        ConnectionStatus level = VpnStatus.getLevel(name, message);
+        boolean isConnected = level == ConnectionStatus.LEVEL_CONNECTED;
+        boolean isDisconnected = level == ConnectionStatus.LEVEL_NOT_CONNECTED;
 
         if (isConnected) {
             mStartTime = state.getMillis();
         }
 
-        if (mPostStateNotification || isConnected) {
+        if (mPostStateNotification || isConnected || isDisconnected) {
             int icon = getIconByConnectionStatus(level);
             String text = message;
             String title = getString(R.string.vpn_title_status, getString(getLocalizedState(name)));

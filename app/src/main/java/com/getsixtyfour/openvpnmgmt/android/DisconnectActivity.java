@@ -158,7 +158,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
 
     @Override
     public void onClick(@NonNull DialogInterface dialog, int which) {
-        if ((which == DialogInterface.BUTTON_POSITIVE) && (mService != null)) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
             Thread thread = new ShutdownThread(mService);
             thread.start();
         }
