@@ -10,6 +10,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
+import io.github.getsixtyfour.openpyn.R
 
 private const val JUICE_SSH_PACKAGE_NAME = "com.sonelli.juicessh"
 
@@ -39,7 +40,7 @@ fun Activity.juiceSSHInstall() {
             openURI(uri)
         }
     } else {
-        val s = "juicessh-2-1-4"
+        val s = getString(R.string.juicessh_ssh_client)
         val uriString = "https://www.apkmirror.com/apk/sonelli-ltd/juicessh-ssh-client/$s-release/$s-android-apk-download/download/"
         openURI(Uri.parse(uriString))
     }
