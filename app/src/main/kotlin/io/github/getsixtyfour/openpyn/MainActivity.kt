@@ -74,7 +74,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
     private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
-    /*private var dialog: MorphDialog? = null*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -121,8 +120,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
             if (resultCode == RESULT_OK) {
             }
         }*/
-
-        /*MorphDialog.registerOnActivityResult(requestCode, resultCode, data).forDialogs(dialog)*/
     }
 
     override fun onResume() {
@@ -244,35 +241,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
             return getString(R.string.vpn_msg_connect, element(location, flag, server, country))
         }
 
-        /*fun showMessageDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
-            title(R.string.title_dialog_connect)
-            content(message())
-            positiveText(android.R.string.ok)
-            negativeText(android.R.string.cancel)
-            onPositive { _, _ -> mConnectionManager?.toggleConnection(this, mConnectionId, JUICESSH_REQUEST_CODE) }
-            show()
-        }*/
-
-        /*fun showWarningDialog(v: FloatingActionButton): MorphDialog = MorphDialog.Builder(this, v).run {
-            title(R.string.title_dialog_error)
-            content(R.string.error_must_have_at_least_one_server)
-            positiveText(android.R.string.ok)
-            show()
-        }*/
-
         if (id != R.id.fab0 || v !is FloatingActionButton) return
 
         mConnectionManager?.let {
             if (mConnectionListAdapter?.count ?: 0 > 0) {
                 if (!it.isConnected()) {
-                    /*dialog = showMessageDialog(v)*/
                     val action = MapFragmentDirections.actionMapFragmentToPreferenceDialogFragment(message())
                     Navigation.findNavController(v).navigate(action)
                 } else {
                     it.toggleConnection(this, mConnectionId, JUICESSH_REQUEST_CODE)
                 }
             } else {
-                /*showWarningDialog(v)*/
                 AlertDialog.Builder(this).apply {
                     setTitle(R.string.title_error)
                     setMessage(R.string.error_juicessh_server)

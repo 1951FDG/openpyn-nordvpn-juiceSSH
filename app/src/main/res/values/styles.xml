@@ -122,12 +122,6 @@
         <!--<item name="android:cacheColorHint">?android:attr/colorBackground</item>-->
     <!--</style>-->
 
-    <!--<style name="MorphDialog.Custom.Light" parent="MorphDialog.Base.Light">-->
-        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-        <!--<item name="colorAccent">@color/colorAccent</item>-->
-    <!--</style>-->
-
     <!--<style name="ToolbarProgress" parent="android:Widget.ProgressBar.Horizontal">-->
         <!--<item name="android:indeterminate">true</item>-->
         <!--<item name="mpb_indeterminateTint">?android:attr/colorAccent</item>-->
