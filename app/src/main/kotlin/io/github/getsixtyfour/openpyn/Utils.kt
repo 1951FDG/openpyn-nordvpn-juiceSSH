@@ -150,13 +150,6 @@ fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETE
             toolbar?.hideProgress(true)
 
             if (!thrown) {
-                /*MaterialDialog.Builder(it).apply {
-                    title(R.string.title_dialog_warning)
-                    content(R.string.warning_must_restart_app)
-                    positiveText(android.R.string.ok)
-                    show()
-                }*/
-
                 AlertDialog.Builder(it).apply {
                     setTitle(R.string.title_warning)
                     setMessage(R.string.warning_restart_app)

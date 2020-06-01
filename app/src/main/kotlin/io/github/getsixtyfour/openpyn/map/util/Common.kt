@@ -494,23 +494,6 @@ fun createMarkers(
         // Replace the aliases by their unicode
         return (countries.find { (it as? MultiSelectModelExtra)?.tag == input } as? MultiSelectModelExtra)?.unicode ?: input
     }
-    /*fun netflix(flag: CharSequence?): Boolean = when (flag) {
-        "us" -> true
-        "ca" -> true
-        "nl" -> true
-        "jp" -> true
-        "gb" -> true
-        "gr" -> true
-        "mx" -> true
-        else -> false
-    }
-    val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    val netflix = preferences.getBoolean("pref_netflix", false)
-    val dedicated = preferences.getBoolean("pref_dedicated", false)
-    val double = preferences.getBoolean("pref_double", false)
-    val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
-    val onion = preferences.getBoolean("pref_tor", false)
-    val p2p = preferences.getBoolean("pref_p2p", false)*/
     val length = jsonArray.length()
     val flags = HashSet<CharSequence>(length)
     val markers = HashMap<LatLng, LazyMarker>(length)
@@ -518,38 +501,6 @@ fun createMarkers(
 
     for (res in jsonArray) {
         val flag = res.getString(FLAG)
-        /*var pass = when {
-            netflix -> netflix(flag)
-            dedicated -> false
-            double -> false
-            obfuscated -> false
-            onion -> false
-            p2p -> false
-            else -> true
-        }
-        if (!pass && !netflix) {
-            val categories = res.getJSONArray(CATEGORIES)
-
-            loop@ for (category in categories) {
-                val name = category.getString(NAME)
-                pass = when {
-                    dedicated and (name == DEDICATED) -> true
-                    double and (name == DOUBLE) -> true
-                    obfuscated and (name == OBFUSCATED) -> true
-                    onion and (name == ONION) -> true
-                    p2p and (name == P2P) -> true
-                    else -> false
-                }
-
-                if (pass) {
-                    break@loop
-                }
-            }
-        }
-
-        if (!pass) {
-            continue
-        }*/
         val country = res.getString(COUNTRY)
         val emoji = parseToUnicode(countries, flag)
         val location = res.getJSONObject(LOCATION)

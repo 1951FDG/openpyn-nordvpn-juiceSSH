@@ -319,15 +319,9 @@ dependencies {
     // Anko
     //implementation "org.jetbrains.anko:anko-sdk21-listeners:$anko_version"
 
-    // Emoji
-    //implementation 'com.vdurmont:emoji-java:5.1.1'
-
     // Google Maps SDK for Android v.3.0.0 BETA
     //implementation name:'maps-sdk-3.0.0-beta', ext:'aar'
     //implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-
-    // UI
-    //implementation 'com.github.armcha:ElasticView:0.2.0'
 }
 
 apply from: 'other.gradle'

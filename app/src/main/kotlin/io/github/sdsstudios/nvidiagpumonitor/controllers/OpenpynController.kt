@@ -198,13 +198,9 @@ class OpenpynController(
             server.isNotEmpty() -> options.append(" --server $server")
             country.isNotEmpty() -> options.append(" ${code(country)}")
         }
-        /*if area:
-            openpyn_options += " --area " + area*/
         if (tcp) options.append(" --tcp")
         if (load.isNotEmpty()) options.append(" --max-load $load")
         if (top.isNotEmpty()) options.append(" --top-servers $top")
-        /*if (pings.isNotEmpty())
-            options.append(" --pings $pings")*/
         if (rules) options.append(" --force-fw-rules")
         if (p2p) options.append(" --p2p")
         if (dedicated) options.append(" --dedicated")
@@ -213,11 +209,6 @@ class OpenpynController(
         if (obfuscated) options.append(" --anti-ddos")
         if (netflix) options.append(" --netflix")
         if (test) options.append(" --test")
-        /*if internally_allowed
-        open_ports = ""
-        for port_number in internally_allowed:
-        open_ports += " " + port_number
-        openpyn_options += " --allow" + open_ports*/
         if (patch) options.append(" --skip-dns-patch")
         if (silent) options.append(" --silent")
         if (nvram) options.append(" --nvram " + preferences.getString("pref_nvram_client", "5"))
