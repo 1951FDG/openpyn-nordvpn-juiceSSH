@@ -57,7 +57,6 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Licenses" />
-
         <!-- Private activity -->
         <activity
             android:name="pub.devrel.easypermissions.AppSettingsDialogHolderActivity"

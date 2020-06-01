@@ -217,7 +217,7 @@ class OpenpynController(
         val openpyn = "$options"
         // The file /etc/profile is only loaded for a login shell, this is a non-interactive shell
         command = "[ -f /etc/profile ] && . /etc/profile ; $openpyn"
-        /*startCommand = "echo \$PATH ; echo \$-"*/
+        /*command = "echo \$PATH ; echo \$-"*/
         logger.info(command)
 
         return super.connect(pluginClient, sessionId, sessionKey)

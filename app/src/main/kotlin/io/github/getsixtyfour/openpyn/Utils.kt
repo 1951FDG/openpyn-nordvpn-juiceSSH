@@ -342,7 +342,7 @@ fun initStrictMode() {
 
 @SuppressLint("PrivateApi")
 fun <T : Context> isEmulator(context: T): Boolean {
-    // TODO: add connectivity check for 10.0.2.2 on debug machine
+    // TODO: add connectivity check for 10.0.2.2 on debug machine for higher api levels
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
         context.classLoader.loadClass("android.os.SystemProperties").let {
             if ((it.getMethod("get", String::class.java).invoke(it, "ro.kernel.qemu") as String) == "1") {
