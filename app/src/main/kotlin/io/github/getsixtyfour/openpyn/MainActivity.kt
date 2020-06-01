@@ -89,13 +89,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         startVpnService(this)
         // TODO: remove after beta release test, add delay?
         logger.error(Exception()) { "$apkSignatures" }
-
-        /*val api = GoogleApiAvailability.getInstance()
-        when (val errorCode = api.isGooglePlayServicesAvailable(applicationContext)) {
-            ConnectionResult.SUCCESS -> onActivityResult(GOOGLE_REQUEST_CODE, RESULT_OK, null)
-            //api.isUserResolvableError(errorCode) -> api.showErrorDialogFragment(this, errorCode, GOOGLE_REQUEST_CODE)
-            else -> logger.warn { api.getErrorString(errorCode) }
-        }*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -115,11 +108,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
                 logger.warn { "Update flow failed! Result code: $resultCode" }
             }
         }
-
-        /*if (requestCode == GOOGLE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-            }
-        }*/
     }
 
     override fun onResume() {
@@ -367,6 +355,5 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         const val UPDATE_REQUEST_CODE: Int = 1
         const val PERMISSION_REQUEST_CODE: Int = 2
         const val JUICESSH_REQUEST_CODE: Int = 3
-        /*private const val GOOGLE_REQUEST_CODE = 4*/
     }
 }
