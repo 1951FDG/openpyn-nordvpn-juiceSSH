@@ -7,7 +7,6 @@
     <ID>ComplexMethod:OpenpynController.kt$OpenpynController$onOutputLine</ID>
     <ID>LongMethod:Common.kt$createJson</ID>
     <ID>LongMethod:Utilities.kt$showThreats</ID>
-    <ID>LongParameterList:Utilities.kt$( context: Context, countryBoundaries: CountryBoundaries?, lastLocation: Location?, flags: HashSet&lt;CharSequence&gt;, jsonObj: JSONObject?, jsonArr: JSONArray? = null )</ID>
     <ID>LongParameterList:Utilities.kt$( context: Context, jsonArray: JSONArray, countries: List&lt;MultiSelectable&gt;, listener: OnMarkerCreateListener, favorites: ArrayList&lt;LazyMarker&gt;?, callback: OnLevelChangeCallback )</ID>
     <ID>TooManyFunctions:MainActivity.kt$MainActivity$MainActivity</ID>
     <ID>TooManyFunctions:MapControlTower.kt$MapControlTower$MapControlTower</ID>

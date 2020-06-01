@@ -26,7 +26,6 @@ import com.google.android.gms.maps.model.TileOverlayOptions
 import com.naver.android.svc.annotation.ControlTower
 import com.naver.android.svc.annotation.RequireScreen
 import com.naver.android.svc.annotation.RequireViews
-import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.util.LazyMarkerStorage
 import io.github.getsixtyfour.openpyn.utils.PrintArray
@@ -79,7 +78,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
 
     //set by async
     private lateinit var mCountries: List<MultiSelectable>
-    private lateinit var mCountryBoundaries: CountryBoundaries
     private lateinit var mJsonArray: JSONArray
     private lateinit var mTileProvider: MapBoxOfflineTileProvider
     private lateinit var mMarkers: HashMap<LatLng, LazyMarker>
@@ -336,14 +334,12 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
 
         val animations: ArrayList<Animation> = withContext(IO) {
             val countries = async { countryList(applicationContext, R.raw.emojis) }
-            val countryBoundaries = async { getCountryBoundaries(applicationContext) }
             val jsonArray = async { jsonArray(applicationContext, R.raw.nordvpn, ".json") }
             val tileProvider = async { fileBackedTileProvider() }
             val favorites = async { LazyMarkerStorage(FAVORITE_KEY).loadFavorites(applicationContext) }
             val jsonObj = async { createGeoJson(applicationContext) }
 
             mCountries = countries.await()
-            mCountryBoundaries = countryBoundaries.await()
             mJsonArray = jsonArray.await()
             mTileProvider = tileProvider.await()
             val list = favorites.await()
@@ -353,7 +349,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             mFlags = setUpPrintArray(applicationContext, mCountries, hashSet)
             mMarkers = hashMap
             val animations = getCameraUpdates()
-            val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, mFlags, json, mJsonArray)
+            val latLng = getCurrentPosition(applicationContext, mFlags, json, mJsonArray)
             val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
                 isCallback = true
                 isAnimate = true
@@ -395,16 +391,16 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         }
     }
 
-    private fun animateCamera(jsonObj: JSONObject?, closest: Boolean = false, execute: Boolean = true) {
+    private fun animateCamera(json: JSONObject?, closest: Boolean = false, execute: Boolean = true) {
         // Check if not already animating
         mCameraUpdateAnimator?.let {
             if (!it.isAnimating) {
-                val latLng = getCurrentPosition(applicationContext, mCountryBoundaries, null, mFlags, jsonObj, mJsonArray)
+                val latLng = getCurrentPosition(applicationContext, mFlags, json, mJsonArray)
                 val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
                     isCallback = true
                     isAnimate = true
                     isClosest = closest
-                    tag = jsonObj
+                    tag = json
                     target = latLng
                 }
                 it.add(animation)

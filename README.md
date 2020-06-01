@@ -148,7 +148,6 @@ To compile and run the project you'll need:
 -   [Anko](https://github.com/Kotlin/anko)
 -   [Barista](https://github.com/SchibstedSpain/Barista)
 -   [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
--   [countryboundaries](https://github.com/westnordost/countryboundaries)
 -   [EasyPermissions](https://github.com/googlesamples/easypermissions)
 -   [Fuel](https://github.com/kittinunf/Fuel)
 -   [GDPRDialog](https://github.com/MFlisar/GDPRDialog)

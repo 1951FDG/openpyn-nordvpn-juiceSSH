@@ -17,7 +17,6 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.Types
-import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.utils.MultiSelectMapper
 import io.github.getsixtyfour.openpyn.utils.PrintArray
@@ -88,10 +87,6 @@ internal fun memoryBackedTileProvider(): MapBoxOfflineTileProvider {
     val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro", null)
     logger.debug { "$tileProvider" }
     return tileProvider
-}
-
-internal fun getCountryBoundaries(context: Context): CountryBoundaries {
-    return CountryBoundaries.load(context.assets.open("boundaries.ser"))
 }
 
 internal fun getCameraUpdates(): ArrayList<Animation> {

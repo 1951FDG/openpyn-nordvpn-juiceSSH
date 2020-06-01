@@ -22,7 +22,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mayurrokade.minibar.UserMessage
-import de.westnordost.countryboundaries.CountryBoundaries
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.createJsonArray
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
@@ -684,8 +683,6 @@ suspend fun createGeoJson(context: Context): JSONObject? {
 @Suppress("ComplexMethod")
 fun getCurrentPosition(
     context: Context,
-    countryBoundaries: CountryBoundaries?,
-    lastLocation: Location?,
     flags: HashSet<CharSequence>,
     jsonObj: JSONObject?,
     jsonArr: JSONArray? = null
@@ -735,26 +732,6 @@ fun getCurrentPosition(
         else -> LatLng(lat, lon)
     }
 
-    fun getString(ids: List<String>?): String = when {
-        ids.isNullOrEmpty() -> "is nowhere"
-        else -> "is in: ${ids.joinToString()}"
-    }
-
-    fun getFlag(list: List<String>?): String = when {
-        list != null && list.isNotEmpty() -> list[0].toLowerCase(Locale.ROOT)
-        else -> ""
-    }
-
-    // TODO: lastLocation is not being used anymore
-    fun getFLag(countryBoundaries: CountryBoundaries?, lon: Double, lat: Double): String {
-        var t = System.nanoTime()
-        val ids = countryBoundaries?.getIds(lon, lat)
-        t = System.nanoTime() - t
-        @Suppress("MagicNumber") val i = 1000
-        logger.info { "${getString(ids)} (in ${"%.3f".format(t / i / i.toFloat())}ms)" }
-        return getFlag(ids)
-    }
-
     var latLng = getDefaultLatLng()
 
     when {
@@ -765,34 +742,6 @@ fun getCurrentPosition(
             logger.info { "is in: $flag" }
             latLng = latLng(jsonArr, flags, flag, lat, lon)
         }
-        jsonArr != null -> lastLocation?.let {
-            val lat = it.latitude
-            val lon = it.longitude
-            val flag = getFLag(countryBoundaries, lon, lat)
-            latLng = latLng(jsonArr, flags, flag, lat, lon)
-        }
-/*
-        ContextCompat.checkSelfPermission(
-            context, permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED -> {
-            val task = FusedLocationProviderClient(context).lastLocation
-            try {
-                // Block on the task for a maximum of 500 milliseconds, otherwise time out
-                Tasks.await(task, TIME_MILLIS, TimeUnit.MILLISECONDS)?.let {
-                    val lat = it.latitude
-                    val lon = it.longitude
-                    val flag = getFLag(countryBoundaries, lon, lat)
-                    latLng = latLng(jsonArr, flags, flag, lat, lon)
-                }
-            } catch (e: ExecutionException) {
-                logger.error(e) { "" }
-            } catch (e: InterruptedException) {
-                logger.error(e) { "" }
-            } catch (e: TimeoutException) {
-                logger.warn(e) { "" }
-            }
-        }
-*/
     }
     logger.info { "$latLng" }
     return latLng

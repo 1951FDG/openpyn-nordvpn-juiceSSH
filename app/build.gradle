@@ -218,9 +218,6 @@ dependencies {
     // GDPR
     implementation 'com.github.MFlisar:GDPRDialog:1.4.2'
 
-    // Geocoder
-    implementation 'de.westnordost:countryboundaries:1.5'
-
     // Google Play Services
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
