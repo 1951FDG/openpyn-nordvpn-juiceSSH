@@ -293,7 +293,7 @@ dependencies {
     debugAnnotationProcessor 'com.uber.nullaway:nullaway:0.7.9'
     debugCompileOnly 'com.jakewharton.nopen:nopen-annotations:1.0.1'
     errorprone 'com.jakewharton.nopen:nopen-checker:1.0.1'
-    errorprone 'com.google.errorprone:error_prone_core:2.3.4'
+    errorprone 'com.google.errorprone:error_prone_core:2.4.0'
     //noinspection GradleDynamicVersion
     errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
 
