@@ -6,25 +6,16 @@ import androidx.annotation.Size
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
-// import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectDialog
 import com.abdeveloper.library.MultiSelectable
-
-// import io.github.getsixtyfour.openpyn.R
-// import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
-
-interface SubmitCallbackListener {
-    fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String)
-
-    fun onCancel()
-}
+import io.github.getsixtyfour.openpyn.R
 
 @Suppress("unused")
 object PrintArray {
 
-    private var hint = android.R.string.unknownName
-    private var title = android.R.string.unknownName
+    private var hint = R.string.empty
+    private var title = R.string.empty
     private var positiveTitle = android.R.string.ok
     private var negativeTitle = android.R.string.cancel
     private var neutralTitle = android.R.string.selectAll
@@ -138,19 +129,12 @@ object PrintArray {
     }
 
     // MultiSelectDialog
-    fun show(
-        @Size(min = 1) key: String, context: FragmentActivity, listener: SubmitCallbackListener
-    ) {
-        show(key, itemsList, checkedItemsList, context, listener)
+    fun show(@Size(min = 1) key: String, context: FragmentActivity) {
+        show(key, itemsList, checkedItemsList, context)
     }
 
     // MultiSelectDialog
-    fun show(
-        @Size(min = 1) key: String, items: ArrayList<MultiSelectable>,
-        checkedItems: ArrayList<Int>,
-        context: FragmentActivity,
-        listener: SubmitCallbackListener
-    ) {
+    fun show(@Size(min = 1) key: String, items: ArrayList<MultiSelectable>, checkedItems: ArrayList<Int>, context: FragmentActivity) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
         fun save(selectedItems: ArrayList<Int>): Boolean {
             return when {
@@ -166,16 +150,6 @@ object PrintArray {
             setMaxSelectionLimit(items.size)
             setPreSelectIDsList(checkedItems)
             setMultiSelectList(items)
-            setSubmitListener(object : MultiSelectDialog.SubmitCallbackListener {
-                override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
-                    if (save(selectedIds)) checkedItemsList = selectedIds
-                    listener.onSelected(selectedIds, selectedNames, dataString)
-                }
-
-                override fun onCancel() {
-                    listener.onCancel()
-                }
-            })
             // TODO: change to nav, setup onAttachFragment in activity or setup onAttach in class itself, or ?
             /*val action = MapFragmentDirections.actionMapFragmentToMultiSelectDialogFragment()
             Navigation.findNavController(context.findViewById(R.id.map)).navigate(action)*/

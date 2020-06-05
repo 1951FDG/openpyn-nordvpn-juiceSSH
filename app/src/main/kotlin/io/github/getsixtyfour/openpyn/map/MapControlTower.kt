@@ -3,6 +3,8 @@ package io.github.getsixtyfour.openpyn.map
 import android.content.Context
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.preference.PreferenceManager
+import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
@@ -29,7 +31,6 @@ import com.naver.android.svc.annotation.RequireViews
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.util.LazyMarkerStorage
 import io.github.getsixtyfour.openpyn.utils.PrintArray
-import io.github.getsixtyfour.openpyn.utils.SubmitCallbackListener
 import io.github.getsixtyfour.openpyn.map.util.createGeoJson
 import io.github.getsixtyfour.openpyn.map.util.createMarkers
 import io.github.getsixtyfour.openpyn.map.util.createUserMessage
@@ -60,8 +61,8 @@ import java.util.HashSet
 @ControlTower
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)
-class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoadedCallback, OnCameraIdleListener,
-    OnMapClickListener, OnMarkerClickListener, OnInfoWindowClickListener, SubmitCallbackListener, MapViewsAction, AnimatorListener,
+class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoadedCallback, OnCameraIdleListener, OnMapClickListener,
+    OnMarkerClickListener, OnInfoWindowClickListener, SubmitCallbackListener, MapViewsAction, AnimatorListener,
     CoroutineScope by MainScope() {
 
     private val applicationContext: Context
@@ -191,6 +192,11 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        if (PrintArray.putListInt("pref_country_values", selectedIds, prefs).commit()) {
+            PrintArray.checkedItemsList = selectedIds
+        }
+
         mCountries.let { mFlags = getCurrentFlags(it, selectedIds) }
 
         onCameraIdle()
@@ -199,7 +205,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     override fun showCountryFilterDialog() {
         mCameraUpdateAnimator?.let {
             if (!it.isAnimating) {
-                PrintArray.show("pref_country_values", screen.requireActivity(), this)
+                PrintArray.show("pref_country_values", screen.requireActivity())
             }
         }
     }

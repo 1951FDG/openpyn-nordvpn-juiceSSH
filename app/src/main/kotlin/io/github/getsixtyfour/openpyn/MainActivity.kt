@@ -20,6 +20,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.loader.app.LoaderManager
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
+import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -60,7 +61,7 @@ import java.util.UUID
 
 class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallback, OnClickListener, NoticeDialogListener,
     OnLoaderChangedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
-    CoroutineScope by MainScope() {
+    SubmitCallbackListener, CoroutineScope by MainScope() {
 
     private var mAppSettingsDialogShown: Boolean = false
     private var mConnectionListAdapter: ConnectionListAdapter? = null
@@ -316,6 +317,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         (getCurrentNavigationFragment(this) as? OnSessionFinishedListener)?.onSessionFinished()
 
         spinner.isEnabled = true
+    }
+
+    override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
+        (getCurrentNavigationFragment(this) as? SubmitCallbackListener)?.onSelected(selectedIds, selectedNames, dataString)
+    }
+
+    override fun onCancel() {
     }
 
     private fun onPermissionsGranted(requestCode: Int, vararg perms: String) {

@@ -2,6 +2,7 @@ package io.github.getsixtyfour.openpyn.map
 
 import android.os.Bundle
 import android.view.View
+import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
 import com.google.android.gms.maps.MapView
 import com.naver.android.svc.annotation.RequireControlTower
 import com.naver.android.svc.annotation.RequireViews
@@ -13,11 +14,13 @@ import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import mu.KLogging
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
+import java.util.ArrayList
 
 @SvcFragment
 @RequireViews(MapViews::class)
 @RequireControlTower(MapControlTower::class)
-class MapFragment : AbstractMapFragment(), OnCommandExecuteListener, OnSessionStartedListener, OnSessionFinishedListener {
+class MapFragment : AbstractMapFragment(), OnCommandExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
+    SubmitCallbackListener {
 
     val toolBar: ProgressToolbar? by lazy {
         requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
@@ -60,6 +63,13 @@ class MapFragment : AbstractMapFragment(), OnCommandExecuteListener, OnSessionSt
     override fun onSessionFinished() {
         logger.debug("onSessionFinished")
         controlTower.onSessionFinished()
+    }
+
+    override fun onSelected(selectedIds: ArrayList<Int>, selectedNames: ArrayList<String>, dataString: String) {
+        controlTower.onSelected(selectedIds, selectedNames, dataString)
+    }
+
+    override fun onCancel() {
     }
 
     companion object : KLogging()
