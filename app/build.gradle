@@ -183,7 +183,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
 
     // 1951FDG
-    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.7'
+    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.8'
     implementation('com.github.1951FDG:ProgressToolbar:1.0.7') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
