@@ -490,10 +490,13 @@ fun createMarkers(
     favorites: ArrayList<LazyMarker>?,
     callback: OnLevelChangeCallback
 ): Pair<HashSet<CharSequence>, HashMap<LatLng, LazyMarker>> {
-    fun parseToUnicode(countries: List<MultiSelectable>, input: CharSequence): CharSequence {
-        // Replace the aliases by their unicode
-        return (countries.find { (it as? MultiSelectModelExtra)?.tag == input } as? MultiSelectModelExtra)?.unicode ?: input
+    fun parseToUnicode(countries: List<MultiSelectable>, input: CharSequence): CharSequence = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+            (countries.find { (it as? MultiSelectModelExtra)?.tag == input } as? MultiSelectModelExtra)?.unicode ?: input
+        }
+        else -> ""
     }
+
     val length = jsonArray.length()
     val flags = HashSet<CharSequence>(length)
     val markers = HashMap<LatLng, LazyMarker>(length)

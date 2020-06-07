@@ -27,7 +27,7 @@
     <string name="title_warning">Warning</string>
     <string name="title_ssh">SSH server</string>
 
-    <string name="title_marker"><xliff:g example="\uD83C\uDDF3\uD83C\uDDF1" id="emoji">%1$s</xliff:g> <xliff:g example="Netherlands" id="country">%2$s</xliff:g></string>
+    <string name="title_marker"><xliff:g example="" id="emoji">%1$s</xliff:g><xliff:g example="Netherlands" id="country">%2$s</xliff:g></string>
 
     <!-- Strings related to Connection -->
     <string name="vpn_title_connect">VPN connection</string>
