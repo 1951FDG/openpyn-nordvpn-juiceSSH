@@ -31,13 +31,12 @@ class PreferenceDialog : AppCompatDialogFragment(), DialogInterface.OnClickListe
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext(), theme)
-        builder.setTitle(R.string.vpn_title_connect)
+        builder.setTitle(mArgs.message)
         // Get the layout inflater
         val inflater = LayoutInflater.from(builder.context)
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         val view = inflater.inflate(R.layout.abc_preference_dialog_material, null, false)
-        view.findViewById<TextView>(R.id.message).text = mArgs.message
         builder.setView(view)
         // Add action buttons
         builder.setPositiveButton(android.R.string.ok, this)

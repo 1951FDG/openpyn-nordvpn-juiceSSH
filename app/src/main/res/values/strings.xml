@@ -2,7 +2,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" translatable="false">Openpyn</string>
 
-    <string name="at_preposition">at</string>
     <string name="empty" translatable="false" />
     <string name="search_hint">Search…</string>
 
@@ -30,10 +29,9 @@
     <string name="title_marker"><xliff:g example="" id="emoji">%1$s</xliff:g><xliff:g example="Netherlands" id="country">%2$s</xliff:g></string>
 
     <!-- Strings related to Connection -->
-    <string name="vpn_title_connect">VPN connection</string>
-    <string name="vpn_msg_connect">Are you sure you want to connect to <xliff:g id="string">%1$s</xliff:g></string>
+    <string name="vpn_msg_connect">Connect to <xliff:g id="string">%1$s</xliff:g></string>
     <string name="vpn_name_country"><xliff:g example="Netherlands" id="country">%1$s</xliff:g></string>
-    <string name="vpn_name_location"><xliff:g example="Netherlands" id="country">%1$s</xliff:g> <xliff:g example="at" id="string">%2$s</xliff:g> <xliff:g example="52.3500000" id="latitude">%3$s</xliff:g>, <xliff:g example="4.9166670" id="longitude">%4$s</xliff:g></string>
+    <string name="vpn_name_location"><xliff:g example="52.3500000" id="latitude">%1$s</xliff:g>, <xliff:g example="4.9166670" id="longitude">%2$s</xliff:g></string>
     <string name="vpn_name_server">server <xliff:g example="nl471" id="server">%1$s</xliff:g>.nordvpn.com</string>
 
     <string name="vpn_msg_connected">Connected to <xliff:g example="Amsterdam" id="city">%1$s</xliff:g>, <xliff:g example="NL" id="flag">%2$s</xliff:g> (<xliff:g example="192.168.1.1" id="ip">%3$s</xliff:g>)</string>

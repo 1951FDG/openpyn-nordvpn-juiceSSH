@@ -200,15 +200,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
 
         fun element(location: Coordinate?, flag: String, server: String, country: String): String = when {
             flag.isNotEmpty() -> {
-                val name = getEntryForValue(R.array.pref_country_entries, R.array.pref_country_values, flag)
-                if (location != null) {
+                if (BuildConfig.DEBUG && location != null) {
                     // Enforce Locale to English for double to string conversion
                     val latitude = "%.7f".format(Locale.ENGLISH, location.latitude)
                     val longitude = "%.7f".format(Locale.ENGLISH, location.longitude)
-                    val string = getString(R.string.at_preposition)
-                    getString(R.string.vpn_name_location, name, string, latitude, longitude)
+                    logger.debug { "https://www.google.com/maps?q=$latitude,$longitude" }
+                    getString(R.string.vpn_name_location, latitude, longitude)
                 } else {
-                    name
+                    getEntryForValue(R.array.pref_country_entries, R.array.pref_country_values, flag)
                 }
             }
             server.isNotEmpty() -> {
