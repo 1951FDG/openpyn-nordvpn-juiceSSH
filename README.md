@@ -247,7 +247,6 @@ This app uses (modified) code from several open source projects.
 -   [Natural Earth Map Data](https://www.naturalearthdata.com/downloads/10m-physical-vectors/)
 -   [Business Icons](https://www.flaticon.com/packs/business-14)
 -   [Country Flags Icons](https://www.flaticon.com/packs/countrys-flags)
--   [Global Logistics Icons](https://www.flaticon.com/packs/global-logistics-2)
 
 ## Acknowledgments
 
