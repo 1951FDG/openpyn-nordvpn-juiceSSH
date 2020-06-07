@@ -47,7 +47,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/fab0"
         app:layout_constraintRight_toRightOf="@+id/fab0"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_list_black_24dp"
+        app:srcCompat="@drawable/ic_round_filter_list_24"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
@@ -79,7 +79,7 @@
         app:elevation="2dp"
         app:layout_constraintBottom_toTopOf="@+id/fab0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_my_location_black_24dp"
+        app:srcCompat="@drawable/ic_round_my_location_24"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
