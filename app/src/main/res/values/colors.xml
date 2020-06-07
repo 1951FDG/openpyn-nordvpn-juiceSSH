@@ -13,7 +13,7 @@
     <color name="colorPrimaryDark">@android:color/black</color>
 
     <!-- a secondary color for controls like checkboxes and text fields -->
-    <color name="colorAccent">@color/Pink_A200</color>
+    <color name="colorAccent">@color/accent_material_indigo_200</color>
 
     <color name="actionBarColor">@android:color/white</color>
     <color name="navigationBarColor">#fffafafa</color>
