@@ -46,7 +46,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="colorError">@color/colorPrimary</item>
+        <item name="colorError">@color/colorError</item>
         <item name="colorOnError">@android:color/white</item>
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Custom</item>

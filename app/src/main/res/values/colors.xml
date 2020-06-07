@@ -4,6 +4,8 @@
     <color name="colorDisconnect">#DB3236</color>
     <color name="accent_material_indigo_200">#ff536dfe</color>
 
+    <color name="colorError">#ffff0000</color>
+
     <!-- color for the app bar and other primary UI elements -->
     <color name="colorPrimary">@color/colorAccent</color>
 
