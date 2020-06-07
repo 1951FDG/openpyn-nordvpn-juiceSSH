@@ -210,7 +210,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         }
     }
 
-    override fun toggleCommand(v: View?) {
+    override fun toggleCommand(v: View) {
         (screen.requireActivity() as? OnClickListener)?.onClick(v)
     }
 

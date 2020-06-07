@@ -22,7 +22,6 @@ import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
 import com.google.android.gms.common.GooglePlayServicesUtil
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.michaelflisar.gdprdialog.GDPR
@@ -77,8 +76,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
     private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
-
         super.onCreate(savedInstanceState)
 
         setProgressToolBar(this, toolbar)
@@ -190,10 +187,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         GDPR.getInstance().showDialog(this, mSetup, data?.location)
     }
 
-    @Suppress("ComplexMethod")
-    override fun onClick(v: View?) {
-        val id = checkNotNull(v).id
-
+    override fun onClick(v: View) {
         fun getEntryForValue(@ArrayRes entryArrayId: Int, @ArrayRes valueArrayId: Int, value: String): String {
             return resources.getStringArray(entryArrayId)[resources.getStringArray(valueArrayId).indexOf(value)]
         }
@@ -229,7 +223,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
             return getString(R.string.vpn_msg_connect, element(location, flag, server, country))
         }
 
-        if (id != R.id.fab0 || v !is FloatingActionButton) return
+        if (v.id != R.id.fab0) return
 
         mConnectionManager?.let {
             if (mConnectionListAdapter?.count ?: 0 > 0) {

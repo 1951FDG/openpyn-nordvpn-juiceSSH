@@ -27,7 +27,7 @@ class MapViews : ActionViews<MapViewsAction>() {
     override fun onCreated() {
         // TODO: decouple
         (screen.hostActivity as? MainActivity)?.mSnackProgressBarManager?.setViewsToMove(arrayOf(fab0, fab1))
-        fab0.setOnClickListener { viewsAction.toggleCommand(fab0) }
+        fab0.setOnClickListener(viewsAction::toggleCommand)
 
         fab1.setOnClickListener { viewsAction.updateMasterMarkerWithDelay() }
 

@@ -6,7 +6,7 @@ import com.naver.android.svc.core.views.ViewsAction
 interface MapViewsAction : ViewsAction {
 
     fun showCountryFilterDialog()
-    fun toggleCommand(v: View?)
+    fun toggleCommand(v: View)
     fun toggleFavoriteMarker()
     fun updateMasterMarkerWithDelay(timeMillis: Long = 0)
 }
