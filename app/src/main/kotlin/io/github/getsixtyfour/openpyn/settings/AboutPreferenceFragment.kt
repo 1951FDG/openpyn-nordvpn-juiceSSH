@@ -223,8 +223,10 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     private fun getSwitchPreference(
         context: Context,
-        defaultValue: Boolean, @StringRes titleResId: Int?,
-        summary: String?, @DrawableRes iconResId: Int?,
+        defaultValue: Boolean,
+        @StringRes titleResId: Int?,
+        summary: String?,
+        @DrawableRes iconResId: Int?,
         listener: OnPreferenceChangeListener?
     ): Preference {
         val preference = SwitchPreference(context)

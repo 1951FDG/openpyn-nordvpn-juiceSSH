@@ -68,7 +68,7 @@ class MainActivityTest {
 
             ActivityLifecycleMonitorRegistry.getInstance().addLifecycleCallback { activity: Activity, stage: Stage ->
                 if (stage == Stage.PRE_ON_CREATE) {
-                    if (Build.VERSION.SDK_INT >= 27) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                         activity.setShowWhenLocked(true)
                         activity.setTurnScreenOn(true)
                     } else {

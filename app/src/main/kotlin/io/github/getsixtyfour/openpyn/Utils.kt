@@ -314,7 +314,6 @@ private fun <T : Context> initCrashlytics(context: T, enabled: Boolean) {
     if (Fabric.isInitialized()) {
         return
     }
-
     val core = CrashlyticsCore.Builder().disabled(!enabled).build()
     Fabric.with(context, Crashlytics.Builder().core(core).build())
     FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(enabled)

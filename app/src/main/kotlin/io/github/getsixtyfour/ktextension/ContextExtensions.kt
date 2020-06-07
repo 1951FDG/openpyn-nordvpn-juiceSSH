@@ -10,7 +10,6 @@ import java.security.MessageDigest
 
 val Context.apkSignatures: List<String>
     get() = currentSignatures
-
 val Context.currentSignatures: List<String>
     get() {
         return signatures().map {

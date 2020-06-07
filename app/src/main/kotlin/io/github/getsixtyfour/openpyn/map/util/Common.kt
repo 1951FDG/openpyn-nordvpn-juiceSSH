@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.location.Location
+import android.os.Build
 import android.util.Xml
 import android.view.animation.AccelerateInterpolator
 import androidx.annotation.RawRes
@@ -18,14 +19,13 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.json.responseJson
 import com.github.kittinunf.result.Result
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mayurrokade.minibar.UserMessage
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.createJsonArray
-import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.security.SecurityCypher
+import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.features.DefaultRequest
@@ -64,20 +64,26 @@ const val OBFUSCATED: String = "Obfuscated Servers"
 const val ONION: String = "Onion Over VPN"
 const val P2P: String = "P2P"
 const val STANDARD: String = "Standard VPN servers"
+
 // country
 const val COUNTRY: String = "country"
+
 // flag
 const val FLAG: String = "flag"
+
 // location
 const val LOCATION: String = "location"
 const val LAT: String = "lat"
 const val LONG: String = "long"
+
 // server
 const val SERVER: String = "https://api.nordvpn.com/server"
+
 // extended
 const val CITY: String = "city"
 const val IP: String = "ip"
 const val THREAT: String = "threat"
+
 // time
 const val TIME_MILLIS: Long = 600
 const val DURATION: Long = 7000
@@ -637,10 +643,7 @@ suspend fun createGeoJson(context: Context): JSONObject? {
 
 @Suppress("ComplexMethod")
 fun getCurrentPosition(
-    context: Context,
-    flags: HashSet<CharSequence>,
-    jsonObj: JSONObject?,
-    jsonArr: JSONArray? = null
+    context: Context, flags: HashSet<CharSequence>, jsonObj: JSONObject?, jsonArr: JSONArray? = null
 ): LatLng {
     @Suppress("MagicNumber")
     fun getDefaultLatLng(): LatLng = LatLng(51.514125, -0.093689)

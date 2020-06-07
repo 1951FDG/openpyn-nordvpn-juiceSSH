@@ -30,12 +30,12 @@ import com.naver.android.svc.annotation.RequireScreen
 import com.naver.android.svc.annotation.RequireViews
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.util.LazyMarkerStorage
-import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.getsixtyfour.openpyn.map.util.createGeoJson
 import io.github.getsixtyfour.openpyn.map.util.createMarkers
 import io.github.getsixtyfour.openpyn.map.util.createUserMessage
 import io.github.getsixtyfour.openpyn.map.util.getCurrentPosition
 import io.github.getsixtyfour.openpyn.map.util.jsonArray
+import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.view.map
 import kotlinx.coroutines.CoroutineExceptionHandler

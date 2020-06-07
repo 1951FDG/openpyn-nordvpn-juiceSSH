@@ -19,6 +19,7 @@ import java.net.Socket
 
 class NetworkInfo internal constructor(private val connectivityManager: ConnectivityManager) : LiveData<Boolean>() {
     private val mLock = Any()
+
     @Volatile
     private var mMainHandler: Handler? = null
 
