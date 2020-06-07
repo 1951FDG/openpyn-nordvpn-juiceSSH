@@ -497,8 +497,6 @@ fun createMarkers(
     val length = jsonArray.length()
     val flags = HashSet<CharSequence>(length)
     val markers = HashMap<LatLng, LazyMarker>(length)
-    val iconDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1)
-
     for (res in jsonArray) {
         val flag = res.getString(FLAG)
         val country = res.getString(COUNTRY)
@@ -511,15 +509,18 @@ fun createMarkers(
             position(latLng)
             title(title)
             visible(false)
-            icon(iconDescriptor)
         }
 
         flags.add(flag)
         val marker = LazyMarker(map, options, flag)
-        favorites?.let {
-            val index = it.indexOf(marker)
+        if (favorites == null) {
+            marker.setLevel(0, callback)
+        } else {
+            val index = favorites.indexOf(marker)
             if (index >= 0) {
-                marker.setLevel(it[index].level, callback)
+                marker.setLevel(favorites[index].level, callback)
+            } else {
+                marker.setLevel(0, callback)
             }
         }
         markers[latLng] = marker

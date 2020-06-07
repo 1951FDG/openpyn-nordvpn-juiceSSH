@@ -420,9 +420,9 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         private const val DELAY_MILLIS: Long = 10000
         private const val FAVORITE_KEY = "pref_favorites"
         val onLevelChangeCallback: OnLevelChangeCallback = object : OnLevelChangeCallback {
-            val mDescriptor0: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map1) }
-            val mDescriptor1: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map2) }
-            val mDescriptor10: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.map0) }
+            val mDescriptor0: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_0) }
+            val mDescriptor1: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_1) }
+            val mDescriptor10: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_10) }
 
             override fun onLevelChange(marker: LazyMarker, level: Int) {
                 when (level) {
