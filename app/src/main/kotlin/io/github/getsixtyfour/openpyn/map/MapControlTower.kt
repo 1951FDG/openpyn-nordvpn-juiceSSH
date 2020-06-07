@@ -166,17 +166,17 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
 
     override fun onMarkerClick(marker: Marker): Boolean {
         if (marker.zIndex == 1.0f) {
-            views.callConnectFabOnClick()
-        } else {
-            mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
-                it.setLevel(it.level, onLevelChangeCallback)
-            }
+            return false
+        }
 
-            mMarkers[marker.position]?.let {
-                onLevelChangeCallback.onLevelChange(it, 10)
+        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+            it.setLevel(it.level, onLevelChangeCallback)
+        }
 
-                views.toggleFavoriteButton(it.level == 1)
-            }
+        mMarkers[marker.position]?.let {
+            onLevelChangeCallback.onLevelChange(it, 10)
+
+            views.toggleFavoriteButton(it.level == 1)
         }
 
         return false
