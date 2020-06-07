@@ -52,7 +52,7 @@
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
-    <io.errorlab.widget.CheckableFloatingActionButton
+    <com.google.android.material.floatingactionbutton.CheckableFloatingActionButton
         android:id="@+id/fab3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
-    <io.errorlab.widget.CheckableFloatingActionButton
+    <com.google.android.material.floatingactionbutton.CheckableFloatingActionButton
         android:id="@+id/fab0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
