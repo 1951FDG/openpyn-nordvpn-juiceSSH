@@ -177,8 +177,6 @@ configurations {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs')
-
     // Java 8+ libraries
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
 
