@@ -28,13 +28,11 @@ class VpnAuthenticationHandler(context: Context) : UsernamePasswordHandler {
 
         fun getPort(context: Context): Int {
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-            return try {
+            return runCatching {
                 preferences.getString(
                     context.getString(R.string.pref_openvpnmgmt_port_key), context.getString(R.string.pref_openvpnmgmt_port_default)
-                )!!.toInt()
-            } catch (ignored: NumberFormatException) {
-                context.getString(R.string.pref_openvpnmgmt_port_default).toInt()
-            }
+                )!!
+            }.fold(String::toInt) { context.getString(R.string.pref_openvpnmgmt_port_default).toInt() }
         }
 
         fun getPassword(context: Context): CharArray? {
