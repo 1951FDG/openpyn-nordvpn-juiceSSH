@@ -15,10 +15,11 @@
 
         <tk.wasdennnoch.progresstoolbar.ProgressToolbar
             android:id="@+id/toolbar"
-            style="@style/AppTheme.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/actionBarColor"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
             app:ptb_progressHeight="1dp"
             tools:menu="@menu/menu_main">
 

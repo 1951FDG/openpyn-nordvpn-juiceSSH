@@ -60,14 +60,15 @@
 
         <tk.wasdennnoch.progresstoolbar.ProgressToolbar
             android:id="@+id/toolbar"
-            style="@style/AppTheme.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/actionBarColor"
             android:elevation="4dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
             app:ptb_progressHeight="1dp"
             app:title="@string/title_settings"
-            />
+            tools:menu="@menu/menu_settings" />
 
         <include layout="@layout/mm2d_pac_breadcrumbs"/>
 

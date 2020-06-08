@@ -89,8 +89,6 @@
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
-    <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar" />
-
     <style name="ThemeOverlay.MaterialComponents.Dialog.Alert.Custom" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="windowNoTitle">false</item>
 
