@@ -182,7 +182,7 @@ dependencies {
 
     // 1951FDG
     implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.8'
-    implementation('com.github.1951FDG:ProgressToolbar:1.0.7') {
+    implementation('com.github.1951FDG:ProgressToolbar:1.0.8') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
     implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.16'
