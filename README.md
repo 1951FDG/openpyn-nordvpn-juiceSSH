@@ -145,7 +145,6 @@ To compile and run the project you'll need:
 ## Libraries used
 
 -   [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
--   [Anko](https://github.com/Kotlin/anko)
 -   [Barista](https://github.com/SchibstedSpain/Barista)
 -   [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
 -   [EasyPermissions](https://github.com/googlesamples/easypermissions)

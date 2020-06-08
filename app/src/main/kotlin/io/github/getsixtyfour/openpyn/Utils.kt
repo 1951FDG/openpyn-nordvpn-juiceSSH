@@ -6,7 +6,6 @@ import android.app.Application
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources.NotFoundException
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -43,22 +42,20 @@ import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.openpyn.map.util.createJson
 import io.github.getsixtyfour.openpyn.map.util.stringifyJsonArray
+import io.github.getsixtyfour.openpyn.map.util.writeJsonArray
 import io.github.getsixtyfour.openpyn.settings.SettingsActivity
-import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.VpnAuthenticationHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mu.KLoggable
 import mu.KLogger
 import mu.KotlinLogging
-import org.jetbrains.anko.activityUiThread
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.onComplete
-import org.json.JSONArray
 import timber.log.CrashReportingTree
 import timber.log.Timber
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.IOException
 
 private val logger = KotlinLogging.logger {}
 const val SNACK_BAR_JUICESSH: Int = 1
@@ -109,57 +106,28 @@ fun <T : Activity> onLogFileSelected(activity: T, @Suppress("UNUSED_PARAMETER") 
     ContextCompat.startActivity(activity, intent, null)
 }
 
-fun <T : Activity> onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
-    //val drawable = item.icon as? Animatable
-    //drawable?.start()
-    val toolbar = activity.findViewById(R.id.toolbar) as? ProgressToolbar
-    toolbar?.showProgress(true)
-
-    activity.doAsync {
-        var jsonArray: JSONArray? = null
-        var json: String? = null
-        var thrown = true
-        if (NetworkInfo.getInstance().isOnline()) {
-            jsonArray = createJson()
+fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?): Job = launch() {
+    val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.also { it.showProgress(true) }
+    val result = withContext(Dispatchers.IO) {
+        runCatching {
+            createJson()?.let(::stringifyJsonArray)?.let { writeJsonArray(activity, R.raw.nordvpn, it) }
         }
+    }
 
-        if (jsonArray != null) {
-            json = when {
-                BuildConfig.DEBUG -> stringifyJsonArray(jsonArray)
-                else -> "$jsonArray"
+    toolbar?.hideProgress(true)
+
+    when {
+        result.isSuccess -> {
+            AlertDialog.Builder(activity).apply {
+                setTitle(R.string.title_warning)
+                setMessage(R.string.warning_restart_app)
+                setPositiveButton(android.R.string.ok, null)
+                show()
             }
         }
-
-        if (json != null) {
-            try {
-                val child = activity.resources.getResourceEntryName(R.raw.nordvpn) + ".json"
-                val file = File(activity.getExternalFilesDir(null), child)
-                file.writeText("$json\n")
-                thrown = false
-            } catch (e: NotFoundException) {
-                logger.error(e) { "" }
-            } catch (e: FileNotFoundException) {
-                logger.error(e) { "" }
-            } catch (e: IOException) {
-                logger.error(e) { "" }
-            }
+        result.isFailure -> {
+            logger.debug(result.exceptionOrNull()) { "" }
         }
-
-        activityUiThread {
-            //drawable?.stop()
-            toolbar?.hideProgress(true)
-
-            if (!thrown) {
-                AlertDialog.Builder(it).apply {
-                    setTitle(R.string.title_warning)
-                    setMessage(R.string.warning_restart_app)
-                    setPositiveButton(android.R.string.ok, null)
-                    show()
-                }
-            }
-        }
-
-        onComplete {}
     }
 }
 

@@ -7,6 +7,7 @@ import android.location.Location
 import android.os.Build
 import android.util.Xml
 import android.view.animation.AccelerateInterpolator
+import androidx.annotation.AnyRes
 import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mayurrokade.minibar.UserMessage
+import io.github.getsixtyfour.openpyn.BuildConfig
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.createJsonArray
 import io.github.getsixtyfour.openpyn.security.SecurityCypher
@@ -35,16 +37,10 @@ import io.ktor.client.statement.readText
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.linearLayout
-import org.jetbrains.anko.padding
-import org.jetbrains.anko.textColor
-import org.jetbrains.anko.textView
-import org.jetbrains.anko.verticalLayout
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.StringWriter
@@ -235,8 +231,7 @@ fun createJson(): JSONArray? {
     val (_, _, result) = SERVER.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
     when (result) {
         is Result.Failure -> {
-            val e = result.getException()
-            logger.error(e) { "" }
+            throw result.getException()
         }
         is Result.Success -> {
             val jsonObj = JSONObject()
@@ -324,7 +319,7 @@ fun createJson(): JSONArray? {
     return null
 }
 
-fun sortJsonArray(jsonArray: JSONArray): JSONArray? {
+fun sortJsonArray(jsonArray: JSONArray): JSONArray {
     val array = ArrayList<JSONObject>()
     for (res in jsonArray) {
         array.add(res)
@@ -340,7 +335,17 @@ fun sortJsonArray(jsonArray: JSONArray): JSONArray? {
     return result
 }
 
-fun stringifyJsonArray(jsonArray: JSONArray): String? = sortJsonArray(jsonArray)?.run { toString(2) }
+fun stringifyJsonArray(jsonArray: JSONArray): String = when {
+    BuildConfig.DEBUG -> sortJsonArray(jsonArray).run { toString(2) }
+    else -> "$jsonArray"
+}
+
+fun writeJsonArray(context: Context, @AnyRes resId: Int, text: String): File {
+    val child = context.resources.getResourceEntryName(resId) + ".json"
+    val file = File(context.getExternalFilesDir(null), child)
+    file.writeText("$text\n")
+    return file
+}
 
 @Suppress("ComplexMethod", "MagicNumber")
 fun showThreats(activity: Activity, jsonObj: JSONObject) {
@@ -355,136 +360,6 @@ fun showThreats(activity: Activity, jsonObj: JSONObject) {
         val abuser = threats.getBoolean("is_known_abuser")
         val threat = threats.getBoolean("is_threat")
         val bogon = threats.getBoolean("is_bogon")
-        val color1 = ContextCompat.getColor(activity, R.color.colorConnect)
-        val color2 = ContextCompat.getColor(activity, R.color.colorDisconnect)
-        val fl = 22f
-        val weight = 1.0f
-        val alert = activity.alert {
-            customView = ctx.verticalLayout {
-                linearLayout {
-                    textView {
-                        text = ctx.getString(R.string.is_tor)
-                        textSize = fl
-                        gravity = android.view.Gravity.START
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                    textView {
-                        text = if (tor) "YES" else "NO"
-                        textColor = if (tor) color2 else color1
-                        textSize = fl
-                        gravity = android.view.Gravity.END
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                }
-                linearLayout {
-                    textView {
-                        text = ctx.getString(R.string.is_proxy)
-                        textSize = fl
-                        gravity = android.view.Gravity.START
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                    textView {
-                        text = if (proxy) "YES" else "NO"
-                        textColor = if (proxy) color2 else color1
-                        textSize = fl
-                        gravity = android.view.Gravity.END
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                }
-                linearLayout {
-                    textView {
-                        text = ctx.getString(R.string.is_anonymous)
-                        textSize = fl
-                        gravity = android.view.Gravity.START
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                    textView {
-                        text = if (anonymous) "YES" else "NO"
-                        textColor = if (anonymous) color2 else color1
-                        textSize = fl
-                        gravity = android.view.Gravity.END
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                }
-                linearLayout {
-                    textView {
-                        text = ctx.getString(R.string.is_known_attacker)
-                        textSize = fl
-                        gravity = android.view.Gravity.START
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                    textView {
-                        text = if (attacker) "YES" else "NO"
-                        textColor = if (attacker) color2 else color1
-                        textSize = fl
-                        gravity = android.view.Gravity.END
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                }
-                linearLayout {
-                    textView {
-                        text = ctx.getString(R.string.is_known_abuser)
-                        textSize = fl
-                        gravity = android.view.Gravity.START
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                    textView {
-                        text = if (abuser) "YES" else "NO"
-                        textColor = if (abuser) color2 else color1
-                        textSize = fl
-                        gravity = android.view.Gravity.END
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                }
-                linearLayout {
-                    textView {
-                        text = ctx.getString(R.string.is_threat)
-                        textSize = fl
-                        gravity = android.view.Gravity.START
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                    textView {
-                        text = if (threat) "YES" else "NO"
-                        textColor = if (threat) color2 else color1
-                        textSize = fl
-                        gravity = android.view.Gravity.END
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                }
-                linearLayout {
-                    textView {
-                        text = ctx.getString(R.string.is_bogon)
-                        textSize = fl
-                        gravity = android.view.Gravity.START
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                    textView {
-                        text = if (bogon) "YES" else "NO"
-                        textColor = if (bogon) color2 else color1
-                        textSize = fl
-                        gravity = android.view.Gravity.END
-                    }.lparams(
-                        width = org.jetbrains.anko.wrapContent, height = org.jetbrains.anko.wrapContent, weight = weight
-                    ) {}
-                }
-                gravity = android.view.Gravity.CENTER
-                padding = dip(40)
-            }
-        }
-        alert.show()
     }
 }
 

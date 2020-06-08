@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -13,6 +14,7 @@ import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCal
 import com.google.android.material.textfield.TextInputLayout
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.onRefreshItemSelected
+import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 
 /**
  * This fragment shows General settings preferences only.
@@ -54,7 +56,8 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_refresh -> {
-                onRefreshItemSelected(requireActivity(), item)
+                if (!NetworkInfo.getInstance().isOnline()) return true
+                lifecycleScope.onRefreshItemSelected(requireActivity(), item)
                 true
             }
             else -> super.onOptionsItemSelected(item)

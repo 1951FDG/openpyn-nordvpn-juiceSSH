@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorConnect">#3cba54</color>
-    <color name="colorDisconnect">#DB3236</color>
     <color name="accent_material_indigo_200">#ff536dfe</color>
 
     <color name="colorError">#ffff0000</color>

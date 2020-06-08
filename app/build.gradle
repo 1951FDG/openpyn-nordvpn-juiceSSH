@@ -194,11 +194,6 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.sqlite:sqlite:2.1.0'
 
-    // Anko
-    implementation("org.jetbrains.anko:anko-sdk21:$anko_version") {
-        exclude group: 'org.jetbrains.anko', module: 'anko-commons'
-    }
-
     // Architecture
     implementation('com.naver.android.svc:svc:1.0.1') {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
@@ -313,9 +308,6 @@ dependencies {
     }
     //noinspection GradleDependency
     implementation 'commons-cli:commons-cli:1.4'
-
-    // Anko
-    //implementation "org.jetbrains.anko:anko-sdk21-listeners:$anko_version"
 
     // Google Maps SDK for Android v.3.0.0 BETA
     //implementation name:'maps-sdk-3.0.0-beta', ext:'aar'
