@@ -41,6 +41,7 @@ import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.openpyn.map.util.createJson
+import io.github.getsixtyfour.openpyn.map.util.generateXML
 import io.github.getsixtyfour.openpyn.map.util.stringifyJsonArray
 import io.github.getsixtyfour.openpyn.map.util.writeJsonArray
 import io.github.getsixtyfour.openpyn.settings.SettingsActivity
@@ -95,6 +96,20 @@ fun <T : Activity> onAboutItemSelected(activity: T, @Suppress("UNUSED_PARAMETER"
     SettingsActivity.startAboutFragment(activity)
 }
 
+fun <T : Activity> CoroutineScope.onGenerateItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?): Job = launch {
+    val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.also { it.showProgress(true) }
+
+    withContext(Dispatchers.IO) {
+        runCatching {
+            generateXML()
+        }
+    }.onFailure {
+        logger.debug(it) { "" }
+    }
+
+    toolbar?.hideProgress(true)
+}
+
 fun <T : Activity> onGitHubItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
     val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
@@ -106,28 +121,24 @@ fun <T : Activity> onLogFileSelected(activity: T, @Suppress("UNUSED_PARAMETER") 
     ContextCompat.startActivity(activity, intent, null)
 }
 
-fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?): Job = launch() {
+fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?): Job = launch {
     val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.also { it.showProgress(true) }
-    val result = withContext(Dispatchers.IO) {
+
+    withContext(Dispatchers.IO) {
         runCatching {
             createJson()?.let(::stringifyJsonArray)?.let { writeJsonArray(activity, R.raw.nordvpn, it) }
         }
-    }
-
-    toolbar?.hideProgress(true)
-
-    when {
-        result.isSuccess -> {
-            AlertDialog.Builder(activity).apply {
-                setTitle(R.string.title_warning)
-                setMessage(R.string.warning_restart_app)
-                setPositiveButton(android.R.string.ok, null)
-                show()
-            }
+    }.onSuccess {
+        toolbar?.hideProgress(true)
+        AlertDialog.Builder(activity).apply {
+            setTitle(R.string.title_warning)
+            setMessage(R.string.warning_restart_app)
+            setPositiveButton(android.R.string.ok, null)
+            show()
         }
-        result.isFailure -> {
-            logger.debug(result.exceptionOrNull()) { "" }
-        }
+    }.onFailure {
+        toolbar?.hideProgress(true)
+        logger.debug(it) { "" }
     }
 }
 

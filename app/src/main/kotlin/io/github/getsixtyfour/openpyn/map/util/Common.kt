@@ -16,9 +16,6 @@ import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.androidmapsextensions.lazy.LazyMarker
 import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.fuel.json.responseJson
-import com.github.kittinunf.result.Result
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -27,15 +24,12 @@ import io.github.getsixtyfour.openpyn.BuildConfig
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.createJsonArray
 import io.github.getsixtyfour.openpyn.security.SecurityCypher
-import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.features.DefaultRequest
 import io.ktor.client.request.get
-import io.ktor.client.statement.HttpStatement
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readText
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
 import org.json.JSONArray
 import org.json.JSONException
@@ -81,61 +75,56 @@ const val IP: String = "ip"
 const val THREAT: String = "threat"
 
 // time
-const val TIME_MILLIS: Long = 600
 const val DURATION: Long = 7000
 
 @Suppress("unused")
 @WorkerThread
-fun generateXML() {
-    // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    SERVER.httpGet().responseJson { _, _, result ->
-        when (result) {
-            is Result.Failure -> {
-                val e = result.getException()
-                logger.error(e) { "" }
+suspend fun generateXML() {
+    HttpClient(Android) {
+        install(DefaultRequest) {
+            headers.append("Accept", "application/json")
+        }
+    }.use { client: HttpClient ->
+        val response = client.get<HttpResponse>(SERVER)
+        val json = response.readText()
+        val jsonArray = JSONArray(json)
+        val mutableMap = mutableMapOf<String, String>()
+        for (res in jsonArray) {
+            if (res.getString(COUNTRY) !in mutableMap) {
+                mutableMap[res.getString(COUNTRY)] = res.getString(FLAG).toLowerCase(Locale.ROOT)
             }
-            is Result.Success -> {
-                val mutableMap = mutableMapOf<String, String>()
-                val jsonArray = result.get().array()
-                for (res in jsonArray) {
-                    if (res.getString(COUNTRY) !in mutableMap) {
-                        mutableMap[res.getString(COUNTRY)] = res.getString(FLAG).toLowerCase(Locale.ROOT)
-                    }
-                }
-                val sortedMap = mutableMap.toSortedMap(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
-                val serializer = Xml.newSerializer()
-                val writer = StringWriter()
-                try {
-                    serializer.setOutput(writer)
-                    serializer.startDocument("UTF-8", true)
-                    serializer.startTag("", "head")
-                    serializer.startTag("", "string-array")
-                    serializer.attribute("", "name", "pref_country_entries")
-                    for ((key, _) in sortedMap) {
-                        serializer.startTag("", "item")
-                        serializer.text(key)
-                        serializer.endTag("", "item")
-                    }
-                    serializer.endTag("", "string-array")
-                    serializer.startTag("", "string-array")
-                    serializer.attribute("", "name", "pref_country_values")
-                    for ((_, value) in sortedMap) {
-                        serializer.startTag("", "item")
-                        serializer.text(value)
-                        serializer.endTag("", "item")
-                    }
-                    serializer.endTag("", "string-array")
-                    serializer.endTag("", "head")
-                    serializer.endDocument()
-                    println("$writer")
-                } catch (e: FileNotFoundException) {
-                    logger.error(e) { "" }
-                } catch (e: IOException) {
-                    logger.error(e) { "" }
-                } catch (e: JSONException) {
-                    logger.error(e) { "" }
-                }
+        }
+        val sortedMap = mutableMap.toSortedMap(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
+        val serializer = Xml.newSerializer()
+        val writer = StringWriter()
+        try {
+            serializer.setOutput(writer)
+            serializer.startDocument("UTF-8", true)
+            serializer.startTag("", "string-array")
+            serializer.attribute("", "name", "pref_country_entries")
+            for ((key, _) in sortedMap) {
+                serializer.startTag("", "item")
+                serializer.text(key)
+                serializer.endTag("", "item")
             }
+            serializer.endTag("", "string-array")
+            serializer.startTag("", "string-array")
+            serializer.attribute("", "name", "pref_country_values")
+            serializer.attribute("", "translatable", "false")
+            for ((_, value) in sortedMap) {
+                serializer.startTag("", "item")
+                serializer.text(value)
+                serializer.endTag("", "item")
+            }
+            serializer.endTag("", "string-array")
+            serializer.endDocument()
+            println("$writer")
+        } catch (e: FileNotFoundException) {
+            logger.error(e) { "" }
+        } catch (e: IOException) {
+            logger.error(e) { "" }
+        } catch (e: JSONException) {
+            logger.error(e) { "" }
         }
     }
 }
@@ -204,7 +193,7 @@ fun createJson2(type: String, content: JSONObject): JSONObject? {
 
 @WorkerThread
 @Suppress("MagicNumber")
-fun createJson(): JSONArray? {
+suspend fun createJson(): JSONArray? {
     fun populateFeatures(res: JSONObject, features: JSONObject) {
         val categories = res.getJSONArray(CATEGORIES)
 
@@ -225,94 +214,87 @@ fun createJson(): JSONArray? {
         }
     }
 
-    val timeout = 10000
-    val timeoutRead = 10000
-    // An extension over string (support GET, PUT, POST, DELETE with httpGet(), httpPut(), httpPost(), httpDelete())
-    val (_, _, result) = SERVER.httpGet().timeout(timeout).timeoutRead(timeoutRead).responseJson()
-    when (result) {
-        is Result.Failure -> {
-            throw result.getException()
+    HttpClient(Android) {
+        install(DefaultRequest) {
+            headers.append("Accept", "application/json")
         }
-        is Result.Success -> {
-            val jsonObj = JSONObject()
-            val content = result.get().array() //JSONArray
-            for (res in content) {
-                val location = res.getJSONObject(LOCATION)
-                var json: JSONObject? = jsonObj.optJSONObject("$location")
+    }.use { client: HttpClient ->
+        val response = client.get<HttpResponse>(SERVER)
+        val json = response.readText()
+        val values = JSONArray(json)
+        val jsonObject = JSONObject()
+        val jsonArray = JSONArray()
 
-                if (json == null) {
-                    json = JSONObject().apply {
-                        put(FLAG, res.getString(FLAG).toLowerCase(Locale.ROOT))
-                        put(COUNTRY, res.getString(COUNTRY))
-                        put(LOCATION, res.getJSONObject(LOCATION))
-                    }
-                    val features = JSONObject().apply {
-                        put(DEDICATED, false)
-                        put(DOUBLE, false)
-                        put(OBFUSCATED, false)
-                        put(ONION, false)
-                        put(P2P, false)
-                        put(STANDARD, false)
-                    }
-                    populateFeatures(res, features)
+        for (value in values) {
+            val location = value.getJSONObject(LOCATION)
+            var jsonObj = jsonObject.optJSONObject("$location")
 
-                    json.put(CATEGORIES, features)
-
-                    jsonObj.put("$location", json)
-                } else {
-                    val features = json.getJSONObject(CATEGORIES)
-                    populateFeatures(res, features)
+            if (jsonObj == null) {
+                val features = JSONObject().apply {
+                    put(DEDICATED, false)
+                    put(DOUBLE, false)
+                    put(OBFUSCATED, false)
+                    put(ONION, false)
+                    put(P2P, false)
+                    put(STANDARD, false)
                 }
+                populateFeatures(value, features)
+                
+                jsonObj = JSONObject().apply {
+                    put(FLAG, value.getString(FLAG).toLowerCase(Locale.ROOT))
+                    put(COUNTRY, value.getString(COUNTRY))
+                    put(LOCATION, value.getJSONObject(LOCATION))
+                    put(CATEGORIES, features)
+                }
+
+                jsonObject.put("$location", jsonObj)
+            } else {
+                val features = jsonObj.getJSONObject(CATEGORIES)
+                populateFeatures(value, features)
+            }
+        }
+
+        jsonObject.keys().forEach { key ->
+            val jsonObj = jsonObject.getJSONObject(key)
+            val jsonArr = JSONArray()
+            val features = jsonObj.getJSONObject(CATEGORIES)
+
+            if (features.getBoolean(DEDICATED)) {
+                jsonArr.put(JSONObject().put(NAME, DEDICATED))
             }
 
-            try {
-                val jsonArray = JSONArray()
-                val keys = jsonObj.keys()
-                while (keys.hasNext()) {
-                    val key = keys.next()
-                    val value = jsonObj.getJSONObject(key)
-                    val jsonArr = JSONArray()
-                    val features = value.getJSONObject(CATEGORIES)
-
-                    if (features.getBoolean(DEDICATED)) {
-                        jsonArr.put(JSONObject().put(NAME, DEDICATED))
-                    }
-
-                    if (features.getBoolean(DOUBLE)) {
-                        jsonArr.put(JSONObject().put(NAME, DOUBLE))
-                    }
-
-                    if (features.getBoolean(OBFUSCATED)) {
-                        jsonArr.put(JSONObject().put(NAME, OBFUSCATED))
-                    }
-
-                    if (features.getBoolean(ONION)) {
-                        jsonArr.put(JSONObject().put(NAME, ONION))
-                    }
-
-                    if (features.getBoolean(P2P)) {
-                        jsonArr.put(JSONObject().put(NAME, P2P))
-                    }
-
-                    if (features.getBoolean(STANDARD)) {
-                        jsonArr.put(JSONObject().put(NAME, STANDARD))
-                    }
-                    val json = JSONObject().apply {
-                        put(FLAG, value.getString(FLAG))
-                        put(COUNTRY, value.getString(COUNTRY))
-                        put(LOCATION, value.getJSONObject(LOCATION))
-                        put(CATEGORIES, jsonArr)
-                    }
-
-                    jsonArray.put(json)
-                }
-
-                if (jsonArray.length() > 0) {
-                    return jsonArray
-                }
-            } catch (e: JSONException) {
-                logger.error(e) { "" }
+            if (features.getBoolean(DOUBLE)) {
+                jsonArr.put(JSONObject().put(NAME, DOUBLE))
             }
+
+            if (features.getBoolean(OBFUSCATED)) {
+                jsonArr.put(JSONObject().put(NAME, OBFUSCATED))
+            }
+
+            if (features.getBoolean(ONION)) {
+                jsonArr.put(JSONObject().put(NAME, ONION))
+            }
+
+            if (features.getBoolean(P2P)) {
+                jsonArr.put(JSONObject().put(NAME, P2P))
+            }
+
+            if (features.getBoolean(STANDARD)) {
+                jsonArr.put(JSONObject().put(NAME, STANDARD))
+            }
+
+            JSONObject().apply {
+                put(FLAG, jsonObj.getString(FLAG))
+                put(COUNTRY, jsonObj.getString(COUNTRY))
+                put(LOCATION, jsonObj.getJSONObject(LOCATION))
+                put(CATEGORIES, jsonArr)
+            }.also {
+                jsonArray.put(it)
+            }
+        }
+
+        if (jsonArray.length() > 0) {
+            return@createJson jsonArray
         }
     }
 
@@ -453,63 +435,46 @@ fun jsonArray(context: Context, @RawRes id: Int, ext: String): JSONArray {
     return jsonArray
 }
 
-@Suppress("TooGenericExceptionCaught", "ReplaceNotNullAssertionWithElvisReturn")
-@SuppressLint("WrongThread")
 @WorkerThread
 suspend fun createGeoJson(context: Context): JSONObject? {
-    if (NetworkInfo.getInstance().isOnline()) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val geo = preferences.getBoolean("pref_geo", true)
-        val api = preferences.getString("pref_geo_client", "ipapi")!!
-        val ipdata = preferences.getString("pref_api_ipdata", "")!!
-        val ipinfo = preferences.getString("pref_api_ipinfo", "")!!
-        val ipstack = preferences.getString("pref_api_ipstack", "")!!
-        val fields = "fields=country_name,country_code,city,latitude,longitude,ip"
-        var server = "http://ip-api.com/json/?fields=8403" // http://ip-api.com/json/?fields=country,countryCode,city,lat,lon,query
-        val token: String
+    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+    val geo = preferences.getBoolean("pref_geo", true)
+    val api = preferences.getString("pref_geo_client", "ipapi")!!
+    val ipdata = preferences.getString("pref_api_ipdata", "")!!
+    val ipinfo = preferences.getString("pref_api_ipinfo", "")!!
+    val ipstack = preferences.getString("pref_api_ipstack", "")!!
+    val fields = "fields=country_name,country_code,city,latitude,longitude,ip"
+    var server = "http://ip-api.com/json/?fields=8403" // http://ip-api.com/json/?fields=country,countryCode,city,lat,lon,query
+    val token: String
 
-        if (geo) {
-            when (api) {
-                "ipdata" -> {
-                    token = SecurityCypher.getInstance(context).decryptString(ipdata).toString()
-                    server = "https://api.ipdata.co?api-key=$token&$fields"
-                    // server = "https://api.ipdata.co?api-key=$token&$fields,threat"
-                }
-                "ipinfo" -> {
-                    token = SecurityCypher.getInstance(context).decryptString(ipinfo).toString()
-                    server = when {
-                        token.isNotEmpty() -> "https://ipinfo.io/geo?token=$token"
-                        else -> "https://ipinfo.io/geo"
-                    }
-                }
-                "ipstack" -> {
-                    token = SecurityCypher.getInstance(context).decryptString(ipstack).toString()
-                    server = "http://api.ipstack.com/check?access_key=$token&$fields"
+    if (geo) {
+        when (api) {
+            "ipdata" -> {
+                token = SecurityCypher.getInstance(context).decryptString(ipdata).toString()
+                server = "https://api.ipdata.co?api-key=$token&$fields"
+                // server = "https://api.ipdata.co?api-key=$token&$fields,threat"
+            }
+            "ipinfo" -> {
+                token = SecurityCypher.getInstance(context).decryptString(ipinfo).toString()
+                server = when {
+                    token.isNotEmpty() -> "https://ipinfo.io/geo?token=$token"
+                    else -> "https://ipinfo.io/geo"
                 }
             }
-            var jsonObject: JSONObject? = null
-            val client = HttpClient(Android) {
-                install(DefaultRequest) {
-                    headers.append("Accept", "application/json")
-                }
+            "ipstack" -> {
+                token = SecurityCypher.getInstance(context).decryptString(ipstack).toString()
+                server = "http://api.ipstack.com/check?access_key=$token&$fields"
             }
-
-            try {
-                withTimeout(TIME_MILLIS) {
-                    val response = client.get<HttpStatement>(server).execute()
-                    val json = response.readText()
-                    jsonObject = JSONObject(json)
-                }
-            } catch (e: TimeoutCancellationException) {
-                logger.warn(e) { "" }
-            } catch (e: Throwable) {
-                logger.error(e) { "" }
-            } finally {
-                logger.info { "$api: ${jsonObject.toString()}" }
+        }
+        HttpClient(Android) {
+            install(DefaultRequest) {
+                headers.append("Accept", "application/json")
             }
-
-            client.close()
-            return jsonObject?.run { createJson2(api, this) }
+        }.use { client: HttpClient ->
+            val response = client.get<HttpResponse>(server)
+            val json = response.readText()
+            val jsonObject = JSONObject(json).also { logger.info { "$api: $it" } }
+            return@createGeoJson createJson2(api, jsonObject)
         }
     }
 

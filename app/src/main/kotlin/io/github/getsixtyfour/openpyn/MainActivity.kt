@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
             }
             /*
             R.id.menu_generate -> {
-                generateXML()
+                onGenerateItemSelected(this, item)
                 true
             }
             R.id.menu_logfile -> {

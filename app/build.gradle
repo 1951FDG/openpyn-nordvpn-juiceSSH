@@ -219,7 +219,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
 
     // HTTP Client
-    implementation "com.github.kittinunf.fuel:fuel-json:$fuel_version"
     implementation("io.ktor:ktor-client-android:$ktor_version") {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-common'

@@ -35,6 +35,7 @@ import io.github.getsixtyfour.openpyn.map.util.createMarkers
 import io.github.getsixtyfour.openpyn.map.util.createUserMessage
 import io.github.getsixtyfour.openpyn.map.util.getCurrentPosition
 import io.github.getsixtyfour.openpyn.map.util.jsonArray
+import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.fragment_map.view.map
@@ -53,6 +54,7 @@ import kotlinx.coroutines.channels.map
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import mu.KLogging
 import org.json.JSONArray
 import org.json.JSONObject
@@ -86,7 +88,8 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
 
     @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
     private val mSendChannel = actor<Context>(coroutineContext, Channel.RENDEZVOUS) {
-        channel.map(IO) { createGeoJson(it) }.consumeEach { animateCamera(it) }
+        channel.map(IO) { runCatching { withTimeout(TIME_MILLIS) { createGeoJson(it) } }.getOrNull() }
+            .consumeEach { it?.let { animateCamera(it) } }
     }
 
     override fun onStarted() {
@@ -233,6 +236,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     override fun updateMasterMarkerWithDelay(timeMillis: Long) {
         launch {
             delay(timeMillis)
+            if (!NetworkInfo.getInstance().isOnline()) return@launch
             mSendChannel.offer(applicationContext)
         }
     }
@@ -343,13 +347,20 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             val jsonArray = async { jsonArray(applicationContext, R.raw.nordvpn, ".json") }
             val tileProvider = async { fileBackedTileProvider() }
             val favorites = async { LazyMarkerStorage(FAVORITE_KEY).loadFavorites(applicationContext) }
-            val jsonObj = async { createGeoJson(applicationContext) }
+            val jsonObj = when {
+                !NetworkInfo.getInstance().isOnline() -> {
+                    null
+                }
+                else -> {
+                    async { runCatching { withTimeout(TIME_MILLIS) { createGeoJson(applicationContext) } }.getOrNull() }
+                }
+            }
 
             mCountries = countries.await()
             mJsonArray = jsonArray.await()
             mTileProvider = tileProvider.await()
             val list = favorites.await()
-            val json = jsonObj.await()
+            val json = jsonObj?.await()
 
             val (hashSet, hashMap) = createMarkers(applicationContext, mJsonArray, mCountries, mGoogleMap!!, list, onLevelChangeCallback)
             mFlags = setUpPrintArray(applicationContext, mCountries, hashSet)
@@ -397,7 +408,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         }
     }
 
-    private fun animateCamera(json: JSONObject?, closest: Boolean = false, execute: Boolean = true) {
+    private fun animateCamera(json: JSONObject, closest: Boolean = false, execute: Boolean = true) {
         // Check if not already animating
         mCameraUpdateAnimator?.let {
             if (!it.isAnimating) {
@@ -417,6 +428,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     companion object : KLogging() {
+        private const val TIME_MILLIS: Long = 600
         private const val DELAY_MILLIS: Long = 10000
         private const val FAVORITE_KEY = "pref_favorites"
         val onLevelChangeCallback: OnLevelChangeCallback = object : OnLevelChangeCallback {
