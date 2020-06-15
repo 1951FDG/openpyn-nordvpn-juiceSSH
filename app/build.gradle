@@ -189,7 +189,7 @@ dependencies {
     debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:slave-SNAPSHOT'
 
     // Android
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta7'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.sqlite:sqlite:2.1.0'
