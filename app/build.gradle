@@ -247,7 +247,7 @@ dependencies {
     }
 
     // LeakCanary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 
     // Logger
     implementation 'com.jakewharton.timber:timber:4.7.1'
