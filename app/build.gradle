@@ -232,7 +232,7 @@ dependencies {
     implementation('com.jayrave:moshi-pristine-models:1.0.0') {
         transitive = false
     }
-    implementation 'com.squareup.moshi:moshi:1.9.2'
+    implementation 'com.squareup.moshi:moshi:1.9.3'
 
     // Kotlin
     implementation('org.jetbrains.kotlin:kotlin-stdlib') {
