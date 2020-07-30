@@ -178,7 +178,7 @@ configurations {
 
 dependencies {
     // Java 8+ libraries
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
 
     // 1951FDG
     implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.8'
