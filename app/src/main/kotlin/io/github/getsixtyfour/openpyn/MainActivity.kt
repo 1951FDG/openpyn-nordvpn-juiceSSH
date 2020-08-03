@@ -33,7 +33,6 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-import io.github.getsixtyfour.ktextension.apkSignatures
 import io.github.getsixtyfour.ktextension.handleUpdate
 import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
 import io.github.getsixtyfour.ktextension.startUpdate
@@ -53,10 +52,11 @@ import kotlinx.android.synthetic.main.activity_main.spinner
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import mu.KLogging
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 import java.util.UUID
+import io.github.getsixtyfour.openpyn.databinding.ActivityMainBinding
+import mu.KotlinLogging
 
 class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallback, OnClickListener, NoticeDialogListener,
     OnLoaderChangedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
@@ -75,6 +75,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
     private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
 
+    private val logger = KotlinLogging.logger {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -85,6 +87,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         showGDPRIfNecessary(this, GDPR.getInstance(), mSetup)
 
         startVpnService(this)
+
         // TODO: remove after beta release test, add delay?
         logger.error(Exception()) { "$apkSignatures" }
     }
@@ -198,7 +201,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
                     // Enforce Locale to English for double to string conversion
                     val latitude = "%.7f".format(Locale.ENGLISH, location.latitude)
                     val longitude = "%.7f".format(Locale.ENGLISH, location.longitude)
-                    logger.debug { "https://www.google.com/maps?q=$latitude,$longitude" }
+                    logger.info { "https://www.google.com/maps?q=$latitude,$longitude" }
                     getString(R.string.vpn_name_location, latitude, longitude)
                 } else {
                     getEntryForValue(R.array.pref_country_entries, R.array.pref_country_values, flag)
@@ -238,8 +241,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
                     setTitle(R.string.title_error)
                     setMessage(R.string.error_juicessh_server)
                     setPositiveButton(android.R.string.ok, null)
-                    show()
-                }
+                }.show()
             }
         }
     }
@@ -352,7 +354,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         return perms.none { ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED }
     }
 
-    companion object : KLogging() {
+    companion object {
         const val UPDATE_REQUEST_CODE: Int = 1
         const val PERMISSION_REQUEST_CODE: Int = 2
         const val JUICESSH_REQUEST_CODE: Int = 3

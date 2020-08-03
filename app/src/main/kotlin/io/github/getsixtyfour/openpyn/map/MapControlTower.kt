@@ -55,7 +55,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import mu.KLogging
+import mu.KotlinLogging
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashSet
@@ -91,6 +91,8 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         channel.map(IO) { runCatching { withTimeout(TIME_MILLIS) { createGeoJson(it) } }.getOrNull() }
             .consumeEach { it?.let { animateCamera(it) } }
     }
+
+    private val logger = KotlinLogging.logger {}
 
     override fun onStarted() {
         super.onStarted()
@@ -133,8 +135,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mGoogleMap = googleMap
-        mGoogleMap?.let { loadData() }
+        mGoogleMap = googleMap.also { loadData() }
     }
 
     override fun onMapLoaded() {
@@ -200,7 +201,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             PrintArray.checkedItemsList = selectedIds
         }
 
-        mCountries.let { mFlags = getCurrentFlags(it, selectedIds) }
+        mFlags = getCurrentFlags(mCountries, selectedIds)
 
         onCameraIdle()
     }
@@ -312,12 +313,12 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             if (it.isInfoWindowShown) it.hideInfoWindow()
             views.hideFavoriteButton()
         }
-        mGoogleMap?.let {
-            it.setOnInfoWindowClickListener(null)
-            it.setOnMapClickListener(null)
-            it.setOnMarkerClickListener { true }
-            it.uiSettings?.isScrollGesturesEnabled = false
-            it.uiSettings?.isZoomGesturesEnabled = false
+        mGoogleMap?.apply {
+            setOnInfoWindowClickListener(null)
+            setOnMapClickListener(null)
+            setOnMarkerClickListener { true }
+            uiSettings.isScrollGesturesEnabled = false
+            uiSettings.isZoomGesturesEnabled = false
         }
     }
 
@@ -330,12 +331,12 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             views.showFavoriteButton()
         }
 
-        mGoogleMap?.let {
-            it.setOnInfoWindowClickListener(this)
-            it.setOnMapClickListener(this)
-            it.setOnMarkerClickListener(this)
-            it.uiSettings?.isScrollGesturesEnabled = true
-            it.uiSettings?.isZoomGesturesEnabled = true
+        mGoogleMap?.apply {
+            setOnInfoWindowClickListener(this@MapControlTower)
+            setOnMapClickListener(this@MapControlTower)
+            setOnMarkerClickListener(this@MapControlTower)
+            uiSettings.isScrollGesturesEnabled = true
+            uiSettings.isZoomGesturesEnabled = true
         }
     }
 
@@ -396,8 +397,8 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             /*val params = fab1.layoutParams as ConstraintLayout.LayoutParams
             it.setPadding(0, 0, 0, params.height + params.bottomMargin)*/
 
-            it.uiSettings?.isScrollGesturesEnabled = true
-            it.uiSettings?.isZoomGesturesEnabled = true
+            it.uiSettings.isScrollGesturesEnabled = true
+            it.uiSettings.isZoomGesturesEnabled = true
 
             mCameraUpdateAnimator = CameraUpdateAnimator(it, this, animations)
             mCameraUpdateAnimator?.animatorListener = this
@@ -427,7 +428,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         }
     }
 
-    companion object : KLogging() {
+    companion object {
         private const val TIME_MILLIS: Long = 600
         private const val DELAY_MILLIS: Long = 10000
         private const val FAVORITE_KEY = "pref_favorites"

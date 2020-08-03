@@ -97,7 +97,7 @@ fun <T : Activity> onAboutItemSelected(activity: T, @Suppress("UNUSED_PARAMETER"
 }
 
 fun <T : Activity> CoroutineScope.onGenerateItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?): Job = launch {
-    val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.also { it.showProgress(true) }
+    val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.apply { showProgress(true) }
 
     withContext(Dispatchers.IO) {
         runCatching {
@@ -122,7 +122,7 @@ fun <T : Activity> onLogFileSelected(activity: T, @Suppress("UNUSED_PARAMETER") 
 }
 
 fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?): Job = launch {
-    val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.also { it.showProgress(true) }
+    val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.apply { showProgress(true) }
 
     withContext(Dispatchers.IO) {
         runCatching {
@@ -134,8 +134,7 @@ fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T, @Suppress("
             setTitle(R.string.title_warning)
             setMessage(R.string.warning_restart_app)
             setPositiveButton(android.R.string.ok, null)
-            show()
-        }
+        }.show()
     }.onFailure {
         toolbar?.hideProgress(true)
         logger.debug(it) { "" }
@@ -189,12 +188,6 @@ fun showSnackProgressBar(manager: SnackProgressBarManager, storeId: Int) {
     when (manager.getLastShown()) {
         null -> manager.show(storeId, SnackProgressBarManager.LENGTH_INDEFINITE)
         else -> manager.getSnackProgressBar(storeId)?.let { manager.updateTo(it) }
-    }
-}
-
-fun logException(throwable: Throwable) {
-    if (Fabric.isInitialized()) {
-        Crashlytics.logException(throwable)
     }
 }
 
@@ -322,8 +315,8 @@ fun initStrictMode() {
 fun <T : Context> isEmulator(context: T): Boolean {
     // TODO: add connectivity check for 10.0.2.2 on debug machine for higher api levels
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
-        context.classLoader.loadClass("android.os.SystemProperties").let {
-            if ((it.getMethod("get", String::class.java).invoke(it, "ro.kernel.qemu") as String) == "1") {
+        context.classLoader.loadClass("android.os.SystemProperties").run {
+            if ((getMethod("get", String::class.java).invoke(this, "ro.kernel.qemu") as String) == "1") {
                 return@isEmulator true
             }
         }
@@ -336,11 +329,10 @@ fun <T : Context> saveEmulatorPreferences(context: T) {
         return
     }
 
-    PreferenceManager.getDefaultSharedPreferences(context).edit().let {
+    PreferenceManager.getDefaultSharedPreferences(context).edit().run {
         // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
-        it.putString(context.getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
+        putString(context.getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
         // The default port for Telnet client connections is 23
-        it.putString(context.getString(R.string.pref_openvpnmgmt_port_key), "23")
-        it.apply()
-    }
+        putString(context.getString(R.string.pref_openvpnmgmt_port_key), "23")
+    }.apply()
 }

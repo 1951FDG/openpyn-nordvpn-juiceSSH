@@ -12,7 +12,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import mu.KLogging
+import mu.KotlinLogging
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 import java.util.ArrayList
 
@@ -25,6 +25,7 @@ class MapFragment : AbstractMapFragment(), OnCommandExecuteListener, OnSessionSt
     val toolBar: ProgressToolbar? by lazy {
         requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
     }
+    private val logger = KotlinLogging.logger {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,6 +72,4 @@ class MapFragment : AbstractMapFragment(), OnCommandExecuteListener, OnSessionSt
 
     override fun onCancel() {
     }
-
-    companion object : KLogging()
 }

@@ -1,6 +1,5 @@
 package io.github.getsixtyfour.openpyn.map.util
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.location.Location
@@ -10,7 +9,6 @@ import android.view.animation.AccelerateInterpolator
 import androidx.annotation.AnyRes
 import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
@@ -129,7 +127,6 @@ suspend fun generateXML() {
     }
 }
 
-@Suppress("MagicNumber")
 fun createJson2(type: String, content: JSONObject): JSONObject? {
     var flag = ""
     var country = ""
@@ -317,8 +314,8 @@ fun sortJsonArray(jsonArray: JSONArray): JSONArray {
     return result
 }
 
-fun stringifyJsonArray(jsonArray: JSONArray): String = when {
-    BuildConfig.DEBUG -> sortJsonArray(jsonArray).run { toString(2) }
+fun stringifyJsonArray(jsonArray: JSONArray): String? = when {
+    BuildConfig.DEBUG -> sortJsonArray(jsonArray).toString(2)
     else -> "$jsonArray"
 }
 
@@ -332,7 +329,7 @@ fun writeJsonArray(context: Context, @AnyRes resId: Int, text: String): File {
 @Suppress("ComplexMethod", "MagicNumber")
 fun showThreats(activity: Activity, jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
-    logger.info { threats.toString() }
+    logger.info(threats::toString)
 
     if (threats != null) {
         val tor = threats.getBoolean("is_tor")

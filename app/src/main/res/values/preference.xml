@@ -342,7 +342,7 @@
 
     <string name="pref_openvpnmgmt_host_error_2">Host must be an IP address</string>
     <string name="pref_openvpnmgmt_host_error">Host must be a local IP address</string>
-    <string name="pref_openvpnmgmt_port_error">Port must be between 0 and 65535</string>
+    <string name="pref_openvpnmgmt_port_error">Port must be between 1 and 65535</string>
     <string name="pref_openvpnmgmt_path_error">Path must be a posix file path</string>
 
     <string name="pref_openvpnmgmt_host_helper_text">The host IP address</string>

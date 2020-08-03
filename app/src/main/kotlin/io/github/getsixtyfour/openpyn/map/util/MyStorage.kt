@@ -11,10 +11,7 @@ abstract class MyStorage<T>(val key: String) {
     fun storeFavorites(context: Context, arrayList: ArrayList<T>) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val string = jsonAdapter.toJson(arrayList)
-        preferences.edit().apply {
-            putString(key, string)
-            apply()
-        }
+        preferences.edit().putString(key, string).apply()
     }
 
     @Suppress("WeakerAccess")

@@ -26,7 +26,7 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
 
         setHasOptionsMenu(true)
 
-        findPreference<EditTextPreference>("pref_server")?.run {
+        findPreference<EditTextPreference>("pref_server")?.apply {
             setOnBindEditTextListener {
                 it.addTextChangedListener(it.textInputLayout()?.serverErrorTextWatcher)
             }

@@ -34,7 +34,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
 
         setHasOptionsMenu(false)
 
-        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_host_key))?.run {
+        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_host_key))?.apply {
             setOnBindEditTextListener {
                 // IPv4
                 it.keyListener = DigitsKeyListener.getInstance("0123456789.")
@@ -54,7 +54,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
 
-        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_port_key))?.run {
+        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_port_key))?.apply {
             setOnBindEditTextListener {
                 it.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_NORMAL
                 it.filters += InputFilter.LengthFilter(5)
@@ -62,7 +62,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
 
-        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_password_file_key))?.run {
+        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_password_file_key))?.apply {
             setOnBindEditTextListener {
                 /*it.filters += InputFilter { source, start, end, dest, dstart, dend ->
                     val char = PosixPathNameChecker.SEPARATOR_CHAR
@@ -79,11 +79,11 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
 
-        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_password_key))?.run {
+        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_password_key))?.apply {
             setSummaryProvider(::provideSummary)
         }
 
-        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_userpass_key))?.run {
+        findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_userpass_key))?.apply {
             setSummaryProvider(::provideSummary)
         }
     }
@@ -161,7 +161,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
                 }
 
                 fun isNumericPort(port: String): Boolean = try {
-                    port.toInt() in 0..65535
+                    port.toInt() in 1..65535
                 } catch (e: NumberFormatException) {
                     false
                 }

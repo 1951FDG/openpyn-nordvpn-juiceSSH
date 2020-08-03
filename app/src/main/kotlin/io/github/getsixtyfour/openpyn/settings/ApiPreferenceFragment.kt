@@ -26,7 +26,7 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
 
         setHasOptionsMenu(false)
 
-        findPreference<ListPreference>("pref_geo_client")?.run {
+        findPreference<ListPreference>("pref_geo_client")?.apply {
             summaryProvider = Preference.SummaryProvider<ListPreference> {
                 when (val entry = it.entry) {
                     "IPData" -> "\uD83D\uDEE1 $entry (key required)"
@@ -38,15 +38,15 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
 
-        findPreference<EditTextPreference>("pref_api_ipdata")?.run {
+        findPreference<EditTextPreference>("pref_api_ipdata")?.apply {
             setSummaryProvider(::provideSummary)
         }
 
-        findPreference<EditTextPreference>("pref_api_ipinfo")?.run {
+        findPreference<EditTextPreference>("pref_api_ipinfo")?.apply {
             setSummaryProvider(::provideSummary)
         }
 
-        findPreference<EditTextPreference>("pref_api_ipstack")?.run {
+        findPreference<EditTextPreference>("pref_api_ipstack")?.apply {
             setSummaryProvider(::provideSummary)
         }
     }

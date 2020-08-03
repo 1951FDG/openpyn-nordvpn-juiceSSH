@@ -251,6 +251,9 @@
     },
     "categories": [
       {
+        "name": "P2P"
+      },
+      {
         "name": "Standard VPN servers"
       }
     ]
@@ -574,6 +577,9 @@
     },
     "categories": [
       {
+        "name": "P2P"
+      },
+      {
         "name": "Standard VPN servers"
       }
     ]
@@ -670,6 +676,9 @@
     },
     "categories": [
       {
+        "name": "P2P"
+      },
+      {
         "name": "Standard VPN servers"
       }
     ]
@@ -682,9 +691,6 @@
       "long": 28.8575
     },
     "categories": [
-      {
-        "name": "P2P"
-      },
       {
         "name": "Standard VPN servers"
       }
@@ -963,9 +969,6 @@
         "name": "Obfuscated Servers"
       },
       {
-        "name": "Onion Over VPN"
-      },
-      {
         "name": "P2P"
       },
       {
@@ -1010,6 +1013,9 @@
       "long": 28.964722
     },
     "categories": [
+      {
+        "name": "Obfuscated Servers"
+      },
       {
         "name": "P2P"
       },
@@ -1222,9 +1228,6 @@
     "categories": [
       {
         "name": "Dedicated IP"
-      },
-      {
-        "name": "Double VPN"
       },
       {
         "name": "P2P"

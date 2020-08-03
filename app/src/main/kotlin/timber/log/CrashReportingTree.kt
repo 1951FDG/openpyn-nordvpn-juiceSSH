@@ -122,9 +122,9 @@ open class CrashReportingTree : Tree() {
             // TODO: Add more custom keys
             // Crashlytics supports a maximum of 64 key/value pairs
             Crashlytics.setString(PRIORITY_KEY, "Error")
-            tag?.let { Crashlytics.setString(TAG_KEY, tag) }
+            tag?.let { Crashlytics.setString(TAG_KEY, it) }
             Crashlytics.setString(MESSAGE_KEY, message)
-            Crashlytics.logException(t)
+            t?.let { Crashlytics.logException(it) }
         } catch (ignored: IllegalStateException) {
             // Must Initialize Fabric before using singleton()
         }

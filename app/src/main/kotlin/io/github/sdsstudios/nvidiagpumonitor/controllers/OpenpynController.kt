@@ -8,7 +8,7 @@ import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import mu.KLogging
+import mu.KotlinLogging
 
 class OpenpynController(
     ctx: Context,
@@ -19,6 +19,7 @@ class OpenpynController(
 
     @Suppress("MagicNumber")
     private var buffer = StringBuilder(256)
+    private val logger = KotlinLogging.logger {}
 
     @Suppress("MagicNumber")
     override fun onCompleted(exitCode: Int) {
@@ -236,7 +237,7 @@ class OpenpynController(
         mOnOutputLineListener = null
     }
 
-    companion object : KLogging() {
+    companion object {
         private const val SPAM = "SPAM"
         private const val DEBUG = "DEBUG"
         private const val VERBOSE = "VERBOSE"

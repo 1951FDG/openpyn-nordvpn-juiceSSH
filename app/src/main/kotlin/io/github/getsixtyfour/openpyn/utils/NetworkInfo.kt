@@ -12,12 +12,13 @@ import androidx.annotation.MainThread
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 import io.github.getsixtyfour.openpyn.AppConfig
-import mu.KLogging
+import mu.KotlinLogging
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
 
 class NetworkInfo internal constructor(private val connectivityManager: ConnectivityManager) : LiveData<Boolean>() {
+    private val logger = KotlinLogging.logger {}
     private val mLock = Any()
 
     @Volatile
@@ -80,16 +81,8 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
                         }
                     }
                 }
-                // Verify internet access
-                if (hostAvailable("google.com", 80)) {
-                    // Internet access
-                    logger.debug("Internet Access Detected")
-                    postValue(true)
-                } else {
-                    // No internet access
-                    logger.debug("Unable to access Internet")
-                    postValue(false)
-                }
+                // TODO: wifi indicator location question mark, be smart, do wifi state check no mobile? only post true when wifi is active
+                postValue(true)
 
                 notifyNetworkChangeToAll(network)
             }
@@ -173,7 +166,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     }
 
     // Static content
-    companion object : KLogging() {
+    companion object {
 
         var ns: NetworkInfo? = null
 

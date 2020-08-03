@@ -89,8 +89,7 @@ object PrintArray {
                 }
                 save(checkedItems.toCollection(ArrayList()))
             }
-            show()
-        }
+        }.show()
     }
 
     // AlertDialog
@@ -124,8 +123,7 @@ object PrintArray {
                 }
                 save(checkedItems)
             }
-            show()
-        }
+        }.show()
     }
 
     // MultiSelectDialog
@@ -150,11 +148,11 @@ object PrintArray {
             setMaxSelectionLimit(items.size)
             setPreSelectIDsList(checkedItems)
             setMultiSelectList(items)
-            // TODO: change to nav, setup onAttachFragment in activity or setup onAttach in class itself, or ?
-            /*val action = MapFragmentDirections.actionMapFragmentToMultiSelectDialogFragment()
-            Navigation.findNavController(context.findViewById(R.id.map)).navigate(action)*/
-            show(context.supportFragmentManager, null)
-        }
+        }.show(context.supportFragmentManager, null)
+
+        // TODO: change to nav, setup onAttachFragment in activity or setup onAttach in class itself, or ?
+        /*val action = MapFragmentDirections.actionMapFragmentToMultiSelectDialogFragment()
+        Navigation.findNavController(context.findViewById(R.id.map)).navigate(action)*/
     }
 
     fun putListInt(@Size(min = 1) key: String, intList: ArrayList<Int>, prefs: SharedPreferences): SharedPreferences.Editor {
