@@ -278,7 +278,7 @@ dependencies {
     }
 
     // Error Prone
-    debugAnnotationProcessor 'com.uber.nullaway:nullaway:0.7.9'
+    debugAnnotationProcessor 'com.uber.nullaway:nullaway:0.8.0'
     debugCompileOnly 'com.jakewharton.nopen:nopen-annotations:1.0.1'
     errorprone 'com.jakewharton.nopen:nopen-checker:1.0.1'
     errorprone 'com.google.errorprone:error_prone_core:2.3.4'
