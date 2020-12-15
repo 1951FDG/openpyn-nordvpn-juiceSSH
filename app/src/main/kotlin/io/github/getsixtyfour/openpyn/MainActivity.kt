@@ -33,6 +33,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
+import io.github.getsixtyfour.ktextension.apkSignatures
 import io.github.getsixtyfour.ktextension.handleUpdate
 import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
 import io.github.getsixtyfour.ktextension.startUpdate
