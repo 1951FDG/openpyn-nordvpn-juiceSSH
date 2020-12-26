@@ -288,7 +288,7 @@
     <string name="egab_leave_review">Leave review</string>
     <string name="egab_contact_support">Contact us</string>
     <string name="egab_version">Version</string>
-    <string name="egab_author">Author</string>
+    <string name="egab_author">GitHub</string>
     <string name="egab_share">Share</string>
     <string name="egab_changelog">Changelog</string>
     <string name="egab_submit_issue">Report a problem</string>

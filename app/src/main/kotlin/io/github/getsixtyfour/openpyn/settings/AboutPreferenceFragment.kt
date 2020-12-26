@@ -109,7 +109,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             activity,
             R.string.egab_author,
             config.author,
-            R.drawable.ic_person_black_24dp,
+            R.drawable.ic_github_black_24dp,
             OnPreferenceClickListener {
                 AboutBoxUtils.openHTMLPage(activity, config.companyHtmlPath)
                 true

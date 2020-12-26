@@ -110,12 +110,6 @@ fun <T : Activity> CoroutineScope.onGenerateItemSelected(activity: T, @Suppress(
     toolbar?.hideProgress(true)
 }
 
-fun <T : Activity> onGitHubItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
-    val uriString = "https://github.com/1951FDG/openpyn-nordvpn-juiceSSH"
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
-    ContextCompat.startActivity(activity, intent, null)
-}
-
 fun <T : Activity> onLogFileSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
     val intent = Intent().apply { component = ComponentName(activity, "info.hannes.logcat.LogfileActivity") }
     ContextCompat.startActivity(activity, intent, null)

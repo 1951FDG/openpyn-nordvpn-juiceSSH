@@ -161,10 +161,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
                 onSettingsItemSelected(this, item)
                 true
             }
-            R.id.menu_github -> {
-                onGitHubItemSelected(this, item)
-                true
-            }
             /*
             R.id.menu_generate -> {
                 onGenerateItemSelected(this, item)
