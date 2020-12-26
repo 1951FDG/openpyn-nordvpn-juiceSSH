@@ -37,9 +37,9 @@ set_target_properties(
 
         PROPERTIES IMPORTED_LOCATION
         # Specifies the target location.
-        ../../../../src/main/jniLibs/${ANDROID_ABI}/libsqlite3x.so)
-        # ../../../../src/main/jniLibs/${ANDROID_ABI}/libsqliteX.so)
-        # ../../../../src/main/jniLibs/${ANDROID_ABI}/libsqlite4java-android.so)
+		../../../../src/main/cmakeLibs/${ANDROID_ABI}/libsqlite3x.so)
+        # ../../../../src/main/cmakeLibs/${ANDROID_ABI}/libsqliteX.so)
+        # ../../../../src/main/cmakeLibs/${ANDROID_ABI}/libsqlite4java-android.so)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
