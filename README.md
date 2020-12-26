@@ -8,7 +8,7 @@
 [![](https://img.shields.io/codacy/grade/0b6672c6a62a4efc92a51f029ae310e4.svg)](https://www.codacy.com/app/1951FDG/openpyn-nordvpn-juiceSSH?utm_source=github.com&utm_medium=referral&utm_content=1951FDG/openpyn-nordvpn-juiceSSH&utm_campaign=Badge_Grade)
 [![](https://img.shields.io/github/downloads/1951fdg/openpyn-nordvpn-juicessh/latest/total.svg)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/releases)
 
-An Android app written in C/C++, [Java](https://www.oracle.com/java/), and [Kotlin](https://kotlinlang.org/) to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely through JuiceSSH. Special thanks to [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor), a JuiceSSH plugin written in Kotlin by [sds100](https://github.com/sds100) which served as a base for this JuiceSSH plugin.
+An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely through [JuiceSSH](https://juicessh.com/).
 
 > **Note**:
 > The first public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) has been released.
@@ -44,7 +44,7 @@ I then stumbled on [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), quick
 
 Now, I had achieved more or less what I desired, but this left me with one last struggle, having to resort to open a SSH connection to the ASUS router and supplying Openpyn with the desired arguments (e.g., country, server load threshold and server type). Having the ability to do that on a phone instead of a computer would make this a lot easier, and that led me to discovering [JuiceSSH](https://juicessh.com/).
 
-JuiceSSH supports the use of plugins, which allowed me to create this fantastic app. This app runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to send a Openpyn command to the remote device.
+[JuiceSSH](https://juicessh.com/) supports the use of plugins, which allowed me to create this fantastic app. This app runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to send a Openpyn command to the remote device.
 
 > **Note**:
 > This project is my very first Android project, and as such, it may not follow all the best coding practices yet, regardless of this, I'm committed to make this app a source of inspiration for other developers working on similar based Android apps, especially Google Maps based Android apps.
@@ -61,7 +61,7 @@ JuiceSSH supports the use of plugins, which allowed me to create this fantastic 
 
 -   Allows to star a country in the map view
 
--   API keys stored in shared preferences are encrypted ("AES/GCM/NoPadding")
+-   API keys stored in shared preferences are encrypted
 
 -   On app start, it will use a smart location, to determine the closest country
 
@@ -118,17 +118,15 @@ Please use my `test` branch of [Openpyn](https://github.com/1951FDG/openpyn-nord
 
 To compile and run the project you'll need:
 
--   [Android Studio 3.5 or higher](https://developer.android.com/studio/)
-    -   Android `10 (API level 29)`
-    -   Android SDK Build-Tools `29.0.2`
+-   [Android Studio 4.0.2 or higher](https://developer.android.com/studio/)
+    -   Android SDK Platform `30`
+    -   Android SDK Build-Tools `30.0.3`
     -   CMake `v3.10.2`
-    -   Android SDK Platform-Tools
-    -   Android SDK Tools
-    -   NDK
+    -   NDK `21.0.6113669`
 
 
 -   Maps SDK for Android
-    -   [Get API Key](https://developers.google.com/maps/documentation/android-sdk/signup)
+    -   [Get an API key](https://developers.google.com/maps/documentation/android-sdk/signup)
 
 ## References
 
@@ -207,11 +205,6 @@ This app uses (modified) code from several open source projects.
     -   [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
     -   [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
 
-
--   [Checkable Floating Button](https://github.com/kiddouk/CheckableFloatingActionButton)
-    -   Modified [CheckableFloatingActionButton.java](app/src/main/java/io/errorlab/widget/CheckableFloatingActionButton.java)
-    -   Modified [CheckedSavedState.java](app/src/main/java/io/errorlab/widget/CheckedSavedState.java)
-
 > **Note**:
 > Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
 
@@ -243,10 +236,12 @@ This app uses (modified) code from several open source projects.
 
 ## Attributions
 
--   [Natural Earth Map Data](https://www.naturalearthdata.com/downloads/10m-physical-vectors/)
 -   [Business Icons](https://www.flaticon.com/packs/business-14)
 -   [Country Flags Icons](https://www.flaticon.com/packs/countrys-flags)
+-   [Natural Earth Map Data](https://www.naturalearthdata.com/downloads/10m-physical-vectors/)
 
 ## Acknowledgments
 
-Many thanks to [Sonelli](https://github.com/Sonelli) who made this project possible and painless. Special thanks to [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
+-   Special thanks to [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com/).
+-   Special thanks to [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
+-   Special thanks to [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
