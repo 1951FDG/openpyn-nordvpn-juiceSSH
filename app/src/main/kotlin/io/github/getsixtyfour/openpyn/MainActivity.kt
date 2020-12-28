@@ -53,11 +53,10 @@ import kotlinx.android.synthetic.main.activity_main.spinner
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import mu.KotlinLogging
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 import java.util.UUID
-import io.github.getsixtyfour.openpyn.databinding.ActivityMainBinding
-import mu.KotlinLogging
 
 class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallback, OnClickListener, NoticeDialogListener,
     OnLoaderChangedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
