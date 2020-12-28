@@ -22,7 +22,7 @@ import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPRConsent.NON_PERSONAL_CONSENT_ONLY
 import com.michaelflisar.gdprdialog.GDPRConsent.PERSONAL_CONSENT
@@ -98,8 +98,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
                 }
                 // You can't stop Crashlytics reporting once you've initialized it in an app session
                 // TODO: show dialog to mention that restart is required
-                val context = preference.context.applicationContext
-                FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(value)
+                FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(value)
 
                 return@OnPreferenceChangeListener true
             }

@@ -1,7 +1,7 @@
 package timber.log
 
 import android.util.Log
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber.Tree
 
 open class CrashReportingTree : Tree() {
@@ -121,10 +121,11 @@ open class CrashReportingTree : Tree() {
         try {
             // TODO: Add more custom keys
             // Crashlytics supports a maximum of 64 key/value pairs
-            Crashlytics.setString(PRIORITY_KEY, "Error")
-            tag?.let { Crashlytics.setString(TAG_KEY, it) }
-            Crashlytics.setString(MESSAGE_KEY, message)
-            t?.let { Crashlytics.logException(it) }
+            val crashlytics = FirebaseCrashlytics.getInstance()
+            crashlytics.setCustomKey(PRIORITY_KEY, "Error")
+            tag?.let { crashlytics.setCustomKey(TAG_KEY, it) }
+            crashlytics.setCustomKey(MESSAGE_KEY, message)
+            t?.let { crashlytics.recordException(it) }
         } catch (ignored: IllegalStateException) {
             // Must Initialize Fabric before using singleton()
         }

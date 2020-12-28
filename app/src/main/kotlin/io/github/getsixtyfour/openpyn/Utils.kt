@@ -20,14 +20,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.IAnalytic
 import com.getsixtyfour.openvpnmgmt.android.Constants
 import com.getsixtyfour.openvpnmgmt.android.Utils
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.michaelflisar.gdprdialog.GDPR
 import com.michaelflisar.gdprdialog.GDPR.IGDPRCallback
 import com.michaelflisar.gdprdialog.GDPRConsentState
@@ -38,7 +36,6 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSION
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-import io.fabric.sdk.android.Fabric
 import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.openpyn.map.util.createJson
 import io.github.getsixtyfour.openpyn.map.util.generateXML
@@ -277,12 +274,7 @@ private fun <T : Context> initCrashlytics(context: T, enabled: Boolean) {
         return
     }
 
-    if (Fabric.isInitialized()) {
-        return
-    }
-    val core = CrashlyticsCore.Builder().disabled(!enabled).build()
-    Fabric.with(context, Crashlytics.Builder().core(core).build())
-    FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(enabled)
+    FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(enabled)
 }
 
 fun <T : Context> initGDPR(context: T): GDPR = GDPR.getInstance().init(context)
