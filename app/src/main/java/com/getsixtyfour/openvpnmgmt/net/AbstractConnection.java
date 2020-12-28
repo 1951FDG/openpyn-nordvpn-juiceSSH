@@ -6,6 +6,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -84,7 +85,8 @@ abstract class AbstractConnection implements Closeable {
         getLogger().info("Connecting to {}:{}", host, port); //NON-NLS
         mHost = host;
         mPort = port;
-        mSocket = new Socket(mHost, mPort);
+        mSocket = new Socket();
+        mSocket.connect(new InetSocketAddress(host, port), 1000);
         mSocket.setKeepAlive(mKeepAlive);
         mSocket.setTcpNoDelay(true);
         InputStreamReader in = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
