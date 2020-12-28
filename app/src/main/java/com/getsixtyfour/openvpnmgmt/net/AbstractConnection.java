@@ -81,7 +81,7 @@ abstract class AbstractConnection implements Closeable {
         if (port == null) {
             throw new IllegalArgumentException("port can't be null");
         }
-        getLogger().info("Connecting to {}:{}", mHost, mPort); //NON-NLS
+        getLogger().info("Connecting to {}:{}", host, port); //NON-NLS
         mHost = host;
         mPort = port;
         mSocket = new Socket(mHost, mPort);
