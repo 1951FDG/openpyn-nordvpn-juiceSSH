@@ -93,6 +93,8 @@ public final class OpenVpnService extends Service
     @Nullable
     private Thread mThread = null;
 
+    private int mStartId;
+
     @CheckResult
     @DrawableRes
     @SuppressWarnings({ "MethodWithMultipleReturnPoints", "WeakerAccess" })
@@ -256,6 +258,12 @@ public final class OpenVpnService extends Service
             throw new IllegalArgumentException("intent can't be null");
         }
 
+        if (mStartId > 0) {
+            return START_NOT_STICKY;
+        }
+
+        mStartId = startId;
+
         mPostByteCountNotification = intent.getBooleanExtra(Constants.EXTRA_POST_BYTE_COUNT_NOTIFICATION, false);
         mPostStateNotification = intent.getBooleanExtra(Constants.EXTRA_POST_STATE_NOTIFICATION, false);
         mSendStateBroadcast = intent.getBooleanExtra(Constants.EXTRA_SEND_STATE_BROADCAST, false);
@@ -285,7 +293,7 @@ public final class OpenVpnService extends Service
         });
         thread.start();
 
-        return START_REDELIVER_INTENT;
+        return START_NOT_STICKY;
     }
 
     @Nullable
