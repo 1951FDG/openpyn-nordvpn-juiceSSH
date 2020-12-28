@@ -2,7 +2,7 @@ package io.github.getsixtyfour.openpyn.settings
 
 import android.content.Context
 import android.text.Editable
-import android.text.TextUtils.TruncateAt.END
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.TextView
@@ -33,7 +33,7 @@ abstract class AbstractTextWatcher(protected val textInputLayout: TextInputLayou
                 textInputLayout.isErrorEnabled = true
                 val errorView: TextView = textInputLayout.findViewById(R.id.textinput_error)
                 errorView.maxLines = 1
-                errorView.ellipsize = END
+                errorView.ellipsize = TextUtils.TruncateAt.END
                 textInputLayout.error = errorText
                 button?.isEnabled = false
             }

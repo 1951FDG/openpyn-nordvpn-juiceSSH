@@ -51,7 +51,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             // Receive network changes
             @Suppress("MagicNumber")
-            override fun onAvailable(network: Network?) {
+            override fun onAvailable(network: Network) {
                 // Network available
                 logger.debug("Network available")
                 // Get network type
@@ -87,7 +87,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
                 notifyNetworkChangeToAll(network)
             }
 
-            override fun onLost(network: Network?) {
+            override fun onLost(network: Network) {
                 // No network available
                 logger.debug("Network not available")
                 postValue(false)

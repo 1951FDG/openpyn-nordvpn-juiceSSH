@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "UtilityClass", "StaticMethodOnlyUsedInOneClass", "ClassIndependentOfModule", "ClassUnconnectedToPackage" })
+@SuppressWarnings({ "UtilityClass", "ClassIndependentOfModule", "ClassUnconnectedToPackage" })
 public final class StringUtils {
 
     private StringUtils() {
