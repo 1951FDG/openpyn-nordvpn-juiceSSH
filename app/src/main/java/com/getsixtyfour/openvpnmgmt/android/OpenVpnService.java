@@ -12,8 +12,8 @@ import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Process;
 import android.os.NetworkOnMainThreadException;
-import android.text.TextUtils;
 import android.text.format.DateUtils;
 
 import androidx.annotation.CheckResult;
@@ -187,8 +187,8 @@ public final class OpenVpnService extends Service
 
     @NonNull
     @SuppressWarnings({ "TypeMayBeWeakened", "MethodWithTooManyParameters" })
-    private Notification getNotification(@NonNull Context context, @NonNull String title, @NonNull String text, @NonNull String channel,
-                                         long when, @DrawableRes int icon) {
+    private Notification createNotification(@NonNull Context context, @NonNull String title, @NonNull String text, @NonNull String channel,
+                                            long when, @DrawableRes int icon) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel);
         builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
         builder.setContentText(text);
@@ -213,7 +213,7 @@ public final class OpenVpnService extends Service
 
     @SuppressLint("WrongConstant")
     @RequiresApi(Build.VERSION_CODES.O)
-    private static void setUpNotificationChannels(@NonNull Context context) {
+    private static void createNotificationChannels(@NonNull Context context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         // Real-time notification of OpenVPN bandwidth usage
         {
@@ -236,8 +236,9 @@ public final class OpenVpnService extends Service
 
     @Override
     public void onCreate() {
+        LOGGER.debug("onCreate");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            setUpNotificationChannels(this);
+            createNotificationChannels(this);
         }
 
         Connection connection = ManagementConnection.getInstance();
@@ -251,12 +252,6 @@ public final class OpenVpnService extends Service
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         LOGGER.debug("onStartCommand");
-        if ((intent != null) && Constants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) {
-            return START_NOT_STICKY;
-        }
-        if ((intent != null) && Constants.ACTION_START_SERVICE_STICKY.equals(intent.getAction())) {
-            return START_REDELIVER_INTENT;
-        }
         if (intent == null) {
             throw new IllegalArgumentException("intent can't be null");
         }
@@ -274,8 +269,8 @@ public final class OpenVpnService extends Service
         String text = getString(R.string.vpn_msg_launch);
         String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_disconnected));
 
-        Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, System.currentTimeMillis(), icon);
-        startForeground(Constants.NEW_STATUS_CHANNEL_ID.hashCode(), notification);
+        Notification notification = createNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, System.currentTimeMillis(), icon);
+        startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
 
         // Connect the management interface in a background thread
         Thread thread = new Thread(() -> {
@@ -297,7 +292,7 @@ public final class OpenVpnService extends Service
     @Override
     public IBinder onBind(@Nullable Intent intent) {
         LOGGER.debug("onBind");
-        return ((intent != null) && Constants.ACTION_START_SERVICE_NOT_STICKY.equals(intent.getAction())) ? mBinder : null;
+        return (intent != null) ? mBinder : null;
     }
 
     @Override
@@ -315,7 +310,7 @@ public final class OpenVpnService extends Service
             long now = System.currentTimeMillis();
             long fourWeeksAgo = now - (DateUtils.WEEK_IN_MILLIS * 4L);
             long oneDaysAhead = now + (DateUtils.DAY_IN_MILLIS * 2L);
-            int uid = android.os.Process.myUid();
+            int uid = Process.myUid();
             try {
                 long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, Constants.THREAD_STATS_TAG);
                 // long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, android.app.usage.NetworkStats.Bucket.TAG_NONE);
@@ -330,18 +325,13 @@ public final class OpenVpnService extends Service
             mThread = null;
         }
 
-        // Disconnect the management interface in a background thread
-        Thread thread = new Thread(() -> {
-            Connection connection = ManagementConnection.getInstance();
-            connection.disconnect();
-        });
-        thread.start();
-
         Connection connection = ManagementConnection.getInstance();
         connection.clearOnByteCountChangedListeners();
         connection.clearOnRecordChangedListeners();
         connection.clearOnStateChangedListeners();
         connection.setConnectionListener(null);
+
+        connection.disconnect();
     }
 
     @Override
@@ -360,6 +350,7 @@ public final class OpenVpnService extends Service
         if (Thread.currentThread().equals(getMainLooper().getThread())) {
             LOGGER.error("", new NetworkOnMainThreadException());
         }
+
         // Start a background thread that handles incoming messages of the management interface
         Connection connection = ManagementConnection.getInstance();
         mThread = new Thread(connection, Constants.THREAD_NAME);
@@ -393,8 +384,8 @@ public final class OpenVpnService extends Service
         String text = getString(R.string.vpn_msg_byte_count, strIn, strDiffIn, strOut, strDiffOut);
         String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_connected));
 
-        Notification notification = getNotification(this, title, text, Constants.BG_CHANNEL_ID, mStartTime, icon);
-        startForeground(Constants.BG_CHANNEL_ID.hashCode(), notification);
+        Notification notification = createNotification(this, title, text, Constants.BG_CHANNEL_ID, mStartTime, icon);
+        startForeground(Constants.BG_NOTIFICATION_ID, notification);
     }
 
     private static void onRecordChanged(@NonNull OpenVpnLogRecord record) {
@@ -452,7 +443,7 @@ public final class OpenVpnService extends Service
             // (x) optional address of remote server (OpenVPN 2.1 or higher)
             // (y) optional port of remote server (OpenVPN 2.4 or higher)
             // (x) and (y) are shown for ASSIGN_IP and CONNECTED states
-            if ((VpnStatus.ASSIGN_IP.equals(name) || VpnStatus.CONNECTED.equals(name)) && !TextUtils.isEmpty(address)) {
+            if ((VpnStatus.ASSIGN_IP.equals(name) || VpnStatus.CONNECTED.equals(name)) && !address.isEmpty()) {
                 @NonNls String prefix = null;
                 if (!port.isEmpty()) {
                     prefix = "1194".equals(port) ? "UDP" : "TCP";
@@ -461,8 +452,8 @@ public final class OpenVpnService extends Service
                 text = prefix + address;
             }
 
-            Notification notification = getNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, state.getMillis(), icon);
-            startForeground(Constants.NEW_STATUS_CHANNEL_ID.hashCode(), notification);
+            Notification notification = createNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, state.getMillis(), icon);
+            startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
         }
     }
 
@@ -482,7 +473,7 @@ public final class OpenVpnService extends Service
     @Override
     public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
         // Logs a message when a thread encounters an uncaught exception
-        // logUncaught(t.getName(), getPackageName(), android.os.Process.myPid(), e); // Handled by the pre handler
+        // logUncaught(t.getName(), getPackageName(), Process.myPid(), e); // Handled by the pre handler
 
         if (e instanceof ThreadDeath) {
             LOGGER.info("OpenVPN Management stopped in background thread: \"{}\"", t.getName());

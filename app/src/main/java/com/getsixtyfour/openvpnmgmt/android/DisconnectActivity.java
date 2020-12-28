@@ -11,10 +11,10 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Process;
 import android.os.RemoteException;
 
 import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,6 +37,8 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
     @NonNls
     static final Logger LOGGER = LoggerFactory.getLogger(DisconnectActivity.class);
 
+    boolean mBound;
+
     @Nullable
     private AlertDialog mDialog = null;
 
@@ -50,6 +52,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
         public void onServiceConnected(ComponentName name, IBinder service) {
             LOGGER.info("onServiceConnected");
             setService(IOpenVpnServiceInternal.Stub.asInterface(service));
+            mBound = true;
         }
 
         // Called when the connection with the service disconnects unexpectedly
@@ -57,6 +60,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
         public void onServiceDisconnected(ComponentName name) {
             LOGGER.error("onServiceDisconnected");
             setService(null);
+            mBound = false;
         }
     };
 
@@ -107,7 +111,6 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
 
         // Bind to the service
         Intent intent = new Intent(this, OpenVpnService.class);
-        intent.setAction(Constants.ACTION_START_SERVICE_NOT_STICKY);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         if (mDialog != null) {
             mDialog.show();
@@ -135,8 +138,9 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
         super.onStop();
 
         // Unbind from the service
-        if (mService != null) {
+        if (mBound) {
             unbindService(mConnection);
+            mBound = false;
         }
         if (mDialog != null) {
             mDialog.hide();

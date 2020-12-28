@@ -13,9 +13,13 @@ public final class Constants {
     @NonNls
     public static final String BG_CHANNEL_ID = "openvpn_bg";
 
+    static final int BG_NOTIFICATION_ID = BG_CHANNEL_ID.hashCode();
+
     @SuppressWarnings("WeakerAccess")
     @NonNls
     public static final String NEW_STATUS_CHANNEL_ID = "openvpn_newstat";
+
+    static final int NEW_STATUS_NOTIFICATION_ID = NEW_STATUS_CHANNEL_ID.hashCode();
 
     @SuppressWarnings("WeakerAccess")
     public static final String THREAD_NAME = "OpenVPNManagementThread";
@@ -52,12 +56,6 @@ public final class Constants {
 
     @NonNls
     public static final String EXTRA_PASSWORD = INTENT_PACKAGE_PREFIX + ".extra.PASSWORD";
-
-    @NonNls
-    public static final String ACTION_START_SERVICE_NOT_STICKY = INTENT_PACKAGE_PREFIX + ".action.START_SERVICE_NOT_STICKY";
-
-    @NonNls
-    public static final String ACTION_START_SERVICE_STICKY = INTENT_PACKAGE_PREFIX + ".action.START_SERVICE_STICKY";
 
     private Constants() {
     }
