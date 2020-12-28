@@ -7,9 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.StrictMode
 import android.view.MenuItem
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
@@ -83,7 +81,6 @@ fun getGDPR(@StyleRes theme: Int): GDPRSetup =
 fun <T> showGDPRIfNecessary(activity: T, instance: GDPR, setup: GDPRSetup) where T : AppCompatActivity, T : IGDPRCallback {
     when {
         !AppConfig.GDPR -> return
-        isRunningTest() -> return
         instance.consentState.consent.isPersonalConsent -> return
         else -> instance.checkIfNeedsToBeShown(activity, setup)
     }
@@ -229,13 +226,6 @@ fun setDefaultPreferences(context: Context) {
     PreferenceManager.setDefaultValues(context, R.xml.pref_connect, true)
 }
 
-fun isRunningTest(): Boolean = try {
-    Class.forName("androidx.test.espresso.Espresso")
-    true
-} catch (e: ClassNotFoundException) {
-    false
-}
-
 fun <T : Activity> startVpnService(activity: T) {
     val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
     val openvpnmgmt = preferences.getBoolean(activity.getString(R.string.pref_openvpnmgmt_key), false)
@@ -283,42 +273,3 @@ fun initTimber() {
     Timber.plant(CrashReportingTree())
 }
 
-fun initStrictMode() {
-    if (!AppConfig.STRICT_MODE) {
-        return
-    }
-
-    StrictMode.setThreadPolicy(
-        StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build()
-    )
-
-    StrictMode.setVmPolicy(
-        StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build()
-    )
-}
-
-@SuppressLint("PrivateApi")
-fun <T : Context> isEmulator(context: T): Boolean {
-    // TODO: add connectivity check for 10.0.2.2 on debug machine for higher api levels
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
-        context.classLoader.loadClass("android.os.SystemProperties").run {
-            if ((getMethod("get", String::class.java).invoke(this, "ro.kernel.qemu") as String) == "1") {
-                return@isEmulator true
-            }
-        }
-    }
-    return false
-}
-
-fun <T : Context> saveEmulatorPreferences(context: T) {
-    if (!AppConfig.EMULATOR) {
-        return
-    }
-
-    PreferenceManager.getDefaultSharedPreferences(context).edit().run {
-        // Android Emulator - Special alias to your host loopback interface (i.e., 127.0.0.1 on your development machine)
-        putString(context.getString(R.string.pref_openvpnmgmt_host_key), "10.0.2.2")
-        // The default port for Telnet client connections is 23
-        putString(context.getString(R.string.pref_openvpnmgmt_port_key), "23")
-    }.apply()
-}
