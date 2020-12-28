@@ -1,28 +1,110 @@
-def keystoreProperties = loadProperties('keystore.properties')
-if (!keystoreProperties.isEmpty()) {
-    android.signingConfigs.create('release', {
+final buildType = 'release'
+final groupName = 'app'
+
+androidGitVersionCode.group = groupName
+androidGitVersionName.group = groupName
+dependencyUpdates.group = groupName
+detektBaseline.group = groupName
+detektGenerateConfig.group = groupName
+detektIdeaFormat.group = groupName
+detektIdeaInspect.group = groupName
+generateGitProperties.group = groupName
+generateGradleLintReport.group = groupName
+generateLicenses.group = groupName
+getDependencies.group = groupName
+licensesCleanUp.group = groupName
+removeUnusedResources.group = groupName
+tasks.getByName('androidGitVersion').configure {
+    group = groupName
+}
+tasks.getByName('detekt').configure {
+    group = groupName
+}
+
+ext.loadProperties = { String pathname ->
+    def props = new Properties()
+    def file = rootProject.file(pathname)
+    if (file.file) {
+        file.withInputStream { props.load(it) }
+    }
+    props
+}
+
+Properties keystoreProperties = loadProperties('keystore.properties')
+if (!keystoreProperties.empty) {
+    android.signingConfigs.create buildType, {
         keyAlias keystoreProperties['keyAlias']
         keyPassword keystoreProperties['keyPassword']
         storeFile file(keystoreProperties['storeFile'])
         storePassword keystoreProperties['storePassword']
-    })
-    android.buildTypes['release'].signingConfig = android.signingConfigs['release']
-}
-def apiProperties = loadProperties('api.properties')
-if (!apiProperties.isEmpty()) {
-    android.buildTypes['debug'].resValue('string', 'api_key_ipdata', apiProperties['keyIpdata'])
-    android.buildTypes['debug'].resValue('string', 'api_key_ipinfo', apiProperties['keyIpinfo'])
-    android.buildTypes['debug'].resValue('string', 'api_key_ipstack', apiProperties['keyIpstack'])
-}
-android.defaultConfig.resValue('string', 'api_key_ipdata', '')
-android.defaultConfig.resValue('string', 'api_key_ipinfo', '')
-android.defaultConfig.resValue('string', 'api_key_ipstack', '')
-
-private Properties loadProperties(String string) {
-    def properties = new Properties()
-    def file = rootProject.file(string)
-    if (file.isFile()) {
-        properties.load(new FileInputStream(file))
     }
-    return properties
+    android.buildTypes[buildType].signingConfig = android.signingConfigs[buildType]
+}
+
+android.applicationVariants.all {
+    it.preBuildProvider.configure { dependsOn appGenerateApiBuildConstants }
+}
+
+task appGenerateApiBuildConstants {
+    group = groupName
+    doLast {
+        Properties props = loadProperties('api.properties')
+        def ipData = 'api_key_ipdata'
+        def ipInfo = 'api_key_ipinfo'
+        def ipStack = 'api_key_ipstack'
+        if (!props.empty) {
+            android.buildTypes.debug.resValue 'string', ipData, props['keyIpdata']
+            android.buildTypes.debug.resValue 'string', ipInfo, props['keyIpinfo']
+            android.buildTypes.debug.resValue 'string', ipStack, props['keyIpstack']
+        }
+
+        android.defaultConfig.resValue 'string', ipData, ''
+        android.defaultConfig.resValue 'string', ipInfo, ''
+        android.defaultConfig.resValue 'string', ipStack, ''
+    }
+}
+
+task appCopyGoogleIdValuesTask(type: Copy) {
+    group = groupName
+    from 'src/release/res/values/values.xml'
+    into "$project.buildDir/generated/res/google-services/release/values/"
+}
+
+task appPrintThirdPartyTasks {
+    group = groupName
+    doLast {
+        //project.tasks.collect { logger.quiet("task=$it dependsOn=$it.dependsOn") }
+        project.tasks.stream()
+                .filter { !it.class.toString().startsWith('class com.android') }
+                .filter { !it.class.toString().startsWith('class org.gradle.api.reporting') }
+                .filter { !it.class.toString().startsWith('class org.gradle.api.tasks') }
+                .filter { !it.class.toString().startsWith('class org.gradle.configuration') }
+                .filter { !it.class.toString().startsWith('class org.gradle.plugins') }
+                .filter { !it.class.toString().startsWith('class org.jetbrains') }
+                .filter { !it.class.toString().startsWith('class androidx') }
+                .filter { !it.actions.empty }
+                .filter { it.group != 'Firebase Crashlytics' }
+                .filter { it.name != 'buildDependents' }
+                .collect { logger.quiet("${it.name}.group = groupName") }
+    }
+}
+
+task appUnzip(type: Copy) {
+    group = groupName
+    from zipTree("$project.rootDir/sqlite-android-3240000/sqlite-android-3240000.aar")
+    into "$project.rootDir/app/src/main/jniLibs/"
+    include 'jni/*/*.so'
+
+    eachFile { FileCopyDetails details -> details.relativePath = new RelativePath(true, details.path - 'jni/') }
+
+    includeEmptyDirs = false
+}
+
+task appUnzip2(type: Copy) {
+    group = groupName
+    from zipTree("$project.rootDir/sqlite-android-3240000/sqlite-android-3240000.aar")
+    into "$project.rootDir/app/src/main/libs/"
+    include 'classes.jar'
+
+    eachFile { FileCopyDetails details -> details.relativePath = new RelativePath(true, 'libsqliteX.jar') }
 }
