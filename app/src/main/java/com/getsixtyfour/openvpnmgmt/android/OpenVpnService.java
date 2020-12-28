@@ -436,16 +436,20 @@ public final class OpenVpnService extends Service
             Utils.doSendBroadcast(this, name, message);
         }
 
-        ConnectionStatus level = VpnStatus.getLevel(name, message);
-        boolean isConnected = level == ConnectionStatus.LEVEL_CONNECTED;
-        boolean isDisconnected = level == ConnectionStatus.LEVEL_NOT_CONNECTED;
+        boolean isConnected = VpnStatus.CONNECTED.equals(name);
+        boolean isDisconnected = VpnStatus.DISCONNECTED.equals(name);
+        boolean isExiting = VpnStatus.EXITING.equals(name);
 
         if (isConnected) {
             mStartTime = state.getMillis();
         }
 
+        if (isExiting) {
+            mPostStateNotification = !"exit-with-notification".equals(message);
+        }
+
         if (mPostStateNotification || isConnected || isDisconnected) {
-            int icon = getIconByConnectionStatus(level);
+            int icon = getIconByConnectionStatus(VpnStatus.getLevel(name, message));
             String text = message;
             String title = getString(R.string.vpn_title_status, getString(getLocalizedState(name)));
             // (x) optional address of remote server (OpenVPN 2.1 or higher)
