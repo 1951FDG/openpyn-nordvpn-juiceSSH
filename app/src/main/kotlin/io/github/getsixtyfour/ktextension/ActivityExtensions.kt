@@ -30,7 +30,8 @@ fun Activity.juiceSSHInstall() {
 
     val installerPackageName = packageManager.getInstallerPackageName(packageName)
     if (installerPackageName == GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) {
-        val uri = Uri.parse("https://play.google.com/store/apps/details").buildUpon().apply {
+        val uriString = "https://play.google.com/store/apps/details"
+        val uri = Uri.parse(uriString).buildUpon().apply {
             appendQueryParameter("id", JUICE_SSH_PACKAGE_NAME)
             appendQueryParameter("launch", "true")
         }.build()
@@ -42,7 +43,8 @@ fun Activity.juiceSSHInstall() {
     } else {
         val s = getString(R.string.juicessh_ssh_client)
         val uriString = "https://www.apkmirror.com/apk/sonelli-ltd/juicessh-ssh-client/$s-release/$s-android-apk-download/download/"
-        openURI(Uri.parse(uriString))
+        val uri = Uri.parse(uriString)
+        openURI(uri)
     }
 }
 
