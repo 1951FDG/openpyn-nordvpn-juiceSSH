@@ -193,7 +193,7 @@ fun populateAboutConfig() {
     aboutConfig.companyHtmlPath = "https://github.com/" + aboutConfig.author
     aboutConfig.webHomePage = aboutConfig.companyHtmlPath + "/" + aboutConfig.appName
     aboutConfig.buildType = AboutConfig.BuildType.GOOGLE
-    aboutConfig.packageName = BuildConfig.APPLICATION_ID
+    aboutConfig.packageName = BuildConfig.APPLICATION_ID.replace(".debug", "", true)
     // Custom analytics, dialog and share
     aboutConfig.analytics = object : IAnalytic, KLoggable {
         override fun logUiEvent(s: String, s1: String) {
