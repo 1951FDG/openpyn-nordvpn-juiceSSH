@@ -11,14 +11,12 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Process;
 import android.os.RemoteException;
 
 import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.lang.ref.WeakReference;
 
 import org.jetbrains.annotations.NonNls;
 
@@ -32,12 +30,10 @@ import io.github.getsixtyfour.openpyn.R;
  * @author 1951FDG
  */
 
-public final class DisconnectActivity extends AppCompatActivity implements DialogInterface.OnClickListener {
+public final class DisconnectActivity extends AppCompatActivity implements DialogInterface.OnClickListener, ServiceConnection {
 
     @NonNls
-    static final Logger LOGGER = LoggerFactory.getLogger(DisconnectActivity.class);
-
-    boolean mBound;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DisconnectActivity.class);
 
     @Nullable
     private AlertDialog mDialog = null;
@@ -45,24 +41,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
     @Nullable
     private IOpenVpnServiceInternal mService = null;
 
-    private final ServiceConnection mConnection = new ServiceConnection() {
-
-        // Called when the connection with the service is established
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LOGGER.info("onServiceConnected");
-            setService(IOpenVpnServiceInternal.Stub.asInterface(service));
-            mBound = true;
-        }
-
-        // Called when the connection with the service disconnects unexpectedly
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            LOGGER.error("onServiceDisconnected");
-            setService(null);
-            mBound = false;
-        }
-    };
+    private boolean mServiceBound;
 
     private static void onDismiss(DialogInterface dialog) {
         if (dialog instanceof AlertDialog) {
@@ -111,7 +90,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
 
         // Bind to the service
         Intent intent = new Intent(this, OpenVpnService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent, this, Context.BIND_AUTO_CREATE);
         if (mDialog != null) {
             mDialog.show();
         }
@@ -138,9 +117,9 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
         super.onStop();
 
         // Unbind from the service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
+        if (mServiceBound) {
+            unbindService(this);
+            mServiceBound = false;
         }
         if (mDialog != null) {
             mDialog.hide();
@@ -163,35 +142,9 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
     @Override
     public void onClick(@Nullable DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            Thread thread = new ShutdownThread(mService);
-            thread.start();
-        }
-    }
-
-    @Nullable
-    IOpenVpnServiceInternal getService() {
-        return mService;
-    }
-
-    void setService(@Nullable IOpenVpnServiceInternal service) {
-        mService = service;
-    }
-
-    @SuppressWarnings("ClassExplicitlyExtendsThread")
-    private static final class ShutdownThread extends Thread {
-
-        private final WeakReference<IOpenVpnServiceInternal> mService;
-
-        ShutdownThread(@Nullable IOpenVpnServiceInternal service) {
-            mService = new WeakReference<>(service);
-        }
-
-        @Override
-        public void run() {
-            IOpenVpnServiceInternal service = mService.get();
-            if (service != null) {
+            if (mService != null) {
                 try {
-                    service.disconnectVpn();
+                    mService.disconnectVpn();
                 } catch (RemoteException e) {
                     LOGGER.error("RemoteException during OpenVPN shutdown", e);
                 } catch (RuntimeException e) {
@@ -199,5 +152,19 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
                 }
             }
         }
+    }
+
+    @Override
+    public void onServiceConnected(@NonNull ComponentName name, @NonNull IBinder service) {
+        mService = IOpenVpnServiceInternal.Stub.asInterface(service);
+        mServiceBound = true;
+        LOGGER.debug("onServiceConnected");
+    }
+
+    @Override
+    public void onServiceDisconnected(@NonNull ComponentName name) {
+        mService = null;
+        mServiceBound = false;
+        LOGGER.debug("onServiceDisconnected");
     }
 }

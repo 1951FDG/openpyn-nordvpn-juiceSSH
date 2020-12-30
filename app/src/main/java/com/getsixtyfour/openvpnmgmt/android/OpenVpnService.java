@@ -66,15 +66,19 @@ public final class OpenVpnService extends Service
     private final IBinder mBinder = new IOpenVpnServiceInternal.Stub() {
         @Override
         public void disconnectVpn() {
-            try {
-                Connection connection = ManagementConnection.getInstance();
-                if (connection.isConnected()) {
-                    connection.stopVpn();
+            Thread thread = new Thread(() -> {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE);
+                try {
+                    Connection connection = ManagementConnection.getInstance();
+                    if (connection.isConnected()) {
+                        connection.stopVpn();
+                    }
+                } catch (IOException e) {
+                    //noinspection ProhibitedExceptionThrown
+                    throw new RuntimeException(e);
                 }
-            } catch (IOException e) {
-                //noinspection ProhibitedExceptionThrown
-                throw new RuntimeException(e);
-            }
+            });
+            thread.start();
         }
     };
 
@@ -281,7 +285,8 @@ public final class OpenVpnService extends Service
         startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
 
         // Connect the management interface in a background thread
-        Thread thread = new Thread(() -> {
+        mThread =  new Thread(() -> {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             try {
                 // TODO: only in debug?
                 // When a socket is created, it inherits the tag of its creating thread
@@ -290,8 +295,10 @@ public final class OpenVpnService extends Service
                 connection.connect(host, port, password);
             } catch (IOException ignored) {
             }
-        });
-        thread.start();
+        }, Constants.THREAD_NAME);
+        // Report death-by-uncaught-exception
+        mThread.setUncaughtExceptionHandler(this); // Apps can replace the default handler, but not the pre handler
+        mThread.start();
 
         return START_NOT_STICKY;
     }
@@ -359,14 +366,17 @@ public final class OpenVpnService extends Service
             LOGGER.error("", new NetworkOnMainThreadException());
         }
 
+        LOGGER.info("OpenVPN Management started in background thread: \"{}\" with priority: {}", Thread.currentThread().getName(), Process.getThreadPriority(Process.myTid()));
+
         // Start a background thread that handles incoming messages of the management interface
         Connection connection = ManagementConnection.getInstance();
-        mThread = new Thread(connection, Constants.THREAD_NAME);
-        // Report death-by-uncaught-exception
-        mThread.setUncaughtExceptionHandler(this); // Apps can replace the default handler, but not the pre handler
-        mThread.start();
 
-        LOGGER.info("OpenVPN Management started in background thread: \"{}\"", mThread.getName());
+        try {
+            LOGGER.info(connection.getVpnVersion());
+        } catch (IOException ignored) {
+        }
+
+        connection.run();
     }
 
     @Override
