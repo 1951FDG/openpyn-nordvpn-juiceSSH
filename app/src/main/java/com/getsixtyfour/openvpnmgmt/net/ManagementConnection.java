@@ -143,7 +143,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
             if (!line.isEmpty() && !line.contains(VpnStatus.AUTH_FAILURE)) {
                 processState(line);
             }
-            onConnected();
         } catch (IOException e) {
             onConnectError(e);
             throw e;
@@ -151,6 +150,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             onConnectError(e);
             throw new IOException(e);
         }
+        onConnected();
     }
 
     @Override
