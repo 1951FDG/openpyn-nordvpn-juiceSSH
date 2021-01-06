@@ -146,7 +146,6 @@ To compile and run the project you'll need:
 -   [Barista](https://github.com/SchibstedSpain/Barista)
 -   [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
 -   [EasyPermissions](https://github.com/googlesamples/easypermissions)
--   [Fuel](https://github.com/kittinunf/Fuel)
 -   [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
 -   [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 -   [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
