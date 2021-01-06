@@ -10,7 +10,7 @@ public interface ConnectionListener {
 
     void onConnectError(@NotNull Thread t, @NotNull Throwable e);
 
-    void onConnected();
+    void onConnected(@NotNull Thread t);
 
-    void onDisconnected();
+    void onDisconnected(@NotNull Thread t);
 }

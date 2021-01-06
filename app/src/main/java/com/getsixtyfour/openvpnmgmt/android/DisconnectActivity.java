@@ -146,8 +146,6 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
                 try {
                     mService.disconnectVpn();
                 } catch (RemoteException e) {
-                    LOGGER.error("RemoteException during OpenVPN shutdown", e);
-                } catch (RuntimeException e) {
                     LOGGER.error("", e);
                 }
             }

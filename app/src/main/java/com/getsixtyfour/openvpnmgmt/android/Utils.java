@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "UtilityClass" })
+@SuppressWarnings("UtilityClass")
 public final class Utils {
 
     private Utils() {

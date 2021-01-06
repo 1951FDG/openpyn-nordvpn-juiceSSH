@@ -355,8 +355,8 @@
     <string name="pref_openvpnmgmt_password_file">Password file</string>
     <string name="pref_openvpnmgmt_username">VPN username</string>
     <string name="pref_openvpnmgmt_userpass">VPN password</string>
-    <string name="pref_openvpnmgmt_bandwidth_usage">Show bandwidth usage notifications</string>
-    <string name="pref_openvpnmgmt_state_changes">Show state change notifications</string>
+    <string name="pref_openvpnmgmt_bandwidth_usage">Show bandwidth usage</string>
+    <string name="pref_openvpnmgmt_state_changes">Show state changes</string>
 
     <string name="pref_openvpnmgmt_key" translatable="false">pref_management_enabled</string>
     <string name="pref_openvpnmgmt_host_key" translatable="false">pref_management_address</string>

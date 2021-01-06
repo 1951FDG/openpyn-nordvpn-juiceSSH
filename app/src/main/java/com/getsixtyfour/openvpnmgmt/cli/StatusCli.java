@@ -14,6 +14,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public final class StatusCli {
     private StatusCli() {
     }
 
-    public static void main(String[] args) {
+    public static void main(@NotNull String[] args) {
         String host = "";
         Integer port = 0;
         try {

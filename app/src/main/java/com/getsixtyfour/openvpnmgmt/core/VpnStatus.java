@@ -69,7 +69,7 @@ public final class VpnStatus {
     }
 
     @SuppressWarnings({ "OverlyComplexMethod", "MethodWithMultipleReturnPoints" })
-    public static @NotNull ConnectionStatus getLevel(@NonNls @NotNull String name, @NonNls @Nullable String message) {
+    public static @NotNull ConnectionStatus getLevel(@NotNull String name, @Nullable String message) {
         if (RECONNECTING.equals(name) && AUTH_FAILURE.equals(message)) {
             return ConnectionStatus.LEVEL_AUTH_FAILED;
         }

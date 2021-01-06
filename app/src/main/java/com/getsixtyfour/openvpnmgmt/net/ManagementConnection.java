@@ -124,16 +124,15 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @Override
-    public void connect(@NotNull String host, @NotNull Integer port) throws IOException {
+    public void connect(@NotNull String host, @NotNull Integer port) {
         connect(host, port, null);
     }
 
     @Override
-    public void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
+    public void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) {
         if (isConnected()) {
             return;
         }
-        //noinspection OverlyBroadCatchBlock
         try {
             super.connect(host, port, password);
             // Ensures state listeners are notified of current state if OpenVPN is already connected
@@ -145,10 +144,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
             }
         } catch (IOException e) {
             onConnectError(e);
-            throw e;
-        } catch (Exception e) {
-            onConnectError(e);
-            throw new IOException(e);
         }
         onConnected();
     }
@@ -158,7 +153,10 @@ public final class ManagementConnection extends AbstractConnection implements Co
         if (!isConnected()) {
             return;
         }
-        super.disconnect();
+        try {
+            super.disconnect();
+        } catch (IOException ignored) {
+        }
         onDisconnected();
     }
 
@@ -194,6 +192,17 @@ public final class ManagementConnection extends AbstractConnection implements Co
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public void managementCommand(@NotNull String command) throws IOException {
+        if (!isConnected()) {
+            throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
+        }
+        BufferedWriter out = getBufferedWriter();
+        out.write(command);
+        out.newLine();
+        out.flush();
     }
 
     @Override
@@ -240,10 +249,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
         return (mLastLevel != ConnectionStatus.LEVEL_NOT_CONNECTED) && (mLastLevel != ConnectionStatus.LEVEL_AUTH_FAILED);
     }
 
-    @Override
-    public void stopVpn() throws IOException {
-        managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, Constants.ARG_SIGTERM));
-    }
     @SuppressWarnings({ "NestedAssignment", "ThrowSpecificExceptions" })
     @Override
     public void run() {
@@ -253,11 +258,16 @@ public final class ManagementConnection extends AbstractConnection implements Co
             throw new RuntimeException(new IOException(Constants.SOCKET_IS_NOT_CONNECTED));
         }
 
+        Thread t = Thread.currentThread();
+        Thread.UncaughtExceptionHandler eh = t.getUncaughtExceptionHandler();
+
+        LOGGER.info("OpenVPN Management started in background thread: \"{}\"", t.getName());
+
         try {
             managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
-            managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Constants.ARG_ON));
-            managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, Constants.ARG_ON));
-            managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, Constants.ARG_RELEASE));
+            managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Commands.ARG_ON));
+            managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, Commands.ARG_ON));
+            managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, Commands.ARG_RELEASE));
             BufferedReader in = getBufferedReader();
             @NonNls String line;
             while ((line = in.readLine()) != null) {
@@ -271,12 +281,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 LOGGER.error("", e);
             }
         }
-        LOGGER.info("TERMINATED");
 
-        Thread thread = Thread.currentThread();
-        Thread.UncaughtExceptionHandler eh = thread.getUncaughtExceptionHandler();
+        LOGGER.info("OpenVPN Management stopped in background thread: \"{}\"", t.getName());
+
         if ((eh != null) && !(eh instanceof ThreadGroup)) {
-            eh.uncaughtException(thread, new ThreadDeath());
+            eh.uncaughtException(t, new ThreadDeath());
         }
     }
 
@@ -309,16 +318,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    private void managementCommand(String command) throws IOException {
-        if (!isConnected()) {
-            throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
-        }
-        BufferedWriter out = getBufferedWriter();
-        out.write(command);
-        out.newLine();
-        out.flush();
-    }
-
     private void onConnectError(@NotNull Throwable e) {
         if ((e instanceof IllegalArgumentException) || (e instanceof IOException)) {
             LOGGER.error("", e);
@@ -335,7 +334,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         LOGGER.info("Connected");
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
-            listener.onConnected();
+            listener.onConnected(Thread.currentThread());
         }
     }
 
@@ -343,7 +342,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         LOGGER.info("Disconnected");
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
-            listener.onDisconnected();
+            listener.onDisconnected(Thread.currentThread());
         }
     }
 
@@ -357,7 +356,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 throw new IOException(e);
             } catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException | NumberFormatException e) {
                 LOGGER.error("Could not parse line: {}", line);
-                throw new IOException(e);
+                throw e;
             }
         } else if (line.startsWith(Constants.SUCCESS_PREFIX)) {
             LOGGER.info(line.substring(Constants.SUCCESS_PREFIX.length() + 1));

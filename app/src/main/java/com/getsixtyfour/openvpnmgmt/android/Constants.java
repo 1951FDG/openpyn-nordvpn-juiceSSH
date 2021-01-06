@@ -9,23 +9,25 @@ import org.jetbrains.annotations.NonNls;
 @SuppressWarnings({ "UtilityClass", "ConstantExpression" })
 public final class Constants {
 
-    @SuppressWarnings("WeakerAccess")
     @NonNls
     public static final String BG_CHANNEL_ID = "openvpn_bg";
 
     static final int BG_NOTIFICATION_ID = BG_CHANNEL_ID.hashCode();
 
-    @SuppressWarnings("WeakerAccess")
     @NonNls
     public static final String NEW_STATUS_CHANNEL_ID = "openvpn_newstat";
 
     static final int NEW_STATUS_NOTIFICATION_ID = NEW_STATUS_CHANNEL_ID.hashCode();
 
-    @SuppressWarnings("WeakerAccess")
+    @NonNls
     public static final String THREAD_NAME = "OpenVPNManagementThread";
 
-    @SuppressWarnings("WeakerAccess")
     public static final int THREAD_STATS_TAG = 0x42;
+
+    static final int DEFAULT_REMOTE_PORT = 23;
+
+    @NonNls
+    static final String DEFAULT_REMOTE_SERVER = "192.168.1.1";
 
     @NonNls
     private static final String INTENT_PACKAGE_PREFIX = "com.getsixtyfour.openvpnmgmt.android";

@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.os.Process;
 import android.os.NetworkOnMainThreadException;
 import android.text.format.DateUtils;
+import android.os.RemoteException;
 
 import androidx.annotation.CheckResult;
 import androidx.annotation.DrawableRes;
@@ -33,6 +34,7 @@ import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
 import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
+import com.getsixtyfour.openvpnmgmt.net.Commands;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
@@ -59,23 +61,15 @@ public final class OpenVpnService extends Service
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnService.class);
 
-    private static final int DEFAULT_REMOTE_PORT = 23;
-
-    private static final String DEFAULT_REMOTE_SERVER = "192.168.1.1";
-
     private final IBinder mBinder = new IOpenVpnServiceInternal.Stub() {
         @Override
-        public void disconnectVpn() {
+        public void disconnectVpn() throws RemoteException {
             Thread thread = new Thread(() -> {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE);
                 try {
                     Connection connection = ManagementConnection.getInstance();
-                    if (connection.isConnected()) {
-                        connection.stopVpn();
-                    }
-                } catch (IOException e) {
-                    //noinspection ProhibitedExceptionThrown
-                    throw new RuntimeException(e);
+                    connection.managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, Commands.ARG_SIGTERM));
+                } catch (IOException ignored) {
                 }
             });
             thread.start();
@@ -193,8 +187,8 @@ public final class OpenVpnService extends Service
 
     @NonNull
     @SuppressWarnings({ "TypeMayBeWeakened", "MethodWithTooManyParameters" })
-    private Notification createNotification(@NonNull Context context, @NonNull String title, @NonNull String text, @NonNull String channel,
-                                            long when, @DrawableRes int icon) {
+    private static Notification createNotification(@NonNull Context context, @NonNull String title, @NonNull String text,
+                                                   @NonNull String channel, long when, @DrawableRes int icon) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel);
         builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
         builder.setContentText(text);
@@ -207,7 +201,7 @@ public final class OpenVpnService extends Service
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.setWhen(when);
 
-        if (!mPostByteCountNotification || Constants.BG_CHANNEL_ID.equals(channel)) {
+        if ((when > 0L) || Constants.BG_CHANNEL_ID.equals(channel)) {
             Intent intent = new Intent(context, DisconnectActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             // The notification action icons are still required and continue to be used on older versions of Android
@@ -272,8 +266,8 @@ public final class OpenVpnService extends Service
         mPostStateNotification = intent.getBooleanExtra(Constants.EXTRA_POST_STATE_NOTIFICATION, false);
         mSendStateBroadcast = intent.getBooleanExtra(Constants.EXTRA_SEND_STATE_BROADCAST, false);
 
-        String host = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_HOST), DEFAULT_REMOTE_SERVER);
-        int port = intent.getIntExtra(Constants.EXTRA_PORT, DEFAULT_REMOTE_PORT);
+        String host = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_HOST), Constants.DEFAULT_REMOTE_SERVER);
+        int port = intent.getIntExtra(Constants.EXTRA_PORT, Constants.DEFAULT_REMOTE_PORT);
         char[] password = intent.getCharArrayExtra(Constants.EXTRA_PASSWORD);
 
         // Always show notification here to avoid problem with startForeground timeout
@@ -287,14 +281,11 @@ public final class OpenVpnService extends Service
         // Connect the management interface in a background thread
         mThread =  new Thread(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-            try {
-                // TODO: only in debug?
-                // When a socket is created, it inherits the tag of its creating thread
-                /*TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);*/
-                Connection connection = ManagementConnection.getInstance();
-                connection.connect(host, port, password);
-            } catch (IOException ignored) {
-            }
+            // TODO: only in debug?
+            // When a socket is created, it inherits the tag of its creating thread
+            /*TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);*/
+            Connection connection = ManagementConnection.getInstance();
+            connection.connect(host, port, password);
         }, Constants.THREAD_NAME);
         // Report death-by-uncaught-exception
         mThread.setUncaughtExceptionHandler(this); // Apps can replace the default handler, but not the pre handler
@@ -360,13 +351,11 @@ public final class OpenVpnService extends Service
     }
 
     @Override
-    public void onConnected() {
+    public void onConnected(@NonNull Thread t) {
         LOGGER.debug("onConnected");
-        if (Thread.currentThread().equals(getMainLooper().getThread())) {
+        if (t.equals(getMainLooper().getThread())) {
             LOGGER.error("", new NetworkOnMainThreadException());
         }
-
-        LOGGER.info("OpenVPN Management started in background thread: \"{}\" with priority: {}", Thread.currentThread().getName(), Process.getThreadPriority(Process.myTid()));
 
         // Start a background thread that handles incoming messages of the management interface
         Connection connection = ManagementConnection.getInstance();
@@ -380,9 +369,9 @@ public final class OpenVpnService extends Service
     }
 
     @Override
-    public void onDisconnected() {
+    public void onDisconnected(@NonNull Thread t) {
         LOGGER.debug("onDisconnected");
-        if (Thread.currentThread().equals(getMainLooper().getThread())) {
+        if (t.equals(getMainLooper().getThread())) {
             LOGGER.warn("", new NetworkOnMainThreadException());
         }
     }
@@ -460,6 +449,7 @@ public final class OpenVpnService extends Service
 
         if (mPostStateNotification || isConnected || isDisconnected) {
             int icon = getIconByConnectionStatus(VpnStatus.getLevel(name, message));
+            long when = mPostByteCountNotification ? 0L : mStartTime;
             String text = message;
             String title = getString(R.string.vpn_title_status, getString(getLocalizedState(name)));
             // (x) optional address of remote server (OpenVPN 2.1 or higher)
@@ -474,7 +464,7 @@ public final class OpenVpnService extends Service
                 text = prefix + address;
             }
 
-            Notification notification = createNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, state.getMillis(), icon);
+            Notification notification = createNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, when, icon);
             startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
         }
     }
@@ -498,7 +488,6 @@ public final class OpenVpnService extends Service
         // logUncaught(t.getName(), getPackageName(), Process.myPid(), e); // Handled by the pre handler
 
         if (e instanceof ThreadDeath) {
-            LOGGER.info("OpenVPN Management stopped in background thread: \"{}\"", t.getName());
         }
 
         if (t.equals(getMainLooper().getThread())) {

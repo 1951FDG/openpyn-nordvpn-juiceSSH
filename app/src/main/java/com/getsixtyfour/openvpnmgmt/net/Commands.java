@@ -1,10 +1,12 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
+import org.jetbrains.annotations.NonNls;
+
 /**
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "UtilityClass", "SpellCheckingInspection", "WeakerAccess" })
+@SuppressWarnings({ "UtilityClass", "SpellCheckingInspection" })
 public final class Commands {
 
     /**
@@ -13,10 +15,13 @@ public final class Commands {
      * auth-retry interact — Client will requery for an username/password and/or private key password before attempting a reconnection.
      */
 
+    @NonNls
     public static final String AUTH_COMMAND = "auth-retry %s";
 
+    @NonNls
     public static final String BYTECOUNT_COMMAND = "bytecount %d";
 
+    @NonNls
     public static final String HELP_COMMAND = "help";
 
     /**
@@ -26,6 +31,7 @@ public final class Commands {
      * hold release -- leave hold state and start OpenVPN, but do not alter the current hold flag setting.
      */
 
+    @NonNls
     public static final String HOLD_COMMAND = "hold%s";
 
     /**
@@ -36,8 +42,10 @@ public final class Commands {
      * log 20     -- Show the most recent 20 lines of log file history.
      */
 
+    @NonNls
     public static final String LOG_COMMAND = "log%s";
 
+    @NonNls
     public static final String PASSWORD_COMMAND = "password '%s' %s";
 
     /**
@@ -45,6 +53,7 @@ public final class Commands {
      * The signal can be one of SIGHUP, SIGTERM, SIGUSR1, or SIGUSR2.
      */
 
+    @NonNls
     public static final String SIGNAL_COMMAND = "signal %s";
 
     /**
@@ -56,13 +65,41 @@ public final class Commands {
      * state on all -- Atomically show state history while at the same time enable real-time state notification of future state transitions.
      */
 
+    @NonNls
     public static final String STATE_COMMAND = "state%s";
 
+    @NonNls
     public static final String STATUS_COMMAND = "status";
 
+    @NonNls
     public static final String USERNAME_COMMAND = "username '%s' %s";
 
+    @NonNls
     public static final String VERSION_COMMAND = "version";
+
+    @NonNls
+    public static final String ARG_INTERACT = "interact";
+
+    @NonNls
+    public static final String ARG_ON = " on";
+
+    @NonNls
+    public static final String ARG_ON_1 = " on 1";
+
+    @NonNls
+    public static final String ARG_RELEASE = " release";
+
+    @NonNls
+    public static final String ARG_SIGHUP = "SIGHUP";
+
+    @NonNls
+    public static final String ARG_SIGTERM = "SIGTERM";
+
+    @NonNls
+    public static final String ARG_SIGUSR1 = "SIGUSR1";
+
+    @NonNls
+    public static final String ARG_SIGUSR2 = "SIGUSR2";
 
     private Commands() {
     }

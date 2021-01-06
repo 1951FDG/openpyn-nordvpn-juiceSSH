@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.slf4j.Logger;
@@ -49,13 +50,6 @@ abstract class AbstractConnection implements Closeable {
         }
     }
 
-    public void closeQuietly() {
-        try {
-            close();
-        } catch (IOException ignored) {
-        }
-    }
-
     public @Nullable String getHost() {
         return mHost;
     }
@@ -72,16 +66,11 @@ abstract class AbstractConnection implements Closeable {
         mKeepAlive = keepAlive;
     }
 
-    protected void connect(String host, Integer port, @Nullable char[] password) throws IOException {
-        if (isConnected()) {
-            throw new IOException("already connected");
-        }
-        if (host == null) {
-            throw new IllegalArgumentException("hostname can't be null");
-        }
-        if (port == null) {
-            throw new IllegalArgumentException("port can't be null");
-        }
+    protected void connect(@NotNull String host, @NotNull Integer port) throws IOException {
+        connect(host, port, null);
+    }
+
+    protected void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
         getLogger().info("Connecting to {}:{}", host, port); //NON-NLS
         mHost = host;
         mPort = port;
@@ -100,9 +89,9 @@ abstract class AbstractConnection implements Closeable {
         }
     }
 
-    protected void disconnect() {
+    protected void disconnect() throws IOException {
         getLogger().info("Disconnecting"); //NON-NLS
-        closeQuietly();
+        close();
     }
 
     protected BufferedReader getBufferedReader() {

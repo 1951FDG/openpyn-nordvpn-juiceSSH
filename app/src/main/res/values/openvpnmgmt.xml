@@ -23,10 +23,10 @@
 
     <string name="vpn_action_close">Disconnect</string>
 
-    <string name="vpn_channel_name_background">Connection statistics</string>
-    <string name="vpn_channel_description_background">Ongoing statistics of the established OpenVPN connection</string>
-    <string name="vpn_channel_name_status">Connection status change</string>
-    <string name="vpn_channel_description_status">Status changes of the OpenVPN connection (Connecting, authenticating,…)</string>
+    <string name="vpn_channel_name_background">Bandwidth usage</string>
+    <string name="vpn_channel_description_background">Real-time notification of OpenVPN bandwidth usage</string>
+    <string name="vpn_channel_name_status">State changes</string>
+    <string name="vpn_channel_description_status">Real-time notification of OpenVPN state changes</string>
 
     <string name="vpn_state_add_routes">Adding routes</string>
     <string name="vpn_state_assign_ip">Assigning IP addresses</string>

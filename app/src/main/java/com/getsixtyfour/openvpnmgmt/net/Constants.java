@@ -46,30 +46,6 @@ final class Constants {
     static final String WARNING_PREFIX = "WARNING:";
 
     @NonNls
-    static final String ARG_INTERACT = "interact";
-
-    @NonNls
-    static final String ARG_ON = " on";
-
-    @NonNls
-    static final String ARG_ON_1 = " on 1";
-
-    @NonNls
-    static final String ARG_RELEASE = " release";
-
-    @NonNls
-    static final String ARG_SIGTERM = "SIGTERM";
-
-    @NonNls
-    static final String ARG_SIGHUP = "SIGHUP";
-
-    @NonNls
-    static final String ARG_SIGUSR1 = "SIGUSR1";
-
-    @NonNls
-    static final String ARG_SIGUSR2 = "SIGUSR2";
-
-    @NonNls
     static final String NOT_SUPPORTED_YET = "Not supported yet";
 
     @NonNls

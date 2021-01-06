@@ -30,9 +30,9 @@ public interface Connection extends Runnable {
     //endregion
 
     //region ManagementConnection (Background)
-    void connect(@NotNull String host, @NotNull Integer port) throws IOException;
+    void connect(@NotNull String host, @NotNull Integer port);
 
-    void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException;
+    void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password);
 
     void disconnect();
     //endregion
@@ -66,13 +66,13 @@ public interface Connection extends Runnable {
     //region OpenVpnConnection (Background)
     @NotNull String executeCommand(@NotNull String command) throws IOException;
 
+    void managementCommand(@NotNull String command) throws IOException;
+
     @NotNull String getManagementVersion() throws IOException;
 
     @NotNull Status getVpnStatus() throws IOException;
 
     @NotNull String getVpnVersion() throws IOException;
-
-    void stopVpn() throws IOException;
     //endregion
     // TODO: mark all the methods to be called on background thread using @WorkerThread
 }
