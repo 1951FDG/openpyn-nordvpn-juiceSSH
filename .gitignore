@@ -89,4 +89,5 @@ world/.thumb.png
 
 # Gradle properties
 api.properties
+git.properties
 keystore.properties

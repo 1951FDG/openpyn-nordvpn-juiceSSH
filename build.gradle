@@ -1,4 +1,5 @@
 import com.google.firebase.crashlytics.buildtools.gradle.tasks.UploadMappingFileTask
+import org.ajoberstar.grgit.Grgit
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
@@ -32,6 +33,8 @@ buildscript {
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
 
         classpath 'gradle.plugin.com.github.konifar.gradle:plugin:0.3.3'
+
+        classpath 'gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.2.4'
 
         classpath 'com.gladed.androidgitversion:gradle-android-git-version:0.4.13'
 
@@ -84,6 +87,23 @@ allprojects {
         excludeDirs += file('svg')
         excludeDirs += file('tiles')
         excludeDirs += file('world')
+    }
+
+    apply plugin: 'com.gorylenko.gradle-git-properties'
+
+    gitProperties {
+        extProperty = 'gitProps'
+        failOnNoGitDirectory = false
+        gitPropertiesDir = "$project.rootDir"
+        keys = ['git.branch', 'git.closest.tag.commit.count', 'git.commit.id', 'git.dirty', 'git.remote.origin.url']
+
+        customProperty 'git.total.commit.ahead.count', { Grgit grgit ->
+            grgit.log { range('origin/slave', 'slave') }.size()
+        }
+
+        customProperty 'git.total.commit.behind.count', { Grgit grgit ->
+            grgit.log { range('slave', 'origin/slave') }.size()
+        }
     }
 
     apply plugin: 'nebula.lint'

@@ -186,12 +186,12 @@ fun populateAboutConfig() {
     val buildType = BuildConfig.BUILD_TYPE.capitalize()
     val aboutConfig = AboutConfig.getInstance()
     // General info
-    aboutConfig.appName = "openpyn-nordvpn-juiceSSH"
+    aboutConfig.appName = BuildConfig.GITHUB_REPO_NAME
     aboutConfig.appIcon = R.mipmap.ic_launcher
     aboutConfig.version = "$buildType $versionName ($versionCode)"
-    aboutConfig.author = "1951FDG"
-    aboutConfig.companyHtmlPath = "https://github.com/" + aboutConfig.author
-    aboutConfig.webHomePage = aboutConfig.companyHtmlPath + "/" + aboutConfig.appName
+    aboutConfig.author = BuildConfig.GITHUB_REPO_OWNER_NAME
+    aboutConfig.companyHtmlPath = BuildConfig.GITHUB_REPO_OWNER_URL
+    aboutConfig.webHomePage = BuildConfig.GITHUB_REPO_URL
     aboutConfig.buildType = AboutConfig.BuildType.GOOGLE
     aboutConfig.packageName = BuildConfig.APPLICATION_ID.replace(".debug", "", true)
     // Custom analytics, dialog and share

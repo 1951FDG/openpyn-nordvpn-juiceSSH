@@ -42,7 +42,14 @@ if (!keystoreProperties.empty) {
 }
 
 android.applicationVariants.all {
+    if (it.buildType.name == buildType) {
+        it.preBuildProvider.configure { dependsOn appCheckIfDirty }
+        it.preBuildProvider.configure { dependsOn appCheckIfSame }
+        it.preBuildProvider.configure { dependsOn appCheckIfTagged }
+    }
+
     it.preBuildProvider.configure { dependsOn appGenerateApiBuildConstants }
+    it.preBuildProvider.configure { dependsOn appGenerateGitBuildConstants }
 }
 
 task appGenerateApiBuildConstants {
@@ -61,6 +68,96 @@ task appGenerateApiBuildConstants {
         android.defaultConfig.resValue 'string', ipData, ''
         android.defaultConfig.resValue 'string', ipInfo, ''
         android.defaultConfig.resValue 'string', ipStack, ''
+    }
+}
+
+// make sure the generateGitProperties task always executes (even when git.properties is not changed)
+generateGitProperties.outputs.upToDateWhen { false }
+
+task appGenerateGitProperties {
+    group = groupName
+    dependsOn generateGitProperties
+    doLast {
+        try {
+            project.ext.gitProps
+        } catch (MissingPropertyException ignored) {
+            Properties props = loadProperties('default.properties')
+            project.ext[gitProperties.extProperty] = new HashMap(props)
+        }
+    }
+}
+
+task appGenerateGitBuildConstants {
+    group = groupName
+    dependsOn appGenerateGitProperties
+    doLast {
+        def id = project.ext.gitProps['git.commit.id']
+        def dirty = project.ext.gitProps['git.dirty']
+
+        android.defaultConfig.buildConfigField 'String', 'GIT_COMMIT_ID', "\"$id\""
+        android.defaultConfig.buildConfigField 'boolean', 'GIT_DIRTY', "$dirty"
+
+        def url = project.ext.gitProps['git.remote.origin.url']
+        def matcher = url =~ /(git@github\.com):(.*)\/(.*)\.(git)/
+
+        if (matcher.matches()) {
+            def owner = matcher[0][2]
+            def repo = matcher[0][3]
+
+            android.defaultConfig.buildConfigField 'String', 'GITHUB_REPO_OWNER_NAME', "\"$owner\""
+            android.defaultConfig.buildConfigField 'String', 'GITHUB_REPO_OWNER_URL', "\"https://github.com/$owner\""
+            android.defaultConfig.buildConfigField 'String', 'GITHUB_REPO_NAME', "\"$repo\""
+            android.defaultConfig.buildConfigField 'String', 'GITHUB_REPO_URL', "\"https://github.com/$owner/$repo\""
+        }
+    }
+}
+
+task appCheckIfDirty {
+    group = groupName
+    dependsOn appGenerateGitProperties
+    doLast {
+        def dirty = project.ext.gitProps['git.dirty']
+
+        if (dirty.toBoolean()) {
+            throw new GradleException('You forget to commit code before building final release build')
+        }
+    }
+}
+
+task appCheckIfSame {
+    group = groupName
+    dependsOn appGenerateGitProperties
+    doLast {
+        def branch = project.ext.gitProps['git.branch']
+
+        if (branch == 'slave') {
+            def ahead = project.ext.gitProps['git.total.commit.ahead.count']
+            def behind = project.ext.gitProps['git.total.commit.behind.count']
+
+            if (ahead != '0') {
+                throw new GradleException("You forget to push branch, $ahead commits ahead")
+            }
+
+            if (behind != '0') {
+                throw new GradleException("You forget to pull branch, $behind commits behind")
+            }
+        }
+    }
+}
+
+task appCheckIfTagged {
+    group = groupName
+    dependsOn appGenerateGitProperties
+    doLast {
+        def branch = project.ext.gitProps['git.branch']
+
+        if (branch == 'master') {
+            def closest = project.ext.gitProps['git.closest.tag.commit.count']
+
+            if (closest != '0') {
+                throw new GradleException('You forget to tag last commit before building final release build')
+            }
+        }
     }
 }
 
