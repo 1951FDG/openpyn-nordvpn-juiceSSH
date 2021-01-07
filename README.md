@@ -15,7 +15,7 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 
 ## Todo
 
--   [ ] add Telnet functionality for connecting to OpenVPN management interface
+-   [x] add Telnet functionality for connecting to OpenVPN management interface
 -   [ ] apply clean(er) app architecture
 
 ## Table of Contents
