@@ -1,4 +1,6 @@
 # openpyn-nordvpn-juiceSSH, a JuiceSSH plugin
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F1951FDG%2Fopenpyn-nordvpn-juiceSSH.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2F1951FDG%2Fopenpyn-nordvpn-juiceSSH?ref=badge_shield)
+
 
 [![](https://img.shields.io/github/license/1951fdg/openpyn-nordvpn-juicessh.svg)](LICENSE)
 [![](https://img.shields.io/github/languages/top/1951fdg/openpyn-nordvpn-juicessh.svg)](https://kotlinlang.org/)
@@ -249,3 +251,7 @@ This app uses (modified) code from several open source projects.
 ## Acknowledgments
 
 Many thanks to [Sonelli](https://github.com/Sonelli) who made this project possible and painless. Special thanks to [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F1951FDG%2Fopenpyn-nordvpn-juiceSSH.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2F1951FDG%2Fopenpyn-nordvpn-juiceSSH?ref=badge_large)
