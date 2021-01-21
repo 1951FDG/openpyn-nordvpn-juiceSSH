@@ -1,14 +1,14 @@
 # openpyn-nordvpn-juiceSSH, a JuiceSSH plugin
 
 [![](https://img.shields.io/github/license/1951fdg/openpyn-nordvpn-juicessh.svg)](LICENSE)
-[![](https://img.shields.io/github/languages/top/1951fdg/openpyn-nordvpn-juicessh.svg)](https://kotlinlang.org/)
+[![](https://img.shields.io/github/languages/top/1951fdg/openpyn-nordvpn-juicessh.svg)](https://kotlinlang.org)
 [![](https://img.shields.io/github/languages/count/1951fdg/openpyn-nordvpn-juicessh.svg)](<>)
 [![](https://img.shields.io/github/last-commit/1951fdg/openpyn-nordvpn-juicessh.svg)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/commits/master)
 [![](https://snyk.io/test/github/1951FDG/openpyn-nordvpn-juiceSSH/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/1951FDG/openpyn-nordvpn-juiceSSH?targetFile=app%2Fbuild.gradle)
 [![](https://img.shields.io/codacy/grade/0b6672c6a62a4efc92a51f029ae310e4.svg)](https://www.codacy.com/app/1951FDG/openpyn-nordvpn-juiceSSH?utm_source=github.com&utm_medium=referral&utm_content=1951FDG/openpyn-nordvpn-juiceSSH&utm_campaign=Badge_Grade)
 [![](https://img.shields.io/github/downloads/1951fdg/openpyn-nordvpn-juicessh/latest/total.svg)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/releases)
 
-An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely through [JuiceSSH](https://juicessh.com/).
+An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely through [JuiceSSH](https://juicessh.com).
 
 > **Note**:
 > The first public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) has been released.
@@ -43,13 +43,13 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 
 ## Introduction
 
-The idea all started when I wanted to connect to OpenVPN servers hosted by NordVPN on a [Asus RT-AC86U](https://www.asus.com/Networking/RT-AC86U/). By default this is possible, but the default firmware including third party firmware [Asuswrt-merlin](https://asuswrt.lostrealm.ca/) only allow for a maximum of 5 OpenVPN Clients to be saved.
+The idea all started when I wanted to connect to OpenVPN servers hosted by NordVPN on a [Asus RT-AC86U](https://www.asus.com/Networking/RT-AC86U/). By default this is possible, but the default firmware including third party firmware [Asuswrt-merlin](https://asuswrt.lostrealm.ca) only allow for a maximum of 5 OpenVPN Clients to be saved.
 
 I then stumbled on [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), quickly learned Python, and made a pull request, enabling support for Asuswrt-merlin. Openpyn is a python3 script which can be run on [Entware-ng-3x on Asuswrt-merlin](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md). The main feature of Openpyn, is that it automatically connects to the least busy, lowest latency OpenVPN server. NVRAM write support for Asuswrt-merlin in Openpyn is then able to save the least busy, lowest latency OpenVPN server to the NVRAM of a Entware-ng-3x enabled ASUS router.
 
-Now, I had achieved more or less what I desired, but this left me with one last struggle, having to resort to open a SSH connection to the ASUS router and supplying Openpyn with the desired arguments (e.g., country, server load threshold and server type). Having the ability to do that on a phone instead of a computer would make this a lot easier, and that led me to discovering [JuiceSSH](https://juicessh.com/).
+Now, I had achieved more or less what I desired, but this left me with one last struggle, having to resort to open a SSH connection to the ASUS router and supplying Openpyn with the desired arguments (e.g., country, server load threshold and server type). Having the ability to do that on a phone instead of a computer would make this a lot easier, and that led me to discovering [JuiceSSH](https://juicessh.com).
 
-[JuiceSSH](https://juicessh.com/) supports the use of plugins, which allowed me to create this fantastic app. This app runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to send a Openpyn command to the remote device.
+[JuiceSSH](https://juicessh.com) supports the use of plugins, which allowed me to create this fantastic app. This app runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to send a Openpyn command to the remote device.
 
 > **Note**:
 > This project is my very first Android project, and as such, it may not follow all the best coding practices yet, regardless of this, I'm committed to make this app a source of inspiration for other developers working on similar based Android apps, especially Google Maps based Android apps.
@@ -78,7 +78,7 @@ Now, I had achieved more or less what I desired, but this left me with one last 
 
 
 - Uses Geolocation APIs to determine the current location based on the current public IP address
-  - <http://ip-api.com/>, <https://ipdata.co/>, <https://ipinfo.io/>, <https://ipstack.com/>
+  - <http://ip-api.com>, <https://ipdata.co>, <https://ipinfo.io>, <https://ipstack.com>
 
 > **Note**:
 > *Am I missing some essential feature?* Submit an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new) and let's make this app better together!
@@ -104,7 +104,7 @@ python3 ./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/wor
 
 ## How to use
 
-- Install [JuiceSSH](https://juicessh.com/)
+- Install [JuiceSSH](https://juicessh.com)
 - Add a new connection to Connections in JuiceSSH
 - Install this app
 - When prompted, enable/allow the permissions required by this app
@@ -228,8 +228,7 @@ This app uses (modified) code from several open source projects.
 
 
 - [Android Maps Extensions](https://github.com/mg6maciej/android-maps-extensions)
-  - Modified
-        [LazyMarker.java](app/src/main/java/com/androidmapsextensions/lazy/LazyMarker.java)
+  - Modified [LazyMarker.java](app/src/main/java/com/androidmapsextensions/lazy/LazyMarker.java)
 
 
 - [Map Utils](https://github.com/antoniocarlon/MapUtils)
@@ -242,30 +241,31 @@ This app uses (modified) code from several open source projects.
 
 ## Built with
 
+
 <details>
 <summary>"Click to expand"</summary>
 
-- [AX2J](http://ax2j.sickworm.com/)
+- [AX2J](http://ax2j.sickworm.com)
 - [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 - [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
 - [Android Studio](https://developer.android.com/studio/)
-- [Atom](https://atom.io/)
-- [Codacy](https://www.codacy.com/)
-- [DB Browser for SQLite](http://sqlitebrowser.org/)
-- [Dependabot](https://dependabot.com/)
-- [Fastlane](https://fastlane.tools/)
+- [Atom](https://atom.io)
+- [Codacy](https://www.codacy.com)
+- [DB Browser for SQLite](http://sqlitebrowser.org)
+- [Dependabot](https://dependabot.com)
+- [Fastlane](https://fastlane.tools)
 - [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
-- [JSON Schema Tool](https://jsonschema.net/)
+- [JSON Schema Tool](https://jsonschema.net)
 - [Kotlin Code Sorter](https://github.com/longforus/KotlinCodeSorter)
 - [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
-- [Material Design Icons](https://materialdesignicons.com/)
+- [Material Design Icons](https://materialdesignicons.com)
 - [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 - [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
-- [Regex101](https://regex101.com/)
-- [Shape Shifter](https://beta.shapeshifter.design/)
-- [Snyk](https://snyk.io/)
-- [SonarLint](https://www.sonarlint.org/)
-- [Sourcetree](https://www.sourcetreeapp.com/)
+- [Regex101](https://regex101.com)
+- [Shape Shifter](https://beta.shapeshifter.design)
+- [Snyk](https://snyk.io)
+- [SonarLint](https://www.sonarlint.org)
+- [Sourcetree](https://www.sourcetreeapp.com)
 - [SVG-edit](https://svg-edit.github.io/svgedit/releases/latest/editor/svg-editor.html)
 - [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
 
@@ -284,7 +284,7 @@ This app uses (modified) code from several open source projects.
 
 ## Acknowledgments
 
-- [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com/).
+- [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com).
 - [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
 - [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
 
