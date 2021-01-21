@@ -89,17 +89,17 @@ A lot of components make this app work, I'll cover some of the basics here.
 
 On app startup, the map is loaded asynchronously, an MBTile file (SQLite database) located in the assets resource folder within the APK is loaded and then stored and read in memory.
 
-After the map is done loading, markers are generated lazily for all the available countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the minimum zoom scale specified by the MBTile file.
+After the map is done loading, "lazy" markers are generated for all the available countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the zoom scale specified by the MBTile file.
 
 The current location is detected based on the public IP address of the client. The map then animates to the marker closest to this location.
 
-After animation completes, only the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
+After animation completes, the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
 
 The [world.mbtiles](app/src/main/assets/world.mbtiles) was generated using a custom Python script, [generate_tiles_multiprocess.py](https://github.com/1951FDG/mapnik2mbtiles/blob/master/generate_tiles_multiprocess.py).
 
 ```sh
-rm ./app/src/main/assets/world.mbtiles
-python3 ./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/world.mbtiles 4 4 --format webp
+rm $project.rootDir/app/src/main/assets/world.mbtiles
+python3 ./generate_tiles_multiprocess.py ./mapfile.xml $project.rootDir/app/src/main/assets/world.mbtiles 4 4 --format webp
 ```
 
 ## How to use
@@ -215,7 +215,7 @@ Feel free to send us feedback by submitting an [issue](https://github.com/1951FD
 
 ## Credits
 
-This app uses (modified) code from several open source projects.
+This app uses (modified) code from open source projects.
 
 - [About Box](https://github.com/eggheadgames/android-about-box)
 
