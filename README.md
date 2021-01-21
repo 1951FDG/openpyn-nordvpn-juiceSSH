@@ -169,7 +169,6 @@ To compile and run the project you'll need:
 <details>
 <summary>"Click to expand"</summary>
 
-- [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
 - [Barista](https://github.com/SchibstedSpain/Barista)
 - [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
 - [EasyPermissions](https://github.com/googlesamples/easypermissions)
@@ -185,7 +184,6 @@ To compile and run the project you'll need:
 - [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
 - [PreferenceActivityCompat](https://github.com/ohmae/preference-activity-compat)
 - [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
-- [Result](https://github.com/kittinunf/Result)
 - [SLF4J](https://github.com/qos-ch/slf4j)
 - [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
 - [SQLite](https://github.com/requery/sqlite-android)
@@ -266,7 +264,7 @@ This app uses (modified) code from several open source projects.
 - [Snyk](https://snyk.io)
 - [SonarLint](https://www.sonarlint.org)
 - [Sourcetree](https://www.sourcetreeapp.com)
-- [SVG-edit](https://svg-edit.github.io/svgedit/releases/latest/editor/svg-editor.html)
+- [SVG-edit](https://github.com/SVG-Edit/svgedit)
 - [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
 
 </details>
