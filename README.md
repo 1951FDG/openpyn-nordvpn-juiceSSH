@@ -239,7 +239,6 @@ This app uses (modified) code from several open source projects.
 
 ## Built with
 
-
 <details>
 <summary>"Click to expand"</summary>
 
