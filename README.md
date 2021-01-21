@@ -13,6 +13,14 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 > **Note**:
 > The first public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) has been released.
 
+<p align="middle">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01_01.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03.png" width="18%">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04.png" width="18%">
+</p>
+
 ## Todo
 
 - [x] add Telnet functionality for connecting to OpenVPN management interface
@@ -26,13 +34,9 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 - [Introduction](#introduction)
 - [Features](#features)
 - [How it works](#how-it-works)
-- [How to use](#how-to-use)
-- [Screenshots](#screenshots)
-- [Download](#download)
+- [Usage](#how-to-use)
 - [Requirements](#requirements)
 - [References](#references)
-- [Libraries used](#libraries-used)
-- [Plugins used](#plugins-used)
 - [Feedback](#feedback)
 - [Credits](#credits)
 - [Built with](#built-with)
@@ -102,32 +106,7 @@ rm $project.rootDir/app/src/main/assets/world.mbtiles
 python3 ./generate_tiles_multiprocess.py ./mapfile.xml $project.rootDir/app/src/main/assets/world.mbtiles 4 4 --format webp
 ```
 
-## How to use
-
-- Install [JuiceSSH](https://juicessh.com)
-- Add a new connection to Connections in JuiceSSH
-- Install this app
-- When prompted, enable/allow the permissions required by this app
-- Change any app settings as required
-- Select a Country by selecting a marker on the map
-- Click the colored floating action button (FAB), to send a Openpyn command to the remote device
-
-> **Note**:
-> You can use this flow with multiple remote devices, as long as that remote device has a SSH server running on it and is configured in Connections in JuiceSSH and is selected in the app toolbar of this app before the colored floating action button (FAB) is clicked!
-
-## Screenshots
-
-<p align="middle">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01.png" width="18%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01_01.png" width="18%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02.png" width="18%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03.png" width="18%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04.png" width="18%">
-</p>
-
-## Download
-
-The public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) is open to anyone.
+## Prerequisites
 
 Please use my `test` branch of [Openpyn](https://github.com/1951FDG/openpyn-nordvpn).
 
@@ -136,6 +115,19 @@ git clone --branch test git@github.com:1951FDG/openpyn-nordvpn.git
 cd openpyn-nordvpn
 pip3 install --upgrade .
 ```
+
+## Usage
+
+- Install [JuiceSSH](https://juicessh.com)
+- Add a new connection to Connections in JuiceSSH
+- Install the public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn)
+- When prompted, enable/allow the permissions required by this app
+- Change any app settings as required
+- Select a Country by selecting a marker on the map
+- Click the colored floating action button (FAB), to send a Openpyn command to the remote device
+
+> **Note**:
+> You can use this flow with multiple remote devices, as long as that remote device has a SSH server running on it and is configured in Connections in JuiceSSH and is selected in the app toolbar of this app before the colored floating action button (FAB) is clicked!
 
 ## Requirements
 
@@ -151,6 +143,13 @@ To compile and run the project you'll need:
 - Maps SDK for Android
   - [Get an API key](https://developers.google.com/maps/documentation/android-sdk/signup)
 
+## Feedback
+
+Feel free to send us feedback by submitting an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new). Bug reports, feature requests, patches, and well-wishes are always welcome.
+
+> **Note**:
+> Pull requests are welcome. For major changes, please submit an issue first to discuss what you would like to change.
+
 ## References
 
 - [MyStorage.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/map/util/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
@@ -163,55 +162,6 @@ To compile and run the project you'll need:
   - [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
   - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
   - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
-
-## Libraries used
-
-<details>
-<summary>"Click to expand"</summary>
-
-- [Barista](https://github.com/SchibstedSpain/Barista)
-- [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
-- [EasyPermissions](https://github.com/googlesamples/easypermissions)
-- [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
-- [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
-- [Kotlin](https://github.com/JetBrains/kotlin)
-- [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
-- [Ktor](https://github.com/ktorio/ktor)
-- [LeakCanary](https://github.com/square/leakcanary)
-- [Minibar](https://github.com/mayuroks/minibar)
-- [Moshi](https://github.com/square/moshi)
-- [Moshi: Pristine Models](https://github.com/jayrave/moshi-pristine-models)
-- [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
-- [PreferenceActivityCompat](https://github.com/ohmae/preference-activity-compat)
-- [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
-- [SLF4J](https://github.com/qos-ch/slf4j)
-- [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
-- [SQLite](https://github.com/requery/sqlite-android)
-- [StaticLog](https://github.com/jupf/staticlog)
-- [SVC](https://github.com/BansookNam/svc)
-- [Toasty](https://github.com/GrenderG/Toasty)
-
-</details>
-
-## Plugins used
-
-<details>
-<summary>"Click to expand"</summary>
-
-- [Detekt](https://github.com/arturbosch/detekt)
-- [Gradle Android Git Version](https://github.com/gladed/gradle-android-git-version)
-- [Gradle Git Properties](https://github.com/n0mer/gradle-git-properties)
-- [Gradle Unused Resources Remover](https://github.com/konifar/gradle-unused-resources-remover-plugin)
-- [Gradle Versions](https://github.com/ben-manes/gradle-versions-plugin)
-
-</details>
-
-## Feedback
-
-Feel free to send us feedback by submitting an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new). Bug reports, feature requests, patches, and well-wishes are always welcome.
-
-> **Note**:
-> Pull requests are welcome. For major changes, please submit an issue first to discuss what you would like to change.
 
 ## Credits
 
@@ -240,28 +190,57 @@ This app uses (modified) code from open source projects.
 ## Built with
 
 <details>
-<summary>"Click to expand"</summary>
+<summary>Libraries</summary>
+
+- [Barista](https://github.com/SchibstedSpain/Barista)
+- [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
+- [EasyPermissions](https://github.com/googlesamples/easypermissions)
+- [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
+- [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
+- [Kotlin](https://github.com/JetBrains/kotlin)
+- [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+- [Ktor](https://github.com/ktorio/ktor)
+- [LeakCanary](https://github.com/square/leakcanary)
+- [Minibar](https://github.com/mayuroks/minibar)
+- [Moshi](https://github.com/square/moshi)
+- [Moshi: Pristine Models](https://github.com/jayrave/moshi-pristine-models)
+- [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
+- [PreferenceActivityCompat](https://github.com/ohmae/preference-activity-compat)
+- [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
+- [SLF4J](https://github.com/qos-ch/slf4j)
+- [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
+- [SQLite](https://github.com/requery/sqlite-android)
+- [SVC](https://github.com/BansookNam/svc)
+- [Toasty](https://github.com/GrenderG/Toasty)
+
+</details>
+
+<details>
+<summary>Plugins</summary>
+
+- [Detekt](https://github.com/arturbosch/detekt)
+- [Gradle Android Git Version](https://github.com/gladed/gradle-android-git-version)
+- [Gradle Git Properties](https://github.com/n0mer/gradle-git-properties)
+- [Gradle Unused Resources Remover](https://github.com/konifar/gradle-unused-resources-remover-plugin)
+- [Gradle Versions](https://github.com/ben-manes/gradle-versions-plugin)
+
+</details>
+
+<details>
+<summary>Tools</summary>
 
 - [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 - [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
 - [Android Studio](https://developer.android.com/studio/)
 - [Atom](https://atom.io)
-- [AX2J](http://ax2j.sickworm.com)
-- [Codacy](https://www.codacy.com)
-- [DB Browser for SQLite](http://sqlitebrowser.org)
-- [Dependabot](https://dependabot.com)
+- [DB Browser for SQLite](https://sqlitebrowser.org)
 - [Fastlane](https://fastlane.tools)
-- [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
 - [JSON Schema Tool](https://jsonschema.net)
-- [Kotlin Code Sorter](https://github.com/longforus/KotlinCodeSorter)
-- [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
 - [Material Design Icons](https://materialdesignicons.com)
 - [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 - [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 - [Regex101](https://regex101.com)
 - [Shape Shifter](https://beta.shapeshifter.design)
-- [Snyk](https://snyk.io)
-- [SonarLint](https://www.sonarlint.org)
 - [Sourcetree](https://www.sourcetreeapp.com)
 - [SVG-edit](https://github.com/SVG-Edit/svgedit)
 - [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
@@ -270,14 +249,9 @@ This app uses (modified) code from open source projects.
 
 ## Attributions
 
-<details>
-<summary>"Click to expand"</summary>
-
 - [Business Icons](https://www.flaticon.com/packs/business-14)
 - [Country Flags Icons](https://www.flaticon.com/packs/countrys-flags)
 - [Natural Earth Map Data](https://www.naturalearthdata.com/downloads/10m-physical-vectors/)
-
-</details>
 
 ## Acknowledgments
 
