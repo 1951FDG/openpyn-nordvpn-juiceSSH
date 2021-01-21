@@ -78,7 +78,7 @@ Now, I had achieved more or less what I desired, but this left me with one last 
 
 
 - Uses Geolocation APIs to determine the current location based on the current public IP address
-    - <http://ip-api.com/>, <https://ipdata.co/>, <https://ipinfo.io/>, <https://ipstack.com/>
+  - <http://ip-api.com/>, <https://ipdata.co/>, <https://ipinfo.io/>, <https://ipstack.com/>
 
 > **Note**:
 > *Am I missing some essential feature?* Submit an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new) and let's make this app better together!
@@ -142,14 +142,14 @@ pip3 install --upgrade .
 To compile and run the project you'll need:
 
 - [Android Studio 4.0.2 or higher](https://developer.android.com/studio/)
-    - Android SDK Platform `30`
-    - Android SDK Build-Tools `30.0.3`
-    - CMake `v3.10.2`
-    - NDK `21.0.6113669`
+  - Android SDK Platform `30`
+  - Android SDK Build-Tools `30.0.3`
+  - CMake `v3.10.2`
+  - NDK `21.0.6113669`
 
 
 - Maps SDK for Android
-    - [Get an API key](https://developers.google.com/maps/documentation/android-sdk/signup)
+  - [Get an API key](https://developers.google.com/maps/documentation/android-sdk/signup)
 
 ## References
 
@@ -160,9 +160,9 @@ To compile and run the project you'll need:
 
 
 - [SecurityCypher.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityCypher.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
-    - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
-    - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
-    - [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
+  - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
+  - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
+  - [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
 
 ## Libraries used
 
@@ -223,22 +223,22 @@ This app uses (modified) code from several open source projects.
 
 
 - [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk)
-    - Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
-    - Modified [sqlite3ndk.cpp](app/src/main/cpp/sqlite3ndk.cpp)
+  - Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
+  - Modified [sqlite3ndk.cpp](app/src/main/cpp/sqlite3ndk.cpp)
 
 
 - [Android Maps Extensions](https://github.com/mg6maciej/android-maps-extensions)
-    - Modified
+  - Modified
         [LazyMarker.java](app/src/main/java/com/androidmapsextensions/lazy/LazyMarker.java)
 
 
 - [Map Utils](https://github.com/antoniocarlon/MapUtils)
-    - Modified [CameraUpdateAnimator.java](app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
+  - Modified [CameraUpdateAnimator.java](app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
 
 
 - [Google Maps Android API utility library](https://github.com/kiddouk/CheckableFloatingActionButton)
-    - [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
-    - [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
+  - [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
+  - [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
 
 ## Built with
 
