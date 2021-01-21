@@ -15,29 +15,29 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 
 ## Todo
 
--   [x] add Telnet functionality for connecting to OpenVPN management interface
--   [ ] apply clean(er) app architecture
+- [x] add Telnet functionality for connecting to OpenVPN management interface
+- [ ] apply clean(er) app architecture
 
 ## Table of Contents
 
 <details>
 <summary>"Click to expand"</summary>
 
--   [Introduction](#introduction)
--   [Features](#features)
--   [How it works](#how-it-works)
--   [How to use](#how-to-use)
--   [Screenshots](#screenshots)
--   [Download](#download)
--   [Requirements](#requirements)
--   [References](#references)
--   [Libraries used](#libraries-used)
--   [Plugins used](#plugins-used)
--   [Feedback](#feedback)
--   [Credits](#credits)
--   [Built with](#built-with)
--   [Attributions](#attributions)
--   [Acknowledgments](#acknowledgments)
+- [Introduction](#introduction)
+- [Features](#features)
+- [How it works](#how-it-works)
+- [How to use](#how-to-use)
+- [Screenshots](#screenshots)
+- [Download](#download)
+- [Requirements](#requirements)
+- [References](#references)
+- [Libraries used](#libraries-used)
+- [Plugins used](#plugins-used)
+- [Feedback](#feedback)
+- [Credits](#credits)
+- [Built with](#built-with)
+- [Attributions](#attributions)
+- [Acknowledgments](#acknowledgments)
 
 </details>
 
@@ -56,29 +56,29 @@ Now, I had achieved more or less what I desired, but this left me with one last 
 
 ## Features
 
--   Supports most arguments available in Openpyn with easy to use preferences
+- Supports most arguments available in Openpyn with easy to use preferences
 
 
--   Allows to use location based filtering in Openpyn
+- Allows to use location based filtering in Openpyn
 
 
--   Map view displays markers for every country supported by NordVPN
+- Map view displays markers for every country supported by NordVPN
 
 
--   Allows to hide countries in the map view
+- Allows to hide countries in the map view
 
 
--   Allows to star a country in the map view
+- Allows to star a country in the map view
 
 
--   API keys stored in shared preferences are encrypted
+- API keys stored in shared preferences are encrypted
 
 
--   On app start, it will use a smart location, to determine the closest country
+- On app start, it will use a smart location, to determine the closest country
 
 
--   Uses Geolocation APIs to determine the current location based on the current public IP address
-    -   <http://ip-api.com/>, <https://ipdata.co/>, <https://ipinfo.io/>, <https://ipstack.com/>
+- Uses Geolocation APIs to determine the current location based on the current public IP address
+    - <http://ip-api.com/>, <https://ipdata.co/>, <https://ipinfo.io/>, <https://ipstack.com/>
 
 > **Note**:
 > *Am I missing some essential feature?* Submit an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new) and let's make this app better together!
@@ -104,13 +104,13 @@ python3 ./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/wor
 
 ## How to use
 
--   Install [JuiceSSH](https://juicessh.com/)
--   Add a new connection to Connections in JuiceSSH
--   Install this app
--   When prompted, enable/allow the permissions required by this app
--   Change any app settings as required
--   Select a Country by selecting a marker on the map
--   Click the colored floating action button (FAB), to send a Openpyn command to the remote device
+- Install [JuiceSSH](https://juicessh.com/)
+- Add a new connection to Connections in JuiceSSH
+- Install this app
+- When prompted, enable/allow the permissions required by this app
+- Change any app settings as required
+- Select a Country by selecting a marker on the map
+- Click the colored floating action button (FAB), to send a Openpyn command to the remote device
 
 > **Note**:
 > You can use this flow with multiple remote devices, as long as that remote device has a SSH server running on it and is configured in Connections in JuiceSSH and is selected in the app toolbar of this app before the colored floating action button (FAB) is clicked!
@@ -141,58 +141,57 @@ pip3 install --upgrade .
 
 To compile and run the project you'll need:
 
--   [Android Studio 4.0.2 or higher](https://developer.android.com/studio/)
-    -   Android SDK Platform `30`
-    -   Android SDK Build-Tools `30.0.3`
-    -   CMake `v3.10.2`
-    -   NDK `21.0.6113669`
+- [Android Studio 4.0.2 or higher](https://developer.android.com/studio/)
+    - Android SDK Platform `30`
+    - Android SDK Build-Tools `30.0.3`
+    - CMake `v3.10.2`
+    - NDK `21.0.6113669`
 
 
--   Maps SDK for Android
-    -   [Get an API key](https://developers.google.com/maps/documentation/android-sdk/signup)
+- Maps SDK for Android
+    - [Get an API key](https://developers.google.com/maps/documentation/android-sdk/signup)
 
 ## References
 
--   [MyStorage.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/map/util/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
+- [MyStorage.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/map/util/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
 
 
--   [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utils/PrintArray.kt) inspired by Github repo, [PrintArray
-    ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
+- [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utils/PrintArray.kt) inspired by Github repo, [PrintArray](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
 
 
--   [SecurityCypher.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityCypher.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
-    -   [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
-    -   [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
-    -   [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
+- [SecurityCypher.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityCypher.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
+    - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
+    - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
+    - [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
 
 ## Libraries used
 
 <details>
 <summary>"Click to expand"</summary>
 
--   [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
--   [Barista](https://github.com/SchibstedSpain/Barista)
--   [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
--   [EasyPermissions](https://github.com/googlesamples/easypermissions)
--   [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
--   [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
--   [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
--   [Kotlin](https://github.com/JetBrains/kotlin)
--   [Ktor](https://github.com/ktorio/ktor)
--   [LeakCanary](https://github.com/square/leakcanary)
--   [Minibar](https://github.com/mayuroks/minibar)
--   [Moshi](https://github.com/square/moshi)
--   [Moshi: Pristine Models](https://github.com/jayrave/moshi-pristine-models)
--   [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
--   [PreferenceActivityCompat](https://github.com/ohmae/preference-activity-compat)
--   [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
--   [Result](https://github.com/kittinunf/Result)
--   [SLF4J](https://github.com/qos-ch/slf4j)
--   [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
--   [SQLite](https://github.com/requery/sqlite-android)
--   [StaticLog](https://github.com/jupf/staticlog)
--   [SVC](https://github.com/BansookNam/svc)
--   [Toasty](https://github.com/GrenderG/Toasty)
+- [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
+- [Barista](https://github.com/SchibstedSpain/Barista)
+- [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
+- [EasyPermissions](https://github.com/googlesamples/easypermissions)
+- [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
+- [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
+- [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+- [Kotlin](https://github.com/JetBrains/kotlin)
+- [Ktor](https://github.com/ktorio/ktor)
+- [LeakCanary](https://github.com/square/leakcanary)
+- [Minibar](https://github.com/mayuroks/minibar)
+- [Moshi](https://github.com/square/moshi)
+- [Moshi: Pristine Models](https://github.com/jayrave/moshi-pristine-models)
+- [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
+- [PreferenceActivityCompat](https://github.com/ohmae/preference-activity-compat)
+- [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
+- [Result](https://github.com/kittinunf/Result)
+- [SLF4J](https://github.com/qos-ch/slf4j)
+- [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
+- [SQLite](https://github.com/requery/sqlite-android)
+- [StaticLog](https://github.com/jupf/staticlog)
+- [SVC](https://github.com/BansookNam/svc)
+- [Toasty](https://github.com/GrenderG/Toasty)
 
 </details>
 
@@ -201,11 +200,11 @@ To compile and run the project you'll need:
 <details>
 <summary>"Click to expand"</summary>
 
--   [Detekt](https://github.com/arturbosch/detekt)
--   [Gradle Android Git Version](https://github.com/gladed/gradle-android-git-version)
--   [Gradle Git Properties](https://github.com/n0mer/gradle-git-properties)
--   [Gradle Unused Resources Remover](https://github.com/konifar/gradle-unused-resources-remover-plugin)
--   [Gradle Versions](https://github.com/ben-manes/gradle-versions-plugin)
+- [Detekt](https://github.com/arturbosch/detekt)
+- [Gradle Android Git Version](https://github.com/gladed/gradle-android-git-version)
+- [Gradle Git Properties](https://github.com/n0mer/gradle-git-properties)
+- [Gradle Unused Resources Remover](https://github.com/konifar/gradle-unused-resources-remover-plugin)
+- [Gradle Versions](https://github.com/ben-manes/gradle-versions-plugin)
 
 </details>
 
@@ -220,55 +219,55 @@ Feel free to send us feedback by submitting an [issue](https://github.com/1951FD
 
 This app uses (modified) code from several open source projects.
 
--   [About Box](https://github.com/eggheadgames/android-about-box)
+- [About Box](https://github.com/eggheadgames/android-about-box)
 
 
--   [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk)
-    -   Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
-    -   Modified [sqlite3ndk.cpp](app/src/main/cpp/sqlite3ndk.cpp)
+- [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk)
+    - Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
+    - Modified [sqlite3ndk.cpp](app/src/main/cpp/sqlite3ndk.cpp)
 
 
--   [Android Maps Extensions](https://github.com/mg6maciej/android-maps-extensions)
-    -   Modified
+- [Android Maps Extensions](https://github.com/mg6maciej/android-maps-extensions)
+    - Modified
         [LazyMarker.java](app/src/main/java/com/androidmapsextensions/lazy/LazyMarker.java)
 
 
--   [Map Utils](https://github.com/antoniocarlon/MapUtils)
-    -   Modified [CameraUpdateAnimator.java](app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
+- [Map Utils](https://github.com/antoniocarlon/MapUtils)
+    - Modified [CameraUpdateAnimator.java](app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
 
 
--   [Google Maps Android API utility library](https://github.com/kiddouk/CheckableFloatingActionButton)
-    -   [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
-    -   [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
+- [Google Maps Android API utility library](https://github.com/kiddouk/CheckableFloatingActionButton)
+    - [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
+    - [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
 
 ## Built with
 
 <details>
 <summary>"Click to expand"</summary>
 
--   [AX2J](http://ax2j.sickworm.com/)
--   [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
--   [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
--   [Android Studio](https://developer.android.com/studio/)
--   [Atom](https://atom.io/)
--   [Codacy](https://www.codacy.com/)
--   [DB Browser for SQLite](http://sqlitebrowser.org/)
--   [Dependabot](https://dependabot.com/)
--   [Fastlane](https://fastlane.tools/)
--   [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
--   [JSON Schema Tool](https://jsonschema.net/)
--   [Kotlin Code Sorter](https://github.com/longforus/KotlinCodeSorter)
--   [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
--   [Material Design Icons](https://materialdesignicons.com/)
--   [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
--   [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
--   [Regex101](https://regex101.com/)
--   [Shape Shifter](https://beta.shapeshifter.design/)
--   [Snyk](https://snyk.io/)
--   [SonarLint](https://www.sonarlint.org/)
--   [Sourcetree](https://www.sourcetreeapp.com/)
--   [SVG-edit](https://svg-edit.github.io/svgedit/releases/latest/editor/svg-editor.html)
--   [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
+- [AX2J](http://ax2j.sickworm.com/)
+- [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
+- [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
+- [Android Studio](https://developer.android.com/studio/)
+- [Atom](https://atom.io/)
+- [Codacy](https://www.codacy.com/)
+- [DB Browser for SQLite](http://sqlitebrowser.org/)
+- [Dependabot](https://dependabot.com/)
+- [Fastlane](https://fastlane.tools/)
+- [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/)
+- [JSON Schema Tool](https://jsonschema.net/)
+- [Kotlin Code Sorter](https://github.com/longforus/KotlinCodeSorter)
+- [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/intro)
+- [Material Design Icons](https://materialdesignicons.com/)
+- [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
+- [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
+- [Regex101](https://regex101.com/)
+- [Shape Shifter](https://beta.shapeshifter.design/)
+- [Snyk](https://snyk.io/)
+- [SonarLint](https://www.sonarlint.org/)
+- [Sourcetree](https://www.sourcetreeapp.com/)
+- [SVG-edit](https://svg-edit.github.io/svgedit/releases/latest/editor/svg-editor.html)
+- [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
 
 </details>
 
@@ -277,17 +276,17 @@ This app uses (modified) code from several open source projects.
 <details>
 <summary>"Click to expand"</summary>
 
--   [Business Icons](https://www.flaticon.com/packs/business-14)
--   [Country Flags Icons](https://www.flaticon.com/packs/countrys-flags)
--   [Natural Earth Map Data](https://www.naturalearthdata.com/downloads/10m-physical-vectors/)
+- [Business Icons](https://www.flaticon.com/packs/business-14)
+- [Country Flags Icons](https://www.flaticon.com/packs/countrys-flags)
+- [Natural Earth Map Data](https://www.naturalearthdata.com/downloads/10m-physical-vectors/)
 
 </details>
 
 ## Acknowledgments
 
--   [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com/).
--   [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
--   [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
+- [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com/).
+- [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
+- [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
 
 > **Note**:
 > Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
