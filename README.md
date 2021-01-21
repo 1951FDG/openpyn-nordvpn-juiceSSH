@@ -20,6 +20,9 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 
 ## Table of Contents
 
+<details>
+<summary>"Click to expand"</summary>
+
 -   [Introduction](#introduction)
 -   [Features](#features)
 -   [How it works](#how-it-works)
@@ -35,6 +38,8 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 -   [Built with](#built-with)
 -   [Attributions](#attributions)
 -   [Acknowledgments](#acknowledgments)
+
+</details>
 
 ## Introduction
 
@@ -135,12 +140,15 @@ To compile and run the project you'll need:
 -   [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utils/PrintArray.kt) inspired by Github repo, [PrintArray
     ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
 
--   [SecurityManager.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityCypher.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
+-   [SecurityCypher.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityCypher.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
     -   [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
     -   [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
     -   [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
 
 ## Libraries used
+
+<details>
+<summary>"Click to expand"</summary>
 
 -   [AndroidX](https://developer.android.com/topic/libraries/support-library/androidx-rn)
 -   [Barista](https://github.com/SchibstedSpain/Barista)
@@ -166,12 +174,20 @@ To compile and run the project you'll need:
 -   [SVC](https://github.com/BansookNam/svc)
 -   [Toasty](https://github.com/GrenderG/Toasty)
 
+</details>
+
 ## Plugins used
 
+<details>
+<summary>"Click to expand"</summary>
+
 -   [Detekt](https://github.com/arturbosch/detekt)
--   [Gradle Versions Plugin](https://github.com/ben-manes/gradle-versions-plugin)
--   [gradle-android-git-version](https://github.com/gladed/gradle-android-git-version)
--   [Unused Resources Remover for Android](https://github.com/konifar/gradle-unused-resources-remover-plugin)
+-   [Gradle Android Git Version](https://github.com/gladed/gradle-android-git-version)
+-   [Gradle Git Properties](https://github.com/n0mer/gradle-git-properties)
+-   [Gradle Unused Resources Remover](https://github.com/konifar/gradle-unused-resources-remover-plugin)
+-   [Gradle Versions](https://github.com/ben-manes/gradle-versions-plugin)
+
+</details>
 
 ## Feedback
 
@@ -209,6 +225,9 @@ This app uses (modified) code from several open source projects.
 
 ## Built with
 
+<details>
+<summary>"Click to expand"</summary>
+
 -   [AX2J](http://ax2j.sickworm.com/)
 -   [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 -   [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
@@ -233,11 +252,18 @@ This app uses (modified) code from several open source projects.
 -   [SVG-edit](https://svg-edit.github.io/svgedit/releases/latest/editor/svg-editor.html)
 -   [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
 
+</details>
+
 ## Attributions
+
+<details>
+<summary>"Click to expand"</summary>
 
 -   [Business Icons](https://www.flaticon.com/packs/business-14)
 -   [Country Flags Icons](https://www.flaticon.com/packs/countrys-flags)
 -   [Natural Earth Map Data](https://www.naturalearthdata.com/downloads/10m-physical-vectors/)
+
+</details>
 
 ## Acknowledgments
 
