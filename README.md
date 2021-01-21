@@ -58,33 +58,49 @@ Now, I had achieved more or less what I desired, but this left me with one last 
 
 -   Supports most arguments available in Openpyn with easy to use preferences
 
+
 -   Allows to use location based filtering in Openpyn
+
 
 -   Map view displays markers for every country supported by NordVPN
 
+
 -   Allows to hide countries in the map view
+
 
 -   Allows to star a country in the map view
 
+
 -   API keys stored in shared preferences are encrypted
 
+
 -   On app start, it will use a smart location, to determine the closest country
+
 
 -   Uses Geolocation APIs to determine the current location based on the current public IP address
     -   <http://ip-api.com/>, <https://ipdata.co/>, <https://ipinfo.io/>, <https://ipstack.com/>
 
-_Am I missing some essential feature?_
-
--   Submit an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new) and let's make this app better together!
+> **Note**:
+> *Am I missing some essential feature?* Submit an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new) and let's make this app better together!
 
 ## How it works
 
-A lot of components make this app work, I'll cover some of the basics here. Basically on app startup, the map is loaded asynchronously, an MBTile file (SQLite database) located in the assets resource folder within the APK is loaded and then stored and read in memory. The [world.mbtiles](app/src/main/assets/world.mbtiles) was generated using a custom Python script, [generate_tiles_multiprocess.py](https://github.com/1951FDG/mapnik2mbtiles/blob/master/generate_tiles_multiprocess.py).
+A lot of components make this app work, I'll cover some of the basics here.
 
-    rm ./app/src/main/assets/world.mbtiles
-    python3 ./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/world.mbtiles 4 4 --format webp
+On app startup, the map is loaded asynchronously, an MBTile file (SQLite database) located in the assets resource folder within the APK is loaded and then stored and read in memory.
 
-After the map is done loading, the NordVPN API is invoked to query all the supported countries, filtering based on preferences such as server type is done here, markers are generated lazily for all the countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the minimum zoom scale specified by the MBTile file. The current location is detected based on the public IP address of the client. The map then animates to the marker closest to this location. After animation completes, only the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
+After the map is done loading, markers are generated lazily for all the available countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the minimum zoom scale specified by the MBTile file.
+
+The current location is detected based on the public IP address of the client. The map then animates to the marker closest to this location.
+
+After animation completes, only the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
+
+The [world.mbtiles](app/src/main/assets/world.mbtiles) was generated using a custom Python script, [generate_tiles_multiprocess.py](https://github.com/1951FDG/mapnik2mbtiles/blob/master/generate_tiles_multiprocess.py).
+
+```sh
+rm ./app/src/main/assets/world.mbtiles
+python3 ./generate_tiles_multiprocess.py ./mapfile.xml ./app/src/main/assets/world.mbtiles 4 4 --format webp
+```
 
 ## How to use
 
@@ -115,9 +131,11 @@ The public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.op
 
 Please use my `test` branch of [Openpyn](https://github.com/1951FDG/openpyn-nordvpn).
 
-    git clone --branch test git@github.com:1951FDG/openpyn-nordvpn.git
-    cd openpyn-nordvpn
-    pip3 install --upgrade .
+```sh
+git clone --branch test git@github.com:1951FDG/openpyn-nordvpn.git
+cd openpyn-nordvpn
+pip3 install --upgrade .
+```
 
 ## Requirements
 
@@ -137,8 +155,10 @@ To compile and run the project you'll need:
 
 -   [MyStorage.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/map/util/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
 
+
 -   [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utils/PrintArray.kt) inspired by Github repo, [PrintArray
     ](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
+
 
 -   [SecurityCypher.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityCypher.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
     -   [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
@@ -202,6 +222,7 @@ This app uses (modified) code from several open source projects.
 
 -   [About Box](https://github.com/eggheadgames/android-about-box)
 
+
 -   [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk)
     -   Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
     -   Modified [sqlite3ndk.cpp](app/src/main/cpp/sqlite3ndk.cpp)
@@ -219,9 +240,6 @@ This app uses (modified) code from several open source projects.
 -   [Google Maps Android API utility library](https://github.com/kiddouk/CheckableFloatingActionButton)
     -   [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
     -   [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
-
-> **Note**:
-> Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
 
 ## Built with
 
@@ -267,6 +285,9 @@ This app uses (modified) code from several open source projects.
 
 ## Acknowledgments
 
--   Special thanks to [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com/).
--   Special thanks to [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
--   Special thanks to [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
+-   [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com/).
+-   [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
+-   [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
+
+> **Note**:
+> Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
