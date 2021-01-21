@@ -160,9 +160,9 @@ To compile and run the project you'll need:
 
 
 - [SecurityCypher.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityCypher.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
-  - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
-  - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
   - [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
+  - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
+  - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
 
 ## Libraries used
 
@@ -175,8 +175,8 @@ To compile and run the project you'll need:
 - [EasyPermissions](https://github.com/googlesamples/easypermissions)
 - [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
 - [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
-- [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 - [Kotlin](https://github.com/JetBrains/kotlin)
+- [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 - [Ktor](https://github.com/ktorio/ktor)
 - [LeakCanary](https://github.com/square/leakcanary)
 - [Minibar](https://github.com/mayuroks/minibar)
@@ -222,22 +222,22 @@ This app uses (modified) code from several open source projects.
 - [About Box](https://github.com/eggheadgames/android-about-box)
 
 
-- [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk)
-  - Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
-  - Modified [sqlite3ndk.cpp](app/src/main/cpp/sqlite3ndk.cpp)
-
-
 - [Android Maps Extensions](https://github.com/mg6maciej/android-maps-extensions)
   - Modified [LazyMarker.java](app/src/main/java/com/androidmapsextensions/lazy/LazyMarker.java)
+
+
+- [Google Maps Android API utility library](https://github.com/kiddouk/CheckableFloatingActionButton)
+  - [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
+  - [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
 
 
 - [Map Utils](https://github.com/antoniocarlon/MapUtils)
   - Modified [CameraUpdateAnimator.java](app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
 
 
-- [Google Maps Android API utility library](https://github.com/kiddouk/CheckableFloatingActionButton)
-  - [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
-  - [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
+- [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk)
+  - Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
+  - Modified [sqlite3ndk.cpp](app/src/main/cpp/sqlite3ndk.cpp)
 
 ## Built with
 
@@ -245,11 +245,11 @@ This app uses (modified) code from several open source projects.
 <details>
 <summary>"Click to expand"</summary>
 
-- [AX2J](http://ax2j.sickworm.com)
 - [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 - [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
 - [Android Studio](https://developer.android.com/studio/)
 - [Atom](https://atom.io)
+- [AX2J](http://ax2j.sickworm.com)
 - [Codacy](https://www.codacy.com)
 - [DB Browser for SQLite](http://sqlitebrowser.org)
 - [Dependabot](https://dependabot.com)
@@ -284,9 +284,9 @@ This app uses (modified) code from several open source projects.
 
 ## Acknowledgments
 
-- [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com).
-- [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
 - [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
+- [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
+- [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com).
 
 > **Note**:
 > Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
