@@ -294,6 +294,7 @@ dependencies {
         exclude group: 'androidx.test.espresso'
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
     }
+    // screengrab:2.0.0 is broken
     androidTestImplementation('tools.fastlane:screengrab:1.2.0') {
         exclude group: 'androidx.test'
         exclude group: 'androidx.test.espresso'
