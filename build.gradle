@@ -64,12 +64,6 @@ allprojects {
     apply plugin: 'idea'
 
     idea.module {
-        excludeDirs += file('.gitattributes')
-        excludeDirs += file('Gemfile')
-        excludeDirs += file('Gemfile.lock')
-        excludeDirs += file('LICENSE')
-        excludeDirs += file('mapfile.xml')
-
         excludeDirs += file('app/.cxx')
         excludeDirs += file('app/.externalNativeBuild')
         excludeDirs += file('app/src/main/java/com/almworks')
@@ -84,9 +78,6 @@ allprojects {
         excludeDirs += file('config/lib')
 
         excludeDirs += file('fastlane')
-        excludeDirs += file('svg')
-        excludeDirs += file('tiles')
-        excludeDirs += file('world')
     }
 
     apply plugin: 'com.gorylenko.gradle-git-properties'

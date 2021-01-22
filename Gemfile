@@ -1,4 +1,3 @@
 source "https://rubygems.org"
 
-gem "dotenv"
-gem "fastlane"
+gem "fastlane", "2.172.0"
