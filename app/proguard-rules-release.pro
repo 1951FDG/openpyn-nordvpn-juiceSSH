@@ -1,7 +1,3 @@
--assumevalues class android.os.Build$VERSION {
-  int SDK_INT return 21..2147483647;
-}
-
 -assumenosideeffects class timber.log.Timber {
     public static *** v(...);
     public static *** d(...);
@@ -29,6 +25,7 @@
 
 -keep public class androidx.navigation.fragment.NavHostFragment { *; }
 
+#noinspection ShrinkerUnresolvedReference
 -keep public class io.requery.android.database.sqlite.SQLiteCustomFunction { *; }
 -keep public class io.requery.android.database.sqlite.SQLiteDebug** { *; }
 -keep public class io.requery.android.database.sqlite.SQLiteFunction { *; }

@@ -24,7 +24,8 @@
         android:name=".DebugMainApplication"
         android:requestLegacyExternalStorage="true"
         tools:ignore="LockedOrientationActivity"
-        tools:replace="android:name">
+        tools:replace="android:name"
+        tools:targetApi="q">
         <activity
             android:name="info.hannes.logcat.LogfileActivity"
             android:label="Timber"
@@ -34,6 +35,7 @@
         <provider
             android:name="com.google.firebase.provider.FirebaseInitProvider"
             android:authorities="${applicationId}.firebaseinitprovider"
+            android:exported="false"
             tools:node="remove" />
     </application>
 </manifest>
