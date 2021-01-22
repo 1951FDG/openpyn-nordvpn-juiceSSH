@@ -7,7 +7,7 @@
           <value>
             <SchemaInfo>
               <option name="name" value="schema" />
-              <option name="relativePathToSchema" value="schema.json" />
+              <option name="relativePathToSchema" value="app/schemas/schema.json" />
               <option name="schemaVersion" value="JSON schema version 7" />
               <option name="patterns">
                 <list>
