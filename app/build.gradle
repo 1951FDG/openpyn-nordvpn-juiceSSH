@@ -176,6 +176,16 @@ configurations {
     }*/
 }
 
+afterEvaluate {
+    generateDebugResValues.dependsOn(appGenerateApiBuildConstants)
+    generateDebugBuildConfig.dependsOn(appGenerateGitBuildConstants)
+
+    generateReleaseResValues.dependsOn(appGenerateApiBuildConstants)
+    generateReleaseBuildConfig.dependsOn(appGenerateGitBuildConstants)
+
+    assembleRelease.dependsOn appCheckIfDirty, appCheckIfSame, appCheckIfTagged
+}
+
 dependencies {
     // Java 8+ libraries
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'

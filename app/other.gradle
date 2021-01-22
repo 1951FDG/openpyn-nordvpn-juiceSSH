@@ -41,17 +41,6 @@ if (!keystoreProperties.empty) {
     android.buildTypes[buildType].signingConfig = android.signingConfigs[buildType]
 }
 
-android.applicationVariants.all {
-    if (it.buildType.name == buildType) {
-        it.preBuildProvider.configure { dependsOn appCheckIfDirty }
-        it.preBuildProvider.configure { dependsOn appCheckIfSame }
-        it.preBuildProvider.configure { dependsOn appCheckIfTagged }
-    }
-
-    it.preBuildProvider.configure { dependsOn appGenerateApiBuildConstants }
-    it.preBuildProvider.configure { dependsOn appGenerateGitBuildConstants }
-}
-
 task appGenerateApiBuildConstants {
     group = groupName
     doLast {
@@ -205,3 +194,13 @@ task appUnzip2(type: Copy) {
 
     eachFile { FileCopyDetails details -> details.relativePath = new RelativePath(true, 'libsqliteX.jar') }
 }
+
+/*import com.android.build.gradle.api.BaseVariant
+
+android.applicationVariants.all { BaseVariant variant ->
+    if (variant.buildType.name == buildType) {
+        variant.preBuildProvider.configure { dependsOn ... }
+    }
+
+    variant.preBuildProvider.configure { dependsOn ... }
+}*/
