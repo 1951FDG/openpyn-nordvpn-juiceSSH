@@ -65,10 +65,6 @@ google_maps_api.xml
 app/src/main/res/values/google_maps_api.xml
 app/src/release/res/values/values.xml
 
-# Crashlytics plugin
-fabric.properties
-app/fabric.properties
-
 # Sonarlint plugin
 .idea/sonarlint
 
@@ -84,10 +80,12 @@ fastlane/report.xml
 app/.cxx
 app/release/output.json
 app/src/main/obj
-tiles/
-world/.thumb.png
+node_modules
 
 # Gradle properties
 api.properties
 git.properties
 keystore.properties
+
+# Ruby
+Gemfile.lock
