@@ -22,6 +22,7 @@
 
     <application
         android:name=".DebugMainApplication"
+        android:requestLegacyExternalStorage="true"
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name">
         <activity
