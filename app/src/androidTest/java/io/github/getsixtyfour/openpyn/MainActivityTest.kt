@@ -122,7 +122,6 @@ class MainActivityTest {
 
         var appCompatButton = onView(
             allOf(
-                withId(R.id.cancel),
                 withText(android.R.string.cancel),
                 isDisplayed()
             )
@@ -145,7 +144,6 @@ class MainActivityTest {
 
         appCompatButton = onView(
             allOf(
-                withId(android.R.id.button2),
                 withText(android.R.string.cancel),
                 isDisplayed()
             )
@@ -157,7 +155,7 @@ class MainActivityTest {
         val overflowMenuButton = onView(
             allOf(
                 withContentDescription("More options"),
-                childAtPosition(childAtPosition(withId(R.id.toolbar), 1), 1),
+                childAtPosition(childAtPosition(withId(R.id.toolbar), 1), 0),
                 isDisplayed()
             )
         )
