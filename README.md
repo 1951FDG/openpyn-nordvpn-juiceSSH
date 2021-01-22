@@ -34,7 +34,7 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 - [Introduction](#introduction)
 - [Features](#features)
 - [How it works](#how-it-works)
-- [Usage](#how-to-use)
+- [Usage](#usage)
 - [Requirements](#requirements)
 - [References](#references)
 - [Feedback](#feedback)
@@ -133,7 +133,7 @@ pip3 install --upgrade .
 
 To compile and run the project you'll need:
 
-- [Android Studio 4.0.2 or higher](https://developer.android.com/studio/)
+- Android Studio 4.0.2 or higher
   - Android SDK Platform `30`
   - Android SDK Build-Tools `30.0.3`
   - CMake `v3.10.2`
@@ -231,7 +231,6 @@ This app uses (modified) code from open source projects.
 
 - [AdaptiveIconPlayground](https://github.com/nickbutcher/AdaptiveIconPlayground)
 - [Adobe Illustrator](https://www.adobe.com/products/illustrator.html)
-- [Android Studio](https://developer.android.com/studio/)
 - [Atom](https://atom.io)
 - [DB Browser for SQLite](https://sqlitebrowser.org)
 - [Fastlane](https://fastlane.tools)
