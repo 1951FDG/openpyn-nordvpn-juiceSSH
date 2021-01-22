@@ -71,7 +71,7 @@ android {
         viewBinding true
         dataBinding false
         aidl true
-        renderScript false
+        renderScript true
         resValues true
         shaders false
     }
