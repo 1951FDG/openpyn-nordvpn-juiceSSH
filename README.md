@@ -99,12 +99,7 @@ The current location is detected based on the public IP address of the client. T
 
 After animation completes, the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
 
-The [world.mbtiles](app/src/main/assets/world.mbtiles) was generated using a custom Python script, [generate_tiles_multiprocess.py](https://github.com/1951FDG/mapnik2mbtiles/blob/master/generate_tiles_multiprocess.py).
-
-```sh
-rm $project.rootDir/app/src/main/assets/world.mbtiles
-python3 ./generate_tiles_multiprocess.py ./mapfile.xml $project.rootDir/app/src/main/assets/world.mbtiles 4 4 --format webp
-```
+The [world.mbtiles](app/src/main/assets/world.mbtiles) was generated using a Python script, [generate_tiles_multiprocess.py](https://github.com/1951FDG/mapnik2mbtiles/blob/master/generate_tiles_multiprocess.py).
 
 ## Prerequisites
 
@@ -236,13 +231,19 @@ This app uses (modified) code from open source projects.
 - [Fastlane](https://fastlane.tools)
 - [JSON Schema Tool](https://jsonschema.net)
 - [Material Design Icons](https://materialdesignicons.com)
-- [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 - [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 - [Regex101](https://regex101.com)
 - [Shape Shifter](https://beta.shapeshifter.design)
 - [Sourcetree](https://www.sourcetreeapp.com)
 - [SVG-edit](https://github.com/SVG-Edit/svgedit)
 - [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
+
+</details>
+
+<details>
+<summary>Scripts</summary>
+
+- [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
 
 </details>
 
