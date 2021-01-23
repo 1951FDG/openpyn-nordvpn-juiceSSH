@@ -83,9 +83,9 @@ app/src/main/obj
 node_modules
 
 # Gradle properties
-api.properties
+app/api.properties
+app/keystore.properties
 git.properties
-keystore.properties
 
 # Ruby
 Gemfile.lock

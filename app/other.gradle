@@ -23,7 +23,7 @@ tasks.getByName('detekt').configure {
 
 ext.loadProperties = { String pathname ->
     def props = new Properties()
-    def file = rootProject.file(pathname)
+    def file = file(pathname)
     if (file.file) {
         file.withInputStream { props.load(it) }
     }
