@@ -1,7 +1,7 @@
 package io.github.getsixtyfour.openpyn.map.util
 
 import com.androidmapsextensions.lazy.LazyMarker
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.maps.model.LatLng
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi

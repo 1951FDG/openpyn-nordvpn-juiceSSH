@@ -3,7 +3,7 @@ package io.github.getsixtyfour.openpyn.map
 import android.os.Bundle
 import android.view.View
 import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
-import com.google.android.gms.maps.MapView
+import com.google.android.libraries.maps.MapView
 import com.naver.android.svc.annotation.RequireControlTower
 import com.naver.android.svc.annotation.RequireViews
 import com.naver.android.svc.annotation.SvcFragment

@@ -220,7 +220,7 @@ dependencies {
     implementation 'com.github.MFlisar:GDPRDialog:1.4.2'
 
     // Google Play Services
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
     implementation 'com.google.android.play:core:1.6.5'
 
