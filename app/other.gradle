@@ -9,7 +9,6 @@ detektGenerateConfig.group = groupName
 detektIdeaFormat.group = groupName
 detektIdeaInspect.group = groupName
 generateGitProperties.group = groupName
-generateGradleLintReport.group = groupName
 generateLicenses.group = groupName
 getDependencies.group = groupName
 licensesCleanUp.group = groupName
