@@ -96,7 +96,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
 
     private MapBoxOfflineTileProvider(@NonNull SQLiteDatabase database) {
         mDatabase = database;
-        // mBounds = calculateBounds();
+        mBounds = calculateBounds();
         mMinimumZoom = calculateMinZoomLevel();
         mMaximumZoom = calculateMaxZoomLevel();
         mQuery = new SQLiteQuery(mDatabase, QUERY, null, null);
@@ -217,7 +217,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
     @Override
     public synchronized byte[] getBytes(int x, int y, int zoom) {
         /*Log.e(TAG, String.format("%d %d %d", zoom, x, ((1 << zoom) - 1 - y)));*/
-        String[] bindArgs = { Integer.toString(zoom), Integer.toString(x), Integer.toString((1 << zoom) - 1 - y) };
+        String[] bindArgs = { Integer.toString(zoom), Integer.toString(x), Integer.toString(y) };
         mQuery.bindString(3, bindArgs[2]); // row
         mQuery.bindString(2, bindArgs[1]); // column
         mQuery.bindString(1, bindArgs[0]); // zoom
