@@ -61,7 +61,7 @@ android {
             ext.alwaysUpdateBuildId = false
             ext.enableCrashlytics = false
             ndk {
-                abiFilters 'armeabi-v7a'
+                abiFilters 'arm64-v8a'
             }
             applicationIdSuffix '.debug'
         }
