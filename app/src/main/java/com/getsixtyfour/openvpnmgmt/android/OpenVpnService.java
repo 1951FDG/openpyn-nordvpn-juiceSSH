@@ -14,8 +14,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Process;
 import android.os.NetworkOnMainThreadException;
-import android.text.format.DateUtils;
 import android.os.RemoteException;
+import android.text.format.DateUtils;
 
 import androidx.annotation.CheckResult;
 import androidx.annotation.DrawableRes;
@@ -92,6 +92,8 @@ public final class OpenVpnService extends Service
     private Thread mThread = null;
 
     private int mStartId;
+
+    private static final boolean DEBUG = false;
 
     @CheckResult
     @DrawableRes
@@ -281,9 +283,10 @@ public final class OpenVpnService extends Service
         // Connect the management interface in a background thread
         mThread =  new Thread(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-            // TODO: only in debug?
-            // When a socket is created, it inherits the tag of its creating thread
-            /*TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);*/
+            if (DEBUG) {
+                // When a socket is created, it inherits the tag of its creating thread
+                TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);
+            }
             Connection connection = ManagementConnection.getInstance();
             connection.connect(host, port, password);
         }, Constants.THREAD_NAME);
@@ -311,20 +314,21 @@ public final class OpenVpnService extends Service
     public void onDestroy() {
         LOGGER.debug("onDestroy");
 
-        // TODO: only in debug?
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            long now = System.currentTimeMillis();
-            long fourWeeksAgo = now - (DateUtils.WEEK_IN_MILLIS * 4L);
-            long oneDaysAhead = now + (DateUtils.DAY_IN_MILLIS * 2L);
-            int uid = Process.myUid();
-            try {
-                long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, Constants.THREAD_STATS_TAG);
-                // long usage = Utils.getTotalUsage(this, fourWeeksAgo, oneDaysAhead, uid, android.app.usage.NetworkStats.Bucket.TAG_NONE);
-                LOGGER.info("Usage: {}", humanReadableByteCount(this, usage, false));
-            } catch (SecurityException e) {
-                LOGGER.error("Exception querying network detail.", e);
+        if (DEBUG) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                try {
+                    long now = System.currentTimeMillis();
+                    long start = now - (DateUtils.WEEK_IN_MILLIS << 2);
+                    long end = now + (DateUtils.DAY_IN_MILLIS << 1);
+                    int uid = Process.myUid();
+                    long usage = Utils.getTotalUsage(this, start, end, uid, Constants.THREAD_STATS_TAG);
+                    // long usage = Utils.getTotalUsage(this, start, end, uid, android.app.usage.NetworkStats.Bucket.TAG_NONE);
+                    LOGGER.info("Usage: {}", humanReadableByteCount(this, usage, false));
+                } catch (SecurityException e) {
+                    LOGGER.error("Exception querying network detail.", e);
+                }
             }
-        }*/
+        }
 
         if (mThread != null) {
             mThread.setUncaughtExceptionHandler(null);
@@ -343,7 +347,7 @@ public final class OpenVpnService extends Service
     @Override
     public void onConnectError(@NonNull Thread t, @NonNull Throwable e) {
         LOGGER.debug("onConnectError");
-        if (t.equals(getMainLooper().getThread())) {
+        if (DEBUG && t.equals(getMainLooper().getThread())) {
             LOGGER.error("", new NetworkOnMainThreadException());
         }
 
@@ -353,7 +357,7 @@ public final class OpenVpnService extends Service
     @Override
     public void onConnected(@NonNull Thread t) {
         LOGGER.debug("onConnected");
-        if (t.equals(getMainLooper().getThread())) {
+        if (DEBUG && t.equals(getMainLooper().getThread())) {
             LOGGER.error("", new NetworkOnMainThreadException());
         }
 
@@ -371,7 +375,7 @@ public final class OpenVpnService extends Service
     @Override
     public void onDisconnected(@NonNull Thread t) {
         LOGGER.debug("onDisconnected");
-        if (t.equals(getMainLooper().getThread())) {
+        if (DEBUG && t.equals(getMainLooper().getThread())) {
             LOGGER.warn("", new NetworkOnMainThreadException());
         }
     }
