@@ -231,12 +231,13 @@ This app uses (modified) code from open source projects.
 - [Fastlane](https://fastlane.tools)
 - [JSON Schema Tool](https://jsonschema.net)
 - [Material Design Icons](https://materialdesignicons.com)
+- [Meld](https://meldmerge.org/)
 - [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 - [Regex101](https://regex101.com)
 - [Shape Shifter](https://beta.shapeshifter.design)
 - [Sourcetree](https://www.sourcetreeapp.com)
 - [SVG-edit](https://github.com/SVG-Edit/svgedit)
-- [TileMill](https://tilemill.s3.amazonaws.com/dev/TileMill-v0.10.1-291-g31027ed.zip)
+- [TileMill](http://tilemill.s3.amazonaws.com/latest/TileMill-0.10.2.zip)
 
 </details>
 
