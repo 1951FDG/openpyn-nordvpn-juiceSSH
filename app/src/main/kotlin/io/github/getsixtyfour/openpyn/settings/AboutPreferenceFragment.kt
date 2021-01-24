@@ -115,6 +115,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             }
         ))
 
+        // TODO: go to google play or github depending on version
         category.addPreference(getPreference(
             activity,
             if (activity.verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)) R.string.egab_play_store_version else R.string.egab_version,

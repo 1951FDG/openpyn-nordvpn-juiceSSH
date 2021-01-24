@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 
+// TODO: make android interface extension with worker thread annotation
 public interface Connection extends Runnable {
 
     //region ManagementConnection
@@ -34,6 +35,7 @@ public interface Connection extends Runnable {
 
     void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password);
 
+    //TODO: not background necessary?
     void disconnect();
     //endregion
 
