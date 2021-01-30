@@ -14,6 +14,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
+import java.io.InterruptedIOException;
+import java.util.Collections;
+
+import io.github.getsixtyfour.openpyn.BuildConfig;
+
 /**
  * @author 1951FDG
  */
@@ -33,6 +38,32 @@ public final class Utils {
     public static void doStopService(@NonNull Context context) {
         Intent intent = new Intent(context, OpenVpnService.class);
         context.stopService(intent);
+    }
+
+    @Nullable
+    public static Intent getGitHubIntent(@NonNull Context context, @NonNull Throwable e) {
+        if (e instanceof InterruptedIOException) {
+            return null;
+        }
+        GitHubCrashIssue.Builder builder = new GitHubCrashIssue.Builder();
+        builder.setAssignees(Collections.singletonList(BuildConfig.GITHUB_REPO_OWNER_NAME));
+        builder.setDirty(BuildConfig.GIT_DIRTY);
+        builder.setDisabled(BuildConfig.DEBUG);
+        builder.setId(BuildConfig.GIT_COMMIT_ID);
+        builder.setLabels(Collections.singletonList("crash"));
+        builder.setUrl(BuildConfig.GITHUB_REPO_URL);
+        builder.setVersion(BuildConfig.VERSION_NAME);
+        GitHubCrashIssue gitHubIssue = builder.build();
+        return gitHubIssue.createIntent(e);
+    }
+
+    @Nullable
+    public static String getTopLevelCauseMessage(@NonNull Throwable t) {
+        Throwable topLevelCause = t;
+        while (topLevelCause.getCause() != null) {
+            topLevelCause = topLevelCause.getCause();
+        }
+        return topLevelCause.getMessage();
     }
 
     @CheckResult

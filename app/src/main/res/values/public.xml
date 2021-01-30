@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <public name="vpn_msg_launch" type="string" />
+    <public name="vpn_msg_error" type="string" />
 
     <public name="vpn_title_disconnect" type="string" />
     <public name="vpn_msg_disconnect" type="string" />
 
     <public name="vpn_action_close" type="string" />
+    <public name="vpn_action_issue" type="string" />
 
     <public name="vpn_channel_name_background" type="string" />
     <public name="vpn_channel_description_background" type="string" />

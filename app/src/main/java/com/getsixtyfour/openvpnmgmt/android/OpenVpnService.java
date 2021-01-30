@@ -12,8 +12,8 @@ import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Process;
 import android.os.NetworkOnMainThreadException;
+import android.os.Process;
 import android.os.RemoteException;
 import android.text.format.DateUtils;
 
@@ -28,12 +28,12 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
-import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
-import com.getsixtyfour.openvpnmgmt.model.OpenVpnNetworkState;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
 import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
+import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
+import com.getsixtyfour.openvpnmgmt.model.OpenVpnNetworkState;
 import com.getsixtyfour.openvpnmgmt.net.Commands;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
@@ -187,55 +187,6 @@ public final class OpenVpnService extends Service
         return res.getString(R.string.byteSizeSuffix, roundedString, units);
     }
 
-    @NonNull
-    @SuppressWarnings({ "TypeMayBeWeakened", "MethodWithTooManyParameters" })
-    private static Notification createNotification(@NonNull Context context, @NonNull String title, @NonNull String text,
-                                                   @NonNull String channel, long when, @DrawableRes int icon) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel);
-        builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
-        builder.setContentText(text);
-        builder.setContentTitle(title);
-        builder.setLocalOnly(true);
-        builder.setOngoing(true);
-        builder.setOnlyAlertOnce(true);
-        builder.setShowWhen(false);
-        builder.setSmallIcon(icon);
-        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        builder.setWhen(when);
-
-        if ((when > 0L) || Constants.BG_CHANNEL_ID.equals(channel)) {
-            Intent intent = new Intent(context, DisconnectActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            // The notification action icons are still required and continue to be used on older versions of Android
-            builder.addAction(R.drawable.ic_close_white, context.getString(R.string.vpn_action_close), pendingIntent);
-            builder.setUsesChronometer(true);
-        }
-        return builder.build();
-    }
-
-    @SuppressLint("WrongConstant")
-    @RequiresApi(Build.VERSION_CODES.O)
-    private static void createNotificationChannels(@NonNull Context context) {
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        // Real-time notification of OpenVPN bandwidth usage
-        {
-            String name = context.getString(R.string.vpn_channel_name_background);
-            String description = context.getString(R.string.vpn_channel_description_background);
-            NotificationChannel channel = new NotificationChannel(Constants.BG_CHANNEL_ID, name, NotificationManagerCompat.IMPORTANCE_LOW);
-            channel.setDescription(description);
-            notificationManager.createNotificationChannel(channel);
-        }
-        // Real-time notification of OpenVPN state changes
-        {
-            String name = context.getString(R.string.vpn_channel_name_status);
-            String description = context.getString(R.string.vpn_channel_description_status);
-            NotificationChannel channel = new NotificationChannel(Constants.NEW_STATUS_CHANNEL_ID, name,
-                    NotificationManagerCompat.IMPORTANCE_DEFAULT);
-            channel.setDescription(description);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
     @Override
     public void onCreate() {
         LOGGER.debug("onCreate");
@@ -272,16 +223,8 @@ public final class OpenVpnService extends Service
         int port = intent.getIntExtra(Constants.EXTRA_PORT, Constants.DEFAULT_REMOTE_PORT);
         char[] password = intent.getCharArrayExtra(Constants.EXTRA_PASSWORD);
 
-        // Always show notification here to avoid problem with startForeground timeout
-        int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_NOT_CONNECTED);
-        String text = getString(R.string.vpn_msg_launch);
-        String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_disconnected));
-
-        Notification notification = createNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, System.currentTimeMillis(), icon);
-        startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
-
         // Connect the management interface in a background thread
-        mThread =  new Thread(() -> {
+        mThread = new Thread(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             if (DEBUG) {
                 // When a socket is created, it inherits the tag of its creating thread
@@ -391,9 +334,10 @@ public final class OpenVpnService extends Service
         String strDiffIn = humanReadableByteCount(this, diffIn / byteCountInterval, true);
         String strOut = humanReadableByteCount(this, out, false);
         String strDiffOut = humanReadableByteCount(this, diffOut / byteCountInterval, true);
-        int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_CONNECTED);
-        String text = getString(R.string.vpn_msg_byte_count, strIn, strDiffIn, strOut, strDiffOut);
+
         String title = getString(R.string.vpn_title_status, getString(R.string.vpn_state_connected));
+        String text = getString(R.string.vpn_msg_byte_count, strIn, strDiffIn, strOut, strDiffOut);
+        int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_CONNECTED);
 
         Notification notification = createNotification(this, title, text, Constants.BG_CHANNEL_ID, mStartTime, icon);
         startForeground(Constants.BG_NOTIFICATION_ID, notification);
@@ -452,10 +396,11 @@ public final class OpenVpnService extends Service
         }
 
         if (mPostStateNotification || isConnected || isDisconnected) {
-            int icon = getIconByConnectionStatus(VpnStatus.getLevel(name, message));
-            long when = mPostByteCountNotification ? 0L : mStartTime;
-            String text = message;
             String title = getString(R.string.vpn_title_status, getString(getLocalizedState(name)));
+            String text = message;
+            long when = mPostByteCountNotification ? 0L : mStartTime;
+            int icon = getIconByConnectionStatus(VpnStatus.getLevel(name, message));
+
             // (x) optional address of remote server (OpenVPN 2.1 or higher)
             // (y) optional port of remote server (OpenVPN 2.4 or higher)
             // (x) and (y) are shown for ASSIGN_IP and CONNECTED states
@@ -486,18 +431,111 @@ public final class OpenVpnService extends Service
         LOGGER.error(message.toString(), e);
     }
 
+    @SuppressWarnings({ "OverlyLongMethod", "ImplicitNumericConversion" })
     @Override
     public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
         // Logs a message when a thread encounters an uncaught exception
         // logUncaught(t.getName(), getPackageName(), Process.myPid(), e); // Handled by the pre handler
 
-        if (e instanceof ThreadDeath) {
+        // Always show notification here to avoid problem with startForeground timeout
+        if (!(e instanceof ThreadDeath)) {
+            Class<? extends Throwable> aClass = e.getClass();
+            Intent intent = Utils.getGitHubIntent(this, e);
+
+            String title = getString(R.string.vpn_msg_error, aClass.getSimpleName());
+            @Nullable @NonNls String bigText = e.getMessage();
+            @Nullable @NonNls String text = Utils.getTopLevelCauseMessage(e);
+            int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_UNKNOWN);
+
+            if ((text != null) && (bigText != null)) {
+                if (text.length() < bigText.length()) {
+                    text = text.substring(0, 1).toUpperCase() + text.substring(1);
+                    bigText = text + System.lineSeparator() + bigText.substring(0, 1).toUpperCase() + bigText.substring(1, bigText.length() - text.length());
+                    bigText = bigText.trim();
+                    //noinspection MagicCharacter
+                    if (bigText.charAt(bigText.length() - 1) == ':') {
+                        bigText = bigText.substring(0, bigText.length() - 1);
+                    }
+                }
+
+                if (text.length() == bigText.length()) {
+                    bigText = null;
+                }
+            }
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Constants.NEW_STATUS_CHANNEL_ID);
+            builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+            builder.setContentText(text);
+            builder.setContentTitle(title);
+            builder.setLocalOnly(true);
+            builder.setOngoing(true);
+            builder.setOnlyAlertOnce(true);
+            builder.setShowWhen(false);
+            builder.setSmallIcon(icon);
+            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(bigText));
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+            if (intent != null) {
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                builder.addAction(R.drawable.ic_close_white, getString(R.string.vpn_action_issue), pendingIntent);
+            }
+            Notification notification = builder.build();
+            startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
         }
 
         if (t.equals(getMainLooper().getThread())) {
             stopSelf();
         } else {
             new Handler(getMainLooper()).post(this::stopSelf);
+        }
+    }
+
+    @NonNull
+    @SuppressWarnings({ "TypeMayBeWeakened", "MethodWithTooManyParameters" })
+    private static Notification createNotification(@NonNull Context context, @NonNull String title, @Nullable String text,
+                                                   @NonNull String channel, long when, @DrawableRes int icon) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel);
+        builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+        builder.setContentText(text);
+        builder.setContentTitle(title);
+        builder.setLocalOnly(true);
+        builder.setOngoing(true);
+        builder.setOnlyAlertOnce(true);
+        builder.setShowWhen(false);
+        builder.setSmallIcon(icon);
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        builder.setWhen(when);
+
+        if ((when > 0L) || Constants.BG_CHANNEL_ID.equals(channel)) {
+            Intent intent = new Intent(context, DisconnectActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            // The notification action icons are still required and continue to be used on older versions of Android
+            builder.addAction(R.drawable.ic_close_white, context.getString(R.string.vpn_action_close), pendingIntent);
+            builder.setUsesChronometer(true);
+        }
+        return builder.build();
+    }
+
+    @SuppressLint("WrongConstant")
+    @RequiresApi(Build.VERSION_CODES.O)
+    private static void createNotificationChannels(@NonNull Context context) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        // Real-time notification of OpenVPN bandwidth usage
+        {
+            String name = context.getString(R.string.vpn_channel_name_background);
+            String description = context.getString(R.string.vpn_channel_description_background);
+            NotificationChannel channel = new NotificationChannel(Constants.BG_CHANNEL_ID, name, NotificationManagerCompat.IMPORTANCE_LOW);
+            channel.setDescription(description);
+            notificationManager.createNotificationChannel(channel);
+        }
+        // Real-time notification of OpenVPN state changes
+        {
+            String name = context.getString(R.string.vpn_channel_name_status);
+            String description = context.getString(R.string.vpn_channel_description_status);
+            NotificationChannel channel = new NotificationChannel(Constants.NEW_STATUS_CHANNEL_ID, name,
+                    NotificationManagerCompat.IMPORTANCE_DEFAULT);
+            channel.setDescription(description);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }

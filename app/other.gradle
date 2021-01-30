@@ -155,6 +155,21 @@ task appCopyGoogleIdValuesTask(type: Copy) {
     into "$project.buildDir/generated/res/google-services/release/values/"
 }
 
+task appPrintJavaPackages {
+    group = groupName
+    doLast {
+        Set<File> files = project.android.sourceSets.main.java.srcDirs
+        def object = files[0]
+        logger.quiet(object.path)
+        def packages = fileTree(object)
+                .filter { File file -> file.path.endsWith('.java') }
+                .collect { it.parentFile.path[object.path.length() + 1..-1].replace '/', '.' }
+                .unique()
+                .sort()
+        packages.each { logger.quiet("list.add(\"$it\");") }
+    }
+}
+
 task appPrintThirdPartyTasks {
     group = groupName
     doLast {
