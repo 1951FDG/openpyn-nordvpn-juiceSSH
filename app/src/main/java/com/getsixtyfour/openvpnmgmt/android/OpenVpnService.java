@@ -12,7 +12,6 @@ import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.NetworkOnMainThreadException;
 import android.os.Process;
 import android.os.RemoteException;
 import android.text.format.DateUtils;
@@ -29,7 +28,6 @@ import androidx.core.app.NotificationManagerCompat;
 import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
-import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
 import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
@@ -56,7 +54,7 @@ import io.github.getsixtyfour.openpyn.R;
 
 @SuppressWarnings({ "OverlyComplexClass", "ClassWithTooManyDependencies" })
 public final class OpenVpnService extends Service
-        implements ConnectionListener, OnByteCountChangedListener, OnStateChangedListener, UncaughtExceptionHandler {
+        implements OnByteCountChangedListener, OnStateChangedListener, UncaughtExceptionHandler {
 
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnService.class);
@@ -198,7 +196,6 @@ public final class OpenVpnService extends Service
         connection.addOnByteCountChangedListener(this);
         connection.addOnRecordChangedListener(OpenVpnService::onRecordChanged);
         connection.addOnStateChangedListener(this);
-        connection.setConnectionListener(this);
     }
 
     @SuppressWarnings("MethodWithMultipleReturnPoints")
@@ -223,7 +220,7 @@ public final class OpenVpnService extends Service
         int port = intent.getIntExtra(Constants.EXTRA_PORT, Constants.DEFAULT_REMOTE_PORT);
         char[] password = intent.getCharArrayExtra(Constants.EXTRA_PASSWORD);
 
-        // Connect the management interface in a background thread
+        // Start a background thread that handles incoming messages of the management interface
         mThread = new Thread(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             if (DEBUG) {
@@ -232,6 +229,7 @@ public final class OpenVpnService extends Service
             }
             Connection connection = ManagementConnection.getInstance();
             connection.connect(host, port, password);
+            connection.run();
         }, Constants.THREAD_NAME);
         // Report death-by-uncaught-exception
         mThread.setUncaughtExceptionHandler(this); // Apps can replace the default handler, but not the pre handler
@@ -282,45 +280,8 @@ public final class OpenVpnService extends Service
         connection.clearOnByteCountChangedListeners();
         connection.clearOnRecordChangedListeners();
         connection.clearOnStateChangedListeners();
-        connection.setConnectionListener(null);
 
         connection.disconnect();
-    }
-
-    @Override
-    public void onConnectError(@NonNull Thread t, @NonNull Throwable e) {
-        LOGGER.debug("onConnectError");
-        if (DEBUG && t.equals(getMainLooper().getThread())) {
-            LOGGER.error("", new NetworkOnMainThreadException());
-        }
-
-        uncaughtException(t, e);
-    }
-
-    @Override
-    public void onConnected(@NonNull Thread t) {
-        LOGGER.debug("onConnected");
-        if (DEBUG && t.equals(getMainLooper().getThread())) {
-            LOGGER.error("", new NetworkOnMainThreadException());
-        }
-
-        // Start a background thread that handles incoming messages of the management interface
-        Connection connection = ManagementConnection.getInstance();
-
-        try {
-            LOGGER.info(connection.getVpnVersion());
-        } catch (IOException ignored) {
-        }
-
-        connection.run();
-    }
-
-    @Override
-    public void onDisconnected(@NonNull Thread t) {
-        LOGGER.debug("onDisconnected");
-        if (DEBUG && t.equals(getMainLooper().getThread())) {
-            LOGGER.warn("", new NetworkOnMainThreadException());
-        }
     }
 
     @Override

@@ -93,7 +93,7 @@ public class ConnectionTest {
      * Test of getManagementVersion method, of class Connection.
      */
     @Test
-    public void testGetManagementVersion() throws IOException {
+    public void testGetManagementVersion() {
         LOGGER.debug("getManagementVersion");
         sConnection.connect(mHost, mPort, mPassword);
         String result = sConnection.getManagementVersion();
@@ -105,7 +105,7 @@ public class ConnectionTest {
      * Test of getVpnVersion method, of class Connection.
      */
     @Test
-    public void testGetVpnVersion() throws IOException {
+    public void testGetVpnVersion() {
         LOGGER.debug("getVpnVersion");
         sConnection.connect(mHost, mPort, mPassword);
         String result = sConnection.getVpnVersion();
@@ -117,7 +117,7 @@ public class ConnectionTest {
      * Test of getVpnStatus method, of class Connection.
      */
     @Test
-    public void testGetVpnStatus() throws IOException {
+    public void testGetVpnStatus() {
         LOGGER.debug("getVpnStatus");
         sConnection.connect(mHost, mPort, mPassword);
         Status result = sConnection.getVpnStatus();

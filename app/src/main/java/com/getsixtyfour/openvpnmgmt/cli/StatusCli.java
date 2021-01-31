@@ -63,15 +63,11 @@ public final class StatusCli {
         } catch (ParseException e) {
             LOGGER.error("Cannot parse arguments", e);
         }
-        try {
-            Connection connection = ManagementConnection.getInstance();
-            connection.connect(host, port);
-            Status status = connection.getVpnStatus();
-            connection.disconnect();
-            System.out.println("OpenVPN status: " + status); //NON-NLS
-        } catch (IOException e) {
-            LOGGER.error("Cannot get OpenVPN status.", e);
-        }
+        Connection connection = ManagementConnection.getInstance();
+        connection.connect(host, port);
+        Status status = connection.getVpnStatus();
+        connection.disconnect();
+        System.out.println("OpenVPN status: " + status); //NON-NLS
     }
 
     private static void printInfo(Options o) {

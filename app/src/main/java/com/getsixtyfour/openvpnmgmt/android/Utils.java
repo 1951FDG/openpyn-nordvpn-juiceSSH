@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
-import java.io.InterruptedIOException;
+import java.io.IOException;
 import java.util.Collections;
 
 import io.github.getsixtyfour.openpyn.BuildConfig;
@@ -42,9 +42,13 @@ public final class Utils {
 
     @Nullable
     public static Intent getGitHubIntent(@NonNull Context context, @NonNull Throwable e) {
-        if (e instanceof InterruptedIOException) {
+        if (e instanceof IOException) {
             return null;
         }
+        if ((e instanceof RuntimeException) && (e.getCause() instanceof IOException)) {
+            return null;
+        }
+
         GitHubCrashIssue.Builder builder = new GitHubCrashIssue.Builder();
         builder.setAssignees(Collections.singletonList(BuildConfig.GITHUB_REPO_OWNER_NAME));
         builder.setDirty(BuildConfig.GIT_DIRTY);
