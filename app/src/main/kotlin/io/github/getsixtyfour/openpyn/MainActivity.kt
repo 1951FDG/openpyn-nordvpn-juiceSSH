@@ -149,21 +149,19 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_settings -> {
+        return when (item.title) {
+            getString(R.string.title_settings) -> {
                 onSettingsItemSelected(this, item)
                 true
             }
-            /*
-            R.id.menu_generate -> {
+            getString(R.string.menu_generate) -> {
                 onGenerateItemSelected(this, item)
                 true
             }
-            R.id.menu_logfile -> {
+            getString(R.string.menu_logfile) -> {
                 onLogFileSelected(this, item)
                 true
             }
-            */
             else -> super.onOptionsItemSelected(item)
         }
     }

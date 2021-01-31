@@ -7,6 +7,8 @@
 
     <!-- Menu -->
     <string name="menu_refresh">Refresh</string>
+    <string name="menu_logfile">Timber Logfile</string>
+    <string name="menu_generate">Generate XML</string>
     <!-- Menu -->
 
     <!-- Warning -->

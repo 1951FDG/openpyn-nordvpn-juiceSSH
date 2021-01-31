@@ -5,13 +5,13 @@
     <item
         android:id="@+id/menu_logfile"
         android:orderInCategory="95"
-        android:title="Timber Logfile"
+        android:title="@string/menu_logfile"
         app:showAsAction="never"
         tools:ignore="HardcodedText,UnusedIds" />
     <item
         android:id="@+id/menu_generate"
         android:orderInCategory="96"
-        android:title="Generate XML"
+        android:title="@string/menu_generate"
         app:showAsAction="never"
         tools:ignore="HardcodedText,UnusedIds" />
     <item
