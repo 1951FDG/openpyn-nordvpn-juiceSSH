@@ -24,6 +24,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.ktextension.verifyInstallerId
+import io.github.getsixtyfour.openpyn.BuildConfig
 import io.github.getsixtyfour.openpyn.R
 
 /**
@@ -46,15 +47,14 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val activity = requireActivity()
         val root = preferenceManager.createPreferenceScreen(activity)
-        val config = AboutConfig.getInstance()
 
         root.setTitle(R.string.title_about)
 
-        addAboutPreferences(activity, root, config)
+        addAboutPreferences(activity, root)
 
-        addSupportPreferences(activity, root, config)
+        addSupportPreferences(activity, root)
 
-        addOtherPreferences(activity, root, config)
+        addOtherPreferences(activity, root)
 
         preferenceScreen = root
         setTitle(activity)
@@ -69,7 +69,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun getCallbackFragment(): PreferenceFragmentCompat = this
 
-    private fun addAboutPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
+    private fun addAboutPreferences(activity: Activity, root: PreferenceScreen) {
         val category = PreferenceCategory(activity)
 
         root.addPreference(category)
@@ -77,10 +77,10 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         category.addPreference(getPreference(
             activity,
             R.string.egab_author,
-            config.author,
+            BuildConfig.GITHUB_REPO_NAME.capitalize(),
             R.drawable.ic_github_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openHTMLPage(activity, config.companyHtmlPath)
+                AboutBoxUtils.openHTMLPage(activity, BuildConfig.GITHUB_REPO_URL)
                 true
             }
         ))
@@ -89,10 +89,10 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         category.addPreference(getPreference(
             activity,
             if (activity.verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)) R.string.egab_play_store_version else R.string.egab_version,
-            config.version,
+            "${BuildConfig.BUILD_TYPE.capitalize()} ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
             R.drawable.ic_info_outline_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openHTMLPage(activity, config.webHomePage)
+                AboutBoxUtils.openHTMLPage(activity, "${BuildConfig.GITHUB_REPO_URL}/tree/${BuildConfig.GIT_COMMIT_ID}")
                 true
             }
         ))
@@ -103,13 +103,13 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             null,
             R.drawable.ic_history_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openHTMLPage(activity, config.webHomePage + "/releases")
+                AboutBoxUtils.openHTMLPage(activity, "${BuildConfig.GITHUB_REPO_URL}/releases")
                 true
             }
         ))
     }
 
-    private fun addSupportPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
+    private fun addSupportPreferences(activity: Activity, root: PreferenceScreen) {
         val category = PreferenceCategory(activity)
         category.title = activity.getString(R.string.pref_category_support)
 
@@ -121,7 +121,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             null,
             R.drawable.ic_bug_report_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openHTMLPage(activity, config.webHomePage + "/issues/new")
+                AboutBoxUtils.openHTMLPage(activity, "${BuildConfig.GITHUB_REPO_URL}/issues/new")
                 true
             }
         ))
@@ -138,7 +138,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         ))
     }
 
-    private fun addOtherPreferences(activity: Activity, root: PreferenceScreen, config: AboutConfig) {
+    private fun addOtherPreferences(activity: Activity, root: PreferenceScreen) {
         val category = PreferenceCategory(activity)
         category.title = activity.getString(R.string.pref_category_other)
 
@@ -150,7 +150,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             null,
             R.drawable.ic_google_play_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openApp(activity, config.buildType, config.packageName)
+                AboutBoxUtils.openApp(activity, AboutConfig.BuildType.GOOGLE, BuildConfig.APPLICATION_ID.removeSuffix(".debug"))
                 true
             }
         ))

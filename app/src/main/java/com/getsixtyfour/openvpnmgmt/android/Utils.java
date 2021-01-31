@@ -50,7 +50,7 @@ public final class Utils {
         }
 
         GitHubCrashIssue.Builder builder = new GitHubCrashIssue.Builder();
-        builder.setAssignees(Collections.singletonList(BuildConfig.GITHUB_REPO_OWNER_NAME));
+        builder.setAssignees(Collections.singletonList(BuildConfig.GITHUB_REPO_OWNER));
         builder.setDirty(BuildConfig.GIT_DIRTY);
         builder.setDisabled(BuildConfig.DEBUG);
         builder.setId(BuildConfig.GIT_COMMIT_ID);

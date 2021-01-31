@@ -16,7 +16,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
 import com.eggheadgames.aboutbox.AboutConfig
-import com.eggheadgames.aboutbox.IAnalytic
 import com.getsixtyfour.openvpnmgmt.android.Constants
 import com.getsixtyfour.openvpnmgmt.android.Utils
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
@@ -39,8 +38,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import mu.KLoggable
-import mu.KLogger
 import mu.KotlinLogging
 import timber.log.CrashReportingTree
 import timber.log.Timber
@@ -159,41 +156,23 @@ fun showSnackProgressBar(manager: SnackProgressBarManager, storeId: Int) {
 // TODO: inner class
 @SuppressLint("DefaultLocale")
 fun initAboutConfig() {
-    val versionName = BuildConfig.VERSION_NAME
-    val versionCode = BuildConfig.VERSION_CODE
-    val buildType = BuildConfig.BUILD_TYPE.capitalize()
-    val aboutConfig = AboutConfig.getInstance()
+    val config = AboutConfig.getInstance()
     // General info
-    aboutConfig.appName = BuildConfig.GITHUB_REPO_NAME
-    aboutConfig.appIcon = R.mipmap.ic_launcher
-    aboutConfig.version = "$buildType $versionName ($versionCode)"
-    aboutConfig.author = BuildConfig.GITHUB_REPO_OWNER_NAME
-    aboutConfig.companyHtmlPath = BuildConfig.GITHUB_REPO_OWNER_URL
-    aboutConfig.webHomePage = BuildConfig.GITHUB_REPO_URL
-    aboutConfig.buildType = AboutConfig.BuildType.GOOGLE
-    aboutConfig.packageName = BuildConfig.APPLICATION_ID.replace(".debug", "", true)
-    // Custom analytics, dialog and share
-    aboutConfig.analytics = object : IAnalytic, KLoggable {
-        override fun logUiEvent(s: String, s1: String) {
-            // Handle log events
-        }
-
-        override fun logException(e: Exception, b: Boolean) {
-            // Handle exception events
-            logger.error(e) { "" }
-        }
-
-        override val logger: KLogger
-            get() = logger()
-    }
+    config.appName = BuildConfig.GITHUB_REPO_NAME
+    config.appIcon = R.mipmap.ic_launcher
+    config.version = BuildConfig.VERSION_NAME
+    config.author = BuildConfig.GITHUB_REPO_OWNER
+    config.webHomePage = BuildConfig.GITHUB_REPO_URL
+    config.buildType = AboutConfig.BuildType.GOOGLE
+    config.packageName = BuildConfig.APPLICATION_ID.removeSuffix(".debug")
     // Email
-    aboutConfig.emailAddress = "support@1951fdg.com"
-    aboutConfig.emailSubject = ""
-    aboutConfig.emailBody = ""
-    aboutConfig.emailBodyPrompt = ""
+    config.emailAddress = "support@1951fdg.com"
+    config.emailSubject = ""
+    config.emailBody = ""
+    config.emailBodyPrompt = ""
     // Share
-    aboutConfig.shareMessage = ""
-    aboutConfig.sharingTitle = "Share"
+    config.shareMessage = ""
+    config.sharingTitle = "Share"
 }
 
 fun initPreferences(application: Application) {

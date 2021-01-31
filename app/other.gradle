@@ -92,8 +92,7 @@ task appGenerateGitBuildConstants {
             def owner = matcher[0][2]
             def repo = matcher[0][3]
 
-            android.defaultConfig.buildConfigField 'String', 'GITHUB_REPO_OWNER_NAME', "\"$owner\""
-            android.defaultConfig.buildConfigField 'String', 'GITHUB_REPO_OWNER_URL', "\"https://github.com/$owner\""
+            android.defaultConfig.buildConfigField 'String', 'GITHUB_REPO_OWNER', "\"$owner\""
             android.defaultConfig.buildConfigField 'String', 'GITHUB_REPO_NAME', "\"$repo\""
             android.defaultConfig.buildConfigField 'String', 'GITHUB_REPO_URL', "\"https://github.com/$owner/$repo\""
         }
