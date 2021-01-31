@@ -1,13 +1,20 @@
 package io.github.getsixtyfour.openpyn
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.os.StrictMode.VmPolicy
 import androidx.preference.PreferenceManager
+import com.facebook.stetho.Stetho
+import com.facebook.stetho.timber.StethoTree
+import com.github.moduth.blockcanary.BlockCanary
+import io.github.getsixtyfour.timber.DebugFileLoggingTree
 import mu.KotlinLogging
+import timber.log.Timber
+import timber.log.Timber.DebugTree
 
 private val logger = KotlinLogging.logger {}
 
@@ -45,6 +52,34 @@ fun initStrictMode() {
     )
 }
 
+fun initTimber(application: Application) {
+    Timber.plant(DebugTree())
+    application.externalCacheDir?.let {
+        Timber.plant(DebugFileLoggingTree(it, application))
+    }
+}
+
+fun initBlockCanary(application: Application) {
+    if (!AppConfig.UI_BLOCK_DETECTION) {
+        return
+    }
+
+    if (isRunningTest()) {
+        return
+    }
+
+    BlockCanary.install(application, AppBlockCanaryContext()).start()
+}
+
+fun initStetho(application: Application) {
+    if (!AppConfig.STETHO) {
+        return
+    }
+
+    Stetho.initializeWithDefaults(application)
+    Timber.plant(StethoTree())
+}
+
 @SuppressLint("PrivateApi")
 fun <T : Context> isEmulator(context: T): Boolean {
     // TODO: add connectivity check for 10.0.2.2 on debug machine for higher api levels
@@ -58,8 +93,12 @@ fun <T : Context> isEmulator(context: T): Boolean {
     return false
 }
 
-fun <T : Context> saveEmulatorPreferences(context: T) {
+fun <T : Context> initEmulatorPreferences(context: T) {
     if (!AppConfig.EMULATOR) {
+        return
+    }
+
+    if (!isEmulator(context)) {
         return
     }
 

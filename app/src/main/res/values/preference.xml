@@ -218,6 +218,9 @@
     <!--<string name="pref_netflix">Netflix</string>-->
     <!--<string name="pref_description_netflix">Only look for \“Netflix\” servers</string>-->
 
+    <string name="pref_telemetry">Telemetry</string>
+    <string name="pref_description_telemetry">Automatically sends usage statistics and crash reports to Google</string>
+
     <string name="pref_test">Test</string>
     <string name="pref_description_test">Simulation only, do not actually connect to the VPN server</string>
 
@@ -292,7 +295,6 @@
     <string name="egab_share">Share</string>
     <string name="egab_changelog">Changelog</string>
     <string name="egab_submit_issue">Report a problem</string>
-    <string name="egab_telemetry">Telemetry</string>
     <string name="egab_play_store_version">Play Store version</string>
 
     <string name="pref_log_level">Logging level</string>

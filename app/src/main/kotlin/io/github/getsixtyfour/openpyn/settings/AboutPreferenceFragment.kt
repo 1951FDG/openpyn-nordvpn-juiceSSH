@@ -22,12 +22,6 @@ import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.michaelflisar.gdprdialog.GDPR
-import com.michaelflisar.gdprdialog.GDPRConsent.NON_PERSONAL_CONSENT_ONLY
-import com.michaelflisar.gdprdialog.GDPRConsent.PERSONAL_CONSENT
-import com.michaelflisar.gdprdialog.GDPRConsentState
-import com.michaelflisar.gdprdialog.GDPRLocation.UNDEFINED
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.ktextension.verifyInstallerId
 import io.github.getsixtyfour.openpyn.R
@@ -79,30 +73,6 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         val category = PreferenceCategory(activity)
 
         root.addPreference(category)
-
-        category.addPreference(getSwitchPreference(
-            activity,
-            GDPR.getInstance().consentState.consent.isPersonalConsent,
-            R.string.egab_telemetry,
-            "Automatically sends usage statistics and crash reports to Google",
-            R.drawable.ic_firebase_black_24dp,
-            OnPreferenceChangeListener { preference, value ->
-                if (value as Boolean) {
-                    // User consent given: user accepts personal data usage
-                    val consentState = GDPRConsentState(activity, PERSONAL_CONSENT, UNDEFINED)
-                    GDPR.getInstance().setConsent(consentState)
-                } else {
-                    // User consent given: user accepts non personal data only
-                    val consentState = GDPRConsentState(activity, NON_PERSONAL_CONSENT_ONLY, UNDEFINED)
-                    GDPR.getInstance().setConsent(consentState)
-                }
-                // You can't stop Crashlytics reporting once you've initialized it in an app session
-                // TODO: show dialog to mention that restart is required
-                FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(value)
-
-                return@OnPreferenceChangeListener true
-            }
-        ))
 
         category.addPreference(getPreference(
             activity,
@@ -218,23 +188,6 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         titleResId?.let { preference.title = context.getString(it) }
         summary?.let { preference.summary = it }
         listener?.let { preference.onPreferenceClickListener = it }
-        return preference
-    }
-
-    private fun getSwitchPreference(
-        context: Context,
-        defaultValue: Boolean,
-        @StringRes titleResId: Int?,
-        summary: String?,
-        @DrawableRes iconResId: Int?,
-        listener: OnPreferenceChangeListener?
-    ): Preference {
-        val preference = SwitchPreference(context)
-        preference.setDefaultValue(defaultValue)
-        iconResId?.let { preference.icon = ContextCompat.getDrawable(context, it) }
-        titleResId?.let { preference.title = context.getString(it) }
-        summary?.let { preference.summary = it }
-        listener?.let { preference.onPreferenceChangeListener = it }
         return preference
     }
 }

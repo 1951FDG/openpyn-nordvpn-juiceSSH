@@ -60,6 +60,11 @@
             android:title="@string/title_about"
             app:fragment="io.github.getsixtyfour.openpyn.settings.AboutPreferenceFragment" />
         <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_telemetry"
+            android:summary="@string/pref_description_telemetry"
+            android:title="@string/pref_telemetry" />
+        <SwitchPreference
             android:defaultValue="false"
             android:key="pref_test"
             android:summary="@string/pref_description_test"

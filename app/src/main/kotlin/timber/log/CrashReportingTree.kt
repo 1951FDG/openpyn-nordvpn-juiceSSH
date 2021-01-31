@@ -120,14 +120,12 @@ open class CrashReportingTree : Tree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         try {
             // TODO: Add more custom keys
-            // Crashlytics supports a maximum of 64 key/value pairs
             val crashlytics = FirebaseCrashlytics.getInstance()
             crashlytics.setCustomKey(PRIORITY_KEY, "Error")
             tag?.let { crashlytics.setCustomKey(TAG_KEY, it) }
             crashlytics.setCustomKey(MESSAGE_KEY, message)
             t?.let { crashlytics.recordException(it) }
         } catch (ignored: IllegalStateException) {
-            // Must Initialize Fabric before using singleton()
         }
     }
 

@@ -24,9 +24,6 @@ import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.michaelflisar.gdprdialog.GDPR
-import com.michaelflisar.gdprdialog.GDPRConsentState
-import com.michaelflisar.gdprdialog.helper.GDPRPreperationData
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
@@ -58,7 +55,7 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 import java.util.UUID
 
-class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallback, OnClickListener, NoticeDialogListener,
+class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener, NoticeDialogListener,
     OnLoaderChangedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
     SubmitCallbackListener, CoroutineScope by MainScope() {
 
@@ -70,7 +67,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
 
     // TODO: remove container reference
     val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
-    private val mSetup by lazy { getGDPR(R.style.ThemeOverlay_MaterialComponents_Dialog_Alert_Custom) }
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
     private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
@@ -83,8 +79,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
         setProgressToolBar(this, toolbar)
 
         setSnackBarManager(this, mSnackProgressBarManager)
-
-        showGDPRIfNecessary(this, GDPR.getInstance(), mSetup)
 
         startVpnService(this)
 
@@ -172,18 +166,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), GDPR.IGDPRCallba
             */
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onConsentInfoUpdate(consentState: GDPRConsentState, isNewState: Boolean) {
-        // Consent is known, handle this
-        logger.info { "ConsentState: ${consentState.logString()}" }
-
-        initCrashlytics(this, consentState)
-    }
-
-    override fun onConsentNeedsToBeRequested(data: GDPRPreperationData?) {
-        // Forward the result and show the dialog
-        GDPR.getInstance().showDialog(this, mSetup, data?.location)
     }
 
     override fun onClick(v: View) {

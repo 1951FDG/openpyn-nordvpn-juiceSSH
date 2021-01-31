@@ -57,9 +57,6 @@ android {
                     'proguard-rules-release.pro'
         }
         debug {
-            // Comment next two lines to run "fastlane beta"
-            ext.alwaysUpdateBuildId = false
-            ext.enableCrashlytics = false
             ndk {
                 abiFilters 'arm64-v8a'
             }
@@ -215,9 +212,6 @@ dependencies {
 
     // Crashlytics
     implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
-
-    // GDPR
-    implementation 'com.github.MFlisar:GDPRDialog:1.4.2'
 
     // Google Play Services
     implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'

@@ -190,7 +190,6 @@ This app uses (modified) code from open source projects.
 - [Barista](https://github.com/SchibstedSpain/Barista)
 - [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
 - [EasyPermissions](https://github.com/googlesamples/easypermissions)
-- [GDPRDialog](https://github.com/MFlisar/GDPRDialog)
 - [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
 - [Kotlin](https://github.com/JetBrains/kotlin)
 - [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
@@ -237,7 +236,6 @@ This app uses (modified) code from open source projects.
 - [Shape Shifter](https://beta.shapeshifter.design)
 - [Sourcetree](https://www.sourcetreeapp.com)
 - [SVG-edit](https://github.com/SVG-Edit/svgedit)
-- [TileMill](http://tilemill.s3.amazonaws.com/latest/TileMill-0.10.2.zip)
 
 </details>
 

@@ -4,11 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -23,11 +21,6 @@ import com.getsixtyfour.openvpnmgmt.android.Constants
 import com.getsixtyfour.openvpnmgmt.android.Utils
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.michaelflisar.gdprdialog.GDPR
-import com.michaelflisar.gdprdialog.GDPR.IGDPRCallback
-import com.michaelflisar.gdprdialog.GDPRConsentState
-import com.michaelflisar.gdprdialog.GDPRDefinitions
-import com.michaelflisar.gdprdialog.GDPRSetup
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
 import com.tingyik90.snackprogressbar.SnackProgressBar
@@ -39,6 +32,7 @@ import io.github.getsixtyfour.openpyn.map.util.generateXML
 import io.github.getsixtyfour.openpyn.map.util.stringifyJsonArray
 import io.github.getsixtyfour.openpyn.map.util.writeJsonArray
 import io.github.getsixtyfour.openpyn.settings.SettingsActivity
+import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.VpnAuthenticationHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,22 +60,6 @@ fun <T : FragmentActivity> getCurrentNavigationFragment(activity: T): Fragment? 
     return when (host) {
         null -> null
         else -> navHostFragment.childFragmentManager.primaryNavigationFragment
-    }
-}
-
-fun getGDPR(@StyleRes theme: Int): GDPRSetup =
-    with(GDPRSetup(GDPRDefinitions.FABRIC_CRASHLYTICS, GDPRDefinitions.FIREBASE_CRASH, GDPRDefinitions.FIREBASE_ANALYTICS)) {
-        withCustomDialogTheme(theme)
-        withForceSelection(true)
-        withNoToolbarTheme(false)
-        withShowPaidOrFreeInfoText(false)
-    }
-
-fun <T> showGDPRIfNecessary(activity: T, instance: GDPR, setup: GDPRSetup) where T : AppCompatActivity, T : IGDPRCallback {
-    when {
-        !AppConfig.GDPR -> return
-        instance.consentState.consent.isPersonalConsent -> return
-        else -> instance.checkIfNeedsToBeShown(activity, setup)
     }
 }
 
@@ -174,13 +152,13 @@ fun <T : Activity> setSnackBarManager(activity: T, manager: SnackProgressBarMana
 fun showSnackProgressBar(manager: SnackProgressBarManager, storeId: Int) {
     when (manager.getLastShown()) {
         null -> manager.show(storeId, SnackProgressBarManager.LENGTH_INDEFINITE)
-        else -> manager.getSnackProgressBar(storeId)?.let { manager.updateTo(it) }
+        else -> manager.getSnackProgressBar(storeId)?.let(manager::updateTo)
     }
 }
 
 // TODO: inner class
 @SuppressLint("DefaultLocale")
-fun populateAboutConfig() {
+fun initAboutConfig() {
     val versionName = BuildConfig.VERSION_NAME
     val versionCode = BuildConfig.VERSION_CODE
     val buildType = BuildConfig.BUILD_TYPE.capitalize()
@@ -218,11 +196,11 @@ fun populateAboutConfig() {
     aboutConfig.sharingTitle = "Share"
 }
 
-fun setDefaultPreferences(context: Context) {
-    PreferenceManager.setDefaultValues(context, R.xml.pref_settings, false)
-    PreferenceManager.setDefaultValues(context, R.xml.pref_api, true)
-    PreferenceManager.setDefaultValues(context, R.xml.pref_openvpnmgmt, true)
-    PreferenceManager.setDefaultValues(context, R.xml.pref_connect, true)
+fun initPreferences(application: Application) {
+    PreferenceManager.setDefaultValues(application, R.xml.pref_settings, false)
+    PreferenceManager.setDefaultValues(application, R.xml.pref_api, true)
+    PreferenceManager.setDefaultValues(application, R.xml.pref_openvpnmgmt, true)
+    PreferenceManager.setDefaultValues(application, R.xml.pref_connect, true)
 }
 
 fun <T : Activity> startVpnService(activity: T) {
@@ -250,25 +228,19 @@ fun <T : Activity> startVpnService(activity: T) {
     }
 }
 
-fun <T : Application> initCrashlytics(context: T, consentState: GDPRConsentState) {
-    if (consentState.consent.isPersonalConsent) initCrashlytics(context, true)
-}
-
-fun <T : Activity> initCrashlytics(context: T, consentState: GDPRConsentState) {
-    initCrashlytics(context, consentState.consent.isPersonalConsent)
-}
-
-private fun <T : Context> initCrashlytics(context: T, enabled: Boolean) {
+fun initCrashlytics(application: Application) {
     if (BuildConfig.DEBUG) {
         return
     }
+    val preferences = PreferenceManager.getDefaultSharedPreferences(application)
+    val telemetry = preferences.getBoolean("pref_telemetry", true)
 
-    FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(enabled)
+    if (telemetry) {
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+        Timber.plant(CrashReportingTree())
+    }
 }
 
-fun <T : Context> initGDPR(context: T): GDPR = GDPR.getInstance().init(context)
-
-fun initTimber() {
-    Timber.plant(CrashReportingTree())
+fun initNetworkInfo(application: Application) {
+    NetworkInfo.getInstance(application)
 }
-
