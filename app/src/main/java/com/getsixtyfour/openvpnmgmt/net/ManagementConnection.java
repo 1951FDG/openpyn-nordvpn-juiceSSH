@@ -144,6 +144,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             }
         } catch (IOException e) {
             onConnectError(e);
+            return;
         }
         onConnected();
     }
