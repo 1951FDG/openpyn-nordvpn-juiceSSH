@@ -36,8 +36,8 @@ public final class OpenVpnNetworkState {
      */
     private final String mRemotePort;
 
-    public OpenVpnNetworkState(@NotNull String unixTime, @NotNull String name, @NotNull String description,
-                               @NotNull String localAddress, @NotNull String remoteAddress, @NotNull String remotePort) {
+    public OpenVpnNetworkState(@NotNull String unixTime, @NotNull String name, @NotNull String description, @NotNull String localAddress,
+                               @NotNull String remoteAddress, @NotNull String remotePort) {
         mTime = unixTime;
         mName = name;
         mDescription = description;

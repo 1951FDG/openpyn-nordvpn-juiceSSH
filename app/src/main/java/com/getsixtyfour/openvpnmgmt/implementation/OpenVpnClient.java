@@ -66,7 +66,8 @@ public final class OpenVpnClient implements Client {
     @Override
     public @NotNull String toString() {
         return "OpenVpnClient{" + "Common name: " + mCommonName + ", real IP address: " + mIpAddress.getHostString() + ", source port: "
-                + mIpAddress.getPort() + ", received bytes: " + mReceivedBytes + ", sent bytes: " + mSentBytes + ", connected since: " + mConnectedSince + "}";
+                + mIpAddress.getPort() + ", received bytes: " + mReceivedBytes + ", sent bytes: " + mSentBytes + ", connected since: "
+                + mConnectedSince + "}";
     }
 
     @Override

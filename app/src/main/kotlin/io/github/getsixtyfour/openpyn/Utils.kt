@@ -18,7 +18,6 @@ import androidx.preference.PreferenceManager
 import com.eggheadgames.aboutbox.AboutConfig
 import com.getsixtyfour.openvpnmgmt.android.Constants
 import com.getsixtyfour.openvpnmgmt.android.Utils
-import com.getsixtyfour.openvpnmgmt.net.ManagementConnection
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS

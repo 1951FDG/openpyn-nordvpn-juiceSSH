@@ -57,12 +57,11 @@ public final class SecurityCypher {
         String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         try {
             byte[] key = androidId.getBytes(StandardCharsets.UTF_8);
-            MessageDigest sha = MessageDigest.getInstance("SHA-1");
-            key = sha.digest(key);
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            key = md.digest(key);
             key = Arrays.copyOf(key, IV_LENGTH);
             mSecretKey = new SecretKeySpec(key, "AES");
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("", e);
+        } catch (NoSuchAlgorithmException ignored) {
         }
     }
 

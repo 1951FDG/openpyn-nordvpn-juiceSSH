@@ -53,8 +53,7 @@ import io.github.getsixtyfour.openpyn.R;
  */
 
 @SuppressWarnings({ "OverlyComplexClass", "ClassWithTooManyDependencies" })
-public final class OpenVpnService extends Service
-        implements OnByteCountChangedListener, OnStateChangedListener, UncaughtExceptionHandler {
+public final class OpenVpnService extends Service implements OnByteCountChangedListener, OnStateChangedListener, UncaughtExceptionHandler {
 
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnService.class);
@@ -310,7 +309,6 @@ public final class OpenVpnService extends Service
 
     private static void onRecordChanged(@NonNull OpenVpnLogRecord record) {
         @NonNls Logger logger = LoggerFactory.getLogger("OpenVPN"); //NON-NLS
-
         switch (record.getLevel()) {
             case ERROR:
                 if (logger.isErrorEnabled()) {
@@ -415,14 +413,14 @@ public final class OpenVpnService extends Service
             if ((text != null) && (bigText != null)) {
                 if (text.length() < bigText.length()) {
                     text = text.substring(0, 1).toUpperCase() + text.substring(1);
-                    bigText = text + System.lineSeparator() + bigText.substring(0, 1).toUpperCase() + bigText.substring(1, bigText.length() - text.length());
+                    bigText = text + System.lineSeparator() + bigText.substring(0, 1).toUpperCase() + bigText
+                            .substring(1, bigText.length() - text.length());
                     bigText = bigText.trim();
                     //noinspection MagicCharacter
                     if (bigText.charAt(bigText.length() - 1) == ':') {
                         bigText = bigText.substring(0, bigText.length() - 1);
                     }
                 }
-
                 if (text.length() == bigText.length()) {
                     bigText = null;
                 }

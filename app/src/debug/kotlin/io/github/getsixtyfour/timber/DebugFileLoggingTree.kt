@@ -19,7 +19,6 @@ class DebugFileLoggingTree(externalCacheDir: File, context: Context? = null, fil
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         try {
             val logTimeStamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-
             val priorityText = when (priority) {
                 2 -> "V:"
                 3 -> "D:"
@@ -29,9 +28,7 @@ class DebugFileLoggingTree(externalCacheDir: File, context: Context? = null, fil
                 7 -> "A:"
                 else -> "$priority"
             }
-
             val tagText = tag?.substring(tag.lastIndexOf('.') + 1)
-
             val writer = FileWriter(file, true)
             val textLine = "$priorityText $logTimeStamp $tagText $message\n"
             writer.append(textLine)

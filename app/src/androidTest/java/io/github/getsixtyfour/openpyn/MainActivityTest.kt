@@ -43,17 +43,21 @@ class MainActivityTest {
     @Rule
     @JvmField
     var mGrantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(PERMISSION_OPEN_SESSIONS, PERMISSION_READ)
+
     // Clear all app's SharedPreferences
     @Rule
     @JvmField
     var clearPreferencesRule: ClearPreferencesRule = ClearPreferencesRule()
+
     // Delete all files in getFilesDir() and getCacheDir()
     @Rule
     @JvmField
     var clearFilesRule: ClearFilesRule = ClearFilesRule()
+
     @Rule
     @JvmField
     var localeTestRule: LocaleTestRule = LocaleTestRule()
+
     @Rule
     @JvmField
     var mActivityTestRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java, true, false)

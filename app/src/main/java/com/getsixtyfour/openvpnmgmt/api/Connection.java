@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author 1951FDG
  */
-
 // TODO: make android interface extension with worker thread annotation
 public interface Connection extends Runnable {
 

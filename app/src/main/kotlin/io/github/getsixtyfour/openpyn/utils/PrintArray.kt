@@ -149,7 +149,6 @@ object PrintArray {
             setPreSelectIDsList(checkedItems)
             setMultiSelectList(items)
         }.show(context.supportFragmentManager, null)
-
         // TODO: change to nav, setup onAttachFragment in activity or setup onAttach in class itself, or ?
         /*val action = MapFragmentDirections.actionMapFragmentToMultiSelectDialogFragment()
         Navigation.findNavController(context.findViewById(R.id.map)).navigate(action)*/

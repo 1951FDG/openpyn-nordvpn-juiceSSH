@@ -4,8 +4,6 @@ import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 
-import java.io.IOException;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;

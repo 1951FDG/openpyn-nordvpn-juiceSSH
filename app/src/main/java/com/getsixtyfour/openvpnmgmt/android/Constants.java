@@ -48,7 +48,7 @@ public final class Constants {
     public static final String EXTRA_POST_STATE_NOTIFICATION = INTENT_PACKAGE_PREFIX + ".extra.POST_STATE_NOTIFICATION";
 
     @NonNls
-    public static final String EXTRA_SEND_STATE_BROADCAST = INTENT_PACKAGE_PREFIX + ".extra.SEND_BROADCAST";
+    public static final String EXTRA_SEND_STATE_BROADCAST = INTENT_PACKAGE_PREFIX + ".extra.SEND_STATE_BROADCAST";
 
     @NonNls
     public static final String EXTRA_HOST = INTENT_PACKAGE_PREFIX + ".extra.HOST";

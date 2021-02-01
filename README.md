@@ -169,7 +169,7 @@ This app uses (modified) code from open source projects.
   - Modified [LazyMarker.java](app/src/main/java/com/androidmapsextensions/lazy/LazyMarker.java)
 
 
-- [Google Maps Android API utility library](https://github.com/kiddouk/CheckableFloatingActionButton)
+- [Google Maps Android API utility library](https://github.com/googlemaps/android-maps-utils)
   - [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
   - [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
 

@@ -9,8 +9,8 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-@SuppressWarnings({ "UtilityClass", "HardCodedStringLiteral", "StringConcatenation", "WeakerAccess",
-        "ChainedMethodCall", "DynamicRegexReplaceableByCompiledPattern" })
+@SuppressWarnings({ "UtilityClass", "HardCodedStringLiteral", "StringConcatenation", "WeakerAccess", "ChainedMethodCall",
+        "DynamicRegexReplaceableByCompiledPattern" })
 public final class AboutBoxUtils {
 
     public static final String PLAY_STORE_APP_URI = "https://play.google.com/store/apps/details?id=";

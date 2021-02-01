@@ -393,7 +393,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             it.setOnMapClickListener(this)
             it.setOnMarkerClickListener(this)
             it.setOnMapLoadedCallback(this)
-
             /*val params = fab1.layoutParams as ConstraintLayout.LayoutParams
             it.setPadding(0, 0, 0, params.height + params.bottomMargin)*/
 
@@ -402,7 +401,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
 
             mCameraUpdateAnimator = CameraUpdateAnimator(it, this, animations)
             mCameraUpdateAnimator?.animatorListener = this
-
             // Load map
             views.showMap()
             map.onResume()

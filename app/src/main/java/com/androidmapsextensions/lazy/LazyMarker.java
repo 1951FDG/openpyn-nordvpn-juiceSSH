@@ -68,7 +68,6 @@ public final class LazyMarker {
         mTag = tag;
         mListener = markerCreateListener;
         mLocation = options.getPosition();
-
         if (options.isVisible()) {
             createMarker();
         }
@@ -121,7 +120,7 @@ public final class LazyMarker {
         return mMarkerOptions.getAlpha();
     }
 
-    public void setAlpha(@FloatRange(from=0.0, to=1.0)float alpha) {
+    public void setAlpha(@FloatRange(from = 0.0, to = 1.0) float alpha) {
         if (mMarker != null) {
             mMarker.setAlpha(alpha);
         } else {
@@ -166,7 +165,7 @@ public final class LazyMarker {
         return mMarkerOptions.getRotation();
     }
 
-    public void setRotation(@FloatRange(from=0.0, to=360.0)float rotation) {
+    public void setRotation(@FloatRange(from = 0.0, to = 360.0) float rotation) {
         if (mMarker != null) {
             mMarker.setRotation(rotation);
         } else {
@@ -301,7 +300,7 @@ public final class LazyMarker {
         }
     }
 
-    public void setAnchor(@FloatRange(from=0.0, to=1.0) float anchorU, @FloatRange(from=0.0, to=1.0) float anchorV) {
+    public void setAnchor(@FloatRange(from = 0.0, to = 1.0) float anchorU, @FloatRange(from = 0.0, to = 1.0) float anchorV) {
         if (mMarker != null) {
             mMarker.setAnchor(anchorU, anchorV);
         } else {
@@ -317,7 +316,7 @@ public final class LazyMarker {
         }
     }
 
-    public void setInfoWindowAnchor(@FloatRange(from=0.0, to=1.0) float anchorU, @FloatRange(from=0.0, to=1.0) float anchorV) {
+    public void setInfoWindowAnchor(@FloatRange(from = 0.0, to = 1.0) float anchorU, @FloatRange(from = 0.0, to = 1.0) float anchorV) {
         if (mMarker != null) {
             mMarker.setInfoWindowAnchor(anchorU, anchorV);
         } else {

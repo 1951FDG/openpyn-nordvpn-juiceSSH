@@ -117,8 +117,7 @@ public final class OpenVpnStatus extends OpenVpnCommand implements Status {
         super.setCommandOutput(output);
     }
 
-    @SuppressWarnings({ "AssignmentToForLoopParameter", "ValueOfIncrementOrDecrementUsed", "ChainedMethodCall",
-            "OverlyComplexMethod" })
+    @SuppressWarnings({ "AssignmentToForLoopParameter", "ValueOfIncrementOrDecrementUsed", "ChainedMethodCall", "OverlyComplexMethod" })
     @Override
     public void setCommandOutput(@NotNull String[] lines) throws OpenVpnParseException {
         @NonNls String msg = "Cannot parse OpenVPN status. Wrong lines sequence.";

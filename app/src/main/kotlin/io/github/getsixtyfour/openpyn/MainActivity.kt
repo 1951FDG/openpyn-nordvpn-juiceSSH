@@ -55,9 +55,9 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 import java.util.UUID
 
-class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener, NoticeDialogListener,
-    OnLoaderChangedListener, OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
-    SubmitCallbackListener, CoroutineScope by MainScope() {
+class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener, NoticeDialogListener, OnLoaderChangedListener,
+    OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener, SubmitCallbackListener,
+    CoroutineScope by MainScope() {
 
     private var mAppSettingsDialogShown: Boolean = false
     private var mConnectionListAdapter: ConnectionListAdapter? = null
@@ -81,7 +81,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
         setSnackBarManager(this, mSnackProgressBarManager)
 
         startVpnService(this)
-
         // TODO: remove after beta release test, add delay?
         logger.error(Exception()) { "$apkSignatures" }
     }

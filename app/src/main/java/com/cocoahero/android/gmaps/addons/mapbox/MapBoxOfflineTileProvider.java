@@ -216,7 +216,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
     @Nullable
     @Override
     public synchronized byte[] getBytes(int x, int y, int zoom) {
-        /*Log.e(TAG, String.format("%d %d %d", zoom, x, ((1 << zoom) - 1 - y)));*/
+        /*Log.e(TAG, String.format("%d %d %d", zoom, x, y));*/
         String[] bindArgs = { Integer.toString(zoom), Integer.toString(x), Integer.toString(y) };
         mQuery.bindString(3, bindArgs[2]); // row
         mQuery.bindString(2, bindArgs[1]); // column

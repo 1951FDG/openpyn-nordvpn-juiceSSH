@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NonNls;
 
 @SuppressWarnings("UtilityClass")
 final class Constants {
+
     @NonNls
     static final String DATE_FORMAT = "EEE MMM dd HH:mm:ss yyyy";
 

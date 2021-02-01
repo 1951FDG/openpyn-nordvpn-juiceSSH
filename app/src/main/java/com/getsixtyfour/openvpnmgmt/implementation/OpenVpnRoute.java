@@ -93,7 +93,8 @@ public final class OpenVpnRoute implements Route {
     @Override
     public @NotNull String toString() {
         return "OpenVpnRoute{" + "Virtual IP address " + mVirtualIpAddress.getHostAddress() + ", common name: " + mCommonName
-                + ", real IP address: " + mRealIpAddress + ", source port: " + mRealIpAddress.getPort() + ", last reference: " + mLastRef + "}";
+                + ", real IP address: " + mRealIpAddress + ", source port: " + mRealIpAddress.getPort() + ", last reference: " + mLastRef
+                + "}";
     }
 
     @Override

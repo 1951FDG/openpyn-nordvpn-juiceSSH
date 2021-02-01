@@ -8,9 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface UsernamePasswordHandler {
 
-    @Nullable
-    CharSequence getUser();
+    @Nullable CharSequence getUser();
 
-    @Nullable
-    CharSequence getPassword();
+    @Nullable CharSequence getPassword();
 }

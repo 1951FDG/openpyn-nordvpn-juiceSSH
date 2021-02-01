@@ -1,9 +1,9 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
-import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
+import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

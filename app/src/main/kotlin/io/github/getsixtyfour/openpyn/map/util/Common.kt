@@ -236,7 +236,7 @@ suspend fun createJson(): JSONArray? {
                     put(STANDARD, false)
                 }
                 populateFeatures(value, features)
-                
+
                 jsonObj = JSONObject().apply {
                     put(FLAG, value.getString(FLAG).toLowerCase(Locale.ROOT))
                     put(COUNTRY, value.getString(COUNTRY))

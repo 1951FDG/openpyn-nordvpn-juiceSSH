@@ -101,8 +101,8 @@ public class GitHubCrashIssue {
 
     private final boolean mGithubEnabled;
 
-    public GitHubCrashIssue(@NonNull String url, @NonNull String id, @NonNull String assignees, @NonNull String labels, @NonNull String version,
-                            boolean dirty, boolean enabled) {
+    public GitHubCrashIssue(@NonNull String url, @NonNull String id, @NonNull String assignees, @NonNull String labels,
+                            @NonNull String version, boolean dirty, boolean enabled) {
         if (id.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -502,7 +502,8 @@ public class GitHubCrashIssue {
 
         @NonNull
         public GitHubCrashIssue build() {
-            return new GitHubCrashIssue(Objects.requireNonNull(mUrl), Objects.requireNonNull(mId), mAssignees, mLabels, mVersion, mDirty, !mDisabled);
+            return new GitHubCrashIssue(Objects.requireNonNull(mUrl), Objects.requireNonNull(mId), mAssignees, mLabels, mVersion, mDirty,
+                    !mDisabled);
         }
 
         @NonNull

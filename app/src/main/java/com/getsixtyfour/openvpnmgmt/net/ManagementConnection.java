@@ -177,14 +177,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
         if (!isConnected()) {
             throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
         }
-
         StringBuilder sb = new StringBuilder(256);
-
         BufferedWriter out = getBufferedWriter();
         out.write(command);
         out.newLine();
         out.flush();
-
         BufferedReader in = getBufferedReader();
         @NonNls String line;
         while ((line = in.readLine()) != null) {
@@ -226,7 +223,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 return line.substring(Constants.MANAGEMENT_VERSION_PREFIX.length() + 1);
             }
         } catch (IOException ignored) {
-        } return "";
+        }
+        return "";
     }
 
     @Override
@@ -237,7 +235,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
             ovs.setCommandOutput(output);
             return ovs;
         } catch (IOException | OpenVpnParseException ignored) {
-        } return null;
+        }
+        return null;
     }
 
     @Override
@@ -250,7 +249,8 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 return line.substring(Constants.OPEN_VPN_VERSION_PREFIX.length() + 1);
             }
         } catch (IOException ignored) {
-        } return "";
+        }
+        return "";
     }
 
     @Override
@@ -266,12 +266,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
             //noinspection ProhibitedExceptionThrown
             throw new RuntimeException(new IOException(Constants.SOCKET_IS_NOT_CONNECTED));
         }
-
         Thread t = Thread.currentThread();
         Thread.UncaughtExceptionHandler eh = t.getUncaughtExceptionHandler();
-
         LOGGER.info("OpenVPN Management started in background thread: \"{}\"", t.getName());
-
         try {
             managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
             managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Commands.ARG_ON));
@@ -290,9 +287,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 LOGGER.error("", e);
             }
         }
-
         LOGGER.info("OpenVPN Management stopped in background thread: \"{}\"", t.getName());
-
         if ((eh != null) && !(eh instanceof ThreadGroup)) {
             eh.uncaughtException(t, new ThreadDeath());
         }
