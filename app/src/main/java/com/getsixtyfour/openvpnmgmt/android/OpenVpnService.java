@@ -220,6 +220,9 @@ public final class OpenVpnService extends Service
         int port = intent.getIntExtra(Constants.EXTRA_PORT, Constants.DEFAULT_REMOTE_PORT);
         char[] password = intent.getCharArrayExtra(Constants.EXTRA_PASSWORD);
 
+        String userName = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_VPN_USERNAME), "");
+        String userPass = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_VPN_PASSWORD), "");
+
         // Start a background thread that handles incoming messages of the management interface
         mThread = new Thread(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
@@ -228,6 +231,7 @@ public final class OpenVpnService extends Service
                 TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);
             }
             Connection connection = ManagementConnection.getInstance();
+            connection.setUsernamePasswordHandler(new OpenVpnHandler(userName, userPass));
             connection.connect(host, port, password);
             connection.run();
         }, Constants.THREAD_NAME);

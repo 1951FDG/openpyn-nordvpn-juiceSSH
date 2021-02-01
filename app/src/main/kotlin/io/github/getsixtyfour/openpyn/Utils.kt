@@ -186,10 +186,11 @@ fun <T : Activity> startVpnService(activity: T) {
     val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
     val openvpnmgmt = preferences.getBoolean(activity.getString(R.string.pref_openvpnmgmt_key), false)
     if (openvpnmgmt) {
-        val handler = VpnAuthenticationHandler(activity)
         val host = VpnAuthenticationHandler.getHost(activity)
         val port = VpnAuthenticationHandler.getPort(activity)
         val password = VpnAuthenticationHandler.getPassword(activity)
+        val userName = VpnAuthenticationHandler.getUserName(activity)
+        val userPass = VpnAuthenticationHandler.getUserPass(activity)
         val shouldPostByteCount = VpnAuthenticationHandler.shouldPostByteCount(activity)
         val shouldPostStateChange = VpnAuthenticationHandler.shouldPostStateChange(activity)
         val bundle = Bundle().apply {
@@ -198,10 +199,9 @@ fun <T : Activity> startVpnService(activity: T) {
             putString(Constants.EXTRA_HOST, host)
             putInt(Constants.EXTRA_PORT, port)
             putCharArray(Constants.EXTRA_PASSWORD, password)
+            putString(Constants.EXTRA_VPN_USERNAME, userName)
+            putString(Constants.EXTRA_VPN_PASSWORD, userPass)
         }
-        // TODO: do this elsewhere e.g. in Service, add missing intent extras and create handler in Service
-        val connection = ManagementConnection.getInstance()
-        connection.setUsernamePasswordHandler(handler)
 
         Utils.doStartService(activity, bundle)
     }

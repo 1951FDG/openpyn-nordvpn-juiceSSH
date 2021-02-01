@@ -59,6 +59,12 @@ public final class Constants {
     @NonNls
     public static final String EXTRA_PASSWORD = INTENT_PACKAGE_PREFIX + ".extra.PASSWORD";
 
+    @NonNls
+    public static final String EXTRA_VPN_USERNAME = INTENT_PACKAGE_PREFIX + ".extra.VPN_USERNAME";
+
+    @NonNls
+    public static final String EXTRA_VPN_PASSWORD = INTENT_PACKAGE_PREFIX + ".extra.VPN_PASSWORD";
+
     private Constants() {
     }
 }
