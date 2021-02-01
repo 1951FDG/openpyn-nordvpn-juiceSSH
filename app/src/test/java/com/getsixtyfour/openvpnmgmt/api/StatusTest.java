@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import org.junit.*;
 
@@ -26,11 +27,11 @@ public class StatusTest {
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusTest.class);
 
-    private static Status sInstance = null;
+    private static @NotNull Status sInstance;
 
     @SuppressWarnings({ "HardcodedLineSeparator", "StringBufferReplaceableByString", "MagicNumber" })
     @BeforeClass
-    public static void init() throws OpenVpnParseException {
+    public static void oneTimeSetUp() throws OpenVpnParseException {
         sInstance = new OpenVpnStatus();
         @NonNls StringBuilder stringBuilder = new StringBuilder(256);
         stringBuilder.append("INFO:OpenVPN Management Interface Version 1 -- type 'help' for more info\n");

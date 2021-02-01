@@ -42,7 +42,7 @@ public class GitHubCrashIssue {
     @NonNls
     private static final Collection<String> PACKAGE_LIST = new ArrayList<>();
 
-    private static final Pattern COMPILE = Pattern.compile(StringUtils.DOT, Pattern.LITERAL);
+    private static final Pattern PATTERN = Pattern.compile(StringUtils.DOT, Pattern.LITERAL);
 
     @NonNls
     private static final String GENERATED_LAMBDA_CLASS_SUFFIX = "$$Lambda$";
@@ -161,7 +161,7 @@ public class GitHubCrashIssue {
     }
 
     @Nullable
-    private static String getTopLevelCauseMessage(Throwable t) {
+    private static String getTopLevelCauseMessage(@NonNull Throwable t) {
         Throwable topLevelCause = t;
         while (topLevelCause.getCause() != null) {
             topLevelCause = topLevelCause.getCause();
@@ -171,7 +171,7 @@ public class GitHubCrashIssue {
 
     @SuppressWarnings({ "OverlyLongMethod", "HardCodedStringLiteral", "MagicCharacter", "MagicNumber", "ImplicitNumericConversion" })
     @NonNull
-    private static String hash(Class<? extends Throwable> aClass, StackTraceElement[] stackTrace) {
+    private static String hash(@NonNull Class<? extends Throwable> aClass, @NonNull StackTraceElement[] stackTrace) {
         String result;
         {
             StringBuilder builder = new StringBuilder(INITIAL_SIZE);
@@ -224,13 +224,13 @@ public class GitHubCrashIssue {
         return (char) ((x <= 9) ? (x + '0') : (('a' + x) - 10));
     }
 
-    private static boolean isLambda(String className) {
+    private static boolean isLambda(@NonNull String className) {
         return className.contains(GENERATED_LAMBDA_CLASS_SUFFIX);
     }
 
     @SuppressWarnings({ "ImplicitNumericConversion", "MagicCharacter" })
     @NonNull
-    private static String plainMethodName(String methodName) {
+    private static String plainMethodName(@NonNull String methodName) {
         int startMethodIdx = methodName.indexOf(LAMBDA_METHOD_PREFIX);
         if (startMethodIdx == INDEX_NOT_FOUND) {
             return methodName;
@@ -263,15 +263,17 @@ public class GitHubCrashIssue {
     @SuppressWarnings("WeakerAccess")
     @NonNull
     public String encode(@Nullable String s) {
+        String result = null;
         if (TextUtils.isEmpty(s)) {
-            return (s == null) ? "" : s;
+            result = (s == null) ? "" : s;
+        } else {
+            try {
+                result = URLEncoder.encode(s, UTF_8);
+            } catch (UnsupportedEncodingException ignored) {
+                // The system should always have the platform default
+            }
         }
-        try {
-            return URLEncoder.encode(s, UTF_8);
-        } catch (UnsupportedEncodingException ignored) {
-            // The system should always have the platform default
-        }
-        return "";
+        return result;
     }
 
     @NonNull
@@ -371,7 +373,7 @@ public class GitHubCrashIssue {
 
     @SuppressWarnings({ "OverlyComplexMethod", "OverlyLongMethod", "IfStatementWithTooManyBranches" })
     @NonNull
-    private String stack(StackTraceElement[] trace) {
+    private String stack(@NonNull StackTraceElement[] trace) {
         @NonNls StringBuilder result = new StringBuilder(INITIAL_SIZE);
         int length = trace.length;
         List<String> strList = new ArrayList<>(length);
@@ -436,7 +438,7 @@ public class GitHubCrashIssue {
                 String methodName = traceElement.getMethodName();
                 //TODO: filename vs classname, java extension or not?
                 String fileName = traceElement.getFileName();
-                Matcher matcher = COMPILE.matcher(className);
+                Matcher matcher = PATTERN.matcher(className);
                 boolean isLambda = isLambda(className);
                 boolean isFile = fileName != null;
                 boolean isPackage = false;
@@ -490,10 +492,13 @@ public class GitHubCrashIssue {
         @Nullable
         private String mId = null;
 
+        @NonNull
         private String mAssignees = "";
 
+        @NonNull
         private String mLabels = "";
 
+        @NonNull
         private String mVersion = "";
 
         private boolean mDirty;
@@ -551,7 +556,7 @@ public class GitHubCrashIssue {
         }
     }
 
-    @SuppressWarnings("FieldNamingConvention")
+    @SuppressWarnings({ "FieldNamingConvention", "HardcodedLineSeparator" })
     private static final class StringUtils {
 
         private static final String BACKTICK = "`";

@@ -124,7 +124,7 @@ open class CrashReportingTree : Tree() {
             crashlytics.setCustomKey(PRIORITY_KEY, "Error")
             tag?.let { crashlytics.setCustomKey(TAG_KEY, it) }
             crashlytics.setCustomKey(MESSAGE_KEY, message)
-            t?.let { crashlytics.recordException(it) }
+            t?.let(crashlytics::recordException)
         } catch (ignored: IllegalStateException) {
         }
     }

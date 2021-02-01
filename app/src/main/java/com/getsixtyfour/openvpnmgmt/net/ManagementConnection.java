@@ -41,9 +41,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
     public static final Integer BYTE_COUNT_INTERVAL = 2;
 
     @NonNls
-    private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
+    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
 
-    private static volatile @Nullable ManagementConnection sInstance = null;
+    private static volatile ManagementConnection sInstance = null;
 
     private final CopyOnWriteArraySet<OnByteCountChangedListener> mByteCountChangedListeners;
 
@@ -66,7 +66,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         mTrafficHistory = new TrafficHistory();
     }
 
-    @SuppressWarnings({ "DoubleCheckedLocking", "SynchronizeOnThis" })
+    @SuppressWarnings("SynchronizeOnThis")
     public static @NotNull ManagementConnection getInstance() {
         if (sInstance == null) {
             synchronized (ManagementConnection.class) {
@@ -215,42 +215,45 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     @Override
     public @NotNull String getManagementVersion() {
+        @NotNull String result = "";
         try {
             String output = executeCommand(Commands.VERSION_COMMAND);
             String[] lines = output.split(System.lineSeparator());
             String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
             if (!line.isEmpty() && line.startsWith(Constants.MANAGEMENT_VERSION_PREFIX)) {
-                return line.substring(Constants.MANAGEMENT_VERSION_PREFIX.length() + 1);
+                result = line.substring(Constants.MANAGEMENT_VERSION_PREFIX.length() + 1);
             }
         } catch (IOException ignored) {
         }
-        return "";
+        return result;
     }
 
     @Override
     public @Nullable Status getVpnStatus() {
+        @Nullable Status result = null;
         try {
             String output = executeCommand(Commands.STATUS_COMMAND);
             OpenVpnStatus ovs = new OpenVpnStatus();
             ovs.setCommandOutput(output);
-            return ovs;
+            result = ovs;
         } catch (IOException | OpenVpnParseException ignored) {
         }
-        return null;
+        return result;
     }
 
     @Override
     public @NotNull String getVpnVersion() {
+        @NotNull String result = "";
         try {
             String output = executeCommand(Commands.VERSION_COMMAND);
             String[] lines = output.split(System.lineSeparator());
             String line = (lines.length >= 2) ? lines[lines.length - 2] : "";
             if (!line.isEmpty() && line.startsWith(Constants.OPEN_VPN_VERSION_PREFIX)) {
-                return line.substring(Constants.OPEN_VPN_VERSION_PREFIX.length() + 1);
+                result = line.substring(Constants.OPEN_VPN_VERSION_PREFIX.length() + 1);
             }
         } catch (IOException ignored) {
         }
-        return "";
+        return result;
     }
 
     @Override
@@ -303,20 +306,20 @@ public final class ManagementConnection extends AbstractConnection implements Co
         mUsernamePasswordHandler = handler;
     }
 
-    private void dispatchOnByteCountChanged(TrafficHistory.TrafficDataPoint tdp) {
+    private void dispatchOnByteCountChanged(@NotNull TrafficHistory.TrafficDataPoint tdp) {
         TrafficHistory.LastDiff diff = mTrafficHistory.add(tdp);
         for (OnByteCountChangedListener listener : mByteCountChangedListeners) {
             listener.onByteCountChanged(tdp.mInBytes, tdp.mOutBytes, diff.getDiffIn(), diff.getDiffOut());
         }
     }
 
-    private void dispatchOnRecordChanged(OpenVpnLogRecord record) {
+    private void dispatchOnRecordChanged(@NotNull OpenVpnLogRecord record) {
         for (OnRecordChangedListener listener : mRecordChangedListeners) {
             listener.onRecordChanged(record);
         }
     }
 
-    private void dispatchOnStateChanged(OpenVpnNetworkState state) {
+    private void dispatchOnStateChanged(@NotNull OpenVpnNetworkState state) {
         for (OnStateChangedListener listener : mStateChangedListeners) {
             listener.onStateChanged(state);
         }
@@ -352,7 +355,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @SuppressWarnings({ "IfStatementWithTooManyBranches", "ProhibitedExceptionCaught" })
-    private void parseInput(String line) throws IOException {
+    private void parseInput(@NotNull String line) throws IOException {
         if (line.startsWith(">") && line.contains(":")) {
             try {
                 process(line);
@@ -377,7 +380,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @SuppressWarnings({ "OverlyComplexMethod", "OverlyLongMethod", "SwitchStatementWithTooManyBranches", "SpellCheckingInspection" })
-    private void process(String line) throws IOException {
+    private void process(@NotNull String line) throws IOException {
         String[] parts = line.split(":", 2);
         @NonNls String cmd = parts[0].substring(1);
         String argument = parts[1];
@@ -424,7 +427,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    private void processByteCount(String argument) {
+    private void processByteCount(@NotNull String argument) {
         int comma = argument.indexOf(",");
         long in = Long.parseLong(argument.substring(0, comma));
         long out = Long.parseLong(argument.substring(comma + 1));
@@ -432,7 +435,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         dispatchOnByteCountChanged(tdp);
     }
 
-    private void processHold(String argument) throws IOException {
+    private void processHold(@NotNull String argument) throws IOException {
         // Close connection if AUTH has failed
         if ((mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED) && argument.startsWith(Constants.WAITING_FOR_HOLD_RELEASE_PREFIX)) {
             LOGGER.error("Verification Error");
@@ -441,7 +444,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @SuppressWarnings("OverlyLongMethod")
-    private void processLog(String argument) {
+    private void processLog(@NotNull String argument) {
         String[] args = argument.split(",", 3);
         String time = args[0];
         @NonNls String level = args[1];
@@ -486,7 +489,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         dispatchOnRecordChanged(record);
     }
 
-    private void processPassword(String argument) throws IOException {
+    private void processPassword(@NotNull String argument) throws IOException {
         // Ignore Auth token message, already managed by OpenVPN itself
         if (argument.startsWith(Constants.AUTH_TOKEN_PREFIX)) {
             return;
@@ -521,7 +524,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    private void processState(String argument) {
+    private void processState(@NotNull String argument) {
         String[] args = argument.split(",", -1);
         OpenVpnNetworkState state = new OpenVpnNetworkState(args[0], args[1], args[2], args[3], args[4], args[5]);
         String name = state.getName();

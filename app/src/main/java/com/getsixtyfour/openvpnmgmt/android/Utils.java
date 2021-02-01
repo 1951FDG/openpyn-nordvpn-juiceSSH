@@ -73,13 +73,14 @@ public final class Utils {
     @CheckResult
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static long getTotalUsage(@NonNull Context context, long start, long end, int uid, int tag) {
+        long result = 0L;
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
         if (networkStatsManager != null) {
             int networkType = NetworkCapabilities.TRANSPORT_WIFI;
             NetworkStats stats = networkStatsManager.queryDetailsForUidTag(networkType, "", start, end, uid, tag);
-            return getTotalUsage(stats);
+            result = getTotalUsage(stats);
         }
-        return 0L;
+        return result;
     }
 
     @CheckResult

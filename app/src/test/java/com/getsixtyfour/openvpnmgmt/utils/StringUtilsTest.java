@@ -17,18 +17,14 @@ public class StringUtilsTest {
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(StringUtilsTest.class);
 
-    @NonNls
-    private final String mExpected = "fQDaoFx\\\\Fi\\\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^";
-
-    @NonNls
-    private final String mOriginal = "fQDaoFx\\Fi\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^";
-
     /**
      * Test of escapeString method, of class StringUtils.
      */
     @Test
     public void testEscapeString() {
         LOGGER.debug("escapeString");
-        Assert.assertEquals(mExpected, StringUtils.escapeString(mOriginal));
+        @NonNls String expected = "fQDaoFx\\\\Fi\\\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^";
+        @NonNls String original = "fQDaoFx\\Fi\"QYF/R];T,zFsm&=!4^#4a?PL(d3Y^";
+        Assert.assertEquals(expected, StringUtils.escapeString(original));
     }
 }

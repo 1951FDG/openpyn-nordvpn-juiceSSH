@@ -71,7 +71,8 @@ abstract class AbstractConnection implements Closeable {
     }
 
     protected void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
-        getLogger().info("Connecting to {}:{}", host, port); //NON-NLS
+        Logger logger = getLogger();
+        logger.info("Connecting to {}:{}", host, port); //NON-NLS
         mHost = host;
         mPort = port;
         mSocket = new Socket();
@@ -90,19 +91,20 @@ abstract class AbstractConnection implements Closeable {
     }
 
     protected void disconnect() throws IOException {
-        getLogger().info("Disconnecting"); //NON-NLS
+        Logger logger = getLogger();
+        logger.info("Disconnecting"); //NON-NLS
         close();
     }
 
-    protected BufferedReader getBufferedReader() {
+    protected @NotNull BufferedReader getBufferedReader() {
         return Objects.requireNonNull(mBufferedReader);
     }
 
-    protected BufferedWriter getBufferedWriter() {
+    protected @NotNull BufferedWriter getBufferedWriter() {
         return Objects.requireNonNull(mBufferedWriter);
     }
 
-    protected abstract Logger getLogger();
+    protected abstract @NotNull Logger getLogger();
 
     protected boolean isConnected() {
         return (mSocket != null) && mSocket.isConnected() && !mSocket.isClosed();

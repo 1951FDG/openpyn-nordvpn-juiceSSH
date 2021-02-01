@@ -49,6 +49,8 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     // Constructor
     init {
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            private val logger = KotlinLogging.logger {}
+
             // Receive network changes
             @Suppress("MagicNumber")
             override fun onAvailable(network: Network) {

@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Process;
-import android.os.RemoteException;
 import android.text.format.DateUtils;
 
 import androidx.annotation.CheckResult;
@@ -60,7 +59,7 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
 
     private final IBinder mBinder = new IOpenVpnServiceInternal.Stub() {
         @Override
-        public void disconnectVpn() throws RemoteException {
+        public void disconnectVpn() {
             Thread thread = new Thread(() -> {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE);
                 try {

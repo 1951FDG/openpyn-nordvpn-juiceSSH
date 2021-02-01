@@ -33,6 +33,7 @@ import io.github.getsixtyfour.openpyn.R;
 public final class DisconnectActivity extends AppCompatActivity implements DialogInterface.OnClickListener, ServiceConnection {
 
     @NonNls
+    @NonNull
     private static final Logger LOGGER = LoggerFactory.getLogger(DisconnectActivity.class);
 
     @Nullable

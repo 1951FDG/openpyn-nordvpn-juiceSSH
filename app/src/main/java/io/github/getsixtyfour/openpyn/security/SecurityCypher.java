@@ -35,11 +35,6 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("Singleton")
 public final class SecurityCypher {
 
-    @NonNls
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityCypher.class);
-
-    private static final String TAG = "SecurityCypher";
-
     private static final char[] EMPTY_CHAR_ARRAY = new char[0];
 
     private static final int IV_LENGTH = 16;
@@ -52,6 +47,7 @@ public final class SecurityCypher {
     @Nullable
     private SecretKey mSecretKey = null;
 
+    @SuppressWarnings("HardCodedStringLiteral")
     @SuppressLint("HardwareIds")
     private SecurityCypher(Context context) {
         String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
@@ -65,7 +61,7 @@ public final class SecurityCypher {
         }
     }
 
-    @SuppressWarnings({ "DoubleCheckedLocking", "SynchronizeOnThis" })
+    @SuppressWarnings("SynchronizeOnThis")
     @NonNull
     public static SecurityCypher getInstance(@NonNull Context context) {
         if (sInstance == null) {

@@ -65,7 +65,7 @@ class ConnectionManager(
         mSessionStartedListener = null
         mSessionFinishedListener = null
 
-        mControllers.forEach { it.onDestroy() }
+        mControllers.forEach(BaseController::onDestroy)
 
         if (isConnected()) mClient.disconnect(mSessionId, mSessionKey)
 
@@ -151,7 +151,7 @@ class ConnectionManager(
 
         mSessionRunning = true
 
-        mControllers.filter { it.isRunning }.forEach { it.disconnect(mClient, mSessionId, mSessionKey) }
+        mControllers.filter(BaseController::isRunning).forEach { it.disconnect(mClient, mSessionId, mSessionKey) }
 
         launch {
             try {

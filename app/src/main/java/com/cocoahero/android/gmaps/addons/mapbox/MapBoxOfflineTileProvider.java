@@ -115,7 +115,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
      * @return the newly opened database
      * @throws android.database.SQLException if the database cannot be opened
      */
-    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral", "StringConcatenation" })
+    @SuppressWarnings({ "DuplicateStringLiteralInspection", "HardCodedStringLiteral", "StringConcatenation", "ConstantExpression" })
     private static SQLiteDatabase create(@NonNull String path, @Nullable CursorFactory factory) {
         SQLiteDatabase database = SQLiteDatabase
                 .openDatabase(SQLiteDatabaseConfiguration.MEMORY_DB_PATH, factory, SQLiteDatabase.CREATE_IF_NECESSARY);

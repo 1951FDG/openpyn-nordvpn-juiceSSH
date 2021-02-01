@@ -2,7 +2,6 @@ package com.getsixtyfour.openvpnmgmt.api;
 
 import com.getsixtyfour.openvpnmgmt.net.Commands;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
-import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,37 +29,29 @@ public class ConnectionTest {
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionTest.class);
 
-    private static Connection sConnection = null;
+    private static @NotNull Connection sConnection;
 
-    @NonNls
-    private final ResourceBundle mBundle = ResourceBundle.getBundle("test");
+    private static @NotNull String sHost;
 
-    private final String mHost = mBundle.getString("management.server");
+    private static @NotNull Integer sPort;
 
-    private final Integer mPort = Integer.valueOf(mBundle.getString("management.port"));
-
-    private final char[] mPassword = mBundle.getString("management.password").toCharArray();
+    private static @NotNull char[] sPassword;
 
     @BeforeClass
-    public static void setUpClass() {
-        sConnection = ManagementConnection.getInstance();
-        sConnection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
-            @NotNull
-            @Override
-            public String getUser() {
-                return "";
-            }
-
-            @NotNull
-            @Override
-            public String getPassword() {
-                return "";
-            }
-        });
+    public static void oneTimeSetUp() {
+        @NonNls ResourceBundle mBundle = ResourceBundle.getBundle("test"); //NON-NLS
+        sHost = mBundle.getString("management.server");
+        sPort = Integer.valueOf(mBundle.getString("management.port"));
+        sPassword = mBundle.getString("management.password").toCharArray();
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @Before
+    public void setUp() {
+        sConnection = ManagementConnection.getInstance();
+    }
+
+    @After
+    public void tearDown() {
         sConnection.disconnect();
     }
 
@@ -70,7 +61,7 @@ public class ConnectionTest {
     @Test
     public void testConnect() {
         LOGGER.debug("connect");
-        sConnection.connect(mHost, mPort, mPassword);
+        sConnection.connect(sHost, sPort, sPassword);
         Assert.assertTrue(sConnection.isConnected());
         sConnection.run();
     }
@@ -81,7 +72,7 @@ public class ConnectionTest {
     @Test
     public void testExecuteCommand() throws IOException {
         LOGGER.debug("executeCommand");
-        sConnection.connect(mHost, mPort, mPassword);
+        sConnection.connect(sHost, sPort, sPassword);
         String result = sConnection.executeCommand(Commands.HELP_COMMAND);
         Assert.assertNotEquals("", result);
         String[] lines = result.split(System.lineSeparator());
@@ -95,20 +86,8 @@ public class ConnectionTest {
     @Test
     public void testGetManagementVersion() {
         LOGGER.debug("getManagementVersion");
-        sConnection.connect(mHost, mPort, mPassword);
+        sConnection.connect(sHost, sPort, sPassword);
         String result = sConnection.getManagementVersion();
-        Assert.assertNotEquals("", result);
-        LOGGER.debug(result);
-    }
-
-    /**
-     * Test of getVpnVersion method, of class Connection.
-     */
-    @Test
-    public void testGetVpnVersion() {
-        LOGGER.debug("getVpnVersion");
-        sConnection.connect(mHost, mPort, mPassword);
-        String result = sConnection.getVpnVersion();
         Assert.assertNotEquals("", result);
         LOGGER.debug(result);
     }
@@ -119,8 +98,9 @@ public class ConnectionTest {
     @Test
     public void testGetVpnStatus() {
         LOGGER.debug("getVpnStatus");
-        sConnection.connect(mHost, mPort, mPassword);
+        sConnection.connect(sHost, sPort, sPassword);
         Status result = sConnection.getVpnStatus();
+        Assert.assertNotNull(result);
         Assert.assertNotNull(result.getUpdateTime());
         List<Client> clientList = result.getClients();
         Assert.assertFalse(clientList.isEmpty());
@@ -128,6 +108,18 @@ public class ConnectionTest {
         Assert.assertFalse(routes.isEmpty());
         LOGGER.debug(result.toString());
         LOGGER.debug(clientList.toString());
+    }
+
+    /**
+     * Test of getVpnVersion method, of class Connection.
+     */
+    @Test
+    public void testGetVpnVersion() {
+        LOGGER.debug("getVpnVersion");
+        sConnection.connect(sHost, sPort, sPassword);
+        String result = sConnection.getVpnVersion();
+        Assert.assertNotEquals("", result);
+        LOGGER.debug(result);
     }
 
     /**
@@ -145,7 +137,7 @@ public class ConnectionTest {
     @Test
     public void testRun() {
         LOGGER.debug("run");
-        sConnection.connect(mHost, mPort, mPassword);
+        sConnection.connect(sHost, sPort, sPassword);
         sConnection.run();
         Assert.assertFalse(sConnection.isConnected());
     }
@@ -156,7 +148,7 @@ public class ConnectionTest {
     @Test
     public void testStopVpn() throws IOException {
         LOGGER.debug("stopVpn");
-        sConnection.connect(mHost, mPort, mPassword);
+        sConnection.connect(sHost, sPort, sPassword);
         Assert.assertTrue(sConnection.isConnected());
         sConnection.managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, Commands.ARG_SIGTERM));
     }

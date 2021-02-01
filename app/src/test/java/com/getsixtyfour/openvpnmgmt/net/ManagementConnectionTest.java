@@ -28,12 +28,7 @@ public class ManagementConnectionTest {
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnectionTest.class);
 
-    private static ManagementConnection sConnection = null;
-
-    @BeforeClass
-    public static void setUpClass() {
-        sConnection = ManagementConnection.getInstance();
-    }
+    private static @NotNull ManagementConnection sConnection;
 
     private static void invokeParseInput(String line) throws InvocationTargetException {
         Class<ManagementConnection> targetClass = ManagementConnection.class;
@@ -44,8 +39,8 @@ public class ManagementConnectionTest {
     }
 
     @SuppressWarnings("TryWithIdenticalCatches")
-    private static void invokeStaticMethod(Class<?> targetClass, String methodName, Class[] argClasses, Object[] argObjects)
-            throws InvocationTargetException {
+    private static void invokeStaticMethod(@NotNull Class<?> targetClass, @NotNull String methodName, Class[] argClasses,
+                                           Object[] argObjects) throws InvocationTargetException {
         try {
             Method method = targetClass.getDeclaredMethod(methodName, argClasses);
             method.setAccessible(true);
@@ -68,6 +63,11 @@ public class ManagementConnectionTest {
             // If it does happen, just let the test fail so the programmer can fix the problem.
             throw new AssertionError(e);
         }
+    }
+
+    @Before
+    public void setUp() {
+        sConnection = ManagementConnection.getInstance();
     }
 
     /**
@@ -141,14 +141,12 @@ public class ManagementConnectionTest {
         invokeParseInput(line);
         line = ">PASSWORD:Need 'Auth' username/password";
         sConnection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
-            @SuppressWarnings("NullableProblems")
             @Nullable
             @Override
             public String getUser() {
                 return null;
             }
 
-            @SuppressWarnings("NullableProblems")
             @Nullable
             @Override
             public String getPassword() {
@@ -161,9 +159,8 @@ public class ManagementConnectionTest {
             Throwable targetException = e.getTargetException();
             if (targetException instanceof IOException) {
                 throw (IOException) targetException;
-            } else {
-                throw e;
             }
+            throw e;
         }
     }
 

@@ -70,7 +70,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
     private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
-
     private val logger = KotlinLogging.logger {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,7 +127,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         var granted: Array<String> = emptyArray()
         var denied: Array<String> = emptyArray()
         permissions.withIndex().forEach {

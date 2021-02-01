@@ -2,6 +2,8 @@ package com.eggheadgames.aboutbox;
 
 import android.annotation.SuppressLint;
 
+import androidx.annotation.NonNull;
+
 @SuppressWarnings({ "PublicField", "unused", "FieldNamingConvention" })
 @SuppressLint("UnknownNullness")
 public final class AboutConfig {
@@ -54,6 +56,7 @@ public final class AboutConfig {
     }
 
     @SuppressWarnings("SameReturnValue")
+    @NonNull
     public static AboutConfig getInstance() {
         return SingletonHolder.HOLDER_INSTANCE;
     }
