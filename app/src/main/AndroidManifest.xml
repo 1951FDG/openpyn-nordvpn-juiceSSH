@@ -69,7 +69,6 @@
             android:stateNotNeeded="true"
             android:exported="false"
             android:launchMode="singleTop"
-            android:process=":process"
             android:finishOnCloseSystemDialogs="true"
             android:screenOrientation="portrait"
             android:taskAffinity="com.getsixtyfour.openvpnmgmt"
@@ -78,7 +77,8 @@
         <service
             android:name="com.getsixtyfour.openvpnmgmt.android.OpenVpnService"
             android:label="@string/vpn_service_name"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":remote" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
