@@ -7,7 +7,7 @@
     android:transitionGroup="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <com.google.android.libraries.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
+    <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

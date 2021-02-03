@@ -22,11 +22,11 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.libraries.maps.CameraUpdate;
-import com.google.android.libraries.maps.GoogleMap;
-import com.google.android.libraries.maps.GoogleMap.OnCameraIdleListener;
-import com.google.android.libraries.maps.UiSettings;
-import com.google.android.libraries.maps.model.LatLng;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Collection;

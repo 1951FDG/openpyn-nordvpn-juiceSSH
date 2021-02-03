@@ -9,8 +9,8 @@ import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.antoniocarlon.map.CameraUpdateAnimator.Animation
 import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
-import com.google.android.libraries.maps.CameraUpdateFactory
-import com.google.android.libraries.maps.model.CameraPosition
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
 import com.jayrave.moshi.pristineModels.PristineModelsJsonAdapterFactory
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonAdapter
