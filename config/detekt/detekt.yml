@@ -1,5 +1,5 @@
 build:
-  maxIssues: 10
+  maxIssues: 6
   excludeCorrectable: false
   weights:
     # complexity: 2
@@ -466,7 +466,7 @@ style:
     active: false
     includeLineWrapping: false
   ForbiddenComment:
-    active: true
+    active: false
     values: 'TODO:,FIXME:,STOPSHIP:'
     allowedPatterns: ""
   ForbiddenImport:
@@ -505,7 +505,7 @@ style:
     ignoreAnnotation: false
     ignoreNamedArgument: true
     ignoreEnums: false
-    ignoreRanges: false
+    ignoreRanges: true
   MandatoryBracesIfStatements:
     active: false
   MaxLineLength:

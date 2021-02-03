@@ -1,23 +1,11 @@
 final groupName = 'app'
 
-androidGitVersionCode.group = groupName
-androidGitVersionName.group = groupName
 dependencyUpdates.group = groupName
-detektBaseline.group = groupName
-detektGenerateConfig.group = groupName
-detektIdeaFormat.group = groupName
-detektIdeaInspect.group = groupName
 generateGitProperties.group = groupName
 generateLicenses.group = groupName
 getDependencies.group = groupName
 licensesCleanUp.group = groupName
 removeUnusedResources.group = groupName
-tasks.getByName('androidGitVersion').configure {
-    group = groupName
-}
-tasks.getByName('detekt').configure {
-    group = groupName
-}
 
 ext.loadProperties = { String pathname ->
     def props = new Properties()
@@ -175,8 +163,11 @@ task appPrintThirdPartyTasks {
                 .filter { !it.class.toString().startsWith('class org.jetbrains') }
                 .filter { !it.class.toString().startsWith('class androidx') }
                 .filter { !it.actions.empty }
+                .filter { it.group != 'Android' }
+                .filter { it.group != 'verification' }
                 .filter { it.group != 'Firebase Crashlytics' }
                 .filter { it.name != 'buildDependents' }
+                .filter { !it.name.endsWith("Provider") }
                 .collect { logger.quiet("${it.name}.group = groupName") }
     }
 }
