@@ -378,7 +378,7 @@ public class GitHubCrashIssue {
         int length = trace.length;
         List<String> strList = new ArrayList<>(length);
         List<List<StackTraceElement>> steList = new ArrayList<>(length);
-        String group = StringUtils.EMPTY;
+        String group = null;
         List<StackTraceElement> elementList = null;
         int total = 0;
         for (int i = 0; (i < length) && (total < MAX_STACK_TRACE_SIZE); i++) {
@@ -396,7 +396,7 @@ public class GitHubCrashIssue {
                     break;
                 }
             }
-            if (group.isEmpty()) {
+            if (TextUtils.isEmpty(group)) {
                 group = className;
                 elementList = new ArrayList<>(length);
                 elementList.add(traceElement);
@@ -562,8 +562,6 @@ public class GitHubCrashIssue {
         private static final String BACKTICK = "`";
 
         private static final String DOT = ".";
-
-        private static final String EMPTY = "";
 
         private static final String HASH = "#";
 
