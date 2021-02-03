@@ -1,4 +1,4 @@
-package com.cocoahero.android.gmaps.addons.mapbox;
+package io.github.getsixtyfour.openpyn.maps;
 
 import android.database.Cursor;
 

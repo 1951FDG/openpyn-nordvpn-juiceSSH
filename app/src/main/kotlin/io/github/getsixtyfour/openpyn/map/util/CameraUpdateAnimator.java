@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.antoniocarlon.map;
+package io.github.getsixtyfour.openpyn.map.util;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;

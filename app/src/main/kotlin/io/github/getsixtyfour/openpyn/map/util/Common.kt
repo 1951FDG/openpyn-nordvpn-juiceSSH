@@ -12,8 +12,6 @@ import androidx.annotation.WorkerThread
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
-import com.androidmapsextensions.lazy.LazyMarker
-import com.androidmapsextensions.lazy.LazyMarker.OnLevelChangeCallback
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -21,6 +19,8 @@ import com.mayurrokade.minibar.UserMessage
 import io.github.getsixtyfour.openpyn.BuildConfig
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.createJsonArray
+import io.github.getsixtyfour.openpyn.map.model.LazyMarker
+import io.github.getsixtyfour.openpyn.map.model.LazyMarker.OnLevelChangeCallback
 import io.github.getsixtyfour.openpyn.security.SecurityCypher
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android

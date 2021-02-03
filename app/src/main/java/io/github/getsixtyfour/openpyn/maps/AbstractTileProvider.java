@@ -1,4 +1,4 @@
-package com.cocoahero.android.gmaps.addons.mapbox;
+package io.github.getsixtyfour.openpyn.maps;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;

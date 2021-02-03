@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.androidmapsextensions.lazy;
+package io.github.getsixtyfour.openpyn.map.model;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;

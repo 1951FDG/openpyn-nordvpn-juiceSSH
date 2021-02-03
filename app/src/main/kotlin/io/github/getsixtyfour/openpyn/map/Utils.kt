@@ -7,8 +7,6 @@ import androidx.annotation.RawRes
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
-import com.antoniocarlon.map.CameraUpdateAnimator.Animation
-import com.cocoahero.android.gmaps.addons.mapbox.MapBoxOfflineTileProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.jayrave.moshi.pristineModels.PristineModelsJsonAdapterFactory
@@ -18,6 +16,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.Types
 import io.github.getsixtyfour.openpyn.R
+import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator.Animation
+import io.github.getsixtyfour.openpyn.maps.MapBoxOfflineTileProvider
 import io.github.getsixtyfour.openpyn.utils.MultiSelectMapper
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import mu.KotlinLogging
