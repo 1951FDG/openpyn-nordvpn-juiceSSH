@@ -3,7 +3,11 @@
     <string name="app_name" translatable="false">Openpyn</string>
 
     <string name="empty" translatable="false" />
+    <string name="crash_label" translatable="false">crash</string>
+    <string name="email_address" translatable="false">support@1951fdg.com</string>
+
     <string name="search_hint">Search…</string>
+    <string name="share">Share</string>
 
     <!-- Menu -->
     <string name="menu_refresh">Refresh</string>

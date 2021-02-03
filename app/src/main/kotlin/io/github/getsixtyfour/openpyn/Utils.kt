@@ -154,24 +154,22 @@ fun showSnackProgressBar(manager: SnackProgressBarManager, storeId: Int) {
 
 // TODO: inner class
 @SuppressLint("DefaultLocale")
-fun initAboutConfig() {
+fun initAboutConfig(application: Application) {
     val config = AboutConfig.getInstance()
     // General info
-    config.appName = BuildConfig.GITHUB_REPO_NAME
+    config.appName = application.getString(R.string.app_name)
     config.appIcon = R.mipmap.ic_launcher
-    config.version = BuildConfig.VERSION_NAME
-    config.author = BuildConfig.GITHUB_REPO_OWNER
-    config.webHomePage = BuildConfig.GITHUB_REPO_URL
+    config.version = application.getString(R.string.app_version)
     config.buildType = AboutConfig.BuildType.GOOGLE
-    config.packageName = BuildConfig.APPLICATION_ID.removeSuffix(".debug")
+    config.packageName = application.getString(R.string.app_id)
     // Email
-    config.emailAddress = "support@1951fdg.com"
-    config.emailSubject = ""
-    config.emailBody = ""
-    config.emailBodyPrompt = ""
+    config.emailAddress = application.getString(R.string.email_address)
+    config.emailSubject = application.getString(R.string.empty)
+    config.emailBody = application.getString(R.string.empty)
+    config.emailBodyPrompt = application.getString(R.string.empty)
     // Share
-    config.shareMessage = ""
-    config.sharingTitle = "Share"
+    config.shareMessage = application.getString(R.string.empty)
+    config.sharingTitle = application.getString(R.string.share)
 }
 
 fun initPreferences(application: Application) {

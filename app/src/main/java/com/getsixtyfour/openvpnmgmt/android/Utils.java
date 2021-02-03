@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 import io.github.getsixtyfour.openpyn.BuildConfig;
+import io.github.getsixtyfour.openpyn.R;
 
 /**
  * @author 1951FDG
@@ -50,13 +51,13 @@ public final class Utils {
         }
 
         GitHubCrashIssue.Builder builder = new GitHubCrashIssue.Builder();
-        builder.setAssignees(Collections.singletonList(BuildConfig.GITHUB_REPO_OWNER));
-        builder.setDirty(BuildConfig.GIT_DIRTY);
+        builder.setAssignees(Collections.singletonList(context.getString(R.string.github_repo_owner)));
+        builder.setDirty(Boolean.parseBoolean(context.getString(R.string.git_dirty)));
         builder.setDisabled(BuildConfig.DEBUG);
-        builder.setId(BuildConfig.GIT_COMMIT_ID);
-        builder.setLabels(Collections.singletonList("crash"));
-        builder.setUrl(BuildConfig.GITHUB_REPO_URL);
-        builder.setVersion(BuildConfig.VERSION_NAME);
+        builder.setId(context.getString(R.string.git_commit_id));
+        builder.setLabels(Collections.singletonList(context.getString(R.string.crash_label)));
+        builder.setUrl(context.getString(R.string.github_repo_url));
+        builder.setVersion(context.getString(R.string.app_version));
         GitHubCrashIssue gitHubIssue = builder.build();
         return gitHubIssue.createIntent(e);
     }

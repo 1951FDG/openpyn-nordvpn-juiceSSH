@@ -1,0 +1,109 @@
+// Android Studio 4.1.0
+// https://github.com/android/gradle-recipes
+
+def keyIpdataProvider = tasks.register('keyIpdataProvider') {
+    dependsOn appGenerateApiBuildConstants
+    doLast {
+        ext.variable = project.ext.apiProps['keyIpdata'] ?: ''
+    }
+}
+
+def keyIpinfoProvider = tasks.register('keyIpinfoProvider') {
+    dependsOn appGenerateApiBuildConstants
+    doLast {
+        ext.variable = project.ext.apiProps['keyIpinfo'] ?: ''
+    }
+}
+
+def keyIpstackProvider = tasks.register('keyIpstackProvider') {
+    dependsOn appGenerateApiBuildConstants
+    doLast {
+        ext.variable = project.ext.apiProps['keyIpdata'] ?: ''
+    }
+}
+
+def gitCommitIdProvider = tasks.register('gitCommitIdProvider') {
+    dependsOn appGenerateGitBuildConstants
+    doLast {
+        ext.variable = project.ext.gitProps['git.commit.id']
+    }
+}
+
+def gitDirtyProvider = tasks.register('gitDirtyProvider') {
+    dependsOn appGenerateGitBuildConstants
+    doLast {
+        ext.variable = project.ext.gitProps['git.dirty']
+    }
+}
+
+def githubRepoOwnerProvider = tasks.register('githubRepoOwnerProvider') {
+    dependsOn appGenerateGitBuildConstants
+    doLast {
+        ext.variable = project.ext.gitProps['github.repo.owner']
+    }
+}
+
+def githubRepoNameProvider = tasks.register('githubRepoNameProvider') {
+    dependsOn appGenerateGitBuildConstants
+    doLast {
+        ext.variable = project.ext.gitProps['github.repo.name']
+    }
+}
+
+def githubRepoUrlProvider = tasks.register('githubRepoUrlProvider') {
+    dependsOn appGenerateGitBuildConstants
+    doLast {
+        ext.variable = project.ext.gitProps['github.repo.url']
+    }
+}
+
+android {
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+            resValue 'string', 'app_id', "${defaultConfig.applicationId}"
+            resValue 'string', 'app_version', "${defaultConfig.versionName}${versionNameSuffix} (${defaultConfig.versionCode})"
+        }
+        release {
+            resValue 'string', 'app_id', "${defaultConfig.applicationId}"
+            resValue 'string', 'app_version', "${defaultConfig.versionName} (${defaultConfig.versionCode})"
+        }
+    }
+
+    onVariantProperties {
+        addResValue 'git_commit_id', 'string', gitCommitIdProvider.map { task -> task.variable }, null
+        addResValue 'git_dirty', 'string', gitDirtyProvider.map { task -> task.variable }, null
+        addResValue 'github_repo_owner', 'string', githubRepoOwnerProvider.map { task -> task.variable }, null
+        addResValue 'github_repo_name', 'string', githubRepoNameProvider.map { task -> task.variable }, null
+        addResValue 'github_repo_url', 'string', githubRepoUrlProvider.map { task -> task.variable }, null
+    }
+
+    onVariants.withBuildType('debug') {
+        it.onProperties {
+            addResValue 'api_key_ipdata', 'string', keyIpdataProvider.map { task -> task.variable }, null
+            addResValue 'api_key_ipinfo', 'string', keyIpinfoProvider.map { task -> task.variable }, null
+            addResValue 'api_key_ipstack', 'string', keyIpstackProvider.map { task -> task.variable }, null
+        }
+    }
+
+    onVariants.withBuildType('release') {
+        it.onProperties {
+            addResValue 'api_key_ipdata', 'string', '', null
+            addResValue 'api_key_ipinfo', 'string', '', null
+            addResValue 'api_key_ipstack', 'string', '', null
+
+            Properties keystoreProperties = loadProperties('keystore.properties')
+            if (!keystoreProperties.isEmpty()) {
+                def buildType = 'release'
+                android.signingConfigs.create buildType, {
+                    keyAlias keystoreProperties['keyAlias']
+                    keyPassword keystoreProperties['keyPassword']
+                    storeFile file(keystoreProperties['storeFile'])
+                    storePassword keystoreProperties['storePassword']
+                }
+                android.buildTypes[buildType].signingConfig = android.signingConfigs[buildType]
+            }
+        }
+    }
+}

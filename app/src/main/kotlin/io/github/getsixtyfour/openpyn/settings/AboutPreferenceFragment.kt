@@ -74,19 +74,19 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         category.addPreference(getPreference(activity,
             R.string.egab_author,
-            BuildConfig.GITHUB_REPO_NAME.capitalize(),
+            activity.getString(R.string.github_repo_name).capitalize(),
             R.drawable.ic_github_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openHTMLPage(activity, BuildConfig.GITHUB_REPO_URL)
+                AboutBoxUtils.openHTMLPage(activity, activity.getString(R.string.github_repo_url))
                 true
             }))
         // TODO: go to google play or github depending on version
         category.addPreference(getPreference(activity,
             if (activity.verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)) R.string.egab_play_store_version else R.string.egab_version,
-            "${BuildConfig.BUILD_TYPE.capitalize()} ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+            activity.getString(R.string.app_version),
             R.drawable.ic_info_outline_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openHTMLPage(activity, "${BuildConfig.GITHUB_REPO_URL}/tree/${BuildConfig.GIT_COMMIT_ID}")
+                AboutBoxUtils.openHTMLPage(activity, "${activity.getString(R.string.github_repo_url)}/tree/${activity.getString(R.string.git_commit_id)}")
                 true
             }))
 
@@ -95,7 +95,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             null,
             R.drawable.ic_history_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openHTMLPage(activity, "${BuildConfig.GITHUB_REPO_URL}/releases")
+                AboutBoxUtils.openHTMLPage(activity, "${activity.getString(R.string.github_repo_url)}/releases")
                 true
             }))
     }
@@ -111,7 +111,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             null,
             R.drawable.ic_bug_report_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openHTMLPage(activity, "${BuildConfig.GITHUB_REPO_URL}/issues/new")
+                AboutBoxUtils.openHTMLPage(activity, "${activity.getString(R.string.github_repo_url)}/issues/new")
                 true
             }))
 
@@ -136,7 +136,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             null,
             R.drawable.ic_google_play_black_24dp,
             OnPreferenceClickListener {
-                AboutBoxUtils.openApp(activity, AboutConfig.BuildType.GOOGLE, BuildConfig.APPLICATION_ID.removeSuffix(".debug"))
+                AboutBoxUtils.openApp(activity, AboutConfig.BuildType.GOOGLE, activity.getString(R.string.app_id))
                 true
             }))
 

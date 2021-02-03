@@ -60,7 +60,6 @@ android {
             ndk {
                 abiFilters 'arm64-v8a'
             }
-            applicationIdSuffix '.debug'
         }
     }
     buildFeatures {
@@ -174,18 +173,19 @@ configurations {
 }
 
 afterEvaluate {
-    generateDebugResValues.dependsOn(appGenerateApiBuildConstants)
+    // Android Gradle Plugin 4.1.0 breaks build config field injecting in variants dynamically
+    // https://issuetracker.google.com/issues/171898346
+    /*generateDebugResValues.dependsOn(appGenerateApiBuildConstants)
     generateDebugBuildConfig.dependsOn(appGenerateGitBuildConstants)
-
     generateReleaseResValues.dependsOn(appGenerateApiBuildConstants)
-    generateReleaseBuildConfig.dependsOn(appGenerateGitBuildConstants)
+    generateReleaseBuildConfig.dependsOn(appGenerateGitBuildConstants)*/
 
     assembleRelease.dependsOn appCheckIfDirty, appCheckIfSame, appCheckIfTagged
 }
 
 dependencies {
     // Java 8+ libraries
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
 
     // 1951FDG
     implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.8'
@@ -318,3 +318,4 @@ dependencies {
 }
 
 apply from: 'other.gradle'
+apply from: 'inject.gradle'

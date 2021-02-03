@@ -37,6 +37,7 @@ captures/
 *.iml
 .idea/assetWizardSettings.xml
 .idea/caches
+.idea/compiler.xml
 .idea/dictionaries
 .idea/gradle.xml
 .idea/jarRepositories.xml

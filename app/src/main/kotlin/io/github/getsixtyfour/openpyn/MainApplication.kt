@@ -7,7 +7,7 @@ open class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        initAboutConfig()
+        initAboutConfig(this)
         initPreferences(this)
         initCrashlytics(this)
         initNetworkInfo(this)
