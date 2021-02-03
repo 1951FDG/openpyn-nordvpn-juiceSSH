@@ -11,7 +11,7 @@ buildscript {
     }
     ext {
         kotlin_version = '1.3.72'
-        nav_version = '2.2.1'
+        nav_version = '2.3.3'
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.2'
@@ -38,7 +38,7 @@ buildscript {
 
         classpath 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.5.1'
 
-        classpath 'net.ltgt.gradle:gradle-errorprone-plugin:1.1.1'
+        classpath 'net.ltgt.gradle:gradle-errorprone-plugin:1.3.0'
 
         //classpath 'com.google.gms:google-services:4.3.4'
 
@@ -108,6 +108,7 @@ allprojects {
                 disable('AlmostJavadoc')
                 disable('AndroidJdkLibsChecker')
                 disable('BooleanParameter')
+                disable('EmptyCatch')
                 disable('Java7ApiChecker')
                 disable('MissingSummary')
                 //warn('Nopen')
@@ -115,7 +116,7 @@ allprojects {
                 disable('StringSplitter')
                 disable('UnnecessaryDefaultInEnumSwitch')
                 disable('Var')
-                option('NullAway:AnnotatedPackages', 'com.antoniocarlon,com.getsixtyfour,io.github.getsixtyfour')
+                option('NullAway:AnnotatedPackages', 'com.getsixtyfour,io.github.getsixtyfour')
                 excludedPaths = '.*/app/build/.*|.*/almworks/.*|.*/requery/.*|.*/javolution/.*|.*/sqlite/.*'
             }
         }
