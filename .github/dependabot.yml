@@ -8,9 +8,6 @@ updates:
   open-pull-requests-limit: 99
   target-branch: slave
   ignore:
-  - dependency-name: com.afollestad.material-dialogs:core
-    versions:
-    - "> 0.9.6.0"
   - dependency-name: com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android
     versions:
     - ">= 1.6.a"
