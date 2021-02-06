@@ -2,6 +2,8 @@ package io.github.getsixtyfour.timber
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import info.hannes.timber.FileLoggingTree
 import java.io.File
 import java.io.FileWriter
@@ -35,7 +37,9 @@ class DebugFileLoggingTree(externalCacheDir: File, context: Context? = null, fil
             writer.append(textLine)
             writer.flush()
             writer.close()
-            lastLogEntry.value = textLine
+
+            if (Looper.getMainLooper().thread == Thread.currentThread()) lastLogEntry.value = textLine
+            else Handler(Looper.getMainLooper()).post { lastLogEntry.value = textLine }
         } catch (ignored: Exception) {
         }
     }
