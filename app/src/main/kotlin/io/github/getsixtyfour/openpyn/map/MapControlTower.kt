@@ -168,6 +168,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         }
     }
 
+    @Suppress("MagicNumber")
     override fun onMarkerClick(marker: Marker): Boolean {
         if (marker.zIndex == 1.0f) {
             return false
@@ -250,6 +251,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         views.setClickableButtons(true)
     }
 
+    @Suppress("MagicNumber")
     override fun onAnimationFinish(animation: Animation) {
         if (animation.isClosest) {
             views.fakeLayoutButtons()
@@ -435,6 +437,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             val mDescriptor1: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_1) }
             val mDescriptor10: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_10) }
 
+            @Suppress("MagicNumber")
             override fun onLevelChange(marker: LazyMarker, level: Int) {
                 when (level) {
                     0 -> {

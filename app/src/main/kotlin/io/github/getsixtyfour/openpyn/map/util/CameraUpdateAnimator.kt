@@ -193,7 +193,7 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
     }
 
     companion object {
-        private fun startAnimation(
+        internal fun startAnimation(
             googleMap: GoogleMap, animation: Animation, cancelableCallback: GoogleMap.CancelableCallback?
         ) {
             if (animation.isAnimate) {

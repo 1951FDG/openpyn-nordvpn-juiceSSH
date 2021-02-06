@@ -246,6 +246,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
         (getCurrentNavigationFragment(this) as? OnCommandExecuteListener)?.onDisconnect()
     }
 
+    @Suppress("MagicNumber")
     override fun onCompleted(exitCode: Int) {
         toolbar.hideProgress(true)
 

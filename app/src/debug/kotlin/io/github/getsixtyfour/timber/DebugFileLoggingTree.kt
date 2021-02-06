@@ -15,6 +15,7 @@ import java.util.UUID
 class DebugFileLoggingTree(externalCacheDir: File, context: Context? = null, filename: String = UUID.randomUUID().toString()) :
     FileLoggingTree(externalCacheDir, context, filename) {
 
+    @Suppress("HardCodedStringLiteral", "MagicNumber")
     @SuppressLint("LogNotTimber")
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         try {

@@ -107,7 +107,6 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     @RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)
     constructor(application: Application) : this(application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
 
-    // Verify host availability
     @Suppress("MagicNumber")
     fun hostAvailable(host: String, port: Int): Boolean {
         logger.debug("Verifying host availability: $host:$port")
@@ -115,18 +114,18 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
             return false
         }
 
-        try {
+        return try {
             Socket().use { socket ->
                 socket.connect(InetSocketAddress(host, port), 2000)
                 socket.close()
                 // Host available
                 logger.debug { "Host: $host:$port is available" }
-                return@hostAvailable true
+                return@use true
             }
         } catch (e: IOException) {
             // Host unreachable or timeout
             logger.debug { "Host: $host:$port is not available" }
-            return false
+            false
         }
     }
 

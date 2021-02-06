@@ -76,6 +76,7 @@ class OpenpynController(
         mSessionExecuteListener?.onCompleted(exitCode)
     }
 
+    @Suppress("ComplexMethod")
     override fun onOutputLine(line: String) {
         logger.info(line)
 
@@ -134,7 +135,7 @@ class OpenpynController(
         mSessionExecuteListener?.onError(reason, message)
     }
 
-    @Suppress("ComplexMethod", "LongMethod")
+    @Suppress("ComplexMethod")
     override fun connect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         fun code(iso: String): String = when (iso) {
             "gb" -> "uk"

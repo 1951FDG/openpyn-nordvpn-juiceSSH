@@ -76,7 +76,7 @@ complexity:
     threshold: 600
   LongMethod:
     active: true
-    threshold: 60
+    threshold: 80
   LongParameterList:
     active: true
     threshold: 6
@@ -97,10 +97,10 @@ complexity:
   TooManyFunctions:
     active: true
     excludes: "**/test/**,**/androidTest/**,**/*.Test.kt,**/*.Spec.kt,**/*.Spek.kt"
-    thresholdInFiles: 20
-    thresholdInClasses: 20
+    thresholdInFiles: 30
+    thresholdInClasses: 30
     thresholdInInterfaces: 11
-    thresholdInObjects: 20
+    thresholdInObjects: 30
     thresholdInEnums: 11
     ignoreDeprecated: false
     ignorePrivate: false

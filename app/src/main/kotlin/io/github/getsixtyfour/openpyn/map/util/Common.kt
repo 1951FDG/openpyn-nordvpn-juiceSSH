@@ -127,6 +127,7 @@ suspend fun generateXML() {
     }
 }
 
+@Suppress("ComplexCondition")
 fun createJson2(type: String, content: JSONObject): JSONObject? {
     var flag = ""
     var country = ""
@@ -189,7 +190,6 @@ fun createJson2(type: String, content: JSONObject): JSONObject? {
 }
 
 @WorkerThread
-@Suppress("MagicNumber")
 suspend fun createJson(): JSONArray? {
     fun populateFeatures(res: JSONObject, features: JSONObject) {
         val categories = res.getJSONArray(CATEGORIES)
@@ -326,7 +326,6 @@ fun writeJsonArray(context: Context, @AnyRes resId: Int, text: String): File {
     return file
 }
 
-@Suppress("ComplexMethod", "MagicNumber")
 fun showThreats(activity: Activity, jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
     logger.info(threats::toString)
@@ -449,7 +448,7 @@ suspend fun createGeoJson(context: Context): JSONObject? {
             "ipdata" -> {
                 token = SecurityCypher.getInstance(context).decryptString(ipdata).toString()
                 server = "https://api.ipdata.co?api-key=$token&$fields"
-                // server = "https://api.ipdata.co?api-key=$token&$fields,threat"
+                /*server = "https://api.ipdata.co?api-key=$token&$fields,threat"*/
             }
             "ipinfo" -> {
                 token = SecurityCypher.getInstance(context).decryptString(ipinfo).toString()
@@ -478,7 +477,6 @@ suspend fun createGeoJson(context: Context): JSONObject? {
     return null
 }
 
-@Suppress("ComplexMethod")
 fun getCurrentPosition(
     context: Context, flags: HashSet<CharSequence>, jsonObj: JSONObject?, jsonArr: JSONArray? = null
 ): LatLng {
