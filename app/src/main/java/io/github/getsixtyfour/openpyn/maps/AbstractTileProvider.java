@@ -21,13 +21,6 @@ abstract class AbstractTileProvider implements TileProvider {
     // Tile dimension, in pixels
     private static final int TILE_DIM = 512;
 
-    @Nullable
-    protected LatLngBounds mBounds;
-
-    protected float mMinimumZoom;
-
-    protected float mMaximumZoom;
-
     /**
      * Convert tile coordinates and zoom into Bounds format.
      *
@@ -62,58 +55,27 @@ abstract class AbstractTileProvider implements TileProvider {
         return (bytes != null) ? new Tile(TILE_DIM, TILE_DIM, bytes) : NO_TILE;
     }
 
-    /**
-     * The geographic bounds available from this provider.
-     *
-     * @return the geographic bounds available or {@link null} if it could not
-     * be determined.
-     */
-    @Nullable
-    public LatLngBounds getBounds() {
-        return mBounds;
-    }
-
-    /**
-     * The minimum zoom level supported by this provider.
-     *
-     * @return the minimum zoom level supported or {@link #mMinimumZoom} if
-     * it could not be determined.
-     */
-    public float getMinimumZoom() {
-        return mMinimumZoom;
-    }
-
-    /**
-     * The maximum zoom level supported by this provider.
-     *
-     * @return the maximum zoom level supported or {@link #mMaximumZoom} if
-     * it could not be determined.
-     */
-    public float getMaximumZoom() {
-        return mMaximumZoom;
-    }
-
-    /**
-     * Determines if the requested zoom level is supported by this provider.
-     *
-     * @param zoom The requested zoom level.
-     * @return {@code true} if the requested zoom level is supported by this
-     * provider.
-     */
-    public boolean isZoomLevelAvailable(float zoom) {
-        return (zoom >= mMinimumZoom) && (zoom <= mMaximumZoom);
-    }
-
-    @SuppressWarnings("unused")
-    @Nullable
+    @NonNull
     public String getName() {
-        return getStringValue("name");
+        return Objects.requireNonNull(getStringValue("name"));
     }
 
-    @SuppressWarnings("unused")
-    @Nullable
+    @NonNull
     public String getFormat() {
-        return getStringValue("format");
+        return Objects.requireNonNull(getStringValue("format"));
+    }
+
+    @NonNull
+    public String getBounds() {
+        return Objects.requireNonNull(getStringValue("bounds"));
+    }
+
+    public float getMinZoom() {
+        return Float.parseFloat(Objects.requireNonNull(getStringValue("minzoom")));
+    }
+
+    public float getMaxZoom() {
+        return Float.parseFloat(Objects.requireNonNull(getStringValue("maxzoom")));
     }
 
     @SuppressWarnings("unused")
@@ -140,10 +102,11 @@ abstract class AbstractTileProvider implements TileProvider {
         return getStringValue("version");
     }
 
-    @SuppressWarnings("StandardVariableNames")
-    protected LatLngBounds calculateBounds() {
+    @SuppressWarnings({ "StandardVariableNames", "unused" })
+    @NonNull
+    public LatLngBounds getLatLngBounds() {
         String result = Objects.requireNonNull(getStringValue("bounds"));
-        String[] parts = result.split(",");
+        String[] parts = result.split(",", -1);
         // OpenLayers Bounds format (left, bottom, right, top)
         double w = Double.parseDouble(parts[0]);
         double s = Double.parseDouble(parts[1]);
@@ -154,21 +117,8 @@ abstract class AbstractTileProvider implements TileProvider {
         return new LatLngBounds(sw, ne);
     }
 
-    protected float calculateMinZoomLevel() {
-        String result = Objects.requireNonNull(getStringValue("minzoom"));
-        return Float.parseFloat(result);
-    }
-
-    protected float calculateMaxZoomLevel() {
-        String result = Objects.requireNonNull(getStringValue("maxzoom"));
-        return Float.parseFloat(result);
-    }
-
     @Nullable
     protected abstract byte[] getBytes(int x, int y, int zoom);
-
-    @Nullable
-    protected abstract String getSQliteVersion();
 
     @Nullable
     protected abstract String getStringValue(@NonNls @NonNull String key);

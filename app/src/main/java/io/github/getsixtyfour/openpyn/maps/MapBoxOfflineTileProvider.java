@@ -67,6 +67,22 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
 
     private static final String SQLITE_3_NDK = "sqlite3ndk";
 
+    private String mName;
+
+    private String mFormat;
+
+    private String mBounds;
+
+    private float mMinZoom;
+
+    private float mMaxZoom;
+
+    private final SQLiteCursor mCursor;
+
+    private final SQLiteDatabase mDatabase;
+
+    private final SQLiteQuery mQuery;
+
     // private final SQLiteQueue mQueue;
 
     static {
@@ -74,12 +90,6 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
         System.loadLibrary(SQLITE_3_NDK);
         System.loadLibrary(SQLITE_3);
     }
-
-    private final SQLiteCursor mCursor;
-
-    private final SQLiteDatabase mDatabase;
-
-    private final SQLiteQuery mQuery;
 
     public MapBoxOfflineTileProvider(@NonNull File file) {
         this(file.getAbsolutePath());
@@ -96,9 +106,11 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
 
     private MapBoxOfflineTileProvider(@NonNull SQLiteDatabase database) {
         mDatabase = database;
-        mBounds = calculateBounds();
-        mMinimumZoom = calculateMinZoomLevel();
-        mMaximumZoom = calculateMaxZoomLevel();
+        mName = getName();
+        mFormat = getFormat();
+        mBounds = getBounds();
+        mMinZoom = super.getMinZoom();
+        mMaxZoom = super.getMaxZoom();
         mQuery = new SQLiteQuery(mDatabase, QUERY, null, null);
         mCursor = new SQLiteCursor(new SQLiteDirectCursorDriver(null, null, null, null), null, mQuery);
 
@@ -208,8 +220,8 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
     @NonNull
     @Override
     public String toString() {
-        return "MapBoxOfflineTileProvider{" + "mDatabase='" + "'" + ", mSql='" + QUERY + "'" + ", mBounds=" + mBounds + ", mMinimumZoom="
-                + mMinimumZoom + ", mMaximumZoom=" + mMaximumZoom + "}";
+        return "MapBoxOfflineTileProvider{" + "name='" + mName + '\'' + ", format='" + mFormat + '\'' + ", bounds=" + mBounds
+                + ", minimumZoom=" + mMinZoom + ", maximumZoom=" + mMaxZoom + '}';
     }
 
     @SuppressWarnings("SynchronizedMethod")
@@ -270,7 +282,6 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
     }*/
 
     @Nullable
-    @Override
     public String getSQliteVersion() {
         @NonNls String sql = "SELECT sqlite_version() AS sqlite_version";
         // return DatabaseUtils.stringForQuery(mDatabase, sql, null); // sqliteX
@@ -287,5 +298,38 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
         try (Cursor cursor = mDatabase.rawQueryWithFactory(null, sql, bindArgs, null, null)) {
             return cursor.moveToPosition(0) ? cursor.getString(0) : null;
         }
+    }
+
+    /**
+     * The minimum zoom level supported by this provider.
+     *
+     * @return the minimum zoom level supported or {@link #mMinZoom} if
+     * it could not be determined.
+     */
+    @Override
+    public float getMinZoom() {
+        return mMinZoom;
+    }
+
+    /**
+     * The maximum zoom level supported by this provider.
+     *
+     * @return the maximum zoom level supported or {@link #mMaxZoom} if
+     * it could not be determined.
+     */
+    @Override
+    public float getMaxZoom() {
+        return mMaxZoom;
+    }
+
+    /**
+     * Determines if the requested zoom level is supported by this provider.
+     *
+     * @param zoom The requested zoom level.
+     * @return {@code true} if the requested zoom level is supported by this
+     * provider.
+     */
+    public boolean isZoomLevelAvailable(float zoom) {
+        return (zoom >= mMinZoom) && (zoom <= mMaxZoom);
     }
 }
