@@ -193,6 +193,7 @@ dependencies {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
     implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.16'
+    //noinspection GradleDependency
     debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:slave-SNAPSHOT'
 
     // Android
@@ -257,7 +258,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'io.github.microutils:kotlin-logging:1.11.5'
     debugImplementation 'at.favre.lib:slf4j-timber:1.0.1'
-    debugImplementation ('com.github.AppDevNext:Logcat:1.9.0') {
+    debugImplementation ('com.github.AppDevNext.Logcat:LogcatCore:2.1.1') {
         exclude group: 'com.google.android.material'
         exclude group: 'com.jakewharton.timber'
     }
@@ -272,7 +273,7 @@ dependencies {
     }
 
     // UI
-    implementation 'com.github.GrenderG:Toasty:1.4.2'
+    implementation 'com.github.GrenderG:Toasty:1.5.0'
     implementation 'com.github.mayuroks:minibar:0.2.0'
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
 
@@ -312,10 +313,6 @@ dependencies {
     }
     //noinspection GradleDependency
     implementation 'commons-cli:commons-cli:1.4'
-
-    // Google Maps SDK for Android v.3.0.0 BETA
-    //implementation name:'maps-sdk-3.0.0-beta', ext:'aar'
-    //implementation 'com.google.android.gms:play-services-gcm:17.0.0'
 }
 
 apply from: 'other.gradle'
