@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import io.github.getsixtyfour.openpyn.R;
 
 /**
- * @author Arne Schwabe
  * @author 1951FDG
  */
 

@@ -27,11 +27,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.jetbrains.annotations.NonNls;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @SuppressWarnings("Singleton")
 public final class SecurityCypher {
 
@@ -61,7 +56,7 @@ public final class SecurityCypher {
         }
     }
 
-    @SuppressWarnings("SynchronizeOnThis")
+    @SuppressWarnings({ "ConstantConditions", "SynchronizeOnThis" })
     @NonNull
     public static SecurityCypher getInstance(@NonNull Context context) {
         if (sInstance == null) {

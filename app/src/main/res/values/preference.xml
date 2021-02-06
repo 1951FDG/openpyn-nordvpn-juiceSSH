@@ -254,14 +254,6 @@
     <string name="pref_silent">Silent</string>
     <string name="pref_description_silent">Do not try to send notifications. Use if \“libnotify\” or \“gi\” are not available</string>
 
-    <string name="is_tor" translatable="false">is_tor</string>
-    <string name="is_proxy" translatable="false">is_proxy</string>
-    <string name="is_anonymous" translatable="false">is_anonymous</string>
-    <string name="is_known_attacker" translatable="false">is_known_attacker</string>
-    <string name="is_known_abuser" translatable="false">is_known_abuser</string>
-    <string name="is_threat" translatable="false">is_threat</string>
-    <string name="is_bogon" translatable="false">is_bogon</string>
-
     <string name="pref_category_geolocation">Geolocation API</string>
     <string name="pref_geo">GeoIP</string>
     <string name="pref_description_geolocation">Specify service to use to determine current location based on public IP address</string>

@@ -64,21 +64,6 @@ public class GitHubCrashIssue {
 
     private static final int MAX_STACK_TRACE_SIZE = 20;
 
-    static {
-        // Java Packages
-        PACKAGE_LIST.add("java.beans");
-        PACKAGE_LIST.add("java.io");
-        PACKAGE_LIST.add("java.lang");
-        PACKAGE_LIST.add("java.math");
-        PACKAGE_LIST.add("java.net");
-        PACKAGE_LIST.add("java.nio");
-        PACKAGE_LIST.add("java.security");
-        PACKAGE_LIST.add("java.sql");
-        PACKAGE_LIST.add("java.text");
-        PACKAGE_LIST.add("java.time");
-        PACKAGE_LIST.add("java.util");
-    }
-
     @NonNls
     private final String mGithubRepoUrl;
 
@@ -100,6 +85,21 @@ public class GitHubCrashIssue {
     private final boolean mGithubDirty;
 
     private final boolean mGithubEnabled;
+
+    static {
+        // Java Packages
+        PACKAGE_LIST.add("java.beans");
+        PACKAGE_LIST.add("java.io");
+        PACKAGE_LIST.add("java.lang");
+        PACKAGE_LIST.add("java.math");
+        PACKAGE_LIST.add("java.net");
+        PACKAGE_LIST.add("java.nio");
+        PACKAGE_LIST.add("java.security");
+        PACKAGE_LIST.add("java.sql");
+        PACKAGE_LIST.add("java.text");
+        PACKAGE_LIST.add("java.time");
+        PACKAGE_LIST.add("java.util");
+    }
 
     public GitHubCrashIssue(@NonNull String url, @NonNull String id, @NonNull String assignees, @NonNull String labels,
                             @NonNull String version, boolean dirty, boolean enabled) {
@@ -263,15 +263,14 @@ public class GitHubCrashIssue {
     @SuppressWarnings("WeakerAccess")
     @NonNull
     public String encode(@Nullable String s) {
-        String result = null;
-        if (TextUtils.isEmpty(s)) {
-            result = (s == null) ? "" : s;
-        } else {
-            try {
-                result = URLEncoder.encode(s, UTF_8);
-            } catch (UnsupportedEncodingException ignored) {
-                // The system should always have the platform default
-            }
+        if ((s == null) || s.isEmpty()) {
+            return (s == null) ? "" : s;
+        }
+        String result = s;
+        try {
+            result = URLEncoder.encode(s, UTF_8);
+        } catch (UnsupportedEncodingException ignored) {
+            // The system should always have the platform default
         }
         return result;
     }

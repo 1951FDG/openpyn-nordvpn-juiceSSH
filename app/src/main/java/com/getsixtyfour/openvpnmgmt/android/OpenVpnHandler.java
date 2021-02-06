@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 
-class OpenVpnHandler implements UsernamePasswordHandler {
+final class OpenVpnHandler implements UsernamePasswordHandler {
 
     private final CharSequence mUser;
 
@@ -17,13 +17,11 @@ class OpenVpnHandler implements UsernamePasswordHandler {
     }
 
     @Override
-    @Nullable
     public CharSequence getUser() {
         return mUser;
     }
 
     @Override
-    @Nullable
     public CharSequence getPassword() {
         return mPassword;
     }

@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Arne Schwabe
  * @author 1951FDG
  */
 
@@ -43,6 +42,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     @NonNls
     private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
 
+    @Nullable
     private static volatile ManagementConnection sInstance = null;
 
     private final CopyOnWriteArraySet<OnByteCountChangedListener> mByteCountChangedListeners;
@@ -66,7 +66,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         mTrafficHistory = new TrafficHistory();
     }
 
-    @SuppressWarnings("SynchronizeOnThis")
+    @SuppressWarnings({ "ConstantConditions", "SynchronizeOnThis" })
     public static @NotNull ManagementConnection getInstance() {
         if (sInstance == null) {
             synchronized (ManagementConnection.class) {
@@ -422,7 +422,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             case "RSA_SIGN":
                 throw new UnsupportedOperationException(Constants.NOT_SUPPORTED_YET);
             default:
-                LOGGER.error("Got unrecognized command: {}", cmd);
+                LOGGER.error("Got unrecognized command: {}", cmd); //NON-NLS
                 break;
         }
     }
@@ -446,9 +446,9 @@ public final class ManagementConnection extends AbstractConnection implements Co
     @SuppressWarnings("OverlyLongMethod")
     private void processLog(@NotNull String argument) {
         String[] args = argument.split(",", 3);
-        String time = args[0];
+        @NonNls String time = args[0];
         @NonNls String level = args[1];
-        String message = args[2];
+        @NonNls String message = args[2];
         LogLevel logLevel;
         switch (level) {
             case "I":
@@ -473,7 +473,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 logLevel = LogLevel.VERBOSE;
                 break;
             default:
-                LOGGER.error("Unknown log level {} for message {}", level, message);
+                LOGGER.error("Unknown log level {} for message {}", level, message); //NON-NLS
                 logLevel = LogLevel.UNKNOWN;
                 break;
         }
