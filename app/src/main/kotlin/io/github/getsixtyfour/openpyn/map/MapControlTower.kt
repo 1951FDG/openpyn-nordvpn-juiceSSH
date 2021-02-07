@@ -139,6 +139,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     override fun onMapLoaded() {
+        // Load all map tiles
         mCameraUpdateAnimator?.execute()
     }
 
@@ -389,8 +390,8 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     private fun loadMap(animations: ArrayList<Animation>) {
         mGoogleMap?.let {
             it.addTileOverlay(TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false))
-            it.setMaxZoomPreference(mTileProvider.maximumZoom)
-            it.setMinZoomPreference(mTileProvider.minimumZoom)
+            it.setMaxZoomPreference(mTileProvider.maxZoom)
+            it.setMinZoomPreference(mTileProvider.minZoom)
             it.setOnInfoWindowClickListener(this)
             it.setOnMapClickListener(this)
             it.setOnMarkerClickListener(this)

@@ -8,8 +8,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
-import com.google.maps.android.geometry.Point;
-import com.google.maps.android.projection.SphericalMercatorProjection;
 
 import java.util.Objects;
 
@@ -22,30 +20,29 @@ abstract class AbstractTileProvider implements TileProvider {
     private static final int TILE_DIM = 512;
 
     /**
-     * Convert tile coordinates and zoom into Bounds format.
+     * Convert tile coordinates and zoom into LatLngBounds format.
      *
-     * @param x The requested x coordinate.
-     * @param y The requested y coordinate.
-     * @param z The requested zoom level.
+     * @param x    The requested x coordinate.
+     * @param y    The requested y coordinate.
+     * @param zoom The requested zoom level.
      * @return the geographic bounds of the tile
      */
     @SuppressWarnings({ "MagicNumber", "ImplicitNumericConversion" })
     @NonNull
-    public static LatLngBounds calculateTileBounds(int x, int y, int z) {
-        // Width of the world = 1
-        double worldWidth = 1.0;
+    public static LatLngBounds calculateTileBounds(int x, int y, int zoom) {
         // Calculate width of one tile, given there are 2 ^ zoom tiles in that zoom level
-        // In terms of world width units
-        double tileWidth = worldWidth / Math.pow(2.0, z);
-        // Make bounds: minX, maxX, minY, maxY
-        double minX = x * tileWidth;
-        double maxX = (x + 1) * tileWidth;
-        double minY = y * tileWidth;
-        double maxY = (y + 1) * tileWidth;
-        SphericalMercatorProjection projection = new SphericalMercatorProjection(worldWidth);
-        LatLng sw = projection.toLatLng(new Point(minX, maxY));
-        LatLng ne = projection.toLatLng(new Point(maxX, minY));
-        return new LatLngBounds(sw, ne);
+        double tileWidth = 1.0 / Math.pow(2.0, zoom);
+        LatLng southwest = toLatLng(x * tileWidth, (y + 1) * tileWidth);
+        LatLng northeast = toLatLng((x + 1) * tileWidth, y * tileWidth);
+        return new LatLngBounds(southwest, northeast);
+    }
+
+    @NonNull
+    @SuppressWarnings("MagicNumber")
+    private static LatLng toLatLng(double x, double y) {
+        double latitude = 90.0 - Math.toDegrees(Math.atan(Math.exp(-(0.5 - y) * 2.0 * Math.PI)) * 2.0);
+        double longitude = (x - 0.5) * 360.0;
+        return new LatLng(latitude, longitude);
     }
 
     @SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
@@ -105,9 +102,9 @@ abstract class AbstractTileProvider implements TileProvider {
     @SuppressWarnings({ "StandardVariableNames", "unused" })
     @NonNull
     public LatLngBounds getLatLngBounds() {
+        // OpenLayers Bounds format (left, bottom, right, top)
         String result = Objects.requireNonNull(getStringValue("bounds"));
         String[] parts = result.split(",", -1);
-        // OpenLayers Bounds format (left, bottom, right, top)
         double w = Double.parseDouble(parts[0]);
         double s = Double.parseDouble(parts[1]);
         double e = Double.parseDouble(parts[2]);

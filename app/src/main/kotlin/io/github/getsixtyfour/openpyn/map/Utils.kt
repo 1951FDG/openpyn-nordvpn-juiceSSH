@@ -89,17 +89,16 @@ internal fun memoryBackedTileProvider(): MapBoxOfflineTileProvider {
     return tileProvider
 }
 
-internal fun getCameraUpdates(): ArrayList<Animation> {
-    // Load all map tiles
-    @Suppress("MagicNumber") val z = 3
-    /*val z = tileProvider!!.minimumZoom.toInt()*/
-    val rows = 2.0.pow(z.toDouble()).toInt() - 1
-    val cameraUpdates = ArrayList<Animation>(rows)
-    for (y in 0..rows) {
-        for (x in 0..rows) {
-            val bounds = MapBoxOfflineTileProvider.calculateTileBounds(x, y, z)
+internal fun getCameraUpdates(zoom: Int = 3): ArrayList<Animation> {
+    // # of tiles at zoom level 3 = 64 = 8 * 8
+    val rows = 2F.pow(zoom).toInt()
+    val cameraUpdates = ArrayList<Animation>(rows * rows)
+    for (y in 0 until rows) {
+        for (x in 0 until rows) {
+            val bounds = MapBoxOfflineTileProvider.calculateTileBounds(x, y, zoom)
             val cameraPosition = CameraPosition.Builder().target(bounds.northeast).build()
-            val animation = Animation(CameraUpdateFactory.newCameraPosition(cameraPosition))
+            val cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition)
+            val animation = Animation(cameraUpdate)
             cameraUpdates.add(animation)
         }
     }
