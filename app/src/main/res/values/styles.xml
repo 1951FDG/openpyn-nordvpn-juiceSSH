@@ -25,7 +25,12 @@
         <!--<item name="preferenceFragmentListStyle">@style/PreferenceFragmentList.Material.Custom</item>-->
         <item name="checkBoxPreferenceStyle">@style/Preference.CheckBoxPreference.Material.Custom</item>
         <item name="editTextPreferenceStyle">@style/Preference.DialogPreference.EditTextPreference.Material.Custom</item>
+        <item name="preferenceFragmentCompatStyle">@style/PreferenceFragment.Material.Custom</item>
+        <item name="preferenceFragmentStyle">@style/PreferenceFragment.Material.Custom</item>
+    </style>
 
+    <style name="PreferenceFragment.Material.Custom" parent="@style/PreferenceFragment.Material">
+        <item name="android:divider">@null</item>
     </style>
 
     <style name="Preference.CheckBoxPreference.Material.Custom" parent="@style/Preference.CheckBoxPreference.Material">

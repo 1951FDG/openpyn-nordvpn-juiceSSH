@@ -1,14 +1,18 @@
 package io.github.getsixtyfour.openpyn.settings
 
 import android.os.Bundle
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.recyclerview.widget.RecyclerView
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
+import io.github.getsixtyfour.openpyn.dpToPx
 
 /**
  * This fragment shows API settings preferences only.
@@ -52,16 +56,14 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        // Load the preferences from an XML resource
         setPreferencesFromResource(R.xml.pref_api, rootKey)
         setTitle(requireActivity())
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.fitsSystemWindows = true
-        setDivider(null)
-
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {
+        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
+        (activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)
+        return view
     }
 
     override fun getCallbackFragment(): PreferenceFragmentCompat = this
@@ -73,5 +75,12 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
                 else -> preference.context.getString(R.string.key_set)
             }
         }
+
+        internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
+            get() = object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    elevation = if (recyclerView.canScrollVertically(-1)) dpToPx(4F, recyclerView.context) else 0F
+                }
+            }
     }
 }

@@ -36,7 +36,7 @@
         </activity>
         <!-- Private activity -->
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name=".SettingsActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"

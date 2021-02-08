@@ -1,12 +1,10 @@
 package io.github.getsixtyfour.openpyn.settings
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.preference.Preference
@@ -14,16 +12,16 @@ import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
+import androidx.recyclerview.widget.RecyclerView
 import com.eggheadgames.aboutbox.AboutBoxUtils
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
-import com.google.android.gms.common.GooglePlayServicesUtil
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import io.github.getsixtyfour.ktextension.setTitle
-import io.github.getsixtyfour.ktextension.verifyInstallerId
-import io.github.getsixtyfour.openpyn.BuildConfig
 import io.github.getsixtyfour.openpyn.R
+import io.github.getsixtyfour.openpyn.dpToPx
+import io.github.getsixtyfour.openpyn.getVersionTitleType
+import io.github.getsixtyfour.openpyn.onLicensesItemSelected
 
 /**
  * This fragment shows About settings preferences only.
@@ -58,46 +56,51 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         setTitle(activity)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.fitsSystemWindows = true
-        setDivider(null)
-
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {
+        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
+        (activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)
+        return view
     }
 
     override fun getCallbackFragment(): PreferenceFragmentCompat = this
 
     private fun addAboutPreferences(activity: Activity, root: PreferenceScreen) {
         val category = PreferenceCategory(activity)
+        category.title = activity.getString(R.string.pref_category_app)
 
         root.addPreference(category)
 
-        category.addPreference(getPreference(activity,
-            R.string.egab_author,
-            activity.getString(R.string.github_repo_name).capitalize(),
-            R.drawable.ic_github_black_24dp,
-            OnPreferenceClickListener {
+        category.addPreference(Preference(activity).apply {
+            icon = ContextCompat.getDrawable(activity, R.drawable.ic_github_black_24dp)
+            title = activity.getString(R.string.egab_author)
+            summary = activity.getString(R.string.github_repo_name)
+            onPreferenceClickListener = OnPreferenceClickListener {
                 AboutBoxUtils.openHTMLPage(activity, activity.getString(R.string.github_repo_url))
                 true
-            }))
+            }
+        })
         // TODO: go to google play or github depending on version
-        category.addPreference(getPreference(activity,
-            if (activity.verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)) R.string.egab_play_store_version else R.string.egab_version,
-            activity.getString(R.string.app_version),
-            R.drawable.ic_info_outline_black_24dp,
-            OnPreferenceClickListener {
-                AboutBoxUtils.openHTMLPage(activity, "${activity.getString(R.string.github_repo_url)}/tree/${activity.getString(R.string.git_commit_id)}")
+        category.addPreference(Preference(activity).apply {
+            icon = ContextCompat.getDrawable(activity, R.drawable.ic_info_outline_black_24dp)
+            title = activity.getString(getVersionTitleType(activity))
+            summary = activity.getString(R.string.app_version)
+            onPreferenceClickListener = OnPreferenceClickListener {
+                AboutBoxUtils.openHTMLPage(
+                    activity, "${activity.getString(R.string.github_repo_url)}/tree/${activity.getString(R.string.git_commit_id)}"
+                )
                 true
-            }))
+            }
+        })
 
-        category.addPreference(getPreference(activity,
-            R.string.egab_changelog,
-            null,
-            R.drawable.ic_history_black_24dp,
-            OnPreferenceClickListener {
+        category.addPreference(Preference(activity).apply {
+            icon = ContextCompat.getDrawable(activity, R.drawable.ic_history_black_24dp)
+            title = activity.getString(R.string.egab_changelog)
+            summary = null
+            onPreferenceClickListener = OnPreferenceClickListener {
                 AboutBoxUtils.openHTMLPage(activity, "${activity.getString(R.string.github_repo_url)}/releases")
                 true
-            }))
+            }
+        })
     }
 
     private fun addSupportPreferences(activity: Activity, root: PreferenceScreen) {
@@ -106,23 +109,25 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         root.addPreference(category)
 
-        category.addPreference(getPreference(activity,
-            R.string.egab_submit_issue,
-            null,
-            R.drawable.ic_bug_report_black_24dp,
-            OnPreferenceClickListener {
+        category.addPreference(Preference(activity).apply {
+            icon = ContextCompat.getDrawable(activity, R.drawable.ic_bug_report_black_24dp)
+            title = activity.getString(R.string.egab_submit_issue)
+            summary = null
+            onPreferenceClickListener = OnPreferenceClickListener {
                 AboutBoxUtils.openHTMLPage(activity, "${activity.getString(R.string.github_repo_url)}/issues/new")
                 true
-            }))
+            }
+        })
 
-        category.addPreference(getPreference(activity,
-            R.string.egab_contact_support,
-            null,
-            R.drawable.ic_email_black_24dp,
-            OnPreferenceClickListener {
+        category.addPreference(Preference(activity).apply {
+            icon = ContextCompat.getDrawable(activity, R.drawable.ic_person_black_24dp)
+            title = activity.getString(R.string.egab_contact_support)
+            summary = null
+            onPreferenceClickListener = OnPreferenceClickListener {
                 EmailUtil.contactUs(activity)
                 true
-            }))
+            }
+        })
     }
 
     private fun addOtherPreferences(activity: Activity, root: PreferenceScreen) {
@@ -131,44 +136,43 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
         root.addPreference(category)
 
-        category.addPreference(getPreference(activity,
-            R.string.egab_leave_review,
-            null,
-            R.drawable.ic_google_play_black_24dp,
-            OnPreferenceClickListener {
+        category.addPreference(Preference(activity).apply {
+            icon = ContextCompat.getDrawable(activity, R.drawable.ic_star_face_black_24)
+            title = activity.getString(R.string.egab_leave_review)
+            summary = null
+            onPreferenceClickListener = OnPreferenceClickListener {
                 AboutBoxUtils.openApp(activity, AboutConfig.BuildType.GOOGLE, activity.getString(R.string.app_id))
                 true
-            }))
+            }
+        })
 
-        category.addPreference(getPreference(activity,
-            R.string.egab_share,
-            null,
-            R.drawable.ic_share_black_24dp,
-            OnPreferenceClickListener {
+        category.addPreference(Preference(activity).apply {
+            icon = ContextCompat.getDrawable(activity, R.drawable.ic_share_black_24dp)
+            title = activity.getString(R.string.egab_share)
+            summary = null
+            onPreferenceClickListener = OnPreferenceClickListener {
                 ShareUtil.share(activity)
                 true
-            }))
+            }
+        })
 
-        category.addPreference(getPreference(activity,
-            R.string.oss_license_title,
-            null,
-            R.drawable.ic_copyleft_green_24dp,
-            OnPreferenceClickListener {
-                OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_licenses))
-                val intent = Intent(activity, OssLicensesMenuActivity::class.java)
-                ContextCompat.startActivity(activity, intent, null)
+        category.addPreference(Preference(activity).apply {
+            icon = ContextCompat.getDrawable(activity, R.drawable.ic_copyleft_green_24dp)
+            title = activity.getString(R.string.oss_license_title)
+            summary = null
+            onPreferenceClickListener = OnPreferenceClickListener {
+                onLicensesItemSelected(it.context)
                 true
-            }))
+            }
+        })
     }
 
-    private fun getPreference(
-        context: Context, @StringRes titleResId: Int?, summary: String?, @DrawableRes iconResId: Int?, listener: OnPreferenceClickListener?
-    ): Preference {
-        val preference = Preference(context)
-        iconResId?.let { preference.icon = ContextCompat.getDrawable(context, it) }
-        titleResId?.let { preference.title = context.getString(it) }
-        summary?.let { preference.summary = it }
-        listener?.let { preference.onPreferenceClickListener = it }
-        return preference
+    companion object {
+        internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
+            get() = object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    elevation = if (recyclerView.canScrollVertically(-1)) dpToPx(4F, recyclerView.context) else 0F
+                }
+            }
     }
 }

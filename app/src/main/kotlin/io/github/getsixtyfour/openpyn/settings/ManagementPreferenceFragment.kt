@@ -6,15 +6,19 @@ import android.system.OsConstants
 import android.text.InputFilter
 import android.text.InputType
 import android.text.method.DigitsKeyListener
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.EditText
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
+import io.github.getsixtyfour.openpyn.dpToPx
 import org.apache.hadoop.hdfs.util.PosixPathNameChecker
 import java.net.InetAddress
 
@@ -29,6 +33,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
     }
 
+    @Suppress("MagicNumber")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,11 +99,10 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
         setTitle(requireActivity())
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.fitsSystemWindows = true
-        setDivider(null)
-
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {
+        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
+        (activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)
+        return view
     }
 
     override fun getCallbackFragment(): PreferenceFragmentCompat = this
@@ -119,7 +123,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
                     requireNotNull(address) { ctx.getString(R.string.pref_openvpnmgmt_host_error_2) }
                     require(isLocalAddress(address)) { message }
                     null
-                } catch (e: Exception) {
+                } catch (e: IllegalArgumentException) {
                     e.message
                 }
 
@@ -156,7 +160,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
                     require(isNumericPort(s)) { message }
                     // require(s != "80") { message }
                     null
-                } catch (e: Exception) {
+                } catch (e: IllegalArgumentException) {
                     e.message
                 }
 
@@ -179,7 +183,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
                 override fun validate(s: String): String? = if (s.isEmpty()) null else try {
                     require(isPosixFilePath(s)) { message }
                     null
-                } catch (e: Exception) {
+                } catch (e: IllegalArgumentException) {
                     e.message
                 }
 
@@ -195,5 +199,12 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
                 else -> preference.context.getString(R.string.password_set)
             }
         }
+
+        internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
+            get() = object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    elevation = if (recyclerView.canScrollVertically(-1)) dpToPx(4F, recyclerView.context) else 0F
+                }
+            }
     }
 }

@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.settings
+package io.github.getsixtyfour.openpyn
 
 import android.app.Activity
 import android.content.Context
@@ -9,8 +9,10 @@ import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.setProgressToolBar
+import io.github.getsixtyfour.openpyn.settings.AboutPreferenceFragment
+import io.github.getsixtyfour.openpyn.settings.ApiPreferenceFragment
+import io.github.getsixtyfour.openpyn.settings.GeneralPreferenceFragment
+import io.github.getsixtyfour.openpyn.settings.ManagementPreferenceFragment
 import kotlinx.android.synthetic.main.mm2d_pac_content.toolbar
 import net.mm2d.preference.Header
 import net.mm2d.preference.PreferenceActivityCompat
@@ -31,6 +33,7 @@ class SettingsActivity : PreferenceActivityCompat() {
         super.onCreate(savedInstanceState)
 
         setProgressToolBar(this, toolbar, showHomeAsUp = true, showTitle = true)
+
         /*if (onIsHidingHeaders()) {
             setContentView(R.layout.content_preference)
             val initialFragment: String? = intent.getStringExtra(EXTRA_SHOW_FRAGMENT)
@@ -78,7 +81,7 @@ class SettingsActivity : PreferenceActivityCompat() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                // Override home navigation button to call onBackPressed (b/35152749)
+                // Override home navigation button to call onBackPressed
                 onBackPressed()
                 true
             }
@@ -173,17 +176,8 @@ class SettingsActivity : PreferenceActivityCompat() {
          * Helper method to determine if the device has an extra-large screen. For
          * example, 10" tablets are extra-large.
          */
-        fun isXLargeTablet(context: Context): Boolean {
-            return context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_XLARGE
-        }
-
-        fun startAboutFragment(activity: Activity) {
-            val intent = Intent(activity, SettingsActivity::class.java).apply {
-                putExtra(EXTRA_SHOW_FRAGMENT, AboutPreferenceFragment::class.java.name)
-                putExtra(EXTRA_NO_HEADERS, true)
-            }
-            ContextCompat.startActivity(activity, intent, null)
-        }
+        fun isXLargeTablet(context: Context): Boolean =
+            context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_XLARGE
 
         fun startSettingsFragment(activity: Activity) {
             val intent = Intent(activity, SettingsActivity::class.java).apply {

@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,6 +18,8 @@ import androidx.preference.PreferenceManager
 import com.eggheadgames.aboutbox.AboutConfig
 import com.getsixtyfour.openvpnmgmt.android.Constants
 import com.getsixtyfour.openvpnmgmt.android.Utils
+import com.google.android.gms.common.GooglePlayServicesUtil
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
@@ -25,11 +27,12 @@ import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import io.github.getsixtyfour.ktextension.juiceSSHInstall
+import io.github.getsixtyfour.ktextension.verifyInstallerId
+import io.github.getsixtyfour.ktextension.verifySigningCertificate
 import io.github.getsixtyfour.openpyn.map.util.createJson
 import io.github.getsixtyfour.openpyn.map.util.generateXML
 import io.github.getsixtyfour.openpyn.map.util.stringifyJsonArray
 import io.github.getsixtyfour.openpyn.map.util.writeJsonArray
-import io.github.getsixtyfour.openpyn.settings.SettingsActivity
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.VpnAuthenticationHandler
 import kotlinx.coroutines.CoroutineScope
@@ -59,11 +62,7 @@ fun <T : FragmentActivity> getCurrentNavigationFragment(activity: T): Fragment? 
     }
 }
 
-fun <T : Activity> onAboutItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
-    SettingsActivity.startAboutFragment(activity)
-}
-
-fun <T : Activity> CoroutineScope.onGenerateItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?): Job = launch {
+fun <T : Activity> CoroutineScope.onGenerateItemSelected(activity: T): Job = launch {
     val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.apply { showProgress(true) }
 
     withContext(Dispatchers.IO) {
@@ -77,12 +76,19 @@ fun <T : Activity> CoroutineScope.onGenerateItemSelected(activity: T, @Suppress(
     toolbar?.hideProgress(true)
 }
 
-fun <T : Activity> onLogFileSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
+fun onLicensesItemSelected(context: Context) {
+    OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.title_licenses))
+    val intent = Intent(context, OssLicensesMenuActivity::class.java)
+    ContextCompat.startActivity(context, intent, null)
+}
+
+fun <T : Activity> onLoggingItemSelected(activity: T) {
     val intent = Intent().apply { component = ComponentName(activity, "info.hannes.logcat.LogfileActivity") }
     ContextCompat.startActivity(activity, intent, null)
 }
 
-fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?): Job = launch {
+fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T): Job = launch {
+    if (!NetworkInfo.getInstance().isOnline()) return@launch
     val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.apply { showProgress(true) }
 
     withContext(Dispatchers.IO) {
@@ -102,7 +108,7 @@ fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T, @Suppress("
     }
 }
 
-fun <T : Activity> onSettingsItemSelected(activity: T, @Suppress("UNUSED_PARAMETER") item: MenuItem?) {
+fun <T : Activity> onSettingsItemSelected(activity: T) {
     SettingsActivity.startSettingsFragment(activity)
 }
 
@@ -169,7 +175,7 @@ fun initAboutConfig(application: Application) {
     config.emailBodyPrompt = application.getString(R.string.empty)
     // Share
     config.shareMessage = application.getString(R.string.empty)
-    config.sharingTitle = application.getString(R.string.share)
+    config.sharingTitle = application.getString(R.string.share_message)
 }
 
 fun initPreferences(application: Application) {
@@ -220,3 +226,12 @@ fun initCrashlytics(application: Application) {
 fun initNetworkInfo(application: Application) {
     NetworkInfo.getInstance(application)
 }
+
+fun getVersionTitleType(context: Context): Int = when {
+    isPlayStorePackage(context) -> R.string.egab_play_store_version
+    else -> R.string.egab_version
+}
+
+fun isPlayStorePackage(context: Context): Boolean = context.verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)
+
+fun isPlayStoreCertificate(context: Context): Boolean = context.verifySigningCertificate(listOf(context.getString(R.string.app_signature)))

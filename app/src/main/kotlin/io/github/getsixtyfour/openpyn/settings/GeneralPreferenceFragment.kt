@@ -1,20 +1,27 @@
 package io.github.getsixtyfour.openpyn.settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import io.github.getsixtyfour.openpyn.R
+import io.github.getsixtyfour.openpyn.dpToPx
+import io.github.getsixtyfour.openpyn.onGenerateItemSelected
+import io.github.getsixtyfour.openpyn.onLoggingItemSelected
 import io.github.getsixtyfour.openpyn.onRefreshItemSelected
-import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 
 /**
  * This fragment shows General settings preferences only.
@@ -40,24 +47,29 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        // Load the preferences from an XML resource
         setPreferencesFromResource(R.xml.pref_settings, rootKey)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.fitsSystemWindows = true
-        setDivider(null)
-
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {
+        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
+        (activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)
+        return view
     }
 
     override fun getCallbackFragment(): PreferenceFragmentCompat = this
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_refresh -> {
-                if (!NetworkInfo.getInstance().isOnline()) return true
-                lifecycleScope.onRefreshItemSelected(requireActivity(), item)
+        return when (item.title) {
+            getString(R.string.menu_refresh) -> {
+                lifecycleScope.onRefreshItemSelected(requireActivity())
+                true
+            }
+            getString(R.string.menu_generate) -> {
+                lifecycleScope.onGenerateItemSelected(requireActivity())
+                true
+            }
+            getString(R.string.menu_logfile) -> {
+                onLoggingItemSelected(requireActivity())
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -69,7 +81,6 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
     }
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
-        // Instantiate the new Fragment
         val activity = requireActivity()
         val fragmentManager = activity.supportFragmentManager
         val args = pref.extras
@@ -82,6 +93,7 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
     }
 
     companion object {
+
         internal val TextInputLayout.serverErrorTextWatcher: AbstractTextWatcher
             get() = object : AbstractTextWatcher(this) {
                 val array = context.resources.getTextArray(R.array.pref_country_values)
@@ -98,7 +110,7 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
                     require(regex.matches(s)) { message }
                     require(isServerName(s.take(2))) { message }
                     null
-                } catch (e: Exception) {
+                } catch (e: IllegalArgumentException) {
                     e.message
                 }
 
@@ -109,5 +121,12 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
             }
 
         fun EditText.textInputLayout(): TextInputLayout? = (parent.parent as? TextInputLayout)
+
+        internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
+            get() = object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    elevation = if (recyclerView.canScrollVertically(-1)) dpToPx(4F, recyclerView.context) else 0F
+                }
+            }
     }
 }

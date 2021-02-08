@@ -132,8 +132,8 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     // Notify network change to all listeners
     fun notifyNetworkChangeToAll(network: Network?) {
         logger.debug("notifyStateToAll")
-        for (listener in listeners) {
-            notifyNetworkChange(listener, network)
+        listeners.forEach {
+            notifyNetworkChange(it, network)
         }
     }
 

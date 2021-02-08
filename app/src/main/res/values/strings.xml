@@ -7,7 +7,7 @@
     <string name="email_address" translatable="false">support@1951fdg.com</string>
 
     <string name="search_hint">Search…</string>
-    <string name="share">Share</string>
+    <string name="share_message">Share</string>
 
     <!-- Menu -->
     <string name="menu_refresh">Refresh</string>

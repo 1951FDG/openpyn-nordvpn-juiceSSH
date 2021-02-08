@@ -321,6 +321,7 @@
     <string name="password_set">Password has been set</string>
     <string name="key_set">Key has been set</string>
 
+    <string name="pref_category_app">App</string>
     <string name="pref_category_support">Support</string>
     <string name="pref_category_other">Other</string>
 

@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/actionBarColor"
-            android:elevation="4dp"
+            android:elevation="0dp"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
             app:ptb_progressHeight="1dp"

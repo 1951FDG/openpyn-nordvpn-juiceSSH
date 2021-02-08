@@ -118,7 +118,7 @@ internal fun getCurrentFlags(countries: List<MultiSelectable>, selectedIds: Arra
 }
 
 internal fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, String>>) {
-    for ((id, ext) in list) {
+    list.forEach { (id, ext) ->
         try {
             val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
             if (!file.exists()) {

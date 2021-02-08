@@ -21,7 +21,6 @@ import androidx.loader.app.LoaderManager
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
-import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
@@ -34,8 +33,6 @@ import io.github.getsixtyfour.ktextension.apkSignatures
 import io.github.getsixtyfour.ktextension.handleUpdate
 import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
 import io.github.getsixtyfour.ktextension.startUpdate
-import io.github.getsixtyfour.ktextension.verifyInstallerId
-import io.github.getsixtyfour.ktextension.verifySigningCertificate
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog.NoticeDialogListener
 import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
 import io.github.getsixtyfour.openpyn.utils.Toaster
@@ -68,8 +65,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     // TODO: remove container reference
     val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
-    private val mGooglePlayStorePackage: Boolean by lazy { verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE) }
-    private val mGooglePlayStoreCertificate: Boolean by lazy { verifySigningCertificate(listOf(getString(R.string.app_signature))) }
+    private val mGooglePlayStorePackage: Boolean by lazy { isPlayStorePackage(this) }
+    private val mGooglePlayStoreCertificate: Boolean by lazy { isPlayStoreCertificate(this) }
     private val logger = KotlinLogging.logger {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,15 +145,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.title) {
             getString(R.string.title_settings) -> {
-                onSettingsItemSelected(this, item)
+                onSettingsItemSelected(this)
                 true
             }
             getString(R.string.menu_generate) -> {
-                onGenerateItemSelected(this, item)
+                onGenerateItemSelected(this)
                 true
             }
             getString(R.string.menu_logfile) -> {
-                onLogFileSelected(this, item)
+                onLoggingItemSelected(this)
                 true
             }
             else -> super.onOptionsItemSelected(item)

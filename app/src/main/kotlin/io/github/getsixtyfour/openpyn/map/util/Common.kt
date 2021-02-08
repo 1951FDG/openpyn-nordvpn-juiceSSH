@@ -100,7 +100,7 @@ suspend fun generateXML() {
             serializer.startDocument("UTF-8", true)
             serializer.startTag("", "string-array")
             serializer.attribute("", "name", "pref_country_entries")
-            for ((key, _) in sortedMap) {
+            sortedMap.forEach { (key, _) ->
                 serializer.startTag("", "item")
                 serializer.text(key)
                 serializer.endTag("", "item")
@@ -109,7 +109,7 @@ suspend fun generateXML() {
             serializer.startTag("", "string-array")
             serializer.attribute("", "name", "pref_country_values")
             serializer.attribute("", "translatable", "false")
-            for ((_, value) in sortedMap) {
+            sortedMap.forEach { (_, value) ->
                 serializer.startTag("", "item")
                 serializer.text(value)
                 serializer.endTag("", "item")
@@ -300,9 +300,7 @@ suspend fun createJson(): JSONArray? {
 
 fun sortJsonArray(jsonArray: JSONArray): JSONArray {
     val array = ArrayList<JSONObject>()
-    for (res in jsonArray) {
-        array.add(res)
-    }
+    for (res in jsonArray) array.add(res)
 
     array.sortWith(
         compareBy({ it.getString(COUNTRY) }, { it.getJSONObject(LOCATION).getDouble(LAT) }, { it.getJSONObject(LOCATION).getDouble(LONG) })
@@ -484,7 +482,7 @@ fun getCurrentPosition(
     fun getDefaultLatLng(): LatLng = LatLng(51.514125, -0.093689)
 
     fun getLatLng(flag: CharSequence, latLng: LatLng, jsonArr: JSONArray): LatLng {
-        val latLngList = arrayListOf<LatLng>()
+        val latLngList = ArrayList<LatLng>()
         var match = false
 
         loop@ for (res in jsonArr) {
