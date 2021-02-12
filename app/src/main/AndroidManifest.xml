@@ -27,6 +27,7 @@
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,6 +41,7 @@
             android:exported="false"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
             android:theme="@style/AppTheme.Settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -50,34 +52,37 @@
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
             android:theme="@style/AppTheme.Licenses" />
         <!-- Private activity -->
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
             android:theme="@style/AppTheme.Licenses" />
         <!-- Private activity -->
         <activity
             android:name="pub.devrel.easypermissions.AppSettingsDialogHolderActivity"
             android:exported="false"
+            android:stateNotNeeded="true"
             android:theme="@style/EasyPermissions.Transparent" />
         <!-- Private activity -->
         <activity
             android:name="com.getsixtyfour.openvpnmgmt.android.DisconnectActivity"
             android:excludeFromRecents="true"
-            android:stateNotNeeded="true"
             android:exported="false"
-            android:launchMode="singleTop"
             android:finishOnCloseSystemDialogs="true"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
             android:taskAffinity="com.getsixtyfour.openvpnmgmt"
             android:theme="@style/Theme.AlertDialogHost" />
         <!-- Private service -->
         <service
             android:name="com.getsixtyfour.openvpnmgmt.android.OpenVpnService"
-            android:label="@string/vpn_service_name"
             android:exported="false"
+            android:label="@string/vpn_service_name"
             android:process=":remote" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
