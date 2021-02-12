@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.dpToPx
@@ -19,8 +21,8 @@ import io.github.getsixtyfour.openpyn.dpToPx
  */
 class ApiPreferenceFragment : PreferenceFragmentCompat() {
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onStop() {
+        super.onStop()
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
     }
@@ -29,6 +31,8 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(false)
+
+        enterTransition = MaterialFadeThrough()
 
         findPreference<ListPreference>("pref_geo_client")?.apply {
             summaryProvider = Preference.SummaryProvider<ListPreference> {
@@ -61,8 +65,14 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {
-        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
-        (activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)
+        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState).also { it.clipToPadding = true }
+
+        ViewCompat.setScrollIndicators(
+            view,
+            ViewCompat.SCROLL_INDICATOR_TOP or ViewCompat.SCROLL_INDICATOR_BOTTOM,
+            ViewCompat.SCROLL_INDICATOR_TOP or ViewCompat.SCROLL_INDICATOR_BOTTOM
+        )
+        /*(activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)*/
         return view
     }
 
@@ -76,6 +86,7 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
 
+        @Suppress("MagicNumber")
         internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
             get() = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

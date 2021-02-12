@@ -12,10 +12,22 @@
     android:background="?android:attr/selectableItemBackground"
     android:clipToPadding="false"
     android:baselineAligned="false"
-    tools:ignore="Overdraw">
+    tools:background="?attr/colorBackgroundFloating">
 
     <include layout="@layout/image_frame"
-        tools:ignore="PrivateResource"/>
+        tools:ignore="PrivateResource" />
+
+    <!-- Preference should place its actual preference widget here. -->
+    <LinearLayout
+        android:id="@android:id/widget_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="end|center_vertical"
+        android:paddingLeft="0dp"
+        android:paddingStart="0dp"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp"
+        android:orientation="vertical" />
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -30,12 +42,14 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorAlertDialogListItem"
             android:ellipsize="marquee"
             tools:text="@tools:sample/lorem"
-            tools:ignore="SelectableText"/>
+            tools:ignore="SelectableText" />
 
         <TextView
             android:id="@android:id/summary"
+            style="@style/PreferenceSummaryTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@android:id/title"
@@ -45,22 +59,9 @@
             android:textAlignment="viewStart"
             android:textColor="?android:attr/textColorSecondary"
             android:maxLines="10"
-            style="@style/PreferenceSummaryTextStyle"
             tools:text="@tools:sample/lorem/random"
-            tools:ignore="PrivateResource,SelectableText"/>
+            tools:ignore="PrivateResource,SelectableText" />
 
     </RelativeLayout>
-
-    <!-- Preference should place its actual preference widget here. -->
-    <LinearLayout
-        android:id="@android:id/widget_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="end|center_vertical"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
-        android:paddingRight="0dp"
-        android:paddingEnd="0dp"
-        android:orientation="vertical"/>
 
 </LinearLayout>

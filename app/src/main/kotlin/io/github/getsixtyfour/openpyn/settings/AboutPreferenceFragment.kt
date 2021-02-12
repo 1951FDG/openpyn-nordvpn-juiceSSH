@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceCategory
@@ -17,6 +18,7 @@ import com.eggheadgames.aboutbox.AboutBoxUtils
 import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.dpToPx
@@ -28,8 +30,8 @@ import io.github.getsixtyfour.openpyn.onLicensesItemSelected
  */
 class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onStop() {
+        super.onStop()
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
     }
@@ -38,6 +40,8 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(false)
+
+        enterTransition = MaterialFadeThrough()
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -57,8 +61,14 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {
-        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
-        (activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)
+        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState).also { it.clipToPadding = true }
+
+        ViewCompat.setScrollIndicators(
+            view,
+            ViewCompat.SCROLL_INDICATOR_TOP or ViewCompat.SCROLL_INDICATOR_BOTTOM,
+            ViewCompat.SCROLL_INDICATOR_TOP or ViewCompat.SCROLL_INDICATOR_BOTTOM
+        )
+        /*(activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)*/
         return view
     }
 
@@ -137,7 +147,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         root.addPreference(category)
 
         category.addPreference(Preference(activity).apply {
-            icon = ContextCompat.getDrawable(activity, R.drawable.ic_star_face_black_24)
+            icon = ContextCompat.getDrawable(activity, R.drawable.ic_star_face_black_24dp)
             title = activity.getString(R.string.egab_leave_review)
             summary = null
             onPreferenceClickListener = OnPreferenceClickListener {
@@ -161,13 +171,14 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             title = activity.getString(R.string.oss_license_title)
             summary = null
             onPreferenceClickListener = OnPreferenceClickListener {
-                onLicensesItemSelected(it.context)
+                onLicensesItemSelected(activity)
                 true
             }
         })
     }
 
     companion object {
+        @Suppress("MagicNumber")
         internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
             get() = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

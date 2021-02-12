@@ -6,9 +6,17 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.Insets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateMargins
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import io.github.getsixtyfour.openpyn.settings.AboutPreferenceFragment
 import io.github.getsixtyfour.openpyn.settings.ApiPreferenceFragment
 import io.github.getsixtyfour.openpyn.settings.GeneralPreferenceFragment
@@ -31,6 +39,23 @@ class SettingsActivity : PreferenceActivityCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.apply {
+            allowEnterTransitionOverlap = true
+            enterTransition = MaterialFadeThrough().addTarget(R.id.preference_frame)
+        }
+
+        // This app draws behind the system bars, so we want to handle fitting system windows
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, insets ->
+            val systemBars = WindowInsetsCompat.Type.systemBars()
+            val systemBarsInsets = insets.getInsets(systemBars)
+            (v.layoutParams as? MarginLayoutParams)?.updateMargins(top = systemBarsInsets.top)
+            WindowInsetsCompat.Builder(insets).apply {
+                setInsets(systemBars, Insets.of(systemBarsInsets.left, 0, systemBarsInsets.right, systemBarsInsets.bottom))
+            }.build()
+        }
 
         setProgressToolBar(this, toolbar, showHomeAsUp = true, showTitle = true)
 
@@ -184,7 +209,7 @@ class SettingsActivity : PreferenceActivityCompat() {
                 putExtra(EXTRA_SHOW_FRAGMENT, GeneralPreferenceFragment::class.java.name)
                 putExtra(EXTRA_NO_HEADERS, true)
             }
-            ContextCompat.startActivity(activity, intent, null)
+            ContextCompat.startActivity(activity, intent, ActivityOptionsCompat.makeSceneTransitionAnimation(activity).toBundle())
         }
     }
 }

@@ -3,8 +3,12 @@ package io.github.getsixtyfour.openpyn
 import android.content.Context
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.View
+import android.view.Window
 import androidx.annotation.Dimension
 import androidx.annotation.Px
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 
 /**
  * Convert a dimension value in density independent pixels to pixels.
@@ -47,6 +51,7 @@ fun dpToPxOffset(@Dimension(unit = Dimension.DP) dp: Float, context: Context): I
  * @see TypedValue.complexToDimensionPixelSize
  */
 @Px
+@Suppress("MagicNumber")
 fun dpToPxSize(@Dimension(unit = Dimension.DP) dp: Float, context: Context): Int {
     val value = dpToPx(dp, context)
     val size = (if (value >= 0) value + 0.5f else value - 0.5f).toInt()
@@ -56,4 +61,12 @@ fun dpToPxSize(@Dimension(unit = Dimension.DP) dp: Float, context: Context): Int
         value > 0 -> 1
         else -> -1
     }
+}
+
+fun hideSystemUI(window: Window, view: View) {
+    WindowCompat.getInsetsController(window, view)?.hide(WindowInsetsCompat.Type.systemBars())
+}
+
+fun showSystemUI(window: Window, view: View) {
+    WindowCompat.getInsetsController(window, view)?.show(WindowInsetsCompat.Type.systemBars())
 }

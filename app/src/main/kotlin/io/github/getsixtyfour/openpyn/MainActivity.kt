@@ -12,10 +12,10 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.ArrayRes
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.DialogFragment
 import androidx.loader.app.LoaderManager
 import androidx.navigation.Navigation
@@ -72,7 +72,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setProgressToolBar(this, toolbar)
+        // Hide both the navigation bar and the status bar
+        /*hideSystemUI(window, window.decorView)*/
+
+        // This app draws behind the system bars, so we want to handle fitting system windows
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        /*setProgressToolBar(this, toolbar)*/
 
         setSnackBarManager(this, mSnackProgressBarManager)
 
@@ -207,11 +213,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
                     it.toggleConnection(this, mConnectionId, JUICESSH_REQUEST_CODE)
                 }
             } else {
-                AlertDialog.Builder(this).apply {
-                    setTitle(R.string.title_error)
-                    setMessage(R.string.error_juicessh_server)
-                    setPositiveButton(android.R.string.ok, null)
-                }.show()
+                showJuiceAlertDialog(this)
             }
         }
     }

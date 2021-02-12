@@ -5,10 +5,10 @@ import android.content.Context
 import android.location.Location
 import android.os.Build
 import android.util.Xml
-import android.view.animation.AccelerateInterpolator
 import androidx.annotation.AnyRes
 import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
@@ -399,11 +399,12 @@ fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessage.Builde
     val message = context.getString(R.string.vpn_msg_connected, city, flag, ip)
     return UserMessage.Builder().apply {
         with(context.applicationContext)
-        setBackgroundColor(R.color.accent_material_indigo_200).setTextColor(android.R.color.white)
-        setMessage(message).setDuration(DURATION).setShowInterpolator(
-            AccelerateInterpolator()
-        )
-        setDismissInterpolator(AccelerateInterpolator())
+        setBackgroundColor(R.color.accent_material_indigo_200)
+        setDismissInterpolator(FastOutSlowInInterpolator())
+        setDuration(DURATION)
+        setMessage(message)
+        setShowInterpolator(FastOutSlowInInterpolator())
+        setTextColor(android.R.color.white)
     }
 }
 

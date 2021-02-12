@@ -61,18 +61,17 @@
         <tk.wasdennnoch.progresstoolbar.ProgressToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/actionBarColor"
+            android:layout_height="?android:attr/actionBarSize"
             android:elevation="0dp"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
-            app:ptb_progressHeight="1dp"
+            app:ptb_progressHeight="4dp"
             app:title="@string/title_settings"
             tools:menu="@menu/menu_settings" />
 
         <include layout="@layout/mm2d_pac_breadcrumbs"/>
 
-        <FrameLayout
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/preference"
             android:layout_width="match_parent"
             android:layout_height="0dip"

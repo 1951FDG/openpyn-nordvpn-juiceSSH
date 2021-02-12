@@ -8,14 +8,14 @@
         android:id="@+id/mapFragment"
         android:name="io.github.getsixtyfour.openpyn.map.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" >
+        tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_mapFragment_to_multiSelectDialogFragment"
-            app:destination="@+id/multiSelectDialog"
+            app:destination="@id/multiSelectDialog"
             tools:ignore="UnusedIds" />
         <action
             android:id="@+id/action_mapFragment_to_preferenceDialogFragment"
-            app:destination="@+id/preferenceDialog"
+            app:destination="@id/preferenceDialog"
             tools:ignore="UnusedIds" />
     </fragment>
     <dialog
@@ -27,7 +27,7 @@
         android:id="@+id/preferenceDialog"
         android:name="io.github.getsixtyfour.openpyn.dialog.PreferenceDialog"
         android:label="preference_dialog"
-        tools:layout="@layout/abc_preference_dialog_material" >
+        tools:layout="@layout/abc_preference_dialog_material">
         <argument
             android:name="message"
             app:argType="string" />

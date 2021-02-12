@@ -3,7 +3,6 @@ package io.github.getsixtyfour.openpyn
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -26,6 +25,7 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSION
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
+import info.hannes.logcat.LogfileActivity
 import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.ktextension.verifyInstallerId
 import io.github.getsixtyfour.ktextension.verifySigningCertificate
@@ -76,14 +76,14 @@ fun <T : Activity> CoroutineScope.onGenerateItemSelected(activity: T): Job = lau
     toolbar?.hideProgress(true)
 }
 
-fun onLicensesItemSelected(context: Context) {
-    OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.title_licenses))
-    val intent = Intent(context, OssLicensesMenuActivity::class.java)
-    ContextCompat.startActivity(context, intent, null)
+fun <T : Activity> onLicensesItemSelected(activity: T) {
+    OssLicensesMenuActivity.setActivityTitle(activity.getString(R.string.title_licenses))
+    val intent = Intent(activity, OssLicensesMenuActivity::class.java)
+    ContextCompat.startActivity(activity, intent, null)
 }
 
 fun <T : Activity> onLoggingItemSelected(activity: T) {
-    val intent = Intent().apply { component = ComponentName(activity, "info.hannes.logcat.LogfileActivity") }
+    val intent = Intent(activity, LogfileActivity::class.java)
     ContextCompat.startActivity(activity, intent, null)
 }
 
@@ -97,11 +97,7 @@ fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T): Job = laun
         }
     }.onSuccess {
         toolbar?.hideProgress(true)
-        AlertDialog.Builder(activity).apply {
-            setTitle(R.string.title_warning)
-            setMessage(R.string.warning_restart_app)
-            setPositiveButton(android.R.string.ok, null)
-        }.show()
+        showRefreshAlertDialog(activity)
     }.onFailure {
         toolbar?.hideProgress(true)
         logger.debug(it) { "" }
@@ -156,6 +152,22 @@ fun showSnackProgressBar(manager: SnackProgressBarManager, storeId: Int) {
         null -> manager.show(storeId, SnackProgressBarManager.LENGTH_INDEFINITE)
         else -> manager.getSnackProgressBar(storeId)?.let(manager::updateTo)
     }
+}
+
+fun <T : Activity> showRefreshAlertDialog(activity: T) {
+    AlertDialog.Builder(activity).apply {
+        setTitle(R.string.title_warning)
+        setMessage(R.string.warning_restart_app)
+        setPositiveButton(android.R.string.ok, null)
+    }.show()
+}
+
+fun <T : Activity> showJuiceAlertDialog(activity: T) {
+    AlertDialog.Builder(activity).apply {
+        setTitle(R.string.title_error)
+        setMessage(R.string.error_juicessh_server)
+        setPositiveButton(android.R.string.ok, null)
+    }.show()
 }
 
 // TODO: inner class

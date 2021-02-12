@@ -3,61 +3,60 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="connect"
     android:title="@string/title_settings"
-    app:initialExpandedChildrenCount="5"
     app:orderingFromXml="true">
-    <CheckBoxPreference
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_dedicated"
         android:title="@string/pref_dedicated"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_double"
         android:title="@string/pref_double"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_anti_ddos"
         android:title="@string/pref_anti_ddos"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_tor"
         android:title="@string/pref_tor"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_p2p"
         android:title="@string/pref_p2p"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="@string/pref_openvpnmgmt_key"
         android:title="@string/pref_openvpnmgmt"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_test"
         android:title="@string/pref_test"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_silent"
         android:title="@string/pref_silent"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_skip_dns_patch"
         android:title="@string/pref_skip_dns_patch"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_force_fw"
         android:title="@string/pref_force_fw"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
-    <CheckBoxPreference
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
+    <io.github.getsixtyfour.openpyn.dialog.CheckedTextViewPreference
         android:defaultValue="false"
         android:key="pref_nvram"
         android:title="@string/pref_nvram"
-        android:widgetLayout="@layout/abc_preference_widget_checkbox" />
+        android:widgetLayout="@layout/abc_preference_widget_checkview" />
 </PreferenceScreen>

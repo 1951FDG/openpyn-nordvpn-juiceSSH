@@ -8,5 +8,7 @@ interface MapViewsAction : ViewsAction {
     fun showCountryFilterDialog()
     fun toggleCommand(v: View)
     fun toggleFavoriteMarker()
+    fun toggleJuiceSSH()
+    fun toggleSettings()
     fun updateMasterMarkerWithDelay(timeMillis: Long = 0)
 }

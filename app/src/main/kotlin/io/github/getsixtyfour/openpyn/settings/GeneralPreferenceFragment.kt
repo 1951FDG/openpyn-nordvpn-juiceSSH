@@ -9,7 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
@@ -17,6 +18,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.dpToPx
 import io.github.getsixtyfour.openpyn.onGenerateItemSelected
@@ -30,6 +32,8 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        exitTransition = MaterialFadeThrough()
 
         setHasOptionsMenu(true)
 
@@ -51,8 +55,14 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
     }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {
-        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
-        (activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)
+        val view = super.onCreateRecyclerView(inflater, parent, savedInstanceState).also { it.clipToPadding = true }
+
+        ViewCompat.setScrollIndicators(
+            view,
+            ViewCompat.SCROLL_INDICATOR_TOP or ViewCompat.SCROLL_INDICATOR_BOTTOM,
+            ViewCompat.SCROLL_INDICATOR_TOP or ViewCompat.SCROLL_INDICATOR_BOTTOM
+        )
+        /*(activity as? AppCompatActivity)?.supportActionBar?.onScrollListener?.let(view::addOnScrollListener)*/
         return view
     }
 
@@ -87,7 +97,10 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
         val fragment = fragmentManager.fragmentFactory.instantiate(activity.classLoader, pref.fragment)
         fragment.arguments = args
         fragment.setTargetFragment(caller, 0)
-        fragmentManager.beginTransaction().replace((requireView().parent as View).id, fragment).addToBackStack(null).commit()
+        fragmentManager.commit {
+            replace((requireView().parent as View).id, fragment)
+            addToBackStack(null)
+        }
 
         return true
     }
@@ -122,6 +135,7 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
 
         fun EditText.textInputLayout(): TextInputLayout? = (parent.parent as? TextInputLayout)
 
+        @Suppress("MagicNumber")
         internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
             get() = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

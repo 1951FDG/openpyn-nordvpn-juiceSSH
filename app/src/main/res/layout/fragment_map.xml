@@ -7,19 +7,19 @@
     android:transitionGroup="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
+    <com.google.android.gms.maps.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        map:mapType="none"
-        map:uiCompass="false"
-        map:uiMapToolbar="false"
-        map:uiRotateGestures="false"
-        map:uiScrollGestures="false"
-        map:uiTiltGestures="false"
-        map:uiZoomControls="false"
-        map:uiZoomGestures="false"
+        app:mapType="none"
+        app:uiCompass="false"
+        app:uiMapToolbar="false"
+        app:uiRotateGestures="false"
+        app:uiScrollGestures="false"
+        app:uiTiltGestures="false"
+        app:uiZoomControls="false"
+        app:uiZoomGestures="false"
         tools:visibility="visible" />
 
     <com.mayurrokade.minibar.MinibarView
@@ -29,29 +29,46 @@
         android:gravity="center_horizontal|center_vertical"
         android:includeFontPadding="false"
         android:minHeight="32dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle.Inverse"
+        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab2"
+    <com.google.android.material.floatingactionbutton.CheckableFloatingActionButton
+        android:id="@+id/fab3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_marginTop="25dp"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:elevation="2dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@id/fab1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="2dp"
+        app:srcCompat="@drawable/fab_favorite"
+        app:useCompatPadding="false"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginTop="24dp"
         android:visibility="gone"
         app:backgroundTint="?attr/colorBackgroundFloating"
         app:elevation="2dp"
         app:fabSize="mini"
-        app:layout_constraintLeft_toLeftOf="@+id/fab0"
-        app:layout_constraintRight_toRightOf="@+id/fab0"
+        app:layout_constraintLeft_toLeftOf="@id/fab0"
+        app:layout_constraintRight_toRightOf="@id/fab0"
         app:layout_constraintTop_toTopOf="parent"
         app:pressedTranslationZ="2dp"
-        app:srcCompat="@drawable/ic_round_filter_list_24"
+        app:srcCompat="@drawable/ic_juice_ssh_24"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
-    <com.google.android.material.floatingactionbutton.CheckableFloatingActionButton
-        android:id="@+id/fab3"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
@@ -60,11 +77,29 @@
         app:backgroundTint="?attr/colorBackgroundFloating"
         app:elevation="2dp"
         app:fabSize="mini"
-        app:layout_constraintLeft_toLeftOf="@+id/fab0"
-        app:layout_constraintRight_toRightOf="@+id/fab0"
-        app:layout_constraintTop_toBottomOf="@+id/fab2"
+        app:layout_constraintLeft_toLeftOf="@id/fab0"
+        app:layout_constraintRight_toRightOf="@id/fab0"
+        app:layout_constraintTop_toBottomOf="@id/fab4"
         app:pressedTranslationZ="2dp"
-        app:srcCompat="@drawable/fab_favorite"
+        app:srcCompat="@drawable/ic_round_filter_list_24"
+        app:useCompatPadding="false"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/settingsfab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:elevation="2dp"
+        app:fabSize="mini"
+        app:layout_constraintLeft_toLeftOf="@id/fab0"
+        app:layout_constraintRight_toRightOf="@id/fab0"
+        app:layout_constraintTop_toBottomOf="@id/fab2"
+        app:pressedTranslationZ="2dp"
+        app:srcCompat="@drawable/ic_round_settings_24"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
@@ -78,7 +113,7 @@
         app:backgroundTint="?attr/colorBackgroundFloating"
         app:elevation="2dp"
         app:fabSize="normal"
-        app:layout_constraintBottom_toTopOf="@+id/fab0"
+        app:layout_constraintBottom_toTopOf="@id/fab0"
         app:layout_constraintEnd_toEndOf="parent"
         app:pressedTranslationZ="2dp"
         app:srcCompat="@drawable/ic_round_my_location_24"
@@ -90,7 +125,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
         android:visibility="gone"
         app:elevation="2dp"
         app:fabSize="normal"

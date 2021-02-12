@@ -17,6 +17,8 @@
     <color name="navigationBarColor">#fffafafa</color>
     <color name="statusBarColor">@android:color/white</color>
     <color name="titleTextColor">#ffbebebe</color>
+    <color name="favoriteColor">#fbc02d</color>
+    <color name="mapBackgroundColor">#ece9e1</color>
 
     <!-- Drawable -->
     <color name="Black">#000000</color> <!--Number of times used: "36"-->

@@ -3,6 +3,7 @@ package io.github.getsixtyfour.openpyn.map
 import android.content.Context
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.Spinner
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
 import com.abdeveloper.library.MultiSelectable
@@ -23,6 +24,7 @@ import com.naver.android.svc.annotation.ControlTower
 import com.naver.android.svc.annotation.RequireScreen
 import com.naver.android.svc.annotation.RequireViews
 import io.github.getsixtyfour.openpyn.R
+import io.github.getsixtyfour.openpyn.dpToPxSize
 import io.github.getsixtyfour.openpyn.map.model.LazyMarker
 import io.github.getsixtyfour.openpyn.map.model.LazyMarker.OnLevelChangeCallback
 import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator
@@ -35,6 +37,8 @@ import io.github.getsixtyfour.openpyn.map.util.createUserMessage
 import io.github.getsixtyfour.openpyn.map.util.getCurrentPosition
 import io.github.getsixtyfour.openpyn.map.util.jsonArray
 import io.github.getsixtyfour.openpyn.maps.MapBoxOfflineTileProvider
+import io.github.getsixtyfour.openpyn.onSettingsItemSelected
+import io.github.getsixtyfour.openpyn.showSystemUI
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
@@ -236,6 +240,14 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         }
     }
 
+    override fun toggleJuiceSSH() {
+        (screen.requireActivity().findViewById<Spinner>(R.id.spinner))?.performClick()
+    }
+
+    override fun toggleSettings() {
+        onSettingsItemSelected(screen.requireActivity())
+    }
+
     override fun updateMasterMarkerWithDelay(timeMillis: Long) {
         launch {
             delay(timeMillis)
@@ -266,6 +278,9 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
                     views.toggleFavoriteButton(it.level == 1)
                 }
             }
+
+            // Show both the navigation bar and the status bar
+            showSystemUI(screen.requireActivity().window, views.rootView)
 
             views.showAllButtons()
         } else {
@@ -387,27 +402,35 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         loadMap(animations)
     }
 
+    @Suppress("MagicNumber")
     private fun loadMap(animations: ArrayList<Animation>) {
-        mGoogleMap?.let {
-            it.addTileOverlay(TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false))
-            it.setMaxZoomPreference(mTileProvider.maxZoom)
-            it.setMinZoomPreference(mTileProvider.minZoom)
-            it.setOnInfoWindowClickListener(this)
-            it.setOnMapClickListener(this)
-            it.setOnMarkerClickListener(this)
-            it.setOnMapLoadedCallback(this)
-            /*val params = fab1.layoutParams as ConstraintLayout.LayoutParams
-            it.setPadding(0, 0, 0, params.height + params.bottomMargin)*/
+        val left = dpToPxSize(8F, applicationContext)
+        val top = views.systemWindowInsetTop
+        val right = dpToPxSize(8F, applicationContext)
+        val bottom = views.systemWindowInsetBottom
+        val options = TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false)
+        val maxZoomPreference = mTileProvider.maxZoom
+        val minZoomPreference = mTileProvider.minZoom
+        mGoogleMap?.apply {
+            addTileOverlay(options)
+            setMaxZoomPreference(maxZoomPreference)
+            setMinZoomPreference(minZoomPreference)
+            setPadding(left, top, right, bottom)
 
-            it.uiSettings.isScrollGesturesEnabled = true
-            it.uiSettings.isZoomGesturesEnabled = true
+            setOnInfoWindowClickListener(this@MapControlTower)
+            setOnMapClickListener(this@MapControlTower)
+            setOnMapLoadedCallback(this@MapControlTower)
+            setOnMarkerClickListener(this@MapControlTower)
 
+            uiSettings.isScrollGesturesEnabled = true
+            uiSettings.isZoomGesturesEnabled = false
+        }?.also {
             mCameraUpdateAnimator = CameraUpdateAnimator(it, this, animations)
             mCameraUpdateAnimator?.animatorListener = this
-            // Load map
-            views.showMap()
-            map.onResume()
         }
+
+        views.showMap()
+        map.onResume()
     }
 
     private fun animateCamera(json: JSONObject, closest: Boolean = false, execute: Boolean = true) {
