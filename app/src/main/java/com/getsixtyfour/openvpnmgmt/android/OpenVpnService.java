@@ -1,8 +1,6 @@
 package com.getsixtyfour.openvpnmgmt.android;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -21,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
+import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -477,7 +476,6 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
         return builder.build();
     }
 
-    @SuppressLint("WrongConstant")
     @RequiresApi(Build.VERSION_CODES.O)
     private static void createNotificationChannels(@NonNull Context context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -485,18 +483,21 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
         {
             String name = context.getString(R.string.vpn_channel_name_background);
             String description = context.getString(R.string.vpn_channel_description_background);
-            NotificationChannel channel = new NotificationChannel(Constants.BG_CHANNEL_ID, name, NotificationManagerCompat.IMPORTANCE_LOW);
-            channel.setDescription(description);
-            notificationManager.createNotificationChannel(channel);
+            NotificationChannelCompat.Builder builder = new NotificationChannelCompat.Builder(Constants.BG_CHANNEL_ID, 0);
+            builder.setDescription(description);
+            builder.setImportance(NotificationManagerCompat.IMPORTANCE_LOW);
+            builder.setName(name);
+            notificationManager.createNotificationChannel(builder.build());
         }
         // Real-time notification of OpenVPN state changes
         {
             String name = context.getString(R.string.vpn_channel_name_status);
             String description = context.getString(R.string.vpn_channel_description_status);
-            NotificationChannel channel = new NotificationChannel(Constants.NEW_STATUS_CHANNEL_ID, name,
-                    NotificationManagerCompat.IMPORTANCE_DEFAULT);
-            channel.setDescription(description);
-            notificationManager.createNotificationChannel(channel);
+            NotificationChannelCompat.Builder builder = new NotificationChannelCompat.Builder(Constants.NEW_STATUS_CHANNEL_ID, 0);
+            builder.setDescription(description);
+            builder.setImportance(NotificationManagerCompat.IMPORTANCE_DEFAULT);
+            builder.setName(name);
+            notificationManager.createNotificationChannel(builder.build());
         }
     }
 }
