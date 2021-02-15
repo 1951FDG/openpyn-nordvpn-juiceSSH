@@ -21,6 +21,7 @@ import androidx.loader.app.LoaderManager
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
@@ -72,8 +73,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        window.exitTransition = MaterialFadeThrough()
+
         // Hide both the navigation bar and the status bar
-        /*hideSystemUI(window, window.decorView)*/
+        hideSystemUI(window, window.decorView)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.navigationBarColor)
 
         // This app draws behind the system bars, so we want to handle fitting system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)

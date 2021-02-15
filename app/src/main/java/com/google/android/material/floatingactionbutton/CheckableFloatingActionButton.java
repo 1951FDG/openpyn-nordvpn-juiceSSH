@@ -39,16 +39,16 @@ public final class CheckableFloatingActionButton extends FloatingActionButton im
     @NonNull
     private final LinkedHashSet<OnCheckedChangeListener> mOnCheckedChangeListeners = new LinkedHashSet<>();
 
-    public CheckableFloatingActionButton(@NonNull Context ctx) {
-        this(ctx, null);
+    public CheckableFloatingActionButton(@NonNull Context context) {
+        super(context, null);
     }
 
-    public CheckableFloatingActionButton(@NonNull Context ctx, @Nullable AttributeSet attrs) {
-        this(ctx, attrs, 0);
+    public CheckableFloatingActionButton(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    public CheckableFloatingActionButton(@NonNull Context ctx, @Nullable AttributeSet attrs, int defStyle) {
-        super(ctx, attrs, defStyle);
+    public CheckableFloatingActionButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     @NonNull

@@ -39,13 +39,14 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_margin="16dp"
         android:visibility="gone"
-        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:backgroundTint="@color/floating_action_button"
         app:elevation="2dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@id/fab1"
         app:layout_constraintEnd_toEndOf="parent"
         app:pressedTranslationZ="2dp"
         app:srcCompat="@drawable/fab_favorite"
+        app:tint="@color/favorite_icon_tint"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
@@ -56,7 +57,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginTop="24dp"
         android:visibility="gone"
-        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:backgroundTint="@color/floating_action_button"
         app:elevation="2dp"
         app:fabSize="mini"
         app:layout_constraintLeft_toLeftOf="@id/fab0"
@@ -64,6 +65,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:pressedTranslationZ="2dp"
         app:srcCompat="@drawable/ic_juice_ssh_24"
+        app:tint="@null"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
@@ -74,7 +76,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginTop="16dp"
         android:visibility="gone"
-        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:backgroundTint="@color/floating_action_button"
         app:elevation="2dp"
         app:fabSize="mini"
         app:layout_constraintLeft_toLeftOf="@id/fab0"
@@ -82,6 +84,7 @@
         app:layout_constraintTop_toBottomOf="@id/fab4"
         app:pressedTranslationZ="2dp"
         app:srcCompat="@drawable/ic_round_filter_list_24"
+        app:tint="@color/mtrl_outlined_icon_tint"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
@@ -92,7 +95,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginTop="16dp"
         android:visibility="gone"
-        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:backgroundTint="@color/floating_action_button"
         app:elevation="2dp"
         app:fabSize="mini"
         app:layout_constraintLeft_toLeftOf="@id/fab0"
@@ -100,6 +103,7 @@
         app:layout_constraintTop_toBottomOf="@id/fab2"
         app:pressedTranslationZ="2dp"
         app:srcCompat="@drawable/ic_round_settings_24"
+        app:tint="@color/mtrl_outlined_icon_tint"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
@@ -110,13 +114,14 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_margin="16dp"
         android:visibility="gone"
-        app:backgroundTint="?attr/colorBackgroundFloating"
+        app:backgroundTint="@color/floating_action_button"
         app:elevation="2dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@id/fab0"
         app:layout_constraintEnd_toEndOf="parent"
         app:pressedTranslationZ="2dp"
         app:srcCompat="@drawable/ic_round_my_location_24"
+        app:tint="?attr/colorPrimaryDark"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 
@@ -128,12 +133,14 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
         android:visibility="gone"
+        app:backgroundTint="?attr/colorPrimaryDark"
         app:elevation="2dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:pressedTranslationZ="2dp"
         app:srcCompat="@drawable/fab_connect"
+        app:tint="?android:attr/colorBackground"
         app:useCompatPadding="false"
         tools:visibility="visible" />
 

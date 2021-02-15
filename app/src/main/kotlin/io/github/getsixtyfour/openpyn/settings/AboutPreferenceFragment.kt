@@ -3,6 +3,9 @@ package io.github.getsixtyfour.openpyn.settings
 import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -39,7 +42,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setHasOptionsMenu(false)
+        setHasOptionsMenu(true)
 
         enterTransition = MaterialFadeThrough()
     }
@@ -73,6 +76,20 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     override fun getCallbackFragment(): PreferenceFragmentCompat = this
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.title) {
+            getString(R.string.title_licenses) -> {
+                onLicensesItemSelected(requireActivity())
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_about, menu)
+    }
 
     private fun addAboutPreferences(activity: Activity, root: PreferenceScreen) {
         val category = PreferenceCategory(activity)
@@ -162,16 +179,6 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
             summary = null
             onPreferenceClickListener = OnPreferenceClickListener {
                 ShareUtil.share(activity)
-                true
-            }
-        })
-
-        category.addPreference(Preference(activity).apply {
-            icon = ContextCompat.getDrawable(activity, R.drawable.ic_copyleft_green_24dp)
-            title = activity.getString(R.string.oss_license_title)
-            summary = null
-            onPreferenceClickListener = OnPreferenceClickListener {
-                onLicensesItemSelected(activity)
                 true
             }
         })

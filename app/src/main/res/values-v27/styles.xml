@@ -6,13 +6,12 @@
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowSplashscreenContent">@drawable/splashscreen</item>
 
-        <item name="android:windowBackground">@color/mapBackgroundColor</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
 
-        <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">@bool/enable_light_navigation_bar</item>
+        <item name="android:windowLightStatusBar">@bool/enable_light_status_bar</item>
 
-        <item name="android:navigationBarColor">#80FFFFFF</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
 
         <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
@@ -23,11 +22,10 @@
     <style name="Base.Theme.AppTheme" parent="Base.V27.Theme.AppTheme" />
 
     <style name="Base.V27.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings">
-        <item name="android:windowBackground">@color/statusBarColor</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
 
-        <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">@bool/enable_light_navigation_bar</item>
+        <item name="android:windowLightStatusBar">@bool/enable_light_status_bar</item>
 
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>

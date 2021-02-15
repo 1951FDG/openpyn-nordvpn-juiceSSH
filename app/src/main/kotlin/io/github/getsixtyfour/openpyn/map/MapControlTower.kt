@@ -30,6 +30,7 @@ import io.github.getsixtyfour.openpyn.map.model.LazyMarker.OnLevelChangeCallback
 import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator
 import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator.Animation
 import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator.AnimatorListener
+import io.github.getsixtyfour.openpyn.map.util.MaterialInfoWindowAdapter
 import io.github.getsixtyfour.openpyn.map.util.LazyMarkerStorage
 import io.github.getsixtyfour.openpyn.map.util.createGeoJson
 import io.github.getsixtyfour.openpyn.map.util.createMarkers
@@ -83,7 +84,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     private var mCameraUpdateAnimator: CameraUpdateAnimator? = null
     private val mMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
 
-    //set by async
+    // set by async
     private lateinit var mCountries: List<MultiSelectable>
     private lateinit var mJsonArray: JSONArray
     private lateinit var mTileProvider: MapBoxOfflineTileProvider
@@ -280,7 +281,10 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             }
 
             // Show both the navigation bar and the status bar
-            showSystemUI(screen.requireActivity().window, views.rootView)
+            screen.requireActivity().let {
+                showSystemUI(it.window, views.rootView)
+                /*it.window.navigationBarColor = ContextCompat.getColor(it, R.color.navigationBarColor)*/
+            }
 
             views.showAllButtons()
         } else {
@@ -364,7 +368,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         val animations: ArrayList<Animation> = withContext(IO) {
             val countries = async { countryList(applicationContext, R.raw.emojis) }
             val jsonArray = async { jsonArray(applicationContext, R.raw.nordvpn, ".json") }
-            val tileProvider = async { fileBackedTileProvider() }
+            val tileProvider = async { fileBackedTileProvider(applicationContext.getString(R.string.path_to_mbtiles)) }
             val favorites = async { LazyMarkerStorage(FAVORITE_KEY).loadFavorites(applicationContext) }
             val jsonObj = when {
                 !NetworkInfo.getInstance().isOnline() -> {
@@ -408,11 +412,13 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         val top = views.systemWindowInsetTop
         val right = dpToPxSize(8F, applicationContext)
         val bottom = views.systemWindowInsetBottom
+        val adapter = MaterialInfoWindowAdapter(screen.requireActivity())
         val options = TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false)
         val maxZoomPreference = mTileProvider.maxZoom
         val minZoomPreference = mTileProvider.minZoom
         mGoogleMap?.apply {
             addTileOverlay(options)
+            setInfoWindowAdapter(adapter)
             setMaxZoomPreference(maxZoomPreference)
             setMinZoomPreference(minZoomPreference)
             setPadding(left, top, right, bottom)

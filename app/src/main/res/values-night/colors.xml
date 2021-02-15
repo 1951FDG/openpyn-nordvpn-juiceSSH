@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Theme -->
+    <color name="navigationBarColor">#52000000</color>
+    <color name="floating_action_button">#ff303134</color>
+
+    <color name="themeColorAccent">@color/gm_ref_palette_blue300</color>
+    <color name="themeColorError">@color/gm_ref_palette_red300</color>
+    <color name="themeColorOnSurface">@color/gm_ref_palette_grey200</color>
+    <color name="themeColorPrimary">@color/gm_ref_palette_blue300</color>
+    <color name="themeColorPrimaryDark">@color/gm_ref_palette_blue500</color>
+    <color name="themeColorSurface">@color/gm_ref_palette_grey900</color>
+    <color name="themeWindowBackground">@color/design_dark_default_color_background</color>
+
+</resources>

@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    >
+    tools:keep="@layout/mm2d_pac_content">
 
     <LinearLayout
         android:id="@+id/headers"

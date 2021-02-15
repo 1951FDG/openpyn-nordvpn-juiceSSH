@@ -33,9 +33,9 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialFadeThrough()
-
         setHasOptionsMenu(true)
+
+        exitTransition = MaterialFadeThrough()
 
         findPreference<EditTextPreference>("pref_server")?.apply {
             setOnBindEditTextListener {

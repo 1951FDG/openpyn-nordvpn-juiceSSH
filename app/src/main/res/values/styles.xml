@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Base.V21.Theme.AppTheme" parent="Theme.MaterialComponents.Light.Bridge">
-        <!-- Original AppCompat attributes. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="Theme.MyApplicationTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/themeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/themeColorPrimaryDark</item>
+        <item name="colorSecondary">@color/themeColorAccent</item>
 
-        <item name="preferenceTheme">@style/ThemeOverlay.App.Preference</item>
+        <item name="android:colorBackground">@color/themeWindowBackground</item>
+        <item name="colorError">@color/themeColorError</item>
+
+        <item name="colorOnSurface">@color/themeColorOnSurface</item>
+        <item name="colorSurface">@color/themeColorSurface</item>
+
         <item name="alertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textInputStyle">@style/Widget.Design.TextInputLayout</item>
+    </style>
+
+    <style name="Base.V21.Theme.AppTheme" parent="Theme.MyApplicationTheme">
+        <item name="preferenceTheme">@style/ThemeOverlay.App.Preference</item>
+
     </style>
 
     <style name="Widget.MaterialComponents.CheckedTextView" parent="Base.Widget.MaterialComponents.CheckedTextView">
@@ -29,6 +39,7 @@
         <item name="editTextPreferenceStyle">@style/Preference.DialogPreference.EditTextPreference.Material.Custom</item>
         <item name="preferenceFragmentCompatStyle">@style/PreferenceFragment.Material.Custom</item>
         <item name="preferenceFragmentStyle">@style/PreferenceFragment.Material.Custom</item>
+        <item name="switchPreferenceStyle">@style/Preference.SwitchPreference.Material.Custom</item>
     </style>
 
     <style name="ThemeOverlay.App.Preference" parent="@style/PreferenceThemeOverlay">
@@ -52,17 +63,8 @@
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/mtrl_shape_corner_size_medium_component</item>
     </style>
 
-    <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.MaterialComponents.Light.Bridge">
-        <!-- Original AppCompat attributes. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="colorError">@color/colorError</item>
-        <item name="colorOnError">@android:color/white</item>
-
+    <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.MyApplicationTheme">
         <item name="preferenceTheme">@style/ThemeOverlay.Settings.Preference</item>
-        <item name="alertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
 
     </style>
 
@@ -112,7 +114,7 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="EasyPermissions" parent="AppTheme" />
+    <style name="EasyPermissions" parent="AppTheme" tools:keep="@style/EasyPermissions" />
 
     <!--<style name="PreferenceSummaryTextStyle" tools:override="true">-->
         <!--<item name="android:textAppearance">?android:attr/textAppearanceListItemSecondary</item>-->
@@ -121,6 +123,21 @@
     <style name="PreferenceFragmentList.Material.Custom" parent="@style/PreferenceFragmentList.Material">
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:transitionGroup">true</item>
+    </style>
+
+    <style name="Preference.SwitchPreference.Material.Custom" parent="@style/Preference.SwitchPreference.Material">
+        <item name="android:widgetLayout">@layout/abc_preference_widget_switch</item>
+    </style>
+
+    <style name="Widget.App.Tooltip" parent="Widget.MaterialComponents.Tooltip">
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Tooltip.Custom</item>
+        <item name="backgroundTint">?attr/colorBackgroundFloating</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Tooltip.Custom" parent="TextAppearance.MaterialComponents.Tooltip">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <!--<style name="ToolbarProgress" parent="android:Widget.ProgressBar.Horizontal">-->

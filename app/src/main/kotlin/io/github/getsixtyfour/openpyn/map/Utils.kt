@@ -74,17 +74,17 @@ internal fun setUpPrintArray(context: Context, countries: List<MultiSelectable>,
 }
 
 @Suppress("unused", "SpellCheckingInspection")
-internal fun fileBackedTileProvider(): MapBoxOfflineTileProvider {
+internal fun fileBackedTileProvider(path: String): MapBoxOfflineTileProvider {
     // Use a file backed SQLite database
-    val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro")
+    val tileProvider = MapBoxOfflineTileProvider(path)
     logger.debug { "$tileProvider" }
     return tileProvider
 }
 
 @Suppress("unused", "SpellCheckingInspection")
-internal fun memoryBackedTileProvider(): MapBoxOfflineTileProvider {
+internal fun memoryBackedTileProvider(path: String): MapBoxOfflineTileProvider {
     // Use a memory backed SQLite database
-    val tileProvider = MapBoxOfflineTileProvider("file:world.mbtiles?vfs=ndk-asset&immutable=1&mode=ro", null)
+    val tileProvider = MapBoxOfflineTileProvider(path, null)
     logger.debug { "$tileProvider" }
     return tileProvider
 }

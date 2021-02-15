@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="path_to_mbtiles" translatable="false">file:world.mbtiles?vfs=ndk-asset&amp;immutable=1&amp;mode=ro</string>
+</resources>

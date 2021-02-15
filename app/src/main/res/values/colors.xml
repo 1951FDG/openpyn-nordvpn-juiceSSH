@@ -2,23 +2,20 @@
 <resources>
     <color name="accent_material_indigo_200">#ff536dfe</color>
 
-    <color name="colorError">#ffff0000</color>
-
-    <!-- color for the app bar and other primary UI elements -->
-    <color name="colorPrimary">@color/colorAccent</color>
-
-    <!-- a darker variant of the primary color, used for the status bar and contextual app bars -->
-    <color name="colorPrimaryDark">@android:color/black</color>
-
-    <!-- a secondary color for controls like checkboxes and text fields -->
-    <color name="colorAccent">@color/accent_material_indigo_200</color>
-
-    <color name="actionBarColor">@android:color/white</color>
-    <color name="navigationBarColor">#fffafafa</color>
-    <color name="statusBarColor">@android:color/white</color>
-    <color name="titleTextColor">#ffbebebe</color>
     <color name="favoriteColor">#fbc02d</color>
     <color name="mapBackgroundColor">#ece9e1</color>
+    <color name="titleTextColor">#ffbebebe</color>
+
+    <color name="gm_ref_palette_blue300">#ff8ab4f8</color>
+    <color name="gm_ref_palette_blue500">#ff4285f4</color>
+    <color name="gm_ref_palette_blue600">#ff1a73e8</color>
+    <color name="gm_ref_palette_grey200">#ffe8eaed</color>
+    <color name="gm_ref_palette_grey800">#ff3c4043</color>
+    <color name="gm_ref_palette_grey900">#ff202124</color>
+    <color name="gm_ref_palette_red300">#fff28b82</color>
+    <color name="gm_ref_palette_red600">#ffd93025</color>
+    <color name="gm_ref_palette_white">#ffffffff</color>
+    <color name="gm_ref_palette_black">#ff000000</color>
 
     <!-- Drawable -->
     <color name="Black">#000000</color> <!--Number of times used: "36"-->
@@ -30,11 +27,22 @@
     <color name="Amber_A200">#ffd740</color> <!--Number of times used: "22"-->
     <color name="Light_Green_700">#689f38</color> <!--Number of times used: "11"-->
     <color name="Light_Green_900">#33691e</color> <!--Used only once!-->
-    <color name="Green_600">#43a047</color> <!--Used only once!-->
     <color name="Light_Blue_900">#01579b</color> <!--Used only once!-->
     <color name="Blue_900">#0d47a1</color> <!--Number of times used: "53"-->
     <color name="Blue_A200">#448aff</color> <!--Number of times used: "5"-->
     <color name="Pink_A200">#ff4081</color> <!--Used only once!-->
     <color name="Pink_A100">#ff80ab</color> <!--Used only once!-->
     <!-- Drawable -->
+
+    <!-- Light Theme -->
+    <color name="navigationBarColor">#52FFFFFF</color>
+    <color name="floating_action_button">@color/gm_ref_palette_white</color>
+
+    <color name="themeColorAccent">@color/gm_ref_palette_blue600</color>
+    <color name="themeColorError">@color/gm_ref_palette_red600</color>
+    <color name="themeColorOnSurface">@color/gm_ref_palette_grey800</color>
+    <color name="themeColorPrimary">@color/gm_ref_palette_blue600</color>
+    <color name="themeColorPrimaryDark">@color/gm_ref_palette_blue600</color>
+    <color name="themeColorSurface">@color/gm_ref_palette_white</color>
+    <color name="themeWindowBackground">@color/design_default_color_background</color>
 </resources>
