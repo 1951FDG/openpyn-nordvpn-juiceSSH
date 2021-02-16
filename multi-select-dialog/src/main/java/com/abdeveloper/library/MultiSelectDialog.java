@@ -241,17 +241,6 @@ public class MultiSelectDialog extends AppCompatDialogFragment
     }
 
     @NonNull
-    public List<MultiSelectable> getList() {
-        Collection<MultiSelectable> items = getMultiSelectItems();
-        List<MultiSelectable> list = new ArrayList<>(items.size());
-        for (MultiSelectable model : items) {
-            MultiSelectable clone = model.clone();
-            list.add(clone);
-        }
-        return list;
-    }
-
-    @NonNull
     public List<MultiSelectable> getMultiSelectItems() {
         return (mMultiSelectItems != null) ? mMultiSelectItems : new ArrayList<MultiSelectable>(0);
     }
@@ -293,8 +282,13 @@ public class MultiSelectDialog extends AppCompatDialogFragment
     }
 
     @NonNull
-    public MultiSelectDialog setMultiSelectList(@NonNull List<MultiSelectable> list) {
-        mMultiSelectItems = list;
+    public MultiSelectDialog setMultiSelectList(@NonNull Collection<MultiSelectable> list) {
+        List<MultiSelectable> newList = new ArrayList<>(list.size());
+        for (MultiSelectable model : list) {
+            MultiSelectable clone = model.clone();
+            newList.add(clone);
+        }
+        mMultiSelectItems = Collections.unmodifiableList(newList);
         if (mMaxSelectionLimit == 0) {
             mMaxSelectionLimit = list.size();
         }
