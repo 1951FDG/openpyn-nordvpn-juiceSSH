@@ -97,6 +97,8 @@ allprojects {
         }
     }
 
+    apply plugin: 'net.ltgt.errorprone'
+
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile).configureEach {
             //options.compilerArgs << '-Xlint:all'
@@ -124,6 +126,28 @@ allprojects {
         tasks.withType(UploadMappingFileTask).configureEach {
             dependsOn(appCopyGoogleIdValuesTask)
         }
+    }
+}
+
+subprojects {
+    if (it.name == "app") {
+        apply {
+            plugin "com.android.application"
+        }
+    } else {
+        apply {
+            plugin "com.android.library"
+        }
+    }
+
+    dependencies {
+        // Error Prone
+        debugAnnotationProcessor 'com.uber.nullaway:nullaway:0.8.0'
+        debugCompileOnly 'com.jakewharton.nopen:nopen-annotations:1.0.1'
+        errorprone 'com.jakewharton.nopen:nopen-checker:1.0.1'
+        errorprone 'com.google.errorprone:error_prone_core:2.5.1'
+        //noinspection GradleDynamicVersion
+        errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
     }
 }
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/checkbox"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    android:layout_gravity="center_vertical"
+    android:adjustViewBounds="true"
+    android:duplicateParentState="true"
+    android:scaleType="center"
+    android:src="@drawable/btn_check_material"
+    tools:ignore="ContentDescription"
+    tools:showIn="@layout/multi_select_item" />

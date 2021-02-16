@@ -1,1 +1,2 @@
+include ':multi-select-dialog'
 include ':app'

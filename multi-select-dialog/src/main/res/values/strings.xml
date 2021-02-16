@@ -1,0 +1,11 @@
+<resources>
+    <string name="list_empty">No items to display</string>
+    <plurals name="max_selection_message">
+        <item quantity="one">You can only select up to %d option</item>
+        <item quantity="other">You can only select up to %d options</item>
+    </plurals>
+    <plurals name="min_selection_message">
+        <item quantity="one">Please select at least %d option</item>
+        <item quantity="other">Please select at least %d options</item>
+    </plurals>
+</resources>

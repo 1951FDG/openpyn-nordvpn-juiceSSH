@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    When a user selects an item, the ViewHolder will set the state for that item's root view
+    (this CheckableLinearLayout) to "checked". Note that this requires that the root view
+    implements the Checkable interface. Once the root view is checked, any children that
+    have the duplicateParentState attribute set will inherit this "checked" state.
+-->
+<com.abdeveloper.library.CheckableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/listPreferredItemHeight"
+    android:background="?attr/selectableItemBackground"
+    android:clipToPadding="false"
+    android:minHeight="?attr/listPreferredItemHeight"
+    android:orientation="horizontal"
+    android:paddingStart="?attr/listPreferredItemPaddingStart"
+    android:paddingEnd="?attr/listPreferredItemPaddingEnd"
+    tools:layout_height="@dimen/dialog_item_min_height">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:adjustViewBounds="true"
+        android:background="@drawable/icon_background_material"
+        android:scaleType="center"
+        tools:ignore="ContentDescription"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:textAlignment="viewStart"
+        android:textAppearance="?attr/textAppearanceListItem"
+        tools:ignore="SelectableText"
+        tools:text="@tools:sample/first_names"
+        tools:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+    <include layout="@layout/multi_select_widget_imageview" />
+</com.abdeveloper.library.CheckableLinearLayout>

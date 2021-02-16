@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FullScreenDialogStyle" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustResize</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+
+        <!-- List attributes -->
+        <item name="listPreferredItemHeight">@dimen/dialog_item_min_height</item>
+        <item name="listPreferredItemPaddingStart">?attr/dialogPreferredPadding</item>
+        <item name="listPreferredItemPaddingEnd">?attr/dialogPreferredPadding</item>
+        <item name="textAppearanceListItem">@style/TextAppearance.AppCompat.Subhead</item>
+
+    </style>
+
+</resources>

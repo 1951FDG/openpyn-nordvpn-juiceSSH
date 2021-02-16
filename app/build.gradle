@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+//apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
@@ -23,8 +23,6 @@ apply plugin: 'com.github.konifar.gradle.unused-resources-remover'
 apply plugin: 'com.gladed.androidgitversion'
 
 apply plugin: 'io.gitlab.arturbosch.detekt'
-
-apply plugin: 'net.ltgt.errorprone'
 
 //apply plugin: 'com.google.gms.google-services'
 
@@ -51,10 +49,7 @@ android {
             }
             shrinkResources true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile(
-                    'proguard-android-optimize.txt'),
-                    'proguard-rules.pro',
-                    'proguard-rules-release.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'proguard-rules-release.pro'
         }
         debug {
             ndk {
@@ -187,8 +182,11 @@ dependencies {
     // Java 8+ libraries
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
 
+    // Modules
+    implementation project(':multi-select-dialog')
+
     // 1951FDG
-    implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.8'
+    //implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.8'
     implementation('com.github.1951FDG:ProgressToolbar:1.0.8') {
         exclude group: 'me.zhanghai.android.materialprogressbar'
     }
@@ -282,14 +280,6 @@ dependencies {
     debugImplementation ('com.facebook.stetho:stetho-timber:1.5.1') {
         exclude group: 'com.jakewharton.timber'
     }
-
-    // Error Prone
-    debugAnnotationProcessor 'com.uber.nullaway:nullaway:0.8.0'
-    debugCompileOnly 'com.jakewharton.nopen:nopen-annotations:1.0.1'
-    errorprone 'com.jakewharton.nopen:nopen-checker:1.0.1'
-    errorprone 'com.google.errorprone:error_prone_core:2.5.1'
-    //noinspection GradleDynamicVersion
-    errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
 
     // Test
     testImplementation 'junit:junit:4.13.1'
