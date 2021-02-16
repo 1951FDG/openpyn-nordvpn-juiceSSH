@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.SearchView;
@@ -86,9 +87,9 @@ public class MultiSelectDialog extends AppCompatDialogFragment
         super.onCreate(savedInstanceState);
 
         if (mTitle.isEmpty()) {
-            setStyle(DialogFragment.STYLE_NO_TITLE, R.style.FullScreenDialogStyle);
+            setStyle(DialogFragment.STYLE_NO_TITLE, getTheme());
         } else {
-            setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle);
+            setStyle(DialogFragment.STYLE_NORMAL, getTheme());
         }
 
         mMultiSelectAdapter = new MultiSelectAdapter(this);
@@ -109,7 +110,13 @@ public class MultiSelectDialog extends AppCompatDialogFragment
         builder.setView(view);
         builder.setPositiveButton(mPositiveText, this);
         builder.setNegativeButton(mNegativeText, this);
-        return builder.create();
+
+        Dialog dialog = builder.create();
+
+        // Workaround to resize the dialog for the input method
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        return dialog;
     }
 
     @Override

@@ -8,14 +8,14 @@
 <com.abdeveloper.library.CheckableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="?attr/listPreferredItemHeight"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/dialog_item_min_height"
     android:background="?attr/selectableItemBackground"
     android:clipToPadding="false"
-    android:minHeight="?attr/listPreferredItemHeight"
     android:orientation="horizontal"
-    android:paddingStart="?attr/listPreferredItemPaddingStart"
-    android:paddingEnd="?attr/listPreferredItemPaddingEnd"
-    tools:layout_height="@dimen/dialog_item_min_height">
+    android:paddingStart="?attr/dialogPreferredPadding"
+    android:paddingEnd="?attr/dialogPreferredPadding"
+    tools:theme="@style/Theme.MaterialComponents.DayNight">
 
     <ImageView
         android:id="@+id/image"
@@ -26,6 +26,7 @@
         android:background="@drawable/icon_background_material"
         android:scaleType="center"
         tools:ignore="ContentDescription"
+        tools:scaleType="fitCenter"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
@@ -40,10 +41,10 @@
         android:includeFontPadding="false"
         android:maxLines="1"
         android:textAlignment="viewStart"
-        android:textAppearance="?attr/textAppearanceListItem"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
+        android:textColor="@color/mtrl_list_item_tint"
         tools:ignore="SelectableText"
-        tools:text="@tools:sample/first_names"
-        tools:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+        tools:text="@tools:sample/first_names" />
 
     <include layout="@layout/multi_select_widget_imageview" />
 </com.abdeveloper.library.CheckableLinearLayout>

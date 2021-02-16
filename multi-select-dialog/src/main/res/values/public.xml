@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <public name="dialog_corner_radius_material" type="dimen" />
+    <public name="dialog_item_min_height" type="dimen" />
     <public name="list_empty" type="string" />
     <public name="max_selection_message" type="plurals" />
     <public name="min_selection_message" type="plurals" />
