@@ -22,6 +22,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool;
 
 import java.util.ArrayList;
@@ -122,12 +123,14 @@ public class MultiSelectDialog extends AppCompatDialogFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         MultiSelectRecyclerView recyclerView = view.findViewById(R.id.recycler);
-        recyclerView.setAdapter(mMultiSelectAdapter);
         recyclerView.setEmptyView(view.findViewById(R.id.stub));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
 
         RecycledViewPool recycledViewPool = recyclerView.getRecycledViewPool();
         recycledViewPool.setMaxRecycledViews(R.layout.multi_select_item, mMaxRecycledViews);
+
+        recyclerView.setAdapter(mMultiSelectAdapter);
 
         ViewTreeObserver observer = recyclerView.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(this);

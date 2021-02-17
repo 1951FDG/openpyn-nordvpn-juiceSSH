@@ -62,9 +62,6 @@ public class MultiSelectRecyclerView extends RecyclerView {
 
     public void setEmptyView(@Nullable View view) {
         mEmptyView = view;
-        Adapter adapter = getAdapter();
-        boolean empty = (adapter == null) || (adapter.getItemCount() == 0);
-        updateEmptyStatus(empty);
     }
 
     public void updateEmptyStatus(boolean empty) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dialog_corner_radius_material">0dp</dimen>
+    <dimen name="icon_corner_radius">0dp</dimen>
     <dimen name="dialog_item_min_height">56dp</dimen>
+    <dimen name="fading_edge_length">36dp</dimen>
 </resources>

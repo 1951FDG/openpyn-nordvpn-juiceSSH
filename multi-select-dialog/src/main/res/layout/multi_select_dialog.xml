@@ -9,6 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:minHeight="@dimen/dialog_item_min_height"
         android:layout_weight="1"
         android:animateLayoutChanges="true">
 
