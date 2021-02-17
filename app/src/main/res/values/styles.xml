@@ -16,6 +16,14 @@
         <item name="textInputStyle">@style/Widget.Design.TextInputLayout</item>
     </style>
 
+    <style name="ThemeOverlay.Design.TextInputEditText" parent="">
+        <item name="editTextStyle">@style/Widget.Design.TextInputEditText.Custom</item>
+    </style>
+
+    <style name="Widget.Design.TextInputEditText.Custom" parent="Widget.Design.TextInputEditText">
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
+    </style>
+
     <style name="Base.V21.Theme.AppTheme" parent="Theme.MyApplicationTheme">
         <item name="preferenceTheme">@style/ThemeOverlay.App.Preference</item>
 
