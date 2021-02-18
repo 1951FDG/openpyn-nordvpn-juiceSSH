@@ -10,6 +10,6 @@
     <color name="themeColorPrimary">@color/gm_ref_palette_blue300</color>
     <color name="themeColorPrimaryDark">@color/gm_ref_palette_blue500</color>
     <color name="themeColorSurface">@color/gm_ref_palette_grey900</color>
-    <color name="themeWindowBackground">@color/design_dark_default_color_background</color>
+    <color name="themeWindowBackground">@color/gm_ref_palette_black</color>
 
 </resources>

@@ -44,5 +44,5 @@
     <color name="themeColorPrimary">@color/gm_ref_palette_blue600</color>
     <color name="themeColorPrimaryDark">@color/gm_ref_palette_blue600</color>
     <color name="themeColorSurface">@color/gm_ref_palette_white</color>
-    <color name="themeWindowBackground">@color/design_default_color_background</color>
+    <color name="themeWindowBackground">@color/gm_ref_palette_white</color>
 </resources>
