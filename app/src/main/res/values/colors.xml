@@ -18,21 +18,8 @@
     <color name="gm_ref_palette_black">#ff000000</color>
 
     <!-- Drawable -->
-    <color name="Black">#000000</color> <!--Number of times used: "36"-->
-    <color name="Grey_100">#f5f5f5</color> <!--Number of times used: "99"-->
-    <color name="White">#ffffff</color> <!--Number of times used: "2"-->
-    <color name="Red_900">#b71c1c</color> <!--Number of times used: "5"-->
-    <color name="Red_A700">#d50000</color> <!--Number of times used: "102"-->
-    <color name="Orange_500">#ff9800</color> <!--Number of times used: "4"-->
-    <color name="Amber_A200">#ffd740</color> <!--Number of times used: "22"-->
-    <color name="Light_Green_700">#689f38</color> <!--Number of times used: "11"-->
-    <color name="Light_Green_900">#33691e</color> <!--Used only once!-->
-    <color name="Light_Blue_900">#01579b</color> <!--Used only once!-->
-    <color name="Blue_900">#0d47a1</color> <!--Number of times used: "53"-->
-    <color name="Blue_A200">#448aff</color> <!--Number of times used: "5"-->
-    <color name="Pink_A200">#ff4081</color> <!--Used only once!-->
-    <color name="Pink_A100">#ff80ab</color> <!--Used only once!-->
-    <!-- Drawable -->
+    <color name="pink_a200">#FF4081</color>
+    <color name="pink_a100">#FF80AB</color>
 
     <!-- Light Theme -->
     <color name="navigationBarColor">#52FFFFFF</color>

@@ -1,8 +1,10 @@
 package io.github.getsixtyfour.openpyn.map
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources.NotFoundException
 import android.text.SpannableString
+import androidx.annotation.ArrayRes
 import androidx.annotation.RawRes
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModelExtra
@@ -162,8 +164,7 @@ internal fun createJsonArray(context: Context, @RawRes id: Int, ext: String): JS
     return JSONArray()
 }
 
-@Suppress("MagicNumber")
-internal fun countryList(context: Context, @RawRes id: Int): List<MultiSelectable> {
+internal fun countryListFromJson(context: Context, @RawRes id: Int): List<MultiSelectable> {
     val json = context.resources.openRawResource(id).bufferedReader().use(BufferedReader::readText)
     val factory = PristineModelsJsonAdapterFactory.Builder().apply { add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
     val moshi = Moshi.Builder().add(factory.build()).add(object {
@@ -178,4 +179,33 @@ internal fun countryList(context: Context, @RawRes id: Int): List<MultiSelectabl
     val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
     val adapter: JsonAdapter<List<MultiSelectModelExtra>> = moshi.adapter(listType)
     return adapter.nonNull().fromJson(json).orEmpty()
+}
+
+@Suppress("MagicNumber")
+@SuppressLint("ResourceType")
+internal fun countryList(context: Context, @ArrayRes id: Int): List<MultiSelectable> {
+    val typedArray = context.resources.obtainTypedArray(id)
+    val size = typedArray.length()
+    val list = ArrayList<MultiSelectable>(size)
+    for (i in 0 until size) {
+        val array = context.resources.obtainTypedArray(typedArray.getResourceId(i, 0))
+        // <array name="us">
+        // 0 <item>United States</item>
+        // 1 <item>🇺🇸</item>
+        // 2 <item>us</item>
+        // 3 <item>60</item>
+        // 4 <item>@drawable/ic_united_states_40dp</item>
+        // </array>
+        val id = array.getInt(3, 0)
+        val name = array.getString(0)!!
+        val resId = array.getResourceId(4, 0)
+        val tag = array.getString(2)!!
+        val unicode = array.getString(1)!!
+        val multiSelectModelExtra = MultiSelectModelExtra(id, SpannableString(name), resId, tag, unicode)
+
+        list.add(multiSelectModelExtra)
+        array.recycle()
+    }
+    typedArray.recycle()
+    return list
 }

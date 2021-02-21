@@ -11,7 +11,8 @@
       "country",
       "emoji",
       "flag",
-      "id"
+      "id",
+      "image"
     ],
     "properties": {
       "country": {
@@ -47,7 +48,7 @@
         ],
         "minLength": 2,
         "maxLength": 2,
-        "pattern": "^([a-z]*)$"
+        "pattern": "^([a-z]{2})$"
       },
       "id": {
         "$id": "#/properties/id",
@@ -57,6 +58,16 @@
         "examples": [
           60
         ]
+      },
+      "image": {
+        "$id": "#/properties/image",
+        "type": "string",
+        "title": "The Drawable Schema",
+        "default": "",
+        "examples": [
+          "@drawable/ic_united_states_40dp"
+        ],
+        "pattern": "^(@drawable/[a-z0-9_]+)$"
       }
     }
   }

@@ -366,7 +366,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         screen.toolBar?.showProgress(true)
 
         val animations: ArrayList<Animation> = withContext(IO) {
-            val countries = async { countryList(applicationContext, R.raw.emojis) }
+            val countries = async { countryList(applicationContext, R.array.countries) }
             val jsonArray = async { jsonArray(applicationContext, R.raw.nordvpn, ".json") }
             val tileProvider = async { fileBackedTileProvider(applicationContext.getString(R.string.path_to_mbtiles)) }
             val favorites = async { LazyMarkerStorage(FAVORITE_KEY).loadFavorites(applicationContext) }

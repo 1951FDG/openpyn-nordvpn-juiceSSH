@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="Black">#000000</color>
+    <color name="Grey_100">#F5F5F5</color>
+    <color name="Red_900">#B71C1C</color>
+    <color name="Red_A700">#D50000</color>
+    <color name="Orange_500">#FF9800</color>
+    <color name="Amber_A200">#FFD740</color>
+    <color name="Light_Green_700">#689F38</color>
+    <color name="Light_Green_900">#33691E</color>
+    <color name="Light_Blue_900">#01579B</color>
+    <color name="Blue_900">#0D47A1</color>
+    <color name="Blue_A200">#448AFF</color>
+</resources>

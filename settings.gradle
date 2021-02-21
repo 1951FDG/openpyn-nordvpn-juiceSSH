@@ -1,2 +1,3 @@
+include ':vpn-country-flags'
 include ':multi-select-dialog'
 include ':app'

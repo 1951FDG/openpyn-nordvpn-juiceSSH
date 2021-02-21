@@ -1,3 +1,6 @@
+import groovy.json.JsonSlurper
+import groovy.xml.MarkupBuilder
+
 final groupName = 'app'
 
 dependencyUpdates.group = groupName
@@ -190,6 +193,84 @@ task appUnzip2(type: Copy) {
     include 'classes.jar'
 
     eachFile { FileCopyDetails details -> details.relativePath = new RelativePath(true, 'libsqliteX.jar') }
+}
+
+task appGenerateCountryArrays {
+    group = groupName
+    inputs.file 'src/main/res/raw/emojis.json'
+    outputs.file "$project.rootDir/vpn-country-flags/src/main/res/values/arrays.xml"
+    doLast {
+        def json = new JsonSlurper().parseText(inputs.files.files[0].text)
+        def sw = new StringWriter()
+        def xml = new MarkupBuilder(sw)
+
+        xml.setDoubleQuotes(true)
+        xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
+        xml.resources() {
+            json.each { country ->
+                xml.array([name: "$country.flag"]) {
+                    country.each { k, v -> item("${v}")
+                    }
+                }
+            }
+
+            /*xml.'string-array'([name: 'country_name']) {
+                json.country.each {
+                    item(it)
+                }
+            }
+
+            xml.'string-array'([name: 'country_emoji']) {
+                json.emoji.each {
+                    item(it)
+                }
+            }
+
+            xml.'string-array'([name: 'country_flag']) {
+                json.flag.each {
+                    item(it)
+                }
+            }
+
+            xml.'integer-array'([name: 'country_id']) {
+                json.id.each {
+                    item(it)
+                }
+            }
+
+            xml.'array'([name: 'country_icon']) {
+                json.image.each {
+                    item(it)
+                }
+            }*/
+
+        }
+
+        outputs.files.files[0].write(sw.toString())
+    }
+}
+
+task appGenerateCountriesArray {
+    group = groupName
+    inputs.file 'src/main/res/raw/emojis.json'
+    outputs.file 'src/main/res/values/arrays.xml'
+    doLast {
+        def json = new JsonSlurper().parseText(inputs.files.files[0].text)
+        def sw = new StringWriter()
+        def xml = new MarkupBuilder(sw)
+
+        xml.setDoubleQuotes(true)
+        xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
+        xml.resources() {
+            xml.array([name: 'countries']) {
+                json.flag.each {
+                    item("@array/$it")
+                }
+            }
+        }
+
+        outputs.files.files[0].write(sw.toString())
+    }
 }
 
 /*import com.android.build.gradle.api.BaseVariant

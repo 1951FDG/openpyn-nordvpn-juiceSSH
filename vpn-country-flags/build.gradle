@@ -1,0 +1,21 @@
+//apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 30
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    buildFeatures {
+        buildConfig false
+        resValues false
+    }
+    lintOptions {
+        lintConfig file('lint.xml')
+    }
+}

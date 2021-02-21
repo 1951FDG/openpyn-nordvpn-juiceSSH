@@ -94,7 +94,7 @@ android {
     lintOptions {
         // check 'Registered', 'VectorPath', 'DuplicateStrings', 'UnknownNullness', 'UnusedResources', 'UnusedIds'
         abortOnError false
-        baseline file('lint-baseline.xml')
+        // baseline file('lint-baseline.xml')
         checkAllWarnings true
         disable 'GoogleAppIndexingWarning'
         lintConfig file('lint.xml')
@@ -184,6 +184,7 @@ dependencies {
 
     // Modules
     implementation project(':multi-select-dialog')
+    implementation project(':vpn-country-flags')
 
     // 1951FDG
     //implementation 'com.github.1951FDG:Android-Multi-Select-Dialog:3.8'

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <issue id="UnusedResources">
+        <ignore path="src/main/res/drawable" />
+        <ignore path="src/main/res/values/arrays.xml" />
+        <ignore path="src/main/res/values/colors.xml" />
+    </issue>
+</lint>
