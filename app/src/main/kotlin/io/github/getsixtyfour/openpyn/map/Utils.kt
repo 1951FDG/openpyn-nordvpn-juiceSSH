@@ -11,16 +11,9 @@ import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
-import com.jayrave.moshi.pristineModels.PristineModelsJsonAdapterFactory
-import com.squareup.moshi.FromJson
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.ToJson
-import com.squareup.moshi.Types
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator.Animation
 import io.github.getsixtyfour.openpyn.maps.MapBoxOfflineTileProvider
-import io.github.getsixtyfour.openpyn.utils.MultiSelectMapper
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import mu.KotlinLogging
 import org.json.JSONArray
@@ -162,23 +155,6 @@ internal fun createJsonArray(context: Context, @RawRes id: Int, ext: String): JS
         logger.error(e) { "" }
     }
     return JSONArray()
-}
-
-internal fun countryListFromJson(context: Context, @RawRes id: Int): List<MultiSelectable> {
-    val json = context.resources.openRawResource(id).bufferedReader().use(BufferedReader::readText)
-    val factory = PristineModelsJsonAdapterFactory.Builder().apply { add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
-    val moshi = Moshi.Builder().add(factory.build()).add(object {
-        @ToJson
-        @Suppress("unused")
-        fun toJson(value: CharSequence): String = "$value"
-
-        @FromJson
-        @Suppress("unused")
-        fun fromJson(value: String): CharSequence = SpannableString(value)
-    }).build()
-    val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
-    val adapter: JsonAdapter<List<MultiSelectModelExtra>> = moshi.adapter(listType)
-    return adapter.nonNull().fromJson(json).orEmpty()
 }
 
 @Suppress("MagicNumber")
