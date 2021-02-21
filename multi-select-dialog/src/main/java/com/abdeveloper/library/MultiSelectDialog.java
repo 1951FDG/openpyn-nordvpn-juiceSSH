@@ -46,7 +46,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment
 
     private int mMaxRecycledViews = Integer.MAX_VALUE;
 
-    private int mMaxSelectionLimit;
+    private int mMaxSelectionLimit = 0;
 
     private String mMaxSelectionMessage = "";
 
@@ -54,11 +54,11 @@ public class MultiSelectDialog extends AppCompatDialogFragment
 
     private String mMinSelectionMessage = "";
 
-    private MultiSelectAdapter mMultiSelectAdapter;
+    private MultiSelectAdapter mMultiSelectAdapter = null;
 
-    private MultiSelectFilter mMultiSelectFilter;
+    private MultiSelectFilter mMultiSelectFilter = null;
 
-    private List<MultiSelectable> mMultiSelectItems;
+    private List<MultiSelectable> mMultiSelectItems = null;
 
     @StringRes
     private int mNegativeText = android.R.string.cancel;
@@ -245,7 +245,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment
 
     @NonNull
     public List<MultiSelectable> getMultiSelectItems() {
-        return (mMultiSelectItems != null) ? mMultiSelectItems : new ArrayList<MultiSelectable>(0);
+        return (mMultiSelectItems != null) ? mMultiSelectItems : new ArrayList<>(0);
     }
 
     @NonNull

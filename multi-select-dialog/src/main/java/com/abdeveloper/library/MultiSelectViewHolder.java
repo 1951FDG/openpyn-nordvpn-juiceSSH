@@ -38,17 +38,7 @@ class MultiSelectViewHolder extends ViewHolder implements View.OnClickListener {
         View checkboxView = view.findViewById(R.id.checkbox);
         mImageView = view.findViewById(R.id.image);
         mTitleView = view.findViewById(R.id.text);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            if (checkboxView instanceof ImageView) {
-                ImageViewCompat.setImageTintList((ImageView) checkboxView,
-                        AppCompatResources.getColorStateList(checkboxView.getContext(), R.color.control_checkable_material));
-            } else if (checkboxView instanceof CompoundButton) {
-                CompoundButtonCompat.setButtonTintList((CompoundButton) checkboxView,
-                        AppCompatResources.getColorStateList(checkboxView.getContext(), R.color.control_checkable_material));
-            }
-        } else {
-            mImageView.setClipToOutline(true);
-        }
+        mImageView.setClipToOutline(true);
         mTitleView.setSpannableFactory(SPANNABLE_FACTORY);
         //noinspection ThisEscapedInObjectConstruction
         view.setOnClickListener(this);

@@ -299,14 +299,16 @@ suspend fun createJson(): JSONArray? {
 }
 
 fun sortJsonArray(jsonArray: JSONArray): JSONArray {
-    val array = ArrayList<JSONObject>()
-    for (res in jsonArray) array.add(res)
+    val list = ArrayList<JSONObject>()
+    for (res in jsonArray) {
+        list.add(res)
+    }
 
-    array.sortWith(
+    list.sortWith(
         compareBy({ it.getString(COUNTRY) }, { it.getJSONObject(LOCATION).getDouble(LAT) }, { it.getJSONObject(LOCATION).getDouble(LONG) })
     )
     val result = JSONArray()
-    for (res in array) {
+    for (res in list) {
         result.put(res)
     }
     return result
@@ -354,9 +356,9 @@ fun createMarkers(
         else -> ""
     }
 
-    val length = jsonArray.length()
-    val flags = HashSet<CharSequence>(length)
-    val markers = HashMap<LatLng, LazyMarker>(length)
+    val size = jsonArray.length()
+    val flags = HashSet<CharSequence>(size)
+    val markers = HashMap<LatLng, LazyMarker>(size)
     for (res in jsonArray) {
         val flag = res.getString(FLAG)
         val country = res.getString(COUNTRY)
