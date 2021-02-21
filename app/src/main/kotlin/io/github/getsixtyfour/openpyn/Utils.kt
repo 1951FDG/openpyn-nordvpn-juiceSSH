@@ -3,6 +3,7 @@ package io.github.getsixtyfour.openpyn
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -25,7 +26,6 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSION
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-import info.hannes.logcat.LogfileActivity
 import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.ktextension.verifyInstallerId
 import io.github.getsixtyfour.ktextension.verifySigningCertificate
@@ -83,7 +83,7 @@ fun <T : Activity> onLicensesItemSelected(activity: T) {
 }
 
 fun <T : Activity> onLoggingItemSelected(activity: T) {
-    val intent = Intent(activity, LogfileActivity::class.java)
+    val intent = Intent().apply { component = ComponentName(activity, "info.hannes.logcat.LogfileActivity") }
     ContextCompat.startActivity(activity, intent, null)
 }
 
