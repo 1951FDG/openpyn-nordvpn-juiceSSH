@@ -96,7 +96,7 @@ android {
         abortOnError false
         // baseline file('lint-baseline.xml')
         checkAllWarnings true
-        disable 'GoogleAppIndexingWarning'
+        disable 'GoogleAppIndexingWarning', 'VectorPath'
         lintConfig file('lint.xml')
         xmlReport false
     }

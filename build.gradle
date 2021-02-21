@@ -130,13 +130,13 @@ allprojects {
 }
 
 subprojects {
-    if (it.name == "app") {
+    if (it.name == 'app') {
         apply {
-            plugin "com.android.application"
+            plugin 'com.android.application'
         }
     } else {
         apply {
-            plugin "com.android.library"
+            plugin 'com.android.library'
         }
     }
 
