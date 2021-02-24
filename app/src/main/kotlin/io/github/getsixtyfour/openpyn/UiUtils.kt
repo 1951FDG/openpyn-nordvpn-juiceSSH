@@ -22,9 +22,7 @@ import androidx.core.view.WindowInsetsCompat
 @Dimension
 fun dpToPx(@Dimension(unit = Dimension.DP) dp: Float, context: Context): Float {
     val metrics = context.resources.displayMetrics
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP, dp, metrics
-    )
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, metrics)
 }
 
 /**

@@ -5,7 +5,9 @@ import es.dmoral.toasty.Toasty
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
 
 class Toaster(context: Context) : OnOutputLineListener {
+
     private val mContext: Context = context.applicationContext
+
     override fun spam(message: CharSequence) {
         Toasty.info(mContext, message, Toasty.LENGTH_LONG, false).show()
     }

@@ -29,22 +29,25 @@ import kotlinx.android.synthetic.main.fragment_map.view.settingsfab
 class MapViews : ActionViews<MapViewsAction>() {
 
     override val layoutResId: Int = R.layout.fragment_map
+
     private val fab0 by lazy { rootView.fab0 }
     private val fab1 by lazy { rootView.fab1 }
     private val fab2 by lazy { rootView.fab2 }
     private val fab3 by lazy { rootView.fab3 }
     private val fab4 by lazy { rootView.fab4 }
     private val settingsFab by lazy { rootView.settingsfab }
+
     private val map by lazy { rootView.map }
     private val minibarView by lazy { rootView.minibar }
     private val overlay by lazy { LayoutInflater.from(rootView.context).inflate(R.layout.overlay_progress, rootView, false) as ViewGroup }
+
+    private val fabMarginBottom by lazy { rootView.fab0.marginBottom }
+    private val fabMarginTop by lazy { rootView.fab4.marginTop }
+
     private val shortAnimationDuration by lazy { rootView.context.resources.getInteger(android.R.integer.config_shortAnimTime) }
 
-    internal var systemWindowInsetTop: Int = 0
     internal var systemWindowInsetBottom: Int = 0
-
-    private val fabMarginTop by lazy { rootView.fab4.marginTop }
-    private val fabMarginBottom by lazy { rootView.fab0.marginBottom }
+    internal var systemWindowInsetTop: Int = 0
 
     // TODO: inner classes
     override fun onCreated() {

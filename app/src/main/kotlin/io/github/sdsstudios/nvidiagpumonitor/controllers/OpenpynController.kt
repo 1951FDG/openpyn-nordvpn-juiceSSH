@@ -17,9 +17,114 @@ class OpenpynController(
     private var mOnOutputLineListener: OnOutputLineListener?
 ) : BaseController(ctx) {
 
+    private val logger = KotlinLogging.logger {}
+
     @Suppress("MagicNumber")
     private var buffer = StringBuilder(256)
-    private val logger = KotlinLogging.logger {}
+
+    override fun onDestroy() {
+        mSessionExecuteListener = null
+        mCommandExecuteListener = null
+        mOnOutputLineListener = null
+    }
+
+    @Suppress("ComplexMethod")
+    override fun connect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
+        fun code(iso: String): String = when (iso) {
+            "gb" -> "uk"
+            else -> iso
+        }
+
+        var pair: Pair<Coordinate?, String> = Pair(null, "")
+        mCommandExecuteListener?.let { pair = it.positionAndFlagForSelectedMarker() }
+
+        val (location, flag) = pair
+        val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
+        val server = preferences.getString("pref_server", "")!!
+        val country = preferences.getString("pref_country", "")!!
+        val tcp = preferences.getBoolean("pref_tcp", false)
+        val load = preferences.getString("pref_max_load", "")!!
+        val top = preferences.getString("pref_top_servers", "")!!
+        /*val pings = preferences.getString("pref_pings", "")!!*/
+        val rules = preferences.getBoolean("pref_force_fw", false)
+        val p2p = preferences.getBoolean("pref_p2p", false)
+        val dedicated = preferences.getBoolean("pref_dedicated", false)
+        val double = preferences.getBoolean("pref_double", false)
+        val onion = preferences.getBoolean("pref_tor", false)
+        val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
+        val netflix = preferences.getBoolean("pref_netflix", false)
+        val test = preferences.getBoolean("pref_test", false)
+        val patch = preferences.getBoolean("pref_skip_dns_patch", false)
+        var silent = preferences.getBoolean("pref_silent", false)
+        val nvram = preferences.getBoolean("pref_nvram", false)
+        var openvpn = ""
+        val options = StringBuilder("openpyn")
+        val openvpnmgmt = preferences.getBoolean(mCtx.getString(R.string.pref_openvpnmgmt_key), false)
+        val host = preferences.getString(
+            mCtx.getString(R.string.pref_openvpnmgmt_host_key), mCtx.getString(R.string.pref_openvpnmgmt_host_default)
+        )!!
+        val port = preferences.getString(
+            mCtx.getString(R.string.pref_openvpnmgmt_port_key), mCtx.getString(R.string.pref_openvpnmgmt_port_default)
+        )!!
+        val str = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_password_key), "")!!
+        val password = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_password_file_key), "")!!
+        val username = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_username_key), "")!!
+        val userpass = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_userpass_key), "")!!
+
+        if (openvpnmgmt) {
+            silent = true
+
+            openvpn = "--management $host ${port.toInt()}"
+
+            if (password.isNotEmpty() && str.isNotEmpty()) {
+                openvpn = "$openvpn '$password'"
+            }
+
+            if (username.isNotEmpty() && userpass.isNotEmpty() && !nvram) {
+                openvpn = "$openvpn --auth-nocache --auth-retry interact --management-hold --management-query-passwords"
+                options.append(" --application")
+            }
+
+            openvpn = "$openvpn --management-up-down"
+        }
+
+        when {
+            flag.isNotEmpty() -> options.append(" ${code(flag)}")
+            server.isNotEmpty() -> options.append(" --server $server")
+            country.isNotEmpty() -> options.append(" ${code(country)}")
+        }
+
+        if (tcp) options.append(" --tcp")
+        if (load.isNotEmpty()) options.append(" --max-load $load")
+        if (top.isNotEmpty()) options.append(" --top-servers $top")
+        if (rules) options.append(" --force-fw-rules")
+        if (p2p) options.append(" --p2p")
+        if (dedicated) options.append(" --dedicated")
+        if (double) options.append(" --double")
+        if (onion) options.append(" --tor")
+        if (obfuscated) options.append(" --anti-ddos")
+        if (netflix) options.append(" --netflix")
+        if (test) options.append(" --test")
+        if (patch) options.append(" --skip-dns-patch")
+        if (silent) options.append(" --silent")
+        if (nvram) options.append(" --nvram " + preferences.getString("pref_nvram_client", "5"))
+        if (openvpn.isNotEmpty()) options.append(" --openvpn-options '$openvpn'")
+        if (location != null) options.append(" --location ${location.latitude} ${location.longitude}")
+        val openpyn = "$options"
+        // The file /etc/profile is only loaded for a login shell, this is a non-interactive shell
+        command = "[ -f /etc/profile ] && . /etc/profile ; $openpyn"
+        /*command = "echo \$PATH ; echo \$-"*/
+        logger.info(command)
+
+        return super.connect(pluginClient, sessionId, sessionKey)
+    }
+
+    override fun disconnect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
+        command = "sudo openpyn --kill"
+        logger.info(command)
+
+        return super.disconnect(pluginClient, sessionId, sessionKey)
+    }
 
     @Suppress("MagicNumber")
     override fun onCompleted(exitCode: Int) {
@@ -93,9 +198,7 @@ class OpenpynController(
         }
 
         buffer.append(line)
-        val logging = listOf(
-            SPAM, DEBUG, VERBOSE, INFO, NOTICE, WARNING, SUCCESS, ERROR, CRITICAL
-        )
+        val logging = listOf(SPAM, DEBUG, VERBOSE, INFO, NOTICE, WARNING, SUCCESS, ERROR, CRITICAL)
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
         val level = checkNotNull(preferences.getString("pref_log_level", "25")).toInt()
 
@@ -135,110 +238,8 @@ class OpenpynController(
         mSessionExecuteListener?.onError(reason, message)
     }
 
-    @Suppress("ComplexMethod")
-    override fun connect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
-        fun code(iso: String): String = when (iso) {
-            "gb" -> "uk"
-            else -> iso
-        }
-
-        var pair: Pair<Coordinate?, String> = Pair(null, "")
-        mCommandExecuteListener?.let { pair = it.positionAndFlagForSelectedMarker() }
-
-        val (location, flag) = pair
-        val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
-        val server = preferences.getString("pref_server", "")!!
-        val country = preferences.getString("pref_country", "")!!
-        val tcp = preferences.getBoolean("pref_tcp", false)
-        val load = preferences.getString("pref_max_load", "")!!
-        val top = preferences.getString("pref_top_servers", "")!!
-        /*val pings = preferences.getString("pref_pings", "")!!*/
-        val rules = preferences.getBoolean("pref_force_fw", false)
-        val p2p = preferences.getBoolean("pref_p2p", false)
-        val dedicated = preferences.getBoolean("pref_dedicated", false)
-        val double = preferences.getBoolean("pref_double", false)
-        val onion = preferences.getBoolean("pref_tor", false)
-        val obfuscated = preferences.getBoolean("pref_anti_ddos", false)
-        val netflix = preferences.getBoolean("pref_netflix", false)
-        val test = preferences.getBoolean("pref_test", false)
-        val patch = preferences.getBoolean("pref_skip_dns_patch", false)
-        var silent = preferences.getBoolean("pref_silent", false)
-        val nvram = preferences.getBoolean("pref_nvram", false)
-        var openvpn = ""
-        val options = StringBuilder("openpyn")
-        val openvpnmgmt = preferences.getBoolean(mCtx.getString(R.string.pref_openvpnmgmt_key), false)
-        val host = preferences.getString(
-            mCtx.getString(R.string.pref_openvpnmgmt_host_key), mCtx.getString(R.string.pref_openvpnmgmt_host_default)
-        )!!
-        val port = preferences.getString(
-            mCtx.getString(R.string.pref_openvpnmgmt_port_key), mCtx.getString(R.string.pref_openvpnmgmt_port_default)
-        )!!
-        val str = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_password_key), "")!!
-        val password = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_password_file_key), "")!!
-        val username = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_username_key), "")!!
-        val userpass = preferences.getString(mCtx.getString(R.string.pref_openvpnmgmt_userpass_key), "")!!
-
-        if (openvpnmgmt) {
-            silent = true
-
-            openvpn = "--management $host ${port.toInt()}"
-
-            if (password.isNotEmpty() && str.isNotEmpty()) {
-                openvpn = "$openvpn '$password'"
-            }
-
-            if (username.isNotEmpty() && userpass.isNotEmpty() && !nvram) {
-                openvpn = "$openvpn --auth-nocache --auth-retry interact --management-hold --management-query-passwords"
-                options.append(" --application")
-            }
-
-            openvpn = "$openvpn --management-up-down"
-        }
-
-        when {
-            flag.isNotEmpty() -> options.append(" ${code(flag)}")
-            server.isNotEmpty() -> options.append(" --server $server")
-            country.isNotEmpty() -> options.append(" ${code(country)}")
-        }
-        if (tcp) options.append(" --tcp")
-        if (load.isNotEmpty()) options.append(" --max-load $load")
-        if (top.isNotEmpty()) options.append(" --top-servers $top")
-        if (rules) options.append(" --force-fw-rules")
-        if (p2p) options.append(" --p2p")
-        if (dedicated) options.append(" --dedicated")
-        if (double) options.append(" --double")
-        if (onion) options.append(" --tor")
-        if (obfuscated) options.append(" --anti-ddos")
-        if (netflix) options.append(" --netflix")
-        if (test) options.append(" --test")
-        if (patch) options.append(" --skip-dns-patch")
-        if (silent) options.append(" --silent")
-        if (nvram) options.append(" --nvram " + preferences.getString("pref_nvram_client", "5"))
-        if (openvpn.isNotEmpty()) options.append(" --openvpn-options '$openvpn'")
-        if (location != null) options.append(" --location ${location.latitude} ${location.longitude}")
-        val openpyn = "$options"
-        // The file /etc/profile is only loaded for a login shell, this is a non-interactive shell
-        command = "[ -f /etc/profile ] && . /etc/profile ; $openpyn"
-        /*command = "echo \$PATH ; echo \$-"*/
-        logger.info(command)
-
-        return super.connect(pluginClient, sessionId, sessionKey)
-    }
-
-    override fun disconnect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
-        command = "sudo openpyn --kill"
-        logger.info(command)
-
-        return super.disconnect(pluginClient, sessionId, sessionKey)
-    }
-
-    override fun onDestroy() {
-        mSessionExecuteListener = null
-        mCommandExecuteListener = null
-        mOnOutputLineListener = null
-    }
-
     companion object {
+
         private const val SPAM = "SPAM"
         private const val DEBUG = "DEBUG"
         private const val VERBOSE = "VERBOSE"

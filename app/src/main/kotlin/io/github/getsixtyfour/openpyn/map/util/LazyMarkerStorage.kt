@@ -9,6 +9,7 @@ import com.squareup.moshi.Types
 import io.github.getsixtyfour.openpyn.map.model.LazyMarker
 
 class LazyMarkerStorage(key: String) : MyStorage<LazyMarker>(key) {
+
     override val jsonAdapter: JsonAdapter<List<LazyMarker>> by lazy(::adapter)
 
     private fun adapter(): JsonAdapter<List<LazyMarker>> {

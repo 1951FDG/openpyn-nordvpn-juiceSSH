@@ -43,13 +43,9 @@ fun initStrictMode() {
         return
     }
 
-    StrictMode.setThreadPolicy(
-        ThreadPolicy.Builder().detectAll().penaltyLog().build()
-    )
+    StrictMode.setThreadPolicy(ThreadPolicy.Builder().detectAll().penaltyLog().build())
 
-    StrictMode.setVmPolicy(
-        VmPolicy.Builder().detectAll().penaltyLog().build()
-    )
+    StrictMode.setVmPolicy(VmPolicy.Builder().detectAll().penaltyLog().build())
 }
 
 fun initTimber(application: Application) {

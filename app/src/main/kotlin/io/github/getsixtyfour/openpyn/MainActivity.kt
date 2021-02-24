@@ -63,35 +63,19 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener, SubmitCallbackListener,
     CoroutineScope by MainScope() {
 
+    private val logger = KotlinLogging.logger {}
+
+    private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
+
+    private val mGooglePlayStorePackage: Boolean by lazy { isPlayStorePackage(this) }
+    private val mGooglePlayStoreCertificate: Boolean by lazy { isPlayStoreCertificate(this) }
+
     private val mConnectionAdapter: ConnectionListAdapter by lazy { ConnectionListAdapter(this) }
     private var mConnectionManager: ConnectionManager? = null
     private val mConnectionId: UUID?
         get() = mConnectionAdapter.getConnectionId(spinner.selectedItemPosition)
 
-    private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
-
     private var mAppSettingsDialogShown: Boolean = false
-    private val mGooglePlayStorePackage: Boolean by lazy { isPlayStorePackage(this) }
-    private val mGooglePlayStoreCertificate: Boolean by lazy { isPlayStoreCertificate(this) }
-
-    private val logger = KotlinLogging.logger {}
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        window.exitTransition = MaterialFadeThrough()
-        // Hide both the navigation bar and the status bar
-        /*hideSystemUI(window, window.decorView)
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.navigationBarColor)*/
-        // This app draws behind the system bars, so we want to handle fitting system windows
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        /*setProgressToolBar(this, toolbar)*/
-        startVpnService(this)
-        // TODO: remove after beta release test, add delay?
-        logger.error(Exception()) { "$apkSignatures" }
-        // Add overlayLayout as background
-        addOverlayLayout(container)
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -110,6 +94,29 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
                 logger.warn { "Update flow failed! Result code: $resultCode" }
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        window.exitTransition = MaterialFadeThrough()
+
+        // Hide both the navigation bar and the status bar
+        /*hideSystemUI(window, window.decorView)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.navigationBarColor)*/
+
+        // This app draws behind the system bars, so we want to handle fitting system windows
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        /*setProgressToolBar(this, toolbar)*/
+
+        startVpnService(this)
+
+        // TODO: remove after beta release test, add delay?
+        logger.error(Exception()) { "$apkSignatures" }
+
+        // Add overlayLayout as background
+        addOverlayLayout(container)
     }
 
     override fun onResume() {
@@ -368,6 +375,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     }
 
     companion object {
+
         const val UPDATE_REQUEST_CODE: Int = 1
         const val PERMISSION_REQUEST_CODE: Int = 2
         const val JUICESSH_REQUEST_CODE: Int = 3

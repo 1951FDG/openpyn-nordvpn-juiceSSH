@@ -1,6 +1,5 @@
 package io.github.getsixtyfour.openpyn.map.util
 
-import android.app.Activity
 import android.content.Context
 import android.location.Location
 import android.os.Build
@@ -326,7 +325,8 @@ fun writeJsonArray(context: Context, @AnyRes resId: Int, text: String): File {
     return file
 }
 
-fun showThreats(activity: Activity, jsonObj: JSONObject) {
+@Suppress("UNUSED_VARIABLE")
+fun showThreats(jsonObj: JSONObject) {
     val threats: JSONObject? = jsonObj.optJSONObject(THREAT)
     logger.info(threats::toString)
 
@@ -478,9 +478,7 @@ suspend fun createGeoJson(context: Context): JSONObject? {
     return null
 }
 
-fun getCurrentPosition(
-    context: Context, flags: HashSet<CharSequence>, jsonObj: JSONObject?, jsonArr: JSONArray? = null
-): LatLng {
+fun getCurrentPosition(flags: HashSet<CharSequence>, jsonObj: JSONObject?, jsonArr: JSONArray? = null): LatLng {
     @Suppress("MagicNumber")
     fun getDefaultLatLng(): LatLng = LatLng(51.514125, -0.093689)
 
@@ -513,7 +511,7 @@ fun getCurrentPosition(
             }
             val result = results.min()
             if (result != null) {
-                val index = results.indexOf(result)
+                val index = results.indexOfFirst { it == result }
                 return latLngList[index]
             }
         }

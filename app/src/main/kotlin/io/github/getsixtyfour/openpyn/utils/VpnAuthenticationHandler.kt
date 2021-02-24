@@ -19,6 +19,7 @@ class VpnAuthenticationHandler(context: Context) : UsernamePasswordHandler {
     }
 
     companion object {
+
         fun getHost(context: Context): String {
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
             return preferences.getString(

@@ -33,18 +33,18 @@ import io.github.getsixtyfour.openpyn.onLicensesItemSelected
  */
 class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
-    override fun onStop() {
-        super.onStop()
-
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
 
         enterTransition = MaterialFadeThrough()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -185,6 +185,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     companion object {
+
         @Suppress("MagicNumber")
         internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
             get() = object : RecyclerView.OnScrollListener() {

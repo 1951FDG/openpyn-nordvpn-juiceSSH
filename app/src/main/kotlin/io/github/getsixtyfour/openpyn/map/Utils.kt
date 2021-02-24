@@ -131,9 +131,7 @@ internal fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, Strin
 
 internal fun copyRawResourceToFile(context: Context, @RawRes id: Int, file: File) {
     context.resources.openRawResource(id).use { input ->
-        file.outputStream().buffered().use { output ->
-            input.copyTo(output)
-        }
+        file.outputStream().buffered().use { input.copyTo(it) }
     }
 }
 

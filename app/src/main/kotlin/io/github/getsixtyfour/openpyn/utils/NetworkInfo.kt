@@ -18,33 +18,15 @@ import java.net.InetSocketAddress
 import java.net.Socket
 
 class NetworkInfo internal constructor(private val connectivityManager: ConnectivityManager) : LiveData<Boolean>() {
+
     private val logger = KotlinLogging.logger {}
+
+    // Collection of listeners
+    private val listeners by lazy { LinkedHashSet<NetworkInfoListener>() }
     private val mLock = Any()
 
     @Volatile
     private var mMainHandler: Handler? = null
-
-    private fun postToMainThread(runnable: Runnable) {
-        if (mMainHandler == null) {
-            synchronized(mLock) {
-                if (mMainHandler == null) {
-                    mMainHandler = Handler(Looper.getMainLooper())
-                }
-            }
-        }
-
-        (mMainHandler ?: return).post(runnable)
-    }
-
-    private fun executeOnMainThread(runnable: Runnable) {
-        if (isMainThread()) {
-            runnable.run()
-        } else {
-            postToMainThread(runnable)
-        }
-    }
-
-    private fun isMainThread(): Boolean = Looper.getMainLooper().thread == Thread.currentThread()
 
     // Constructor
     init {
@@ -101,11 +83,30 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
         connectivityManager.registerNetworkCallback(builder.build(), networkCallback)
     }
 
-    // Collection of listeners
-    private val listeners by lazy { LinkedHashSet<NetworkInfoListener>() }
-
     @RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)
     constructor(application: Application) : this(application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+
+    private fun postToMainThread(runnable: Runnable) {
+        if (mMainHandler == null) {
+            synchronized(mLock) {
+                if (mMainHandler == null) {
+                    mMainHandler = Handler(Looper.getMainLooper())
+                }
+            }
+        }
+
+        (mMainHandler ?: return).post(runnable)
+    }
+
+    private fun executeOnMainThread(runnable: Runnable) {
+        if (isMainThread()) {
+            runnable.run()
+        } else {
+            postToMainThread(runnable)
+        }
+    }
+
+    private fun isMainThread(): Boolean = Looper.getMainLooper().thread == Thread.currentThread()
 
     @Suppress("MagicNumber")
     fun hostAvailable(host: String, port: Int): Boolean {
@@ -166,6 +167,12 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
         return ns
     }
 
+    // Interface that represent the [NetworkStatusListener]
+    interface NetworkInfoListener {
+
+        fun networkStatusChange(network: Network?)
+    }
+
     // Static content
     companion object {
 
@@ -179,11 +186,5 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
             }
             return ns as NetworkInfo
         }
-    }
-
-    // Interface that represent the [NetworkStatusListener]
-    interface NetworkInfoListener {
-
-        fun networkStatusChange(network: Network?)
     }
 }

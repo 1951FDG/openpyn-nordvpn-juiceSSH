@@ -72,6 +72,17 @@ class SettingsActivity : PreferenceActivityCompat() {
         }*/
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                // Override home navigation button to call onBackPressed
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     /**
      * This method stops fragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
@@ -102,17 +113,6 @@ class SettingsActivity : PreferenceActivityCompat() {
      * Called to determine if the activity should run in multi-pane mode.
      */
     override fun onIsMultiPane(): Boolean = isXLargeTablet(this)
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                // Override home navigation button to call onBackPressed
-                onBackPressed()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     /*
     /**

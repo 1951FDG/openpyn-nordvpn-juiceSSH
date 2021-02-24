@@ -29,12 +29,6 @@ import java.net.InetAddress
  */
 class ManagementPreferenceFragment : PreferenceFragmentCompat() {
 
-    override fun onStop() {
-        super.onStop()
-
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
-    }
-
     @Suppress("MagicNumber")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +91,12 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         // Load the preferences from an XML resource
         setPreferencesFromResource(R.xml.pref_openvpnmgmt, rootKey)
@@ -118,6 +118,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
     override fun getCallbackFragment(): PreferenceFragmentCompat = this
 
     companion object {
+
         internal val TextInputLayout.hostErrorTextWatcher: AbstractTextWatcher
             get() = object : AbstractTextWatcher(this) {
                 val message = ctx.getString(R.string.pref_openvpnmgmt_host_error)
@@ -201,6 +202,14 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
                     PosixPathNameChecker().isValidPath(path) && path[path.length - 1] != PosixPathNameChecker.SEPARATOR_CHAR
             }
 
+        @Suppress("MagicNumber")
+        internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
+            get() = object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    elevation = if (recyclerView.canScrollVertically(-1)) dpToPx(4F, recyclerView.context) else 0F
+                }
+            }
+
         fun EditText.textInputLayout(): TextInputLayout? = (parent.parent as? TextInputLayout)
 
         fun provideSummary(preference: Preference): CharSequence {
@@ -209,13 +218,5 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
                 else -> preference.context.getString(R.string.password_set)
             }
         }
-
-        @Suppress("MagicNumber")
-        internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
-            get() = object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    elevation = if (recyclerView.canScrollVertically(-1)) dpToPx(4F, recyclerView.context) else 0F
-                }
-            }
     }
 }

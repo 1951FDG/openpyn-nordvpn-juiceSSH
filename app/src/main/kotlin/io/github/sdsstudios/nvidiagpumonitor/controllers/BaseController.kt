@@ -15,10 +15,7 @@ abstract class BaseController(protected val mCtx: Context) : OnSessionExecuteLis
     protected var command: String = ""
     var isRunning: Boolean = false
 
-    @CallSuper
-    override fun onCompleted(exitCode: Int) {
-        isRunning = false
-    }
+    abstract fun onDestroy()
 
     @CallSuper
     open fun connect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean =
@@ -27,6 +24,11 @@ abstract class BaseController(protected val mCtx: Context) : OnSessionExecuteLis
     @CallSuper
     open fun disconnect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean =
         run(pluginClient, sessionId, sessionKey).also { isRunning = it }
+
+    @CallSuper
+    override fun onCompleted(exitCode: Int) {
+        isRunning = false
+    }
 
     private fun run(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         try {
@@ -39,6 +41,4 @@ abstract class BaseController(protected val mCtx: Context) : OnSessionExecuteLis
         }
         return false
     }
-
-    abstract fun onDestroy()
 }

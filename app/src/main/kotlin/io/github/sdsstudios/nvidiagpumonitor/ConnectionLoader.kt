@@ -9,7 +9,12 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_
 import mu.KotlinLogging
 
 class ConnectionLoader(
-    context: Context, uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?
+    context: Context,
+    uri: Uri,
+    projection: Array<String>?,
+    selection: String?,
+    selectionArgs: Array<String>?,
+    sortOrder: String?
 ) : CursorLoader(context, uri, projection, selection, selectionArgs, sortOrder) {
 
     private val logger = KotlinLogging.logger {}

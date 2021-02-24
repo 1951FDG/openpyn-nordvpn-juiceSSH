@@ -51,6 +51,7 @@ class MainActivityTest {
     var clearFilesRule: ClearFilesRule = ClearFilesRule()
 
     companion object {
+
         @BeforeClass
         @JvmStatic
         fun oneTimeSetUp() {

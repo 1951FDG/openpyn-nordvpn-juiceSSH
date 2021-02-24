@@ -31,8 +31,8 @@ import io.github.getsixtyfour.openpyn.map.model.LazyMarker.OnLevelChangeCallback
 import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator
 import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator.Animation
 import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator.AnimatorListener
-import io.github.getsixtyfour.openpyn.map.util.MaterialInfoWindowAdapter
 import io.github.getsixtyfour.openpyn.map.util.LazyMarkerStorage
+import io.github.getsixtyfour.openpyn.map.util.MaterialInfoWindowAdapter
 import io.github.getsixtyfour.openpyn.map.util.createGeoJson
 import io.github.getsixtyfour.openpyn.map.util.createMarkers
 import io.github.getsixtyfour.openpyn.map.util.createUserMessage
@@ -73,6 +73,8 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     OnMarkerClickListener, OnInfoWindowClickListener, SubmitCallbackListener, MapViewsAction, AnimatorListener,
     CoroutineScope by MainScope() {
 
+    private val logger = KotlinLogging.logger {}
+
     private val applicationContext: Context
         get() = screen.requireContext().applicationContext
     private val map by lazy { views.rootView.map }
@@ -97,8 +99,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         channel.map(IO) { runCatching { withTimeout(TIME_MILLIS) { createGeoJson(it) } }.getOrNull() }
             .consumeEach { it?.let { animateCamera(it) } }
     }
-
-    private val logger = KotlinLogging.logger {}
 
     override fun onStarted() {
         super.onStarted()
@@ -396,7 +396,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             mFlags = setUpPrintArray(applicationContext, mCountries, hashSet)
             mMarkers = hashMap
             val animations = getCameraUpdates()
-            val latLng = getCurrentPosition(applicationContext, mFlags, json, mJsonArray)
+            val latLng = getCurrentPosition(mFlags, json, mJsonArray)
             val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
                 isCallback = true
                 isAnimate = true
@@ -450,7 +450,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         // Check if not already animating
         mCameraUpdateAnimator?.let {
             if (!it.isAnimating) {
-                val latLng = getCurrentPosition(applicationContext, mFlags, json, mJsonArray)
+                val latLng = getCurrentPosition(mFlags, json, mJsonArray)
                 val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
                     isCallback = true
                     isAnimate = true
@@ -466,6 +466,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     companion object {
+
         private const val TIME_MILLIS: Long = 600
         private const val DELAY_MILLIS: Long = 10000
         private const val FAVORITE_KEY = "pref_favorites"

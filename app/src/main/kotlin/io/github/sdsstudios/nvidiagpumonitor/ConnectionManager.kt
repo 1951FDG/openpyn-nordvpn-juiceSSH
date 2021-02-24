@@ -42,21 +42,21 @@ class ConnectionManager(
 ) : LifecycleObserver, OnClientStartedListener, OnSessionStartedListener, OnSessionFinishedListener,
     CoroutineScope by CoroutineScope(Job() + Dispatchers.IO) {
 
-    private var mSessionKey = ""
-    private var mSessionId = 0
-    private var mSessionRunning = false
+    private val mControllers: List<BaseController> by lazy { listOf(mOpenpynController) }
     private val mClient = PluginClient()
     private val mCtx = ctx.applicationContext
-    private val mOpenpynController = OpenpynController(
-        mCtx, sessionExecuteListener, commandExecuteListener, onOutputLineListener
-    )
-    private val mControllers: List<BaseController> = listOf(
-        mOpenpynController
-    )
+    private val mOpenpynController = OpenpynController(mCtx, sessionExecuteListener, commandExecuteListener, onOutputLineListener)
+    private var mSessionId = 0
+    private var mSessionKey = ""
+    private var mSessionRunning = false
 
     init {
         lifecycleOwner?.lifecycle?.addObserver(this)
         startClient()
+    }
+
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        mClient.gotActivityResult(requestCode, resultCode, data)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -107,30 +107,6 @@ class ConnectionManager(
         mSessionFinishedListener?.onSessionFinished()
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        mClient.gotActivityResult(requestCode, resultCode, data)
-    }
-
-    fun isConnected(): Boolean = mSessionId > 0
-
-    fun isConnectingOrDisconnecting(): Boolean = mSessionRunning
-
-    fun toggleConnection(activity: Activity, id: UUID?, requestCode: Int) {
-        when {
-            id == null -> return
-            isConnected() -> disconnect()
-            else -> connect(activity, id, requestCode)
-        }
-    }
-
-    private fun startClient() {
-        mClient.start(mCtx, this)
-    }
-
-    private fun stopClient() {
-        mClient.stop(mCtx)
-    }
-
     fun connect(activity: Activity, id: UUID, requestCode: Int) {
         if (isConnectingOrDisconnecting()) return
 
@@ -163,5 +139,25 @@ class ConnectionManager(
                 Toast.makeText(mCtx, R.string.error_juicessh_service, Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    fun isConnected(): Boolean = mSessionId > 0
+
+    fun isConnectingOrDisconnecting(): Boolean = mSessionRunning
+
+    fun toggleConnection(activity: Activity, id: UUID?, requestCode: Int) {
+        when {
+            id == null -> return
+            isConnected() -> disconnect()
+            else -> connect(activity, id, requestCode)
+        }
+    }
+
+    private fun startClient() {
+        mClient.start(mCtx, this)
+    }
+
+    private fun stopClient() {
+        mClient.stop(mCtx)
     }
 }

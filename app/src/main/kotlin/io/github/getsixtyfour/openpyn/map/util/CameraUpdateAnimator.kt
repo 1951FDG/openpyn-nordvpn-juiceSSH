@@ -2,6 +2,7 @@ package io.github.getsixtyfour.openpyn.map.util
 
 import android.annotation.SuppressLint
 import android.os.Handler
+import android.os.Looper
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
@@ -14,7 +15,7 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
 
     private val mCameraUpdates: ArrayList<Animation>
     private val mCancelableCallback = CancelableCallback()
-    private val mHandler = Handler()
+    private val mHandler = Handler(Looper.getMainLooper())
     private var mGoogleMap: GoogleMap?
     private var mOnCameraIdleListener: OnCameraIdleListener?
     var isAnimating: Boolean = false
@@ -74,18 +75,14 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
                     startAnimation(mGoogleMap!!, animation, mCancelableCallback)
                 } else {
                     mHandler.postDelayed({
-                        startAnimation(
-                            mGoogleMap!!, animation, mCancelableCallback
-                        )
+                        startAnimation(mGoogleMap!!, animation, mCancelableCallback)
                     }, animation.delay)
                 }
             } else {
                 if (animation.delay == 0L) {
                     startAnimation(mGoogleMap!!, animation, null)
                 } else {
-                    mHandler.postDelayed(
-                        { startAnimation(mGoogleMap!!, animation, null) }, animation.delay
-                    )
+                    mHandler.postDelayed({ startAnimation(mGoogleMap!!, animation, null) }, animation.delay)
                 }
             }
         }
@@ -130,6 +127,7 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
     }
 
     interface AnimatorListener {
+
         /**
          *
          * Notifies the start of the animation.
@@ -160,6 +158,7 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
     }
 
     class Animation(val cameraUpdate: CameraUpdate) {
+
         var isAnimate: Boolean = false
         var isCallback: Boolean = false
         var isClosest: Boolean = false
@@ -168,7 +167,8 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
         var target: LatLng? = null
     }
 
-    private class CancelableCallback internal constructor() : GoogleMap.CancelableCallback {
+    private class CancelableCallback : GoogleMap.CancelableCallback {
+
         private var mAnimation: Animation? = null
         private var mAnimatorListener: AnimatorListener? = null
         override fun onCancel() {
@@ -193,6 +193,7 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
     }
 
     companion object {
+
         internal fun startAnimation(
             googleMap: GoogleMap, animation: Animation, cancelableCallback: GoogleMap.CancelableCallback?
         ) {

@@ -14,14 +14,14 @@ import io.github.getsixtyfour.openpyn.R
 @Suppress("unused")
 object PrintArray {
 
-    private var hint = R.string.empty
-    private var title = R.string.empty
-    private var positiveTitle = android.R.string.ok
-    private var negativeTitle = android.R.string.cancel
-    private var neutralTitle = android.R.string.selectAll
     private lateinit var itemsList: ArrayList<MultiSelectable>
     lateinit var checkedItemsList: ArrayList<Int>
     const val delimiter: String = "‚‗‚"
+    private var hint = R.string.empty
+    private var negativeTitle = android.R.string.cancel
+    private var neutralTitle = android.R.string.selectAll
+    private var positiveTitle = android.R.string.ok
+    private var title = R.string.empty
 
     fun setHint(@StringRes hint: Int): PrintArray {
         PrintArray.hint = hint

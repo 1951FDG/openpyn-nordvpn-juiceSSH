@@ -5,6 +5,7 @@ import androidx.preference.PreferenceManager
 import com.squareup.moshi.JsonAdapter
 
 abstract class MyStorage<T>(val key: String) {
+
     abstract val jsonAdapter: JsonAdapter<List<T>>
 
     @Suppress("WeakerAccess")

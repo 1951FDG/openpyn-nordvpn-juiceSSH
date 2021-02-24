@@ -11,7 +11,8 @@ import io.github.sdsstudios.nvidiagpumonitor.listeners.OnLoaderChangedListener
 
 @MainThread
 class ConnectionListLoader(
-    private val mCtx: Context, private val mListener: OnLoaderChangedListener
+    private val mCtx: Context,
+    private val mListener: OnLoaderChangedListener
 ) : LoaderManager.LoaderCallbacks<Cursor> {
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
@@ -19,7 +20,12 @@ class ConnectionListLoader(
         val selectionArgs = arrayOf(Connections.TYPE_SSH.toString())
 
         return ConnectionLoader(
-            mCtx, Connections.CONTENT_URI, Connections.PROJECTION, selection, selectionArgs, Connections.SORT_ORDER_DEFAULT
+            context = mCtx,
+            uri = Connections.CONTENT_URI,
+            projection = Connections.PROJECTION,
+            selection = selection,
+            selectionArgs = selectionArgs,
+            sortOrder = Connections.SORT_ORDER_DEFAULT
         )
     }
 

@@ -5,6 +5,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber.Tree
 
 open class CrashReportingTree : Tree() {
+
     override fun v(message: String, vararg args: Any) {
         // NOP
     }
@@ -130,6 +131,7 @@ open class CrashReportingTree : Tree() {
     }
 
     companion object {
+
         const val PRIORITY_KEY: String = "priority"
         const val TAG_KEY: String = "tag"
         const val MESSAGE_KEY: String = "message"

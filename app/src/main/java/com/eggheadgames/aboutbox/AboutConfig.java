@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
 
-@SuppressWarnings({ "PublicField", "unused", "FieldNamingConvention" })
+@SuppressWarnings({ "PublicField", "FieldNamingConvention" })
 @SuppressLint("UnknownNullness")
 public final class AboutConfig {
 

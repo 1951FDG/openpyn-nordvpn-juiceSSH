@@ -22,10 +22,11 @@ import java.util.ArrayList
 class MapFragment : AbstractMapFragment(), OnCommandExecuteListener, OnSessionStartedListener, OnSessionFinishedListener,
     SubmitCallbackListener {
 
+    private val logger = KotlinLogging.logger {}
+
     val toolBar: ProgressToolbar? by lazy {
         requireActivity().findViewById(R.id.toolbar) as? ProgressToolbar
     }
-    private val logger = KotlinLogging.logger {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

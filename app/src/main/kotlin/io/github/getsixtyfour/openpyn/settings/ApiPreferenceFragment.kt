@@ -21,12 +21,6 @@ import io.github.getsixtyfour.openpyn.dpToPx
  */
 class ApiPreferenceFragment : PreferenceFragmentCompat() {
 
-    override fun onStop() {
-        super.onStop()
-
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -59,6 +53,12 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_api, rootKey)
         setTitle(requireActivity())
@@ -79,12 +79,6 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
     override fun getCallbackFragment(): PreferenceFragmentCompat = this
 
     companion object {
-        fun provideSummary(preference: Preference): CharSequence {
-            return when (preference.sharedPreferences.getString(preference.key, null)) {
-                null, "" -> preference.context.getString(R.string.not_set)
-                else -> preference.context.getString(R.string.key_set)
-            }
-        }
 
         @Suppress("MagicNumber")
         internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
@@ -93,5 +87,12 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
                     elevation = if (recyclerView.canScrollVertically(-1)) dpToPx(4F, recyclerView.context) else 0F
                 }
             }
+
+        fun provideSummary(preference: Preference): CharSequence {
+            return when (preference.sharedPreferences.getString(preference.key, null)) {
+                null, "" -> preference.context.getString(R.string.not_set)
+                else -> preference.context.getString(R.string.key_set)
+            }
+        }
     }
 }

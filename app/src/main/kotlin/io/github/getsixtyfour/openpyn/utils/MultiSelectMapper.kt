@@ -18,6 +18,7 @@ import java.io.BufferedReader
 import java.lang.reflect.Type
 
 class MultiSelectMapper : Mapper<MultiSelectModelExtra>() {
+
     private val id = field("id", false, object : PropertyExtractor<MultiSelectModelExtra, Int> {
         override val type: Type = Int::class.javaPrimitiveType!!
         override fun extractFrom(t: MultiSelectModelExtra): Int = t.id

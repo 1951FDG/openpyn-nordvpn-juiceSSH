@@ -133,8 +133,6 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
                 }
             }
 
-        fun EditText.textInputLayout(): TextInputLayout? = (parent.parent as? TextInputLayout)
-
         @Suppress("MagicNumber")
         internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
             get() = object : RecyclerView.OnScrollListener() {
@@ -142,5 +140,7 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
                     elevation = if (recyclerView.canScrollVertically(-1)) dpToPx(4F, recyclerView.context) else 0F
                 }
             }
+
+        fun EditText.textInputLayout(): TextInputLayout? = (parent.parent as? TextInputLayout)
     }
 }
