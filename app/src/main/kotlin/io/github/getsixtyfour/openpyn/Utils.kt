@@ -9,7 +9,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -21,12 +20,6 @@ import com.getsixtyfour.openvpnmgmt.android.Utils
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
-import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
-import com.tingyik90.snackprogressbar.SnackProgressBar
-import com.tingyik90.snackprogressbar.SnackProgressBar.OnActionClickListener
-import com.tingyik90.snackprogressbar.SnackProgressBarManager
-import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.ktextension.verifyInstallerId
 import io.github.getsixtyfour.ktextension.verifySigningCertificate
 import io.github.getsixtyfour.openpyn.map.util.createJson
@@ -46,8 +39,6 @@ import timber.log.Timber
 import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 
 private val logger = KotlinLogging.logger {}
-const val SNACK_BAR_JUICESSH: Int = 1
-const val SNACK_BAR_PERMISSIONS: Int = 0
 
 fun <T : FragmentActivity> getCurrentNavigationFragment(activity: T): Fragment? {
     val navHostFragment = activity.supportFragmentManager.primaryNavigationFragment as? NavHostFragment
@@ -117,41 +108,6 @@ fun <T : AppCompatActivity> setProgressToolBar(
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(showHomeAsUp)
     activity.supportActionBar?.setDisplayShowTitleEnabled(showTitle)
-}
-
-// TODO: inner class
-fun <T : Activity> setSnackBarManager(activity: T, manager: SnackProgressBarManager) {
-    fun snackProgressBar(type: Int, message: String, action: String, onActionClickListener: OnActionClickListener): SnackProgressBar {
-        return SnackProgressBar(type, message).setAction(action, onActionClickListener)
-    }
-
-    val type = SnackProgressBar.TYPE_NORMAL
-    val action = activity.getString(android.R.string.ok)
-
-    manager.put(
-        snackProgressBar(type, activity.getString(R.string.error_juicessh_permissions), action, object : OnActionClickListener {
-            override fun onActionClick() {
-                ActivityCompat.requestPermissions(
-                    activity, arrayOf(PERMISSION_READ, PERMISSION_OPEN_SESSIONS), MainActivity.PERMISSION_REQUEST_CODE
-                )
-            }
-        }), SNACK_BAR_PERMISSIONS
-    )
-
-    manager.put(
-        snackProgressBar(type, activity.getString(R.string.error_juicessh_app), action, object : OnActionClickListener {
-            override fun onActionClick() {
-                activity.juiceSSHInstall()
-            }
-        }), SNACK_BAR_JUICESSH
-    )
-}
-
-fun showSnackProgressBar(manager: SnackProgressBarManager, storeId: Int) {
-    when (manager.getLastShown()) {
-        null -> manager.show(storeId, SnackProgressBarManager.LENGTH_INDEFINITE)
-        else -> manager.getSnackProgressBar(storeId)?.let(manager::updateTo)
-    }
 }
 
 fun <T : Activity> showRefreshAlertDialog(activity: T) {

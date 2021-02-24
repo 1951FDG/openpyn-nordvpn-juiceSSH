@@ -6,12 +6,15 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import androidx.annotation.ArrayRes
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -29,10 +32,10 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSION
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
-import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import io.github.getsixtyfour.ktextension.apkSignatures
 import io.github.getsixtyfour.ktextension.handleUpdate
 import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
+import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.ktextension.startUpdate
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog.NoticeDialogListener
 import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
@@ -46,6 +49,9 @@ import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.container
 import kotlinx.android.synthetic.main.activity_main.spinner
 import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.android.synthetic.main.overlay_juicessh.layout_overlay
+import kotlinx.android.synthetic.main.overlay_juicessh.material_text_button
+import kotlinx.android.synthetic.main.overlay_juicessh.material_text_view
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import mu.KotlinLogging
@@ -63,11 +69,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     private val mConnectionId: UUID?
         get() = mConnectionListAdapter?.getConnectionId(spinner.selectedItemPosition)
 
-    // TODO: remove container reference
-    val mSnackProgressBarManager: SnackProgressBarManager by lazy { SnackProgressBarManager(container, this) }
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
+
     private val mGooglePlayStorePackage: Boolean by lazy { isPlayStorePackage(this) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { isPlayStoreCertificate(this) }
+
     private val logger = KotlinLogging.logger {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,14 +87,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
 
         // This app draws behind the system bars, so we want to handle fitting system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         /*setProgressToolBar(this, toolbar)*/
-
-        setSnackBarManager(this, mSnackProgressBarManager)
-
         startVpnService(this)
         // TODO: remove after beta release test, add delay?
         logger.error(Exception()) { "$apkSignatures" }
+        // Add overlayLayout as background
+        addOverlayLayout(container)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -120,16 +124,47 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
 
         if (isJuiceSSHInstalled()) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || hasPermissions(this, PERMISSION_READ, PERMISSION_OPEN_SESSIONS)) {
-                mSnackProgressBarManager.dismiss()
                 onPermissionsGranted(PERMISSION_REQUEST_CODE)
             } else {
                 if (!mAppSettingsDialogShown) {
-                    showSnackProgressBar(mSnackProgressBarManager, SNACK_BAR_PERMISSIONS)
+                    showOverlayLayout(R.string.error_juicessh_permissions)
                 }
             }
         } else {
-            showSnackProgressBar(mSnackProgressBarManager, SNACK_BAR_JUICESSH)
+            showOverlayLayout(R.string.error_juicessh_app)
         }
+    }
+
+    private fun hideOverlayLayout() {
+        layout_overlay.visibility = View.GONE
+    }
+
+    private fun showOverlayLayout(@StringRes resId: Int) {
+        material_text_view.text = getString(resId)
+        material_text_button.tag = resId
+        layout_overlay.visibility = View.VISIBLE
+    }
+
+    private fun addOverlayLayout(parent: ViewGroup) {
+        val inflater = LayoutInflater.from(parent.context)
+        val view = inflater.inflate(R.layout.overlay_juicessh, parent, false)
+        parent.addView(view)
+
+        material_text_button.setOnClickListener {
+            (it.parent as? View)?.visibility = View.INVISIBLE
+
+            when (it.tag) {
+                R.string.error_juicessh_permissions -> ActivityCompat.requestPermissions(
+                    this, arrayOf(PERMISSION_READ, PERMISSION_OPEN_SESSIONS), PERMISSION_REQUEST_CODE
+                )
+                R.string.error_juicessh_app -> this.juiceSSHInstall()
+            }
+        }
+    }
+
+    private fun removeOverlayLayout(parent: ViewGroup) {
+        material_text_button.setOnClickListener(null)
+        parent.removeView(layout_overlay)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -303,6 +338,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
 
         mConnectionListAdapter = ConnectionListAdapter(this)
         spinner.adapter = mConnectionListAdapter
+
+        removeOverlayLayout(container)
         LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
 
         mConnectionManager = ConnectionManager(

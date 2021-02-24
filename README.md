@@ -202,7 +202,6 @@ This app uses (modified) code from open source projects.
 - [PreferenceActivityCompat](https://github.com/ohmae/preference-activity-compat)
 - [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
 - [SLF4J](https://github.com/qos-ch/slf4j)
-- [SnackProgressBar](https://github.com/tingyik90/snackprogressbar)
 - [SQLite](https://github.com/requery/sqlite-android)
 - [SVC](https://github.com/BansookNam/svc)
 - [Toasty](https://github.com/GrenderG/Toasty)

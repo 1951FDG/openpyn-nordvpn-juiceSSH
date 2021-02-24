@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="juicessh_ssh_client" translatable="false">juicessh-ssh-client-3-2-0</string>
+    <string name="juicessh_ssh_client" translatable="false">juicessh-ssh-client-3-2-2</string>
 </resources>

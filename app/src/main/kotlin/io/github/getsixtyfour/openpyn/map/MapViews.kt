@@ -11,7 +11,6 @@ import androidx.core.view.marginTop
 import androidx.core.view.updateMargins
 import com.mayurrokade.minibar.UserMessage
 import com.naver.android.svc.core.views.ActionViews
-import io.github.getsixtyfour.openpyn.MainActivity
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.dpToPxSize
 import kotlinx.android.synthetic.main.fragment_map.view.fab0
@@ -58,8 +57,6 @@ class MapViews : ActionViews<MapViewsAction>() {
             // TODO: setup listener for map, live data?
             WindowInsetsCompat.CONSUMED
         }
-        // TODO: decouple
-        (screen.hostActivity as? MainActivity)?.mSnackProgressBarManager?.setViewsToMove(arrayOf(fab0, fab1, fab3))
         fab0.setOnClickListener(viewsAction::toggleCommand)
 
         fab1.setOnClickListener { viewsAction.updateMasterMarkerWithDelay() }
