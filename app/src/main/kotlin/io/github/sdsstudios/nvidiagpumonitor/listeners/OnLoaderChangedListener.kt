@@ -4,5 +4,5 @@ import android.database.Cursor
 
 interface OnLoaderChangedListener {
 
-    fun onLoaderChanged(newCursor: Cursor?)
+    fun onLoaderChanged(cursor: Cursor?)
 }

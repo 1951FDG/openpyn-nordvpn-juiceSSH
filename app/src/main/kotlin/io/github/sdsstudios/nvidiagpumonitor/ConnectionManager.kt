@@ -42,10 +42,6 @@ class ConnectionManager(
 ) : LifecycleObserver, OnClientStartedListener, OnSessionStartedListener, OnSessionFinishedListener,
     CoroutineScope by CoroutineScope(Job() + Dispatchers.IO) {
 
-    init {
-        lifecycleOwner?.lifecycle?.addObserver(this)
-    }
-
     private var mSessionKey = ""
     private var mSessionId = 0
     private var mSessionRunning = false
@@ -57,6 +53,11 @@ class ConnectionManager(
     private val mControllers: List<BaseController> = listOf(
         mOpenpynController
     )
+
+    init {
+        lifecycleOwner?.lifecycle?.addObserver(this)
+        startClient()
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -83,9 +84,9 @@ class ConnectionManager(
         mSessionKey = sessionKey
         mSessionRunning = false
 
-        mSessionStartedListener?.onSessionStarted(sessionId, sessionKey)
+        mSessionStartedListener?.onSessionStarted(mSessionId, mSessionKey)
 
-        mClient.addSessionFinishedListener(sessionId, sessionKey, this)
+        mClient.addSessionFinishedListener(mSessionId, mSessionKey, this)
 
         mControllers.forEach { it.connect(mClient, mSessionId, mSessionKey) }
     }
@@ -122,11 +123,11 @@ class ConnectionManager(
         }
     }
 
-    fun startClient() {
+    private fun startClient() {
         mClient.start(mCtx, this)
     }
 
-    fun stopClient() {
+    private fun stopClient() {
         mClient.stop(mCtx)
     }
 

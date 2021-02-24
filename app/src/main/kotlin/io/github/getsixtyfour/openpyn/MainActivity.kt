@@ -63,14 +63,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener, SubmitCallbackListener,
     CoroutineScope by MainScope() {
 
-    private var mAppSettingsDialogShown: Boolean = false
-    private var mConnectionListAdapter: ConnectionListAdapter? = null
+    private val mConnectionAdapter: ConnectionListAdapter by lazy { ConnectionListAdapter(this) }
     private var mConnectionManager: ConnectionManager? = null
     private val mConnectionId: UUID?
-        get() = mConnectionListAdapter?.getConnectionId(spinner.selectedItemPosition)
+        get() = mConnectionAdapter.getConnectionId(spinner.selectedItemPosition)
 
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
 
+    private var mAppSettingsDialogShown: Boolean = false
     private val mGooglePlayStorePackage: Boolean by lazy { isPlayStorePackage(this) }
     private val mGooglePlayStoreCertificate: Boolean by lazy { isPlayStoreCertificate(this) }
 
@@ -243,17 +243,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
 
         if (v.id != R.id.fab0) return
 
-        mConnectionManager?.let {
-            if (mConnectionListAdapter?.count ?: 0 > 0) {
+        if (mConnectionAdapter.count > 0) {
+            mConnectionManager?.let {
                 if (!it.isConnected()) {
                     val action = MapFragmentDirections.actionMapFragmentToPreferenceDialogFragment(message())
                     Navigation.findNavController(v).navigate(action)
                 } else {
                     it.toggleConnection(this, mConnectionId, JUICESSH_REQUEST_CODE)
                 }
-            } else {
-                showJuiceAlertDialog(this)
             }
+        } else {
+            showJuiceAlertDialog(this)
         }
     }
 
@@ -264,8 +264,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     override fun onDialogNegativeClick(dialog: DialogFragment) {
     }
 
-    override fun onLoaderChanged(newCursor: Cursor?) {
-        mConnectionListAdapter?.swapCursor(newCursor)
+    override fun onLoaderChanged(cursor: Cursor?) {
+        mConnectionAdapter.swapCursor(cursor)
     }
 
     override fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
@@ -336,10 +336,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
     private fun onPermissionsGranted(requestCode: Int, vararg perms: String) {
         if (requestCode != PERMISSION_REQUEST_CODE) return
 
-        mConnectionListAdapter = ConnectionListAdapter(this)
-        spinner.adapter = mConnectionListAdapter
+        if (mConnectionManager != null) return
 
         removeOverlayLayout(container)
+
+        spinner.adapter = mConnectionAdapter
+
         LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
 
         mConnectionManager = ConnectionManager(
@@ -351,7 +353,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
             commandExecuteListener = this,
             onOutputLineListener = Toaster(this)
         )
-        mConnectionManager?.startClient()
 
         if (mGooglePlayStorePackage && mGooglePlayStoreCertificate) startUpdate(mAppUpdateManager, UPDATE_REQUEST_CODE)
     }

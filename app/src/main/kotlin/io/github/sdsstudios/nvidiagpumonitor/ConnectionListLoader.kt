@@ -23,8 +23,8 @@ class ConnectionListLoader(
         )
     }
 
-    override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {
-        mListener.onLoaderChanged(data)
+    override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor?) {
+        mListener.onLoaderChanged(cursor)
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>) {
