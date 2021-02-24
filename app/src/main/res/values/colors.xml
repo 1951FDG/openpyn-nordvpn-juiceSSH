@@ -6,6 +6,11 @@
     <color name="mapBackgroundColor">#ece9e1</color>
     <color name="titleTextColor">#ffbebebe</color>
 
+    <integer-array name="cat_custom_progress_colors">
+        <item>@color/pink_a200</item>
+        <item>@color/pink_a100</item>
+    </integer-array>
+
     <color name="gm_ref_palette_blue300">#ff8ab4f8</color>
     <color name="gm_ref_palette_blue500">#ff4285f4</color>
     <color name="gm_ref_palette_blue600">#ff1a73e8</color>

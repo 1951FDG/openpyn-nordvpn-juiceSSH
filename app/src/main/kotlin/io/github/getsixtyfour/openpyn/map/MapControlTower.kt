@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Spinner
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
 import com.abdeveloper.library.MultiSelectable
@@ -269,6 +270,13 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     override fun onAnimationFinish(animation: Animation) {
         if (animation.isClosest) {
             views.fakeLayoutButtons()
+
+            screen.requireActivity().run {
+                window.navigationBarColor = ContextCompat.getColor(this, R.color.navigationBarColor)
+            }
+            /*views.hideOverlayLayout()*/
+            views.crossFadeOverlayLayout()
+
             mMarkers[animation.target]?.let {
                 if (mFlags.contains(it.tag)) {
                     onLevelChangeCallback.onLevelChange(it, 10)
@@ -279,7 +287,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
                     views.toggleFavoriteButton(it.level == 1)
                 }
             }
-
             // Show both the navigation bar and the status bar
             screen.requireActivity().let {
                 showSystemUI(it.window, views.rootView)

@@ -1,6 +1,9 @@
 package io.github.getsixtyfour.openpyn.map
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -9,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import androidx.core.view.updateMargins
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.mayurrokade.minibar.UserMessage
 import com.naver.android.svc.core.views.ActionViews
 import io.github.getsixtyfour.openpyn.R
@@ -33,6 +37,8 @@ class MapViews : ActionViews<MapViewsAction>() {
     private val settingsFab by lazy { rootView.settingsfab }
     private val map by lazy { rootView.map }
     private val minibarView by lazy { rootView.minibar }
+    private val overlay by lazy { LayoutInflater.from(rootView.context).inflate(R.layout.overlay_progress, rootView, false) as ViewGroup }
+    private val shortAnimationDuration by lazy { rootView.context.resources.getInteger(android.R.integer.config_shortAnimTime) }
 
     internal var systemWindowInsetTop: Int = 0
     internal var systemWindowInsetBottom: Int = 0
@@ -68,6 +74,48 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab4.setOnClickListener { viewsAction.toggleJuiceSSH() }
 
         settingsFab.setOnClickListener { viewsAction.toggleSettings() }
+
+        showOverlayLayout()
+    }
+
+    private fun addOverlayLayout() = rootView.addView(overlay)
+
+    private fun removeOverlayLayout() = rootView.removeView(overlay)
+
+    fun hideOverlayLayout() {
+        overlay.visibility = View.GONE
+        removeOverlayLayout()
+    }
+
+    fun showOverlayLayout() {
+        addOverlayLayout()
+        overlay.visibility = View.VISIBLE
+    }
+
+    fun crossFadeOverlayLayout() {
+        map.run {
+            /*alpha = 0f*/
+            animate().apply {
+                alpha(1f)
+                duration = shortAnimationDuration.toLong()
+                setListener(null)
+            }
+        }
+        overlay.run {
+            animate().apply {
+                alpha(0f)
+                duration = shortAnimationDuration.toLong()
+                setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animation: Animator?) {
+                        (getChildAt(0) as? CircularProgressIndicator)?.isIndeterminate = false
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        hideOverlayLayout()
+                    }
+                })
+            }
+        }
     }
 
     override fun onDestroy() {
