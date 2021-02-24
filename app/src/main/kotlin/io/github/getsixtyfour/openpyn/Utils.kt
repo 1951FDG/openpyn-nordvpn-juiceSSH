@@ -20,6 +20,7 @@ import com.getsixtyfour.openvpnmgmt.android.Utils
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import io.github.getsixtyfour.ktextension.JUICE_SSH_PACKAGE_NAME
 import io.github.getsixtyfour.ktextension.verifyInstallerId
 import io.github.getsixtyfour.ktextension.verifySigningCertificate
 import io.github.getsixtyfour.openpyn.map.util.createJson
@@ -122,7 +123,12 @@ fun <T : Activity> showJuiceAlertDialog(activity: T) {
     AlertDialog.Builder(activity).apply {
         setTitle(R.string.title_error)
         setMessage(R.string.error_juicessh_server)
-        setPositiveButton(android.R.string.ok, null)
+        setPositiveButton(android.R.string.ok) { dialog, _ ->
+            context.packageManager.getLaunchIntentForPackage(JUICE_SSH_PACKAGE_NAME)?.let {
+                it.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+                ContextCompat.startActivity((dialog as AlertDialog).context, it, null)
+            }
+        }
     }.show()
 }
 

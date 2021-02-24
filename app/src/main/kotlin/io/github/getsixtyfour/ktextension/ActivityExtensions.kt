@@ -12,7 +12,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import io.github.getsixtyfour.openpyn.R
 
-private const val JUICE_SSH_PACKAGE_NAME = "com.sonelli.juicessh"
+const val JUICE_SSH_PACKAGE_NAME: String = "com.sonelli.juicessh"
 
 fun Activity.isJuiceSSHInstalled(): Boolean = try {
     packageManager.getPackageInfo(JUICE_SSH_PACKAGE_NAME, 0)
