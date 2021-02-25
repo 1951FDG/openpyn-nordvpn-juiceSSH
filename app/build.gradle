@@ -196,7 +196,7 @@ dependencies {
     debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:slave-SNAPSHOT'
 
     // Android
-    implementation 'androidx.core:core-ktx:1.5.0-beta01'
+    implementation 'androidx.core:core-ktx:1.5.0-beta02'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation 'androidx.preference:preference:1.1.1'
