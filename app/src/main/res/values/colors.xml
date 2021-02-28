@@ -11,6 +11,19 @@
         <item>@color/pink_a100</item>
     </integer-array>
 
+    <color name="spamColor">@color/successColor</color>
+    <color name="debugColor">@color/successColor</color>
+    <color name="verboseColor">@color/quantum_googblue500</color>
+    <color name="warningColor">@color/quantum_googyellow500</color>
+    <color name="successColor">@color/quantum_googgreen500</color>
+    <color name="errorColor">@color/quantum_googred500</color>
+    <color name="criticalColor">@color/errorColor</color>
+
+    <color name="quantum_googblue500">#ff4285f4</color>
+    <color name="quantum_googgreen500">#ff0f9d58</color>
+    <color name="quantum_googred500">#ffdb4437</color>
+    <color name="quantum_googyellow500">#fff4b400</color>
+
     <color name="gm_ref_palette_blue300">#ff8ab4f8</color>
     <color name="gm_ref_palette_blue500">#ff4285f4</color>
     <color name="gm_ref_palette_blue600">#ff1a73e8</color>
