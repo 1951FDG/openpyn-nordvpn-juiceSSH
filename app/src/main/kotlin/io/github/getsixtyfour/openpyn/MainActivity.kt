@@ -294,10 +294,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
         toolbar.hideProgress(true)
 
         when (exitCode) {
-            // TODO: show dialog instead, since this is an important error
             // command not found (127)
             127 -> {
-                logger.error("Tried to run a command but the command was not found on the server")
+                logger.debug("Tried to run a command but the command was not found on the server")
+                showOpenpynAlertDialog(this)
             }
         }
 

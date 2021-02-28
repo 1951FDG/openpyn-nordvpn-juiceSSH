@@ -22,6 +22,7 @@
 
     <!-- Warning -->
     <string name="warning_restart_app">Please restart app for changes to take effect.</string>
+    <string name="warning_install_openpyn">Please install openpyn on SSH server.</string>
     <!-- Warning -->
 
     <!-- Error -->

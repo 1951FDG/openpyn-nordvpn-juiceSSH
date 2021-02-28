@@ -6,6 +6,7 @@ import android.app.Application
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -132,7 +133,18 @@ fun <T : Activity> showJuiceAlertDialog(activity: T) {
     }.show()
 }
 
-// TODO: inner class
+fun <T : Activity> showOpenpynAlertDialog(activity: T) {
+    AlertDialog.Builder(activity).apply {
+        setTitle(R.string.title_warning)
+        setMessage(R.string.warning_install_openpyn)
+        setPositiveButton(android.R.string.ok) { dialog, _ ->
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/1951FDG/openpyn-nordvpn/tree/test")).let {
+                ContextCompat.startActivity((dialog as AlertDialog).context, it, null)
+            }
+        }
+    }.show()
+}
+
 @SuppressLint("DefaultLocale")
 fun initAboutConfig(application: Application) {
     val config = AboutConfig.getInstance()
