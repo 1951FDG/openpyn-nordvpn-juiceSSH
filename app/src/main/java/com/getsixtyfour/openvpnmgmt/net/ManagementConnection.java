@@ -1,13 +1,10 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
 import com.getsixtyfour.openvpnmgmt.api.Connection;
-import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
 import com.getsixtyfour.openvpnmgmt.core.TrafficHistory;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
-import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
-import com.getsixtyfour.openvpnmgmt.implementation.OpenVpnStatus;
 import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
@@ -214,49 +211,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @Override
-    public @NotNull String getManagementVersion() {
-        @NotNull String result = "";
-        try {
-            String output = executeCommand(Commands.VERSION_COMMAND);
-            String[] lines = output.split(System.lineSeparator());
-            String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
-            if (!line.isEmpty() && line.startsWith(Constants.MANAGEMENT_VERSION_PREFIX)) {
-                result = line.substring(Constants.MANAGEMENT_VERSION_PREFIX.length() + 1);
-            }
-        } catch (IOException ignored) {
-        }
-        return result;
-    }
-
-    @Override
-    public @Nullable Status getVpnStatus() {
-        @Nullable Status result = null;
-        try {
-            String output = executeCommand(Commands.STATUS_COMMAND);
-            OpenVpnStatus ovs = new OpenVpnStatus();
-            ovs.setCommandOutput(output);
-            result = ovs;
-        } catch (IOException | OpenVpnParseException ignored) {
-        }
-        return result;
-    }
-
-    @Override
-    public @NotNull String getVpnVersion() {
-        @NotNull String result = "";
-        try {
-            String output = executeCommand(Commands.VERSION_COMMAND);
-            String[] lines = output.split(System.lineSeparator());
-            String line = (lines.length >= 2) ? lines[lines.length - 2] : "";
-            if (!line.isEmpty() && line.startsWith(Constants.OPEN_VPN_VERSION_PREFIX)) {
-                result = line.substring(Constants.OPEN_VPN_VERSION_PREFIX.length() + 1);
-            }
-        } catch (IOException ignored) {
-        }
-        return result;
-    }
-
-    @Override
     public boolean isVpnActive() {
         return (mLastLevel != ConnectionStatus.LEVEL_NOT_CONNECTED) && (mLastLevel != ConnectionStatus.LEVEL_AUTH_FAILED);
     }
@@ -339,7 +293,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void onConnected() {
         LOGGER.info("Connected");
-        LOGGER.info(getVpnVersion());
+        LOGGER.info(ManagementUtils.getVpnVersion(this));
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onConnected(Thread.currentThread());

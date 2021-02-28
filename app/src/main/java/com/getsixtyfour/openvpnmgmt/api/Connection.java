@@ -68,12 +68,6 @@ public interface Connection extends Runnable {
     @NotNull String executeCommand(@NotNull String command) throws IOException;
 
     void managementCommand(@NotNull String command) throws IOException;
-
-    @NotNull String getManagementVersion();
-
-    @Nullable Status getVpnStatus();
-
-    @NotNull String getVpnVersion();
     //endregion
     // TODO: mark all the methods to be called on background thread using @WorkerThread
 }
