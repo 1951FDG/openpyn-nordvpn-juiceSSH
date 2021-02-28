@@ -11,5 +11,7 @@ open class MainApplication : Application() {
         initPreferences(this)
         initCrashlytics(this)
         initNetworkInfo(this)
+
+        initClickDebounce()
     }
 }

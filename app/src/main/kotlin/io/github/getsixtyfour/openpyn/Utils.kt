@@ -21,6 +21,7 @@ import com.getsixtyfour.openvpnmgmt.android.Utils
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.smartdengg.clickdebounce.DebouncedPredictor
 import io.github.getsixtyfour.ktextension.JUICE_SSH_PACKAGE_NAME
 import io.github.getsixtyfour.ktextension.verifyInstallerId
 import io.github.getsixtyfour.ktextension.verifySigningCertificate
@@ -211,6 +212,10 @@ fun initCrashlytics(application: Application) {
 
 fun initNetworkInfo(application: Application) {
     NetworkInfo.getInstance(application)
+}
+
+fun initClickDebounce() {
+    DebouncedPredictor.FROZEN_WINDOW_MILLIS = 500L
 }
 
 fun getVersionTitleType(context: Context): Int = when {

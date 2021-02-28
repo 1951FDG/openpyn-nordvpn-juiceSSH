@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.annotation.ArrayRes
 import androidx.annotation.RequiresApi
@@ -59,7 +58,7 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 import java.util.UUID
 
-class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener, NoticeDialogListener, OnLoaderChangedListener,
+class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickListener, NoticeDialogListener, OnLoaderChangedListener,
     OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener, SubmitCallbackListener,
     CoroutineScope by MainScope() {
 

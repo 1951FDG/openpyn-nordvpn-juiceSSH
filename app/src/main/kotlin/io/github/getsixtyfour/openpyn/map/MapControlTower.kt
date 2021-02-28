@@ -2,7 +2,6 @@ package io.github.getsixtyfour.openpyn.map
 
 import android.content.Context
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.Spinner
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -225,7 +224,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     override fun toggleCommand(v: View) {
-        (screen.requireActivity() as? OnClickListener)?.onClick(v)
+        (screen.requireActivity() as? View.OnClickListener)?.onClick(v)
     }
 
     override fun toggleFavoriteMarker() {
@@ -340,7 +339,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     fun onSessionStarted() {
         views.toggleConnectButton(true)
 
-        views.hideListAndLocationButton()
+        views.hideAllExceptConnectAndFavoriteButton()
         mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             if (it.isInfoWindowShown) it.hideInfoWindow()
             views.hideFavoriteButton()
@@ -357,7 +356,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     fun onSessionFinished() {
         views.toggleConnectButton(false)
 
-        views.showListAndLocationButton()
+        views.showAllExceptConnectAndFavoriteButton()
         mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             if (!it.isInfoWindowShown) it.showInfoWindow()
             views.showFavoriteButton()

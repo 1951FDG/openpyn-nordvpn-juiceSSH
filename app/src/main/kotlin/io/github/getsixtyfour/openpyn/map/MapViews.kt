@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
+import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.marginBottom
@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_map.view.map
 import kotlinx.android.synthetic.main.fragment_map.view.minibar
 import kotlinx.android.synthetic.main.fragment_map.view.settingsfab
 
-class MapViews : ActionViews<MapViewsAction>() {
+class MapViews : ActionViews<MapViewsAction>(), View.OnClickListener, OnApplyWindowInsetsListener {
 
     override val layoutResId: Int = R.layout.fragment_map
 
@@ -37,7 +37,7 @@ class MapViews : ActionViews<MapViewsAction>() {
     private val fab2 by lazy { rootView.fab2 }
     private val fab3 by lazy { rootView.fab3 }
     private val fab4 by lazy { rootView.fab4 }
-    private val settingsFab by lazy { rootView.settingsfab }
+    private val fab5 by lazy { rootView.settingsfab }
 
     private val map by lazy { rootView.map }
     private val minibarView by lazy { rootView.minibar }
@@ -51,55 +51,64 @@ class MapViews : ActionViews<MapViewsAction>() {
     internal var systemWindowInsetBottom: Int = 0
     internal var systemWindowInsetTop: Int = 0
 
-    // TODO: inner classes
     override fun onCreated() {
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
-            val systemBars = WindowInsetsCompat.Type.systemBars()
-            val systemBarsInsets = insets.getInsets(systemBars)
-            (ViewCompat.requireViewById<View>(v, R.id.fab4).layoutParams as ViewGroup.MarginLayoutParams).apply {
-                updateMargins(top = fabMarginTop + systemBarsInsets.top)
-            }
-            (ViewCompat.requireViewById<View>(v, R.id.fab0).layoutParams as ViewGroup.MarginLayoutParams).apply {
-                updateMargins(bottom = fabMarginBottom + systemBarsInsets.bottom)
-            }
-            (ViewCompat.requireViewById<View>(v, R.id.minibar)).apply {
-                updatePadding(top = systemBarsInsets.top)
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, this)
 
-            systemWindowInsetTop = systemBarsInsets.top
-            systemWindowInsetBottom = systemBarsInsets.bottom
-            // TODO: setup listener for map, live data?
-            WindowInsetsCompat.CONSUMED
-        }
-        fab0.setOnClickListener(viewsAction::toggleCommand)
-
-        fab1.setOnClickListener { viewsAction.updateMasterMarkerWithDelay() }
-
-        fab2.setOnClickListener { viewsAction.showCountryFilterDialog() }
-
-        fab3.setOnClickListener { viewsAction.toggleFavoriteMarker() }
-
-        fab4.setOnClickListener { viewsAction.toggleJuiceSSH() }
-
-        settingsFab.setOnClickListener { viewsAction.toggleSettings() }
+        fab0.setOnClickListener(this)
+        fab1.setOnClickListener(this)
+        fab2.setOnClickListener(this)
+        fab3.setOnClickListener(OnFavoriteClickListener())
+        fab4.setOnClickListener(this)
+        fab5.setOnClickListener(this)
 
         initMiniBar()
 
         showOverlayLayout()
     }
 
-    private fun addOverlayLayout() = rootView.addView(overlay)
+    override fun onDestroy() {
+        super.onDestroy()
 
-    private fun removeOverlayLayout() = rootView.removeView(overlay)
-
-    fun hideOverlayLayout() {
-        overlay.visibility = View.GONE
-        removeOverlayLayout()
+        fab0.setOnClickListener(null)
+        fab1.setOnClickListener(null)
+        fab2.setOnClickListener(null)
+        fab3.setOnClickListener(null)
+        fab4.setOnClickListener(null)
+        fab5.setOnClickListener(null)
     }
 
-    fun showOverlayLayout() {
-        addOverlayLayout()
-        overlay.visibility = View.VISIBLE
+    override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+        val systemBars = WindowInsetsCompat.Type.systemBars()
+        val systemBarsInsets = insets.getInsets(systemBars)
+        (ViewCompat.requireViewById<View>(v, R.id.fab4).layoutParams as ViewGroup.MarginLayoutParams).apply {
+            updateMargins(top = fabMarginTop + systemBarsInsets.top)
+        }
+        (ViewCompat.requireViewById<View>(v, R.id.fab0).layoutParams as ViewGroup.MarginLayoutParams).apply {
+            updateMargins(bottom = fabMarginBottom + systemBarsInsets.bottom)
+        }
+        (ViewCompat.requireViewById<View>(v, R.id.minibar)).apply {
+            updatePadding(top = systemBarsInsets.top)
+        }
+
+        systemWindowInsetTop = systemBarsInsets.top
+        systemWindowInsetBottom = systemBarsInsets.bottom
+        // TODO: setup listener for map, live data?
+        return WindowInsetsCompat.CONSUMED
+    }
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.fab0 -> viewsAction.toggleCommand(v)
+            R.id.fab1 -> viewsAction.updateMasterMarkerWithDelay()
+            R.id.fab2 -> viewsAction.showCountryFilterDialog()
+            R.id.fab3 -> viewsAction.toggleFavoriteMarker()
+            R.id.fab4 -> viewsAction.toggleJuiceSSH()
+            R.id.settingsfab -> viewsAction.toggleSettings()
+        }
+    }
+
+    fun callConnectFabOnClick() {
+        fab0.callOnClick()
     }
 
     fun crossFadeOverlayLayout() {
@@ -128,26 +137,6 @@ class MapViews : ActionViews<MapViewsAction>() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        fab0.setOnClickListener(null)
-
-        fab1.setOnClickListener(null)
-
-        fab2.setOnClickListener(null)
-
-        fab3.setOnClickListener(null)
-
-        fab4.setOnClickListener(null)
-
-        settingsFab.setOnClickListener(null)
-    }
-
-    fun callConnectFabOnClick() {
-        fab0.callOnClick()
-    }
-
     fun fakeLayoutButtons() {
         val i = 0
         fab0.layout(i, i, i, i)
@@ -155,20 +144,7 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab2.layout(i, i, i, i)
         fab3.layout(i, i, i, i)
         fab4.layout(i, i, i, i)
-
-        settingsFab.layout(i, i, i, i)
-    }
-
-    fun hideFavoriteButton() {
-        fab3.hide()
-    }
-
-    fun hideListAndLocationButton() {
-        fab1.hide()
-        fab2.hide()
-        fab4.hide()
-
-        settingsFab.hide()
+        fab5.layout(i, i, i, i)
     }
 
     fun setClickableButtons(clickable: Boolean) {
@@ -177,8 +153,7 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab2.isClickable = clickable
         fab3.isClickable = clickable
         fab4.isClickable = clickable
-
-        settingsFab.isClickable = clickable
+        fab5.isClickable = clickable
     }
 
     fun showAllButtons() {
@@ -186,25 +161,34 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab1.show()
         fab2.show()
         fab4.show()
+        fab5.show()
+    }
 
-        settingsFab.show()
+    fun hideAllExceptConnectAndFavoriteButton() {
+        fab1.hide()
+        fab2.hide()
+        fab4.hide()
+        fab5.hide()
+    }
+
+    fun showAllExceptConnectAndFavoriteButton() {
+        fab1.show()
+        fab2.show()
+        fab4.show()
+        fab5.show()
+    }
+
+    fun hideFavoriteButton() {
+        fab3.hide()
     }
 
     fun showFavoriteButton() {
         fab3.show()
     }
 
-    fun showListAndLocationButton() {
-        fab1.show()
-        fab2.show()
-        fab4.show()
-
-        settingsFab.show()
-    }
-
     fun showMap() {
         map.findViewWithTag<ImageView>("GoogleWatermark")?.let {
-            it.visibility = View.INVISIBLE
+            it.visibility = View.GONE
             /*
             val params = it.layoutParams as RelativeLayout.LayoutParams
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
@@ -218,16 +202,6 @@ class MapViews : ActionViews<MapViewsAction>() {
         map.visibility = View.VISIBLE
     }
 
-    private fun initMiniBar() {
-        minibarView.apply {
-            dismissInterpolator = FastOutSlowInInterpolator()
-            ellipsize = TextUtils.TruncateAt.MARQUEE
-            marqueeRepeatLimit = 1
-            movementMethod = ScrollingMovementMethod()
-            showInterpolator = FastOutSlowInInterpolator()
-        }
-    }
-
     @Suppress("MagicNumber")
     fun showMiniBar(message: CharSequence, duration: Long = 1000L) {
         minibarView.apply {
@@ -235,6 +209,16 @@ class MapViews : ActionViews<MapViewsAction>() {
             setTextColor(ContextCompat.getColor(context, android.R.color.white))*/
             text = message
         }.show(duration)
+    }
+
+    fun hideOverlayLayout() {
+        overlay.visibility = View.GONE
+        rootView.removeView(overlay)
+    }
+
+    fun showOverlayLayout() {
+        rootView.addView(overlay)
+        overlay.visibility = View.VISIBLE
     }
 
     fun toggleConnectButton(checked: Boolean) {
@@ -248,6 +232,23 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab3.run {
             isChecked = checked
             show()
+        }
+    }
+
+    private fun initMiniBar() {
+        minibarView.apply {
+            dismissInterpolator = FastOutSlowInInterpolator()
+            ellipsize = TextUtils.TruncateAt.MARQUEE
+            marqueeRepeatLimit = 1
+            movementMethod = ScrollingMovementMethod()
+            showInterpolator = FastOutSlowInInterpolator()
+        }
+    }
+
+    inner class OnFavoriteClickListener : View.OnClickListener {
+
+        override fun onClick(v: View?) {
+            viewsAction.toggleFavoriteMarker()
         }
     }
 }
