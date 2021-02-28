@@ -2,21 +2,23 @@ package io.github.getsixtyfour.openpyn.map
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.view.Gravity
+import android.text.TextUtils
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import androidx.core.view.updateMargins
+import androidx.core.view.updatePadding
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import com.mayurrokade.minibar.UserMessage
 import com.naver.android.svc.core.views.ActionViews
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.dpToPxSize
 import kotlinx.android.synthetic.main.fragment_map.view.fab0
 import kotlinx.android.synthetic.main.fragment_map.view.fab1
 import kotlinx.android.synthetic.main.fragment_map.view.fab2
@@ -60,6 +62,9 @@ class MapViews : ActionViews<MapViewsAction>() {
             (ViewCompat.requireViewById<View>(v, R.id.fab0).layoutParams as ViewGroup.MarginLayoutParams).apply {
                 updateMargins(bottom = fabMarginBottom + systemBarsInsets.bottom)
             }
+            (ViewCompat.requireViewById<View>(v, R.id.minibar)).apply {
+                updatePadding(top = systemBarsInsets.top)
+            }
 
             systemWindowInsetTop = systemBarsInsets.top
             systemWindowInsetBottom = systemBarsInsets.bottom
@@ -77,6 +82,8 @@ class MapViews : ActionViews<MapViewsAction>() {
         fab4.setOnClickListener { viewsAction.toggleJuiceSSH() }
 
         settingsFab.setOnClickListener { viewsAction.toggleSettings() }
+
+        initMiniBar()
 
         showOverlayLayout()
     }
@@ -211,14 +218,23 @@ class MapViews : ActionViews<MapViewsAction>() {
         map.visibility = View.VISIBLE
     }
 
-    @Suppress("MagicNumber")
-    fun showMiniBar(userMessage: UserMessage) {
-        minibarView.run {
-            gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
-            minHeight = systemWindowInsetTop + dpToPxSize(14F, context)
-            translationZ = 0.0f
-            show(userMessage)
+    private fun initMiniBar() {
+        minibarView.apply {
+            dismissInterpolator = FastOutSlowInInterpolator()
+            ellipsize = TextUtils.TruncateAt.MARQUEE
+            marqueeRepeatLimit = 1
+            movementMethod = ScrollingMovementMethod()
+            showInterpolator = FastOutSlowInInterpolator()
         }
+    }
+
+    @Suppress("MagicNumber")
+    fun showMiniBar(message: CharSequence, duration: Long = 1000L) {
+        minibarView.apply {
+            /*setBackgroundColor(ContextCompat.getColor(context, R.color.accent_material_indigo_200))
+            setTextColor(ContextCompat.getColor(context, android.R.color.white))*/
+            text = message
+        }.show(duration)
     }
 
     fun toggleConnectButton(checked: Boolean) {

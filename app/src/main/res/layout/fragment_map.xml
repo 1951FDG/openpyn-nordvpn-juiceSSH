@@ -27,15 +27,25 @@
         app:uiZoomGestures="false"
         tools:visibility="visible" />
 
-    <com.mayurrokade.minibar.MinibarView
+    <io.github.getsixtyfour.openpyn.minibar.MinibarView
         android:id="@+id/minibar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal|center_vertical"
+        android:background="?attr/colorSurface"
+        android:ellipsize="none"
         android:includeFontPadding="false"
-        android:minHeight="32dp"
-        android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:requiresFadingEdge="horizontal"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textAppearance="?attr/textAppearanceBody2"
+        android:textColor="@color/material_on_surface_emphasis_high_type"
+        app:lastBaselineToBottomHeight="8sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lineHeight="24sp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab4"

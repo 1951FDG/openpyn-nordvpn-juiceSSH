@@ -7,14 +7,12 @@ import android.util.Xml
 import androidx.annotation.AnyRes
 import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.mayurrokade.minibar.UserMessage
 import io.github.getsixtyfour.openpyn.BuildConfig
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.map.createJsonArray
@@ -70,9 +68,6 @@ const val SERVER: String = "https://api.nordvpn.com/server"
 const val CITY: String = "city"
 const val IP: String = "ip"
 const val THREAT: String = "threat"
-
-// time
-const val DURATION: Long = 7000
 
 @Suppress("unused")
 @WorkerThread
@@ -391,23 +386,14 @@ fun createMarkers(
     return Pair(flags, markers)
 }
 
-fun createUserMessage(context: Context, jsonObj: JSONObject): UserMessage.Builder {
+fun createUserMessage(context: Context, jsonObj: JSONObject): CharSequence {
     /*val country = jsonObj.getString(COUNTRY)
     val lat = jsonObj.getDouble(LAT)
     val lon = jsonObj.getDouble(LONG)*/
     val city = jsonObj.getString(CITY)
     val flag = jsonObj.getString(FLAG).toUpperCase(Locale.ROOT)
     val ip = jsonObj.getString(IP)
-    val message = context.getString(R.string.vpn_msg_connected, city, flag, ip)
-    return UserMessage.Builder().apply {
-        with(context.applicationContext)
-        setBackgroundColor(R.color.accent_material_indigo_200)
-        setDismissInterpolator(FastOutSlowInInterpolator())
-        setDuration(DURATION)
-        setMessage(message)
-        setShowInterpolator(FastOutSlowInInterpolator())
-        setTextColor(android.R.color.white)
-    }
+    return context.getString(R.string.vpn_msg_connected, city, flag, ip)
 }
 
 fun jsonArray(context: Context, @RawRes id: Int, ext: String): JSONArray {

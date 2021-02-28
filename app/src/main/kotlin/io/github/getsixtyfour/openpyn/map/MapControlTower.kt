@@ -65,6 +65,8 @@ import mu.KotlinLogging
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashSet
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 @ControlTower
 @RequireViews(MapViews::class)
@@ -267,6 +269,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     @Suppress("MagicNumber")
+    @OptIn(ExperimentalTime::class)
     override fun onAnimationFinish(animation: Animation) {
         if (animation.isClosest) {
             views.fakeLayoutButtons()
@@ -296,7 +299,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             views.showAllButtons()
         } else {
             (animation.tag as? JSONObject)?.let {
-                views.showMiniBar(createUserMessage(screen.requireActivity(), it).build())
+                views.showMiniBar(createUserMessage(screen.requireActivity(), it), 10.seconds.toLongMilliseconds())
                 /*showThreats(screen.requireActivity(), it)*/
             }
         }
