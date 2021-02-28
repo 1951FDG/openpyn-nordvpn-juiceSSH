@@ -1,10 +1,10 @@
-package io.github.sdsstudios.nvidiagpumonitor
+package io.github.sdsstudios.nvidiagpumonitor.loaders
 
 import android.content.Context
 import android.database.Cursor
 import android.os.Bundle
 import androidx.annotation.MainThread
-import androidx.loader.app.LoaderManager
+import androidx.loader.app.LoaderManager.LoaderCallbacks
 import androidx.loader.content.Loader
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnLoaderChangedListener
@@ -13,7 +13,7 @@ import io.github.sdsstudios.nvidiagpumonitor.listeners.OnLoaderChangedListener
 class ConnectionListLoader(
     private val mCtx: Context,
     private val mListener: OnLoaderChangedListener
-) : LoaderManager.LoaderCallbacks<Cursor> {
+) : LoaderCallbacks<Cursor> {
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         val selection = "type = ?"

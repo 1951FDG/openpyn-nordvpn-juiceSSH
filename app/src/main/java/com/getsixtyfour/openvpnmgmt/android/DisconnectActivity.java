@@ -39,7 +39,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
     private AlertDialog mDialog = null;
 
     @Nullable
-    private IOpenVpnServiceInternal mService = null;
+    private IOpenVpnService mService = null;
 
     private boolean mServiceBound;
 
@@ -154,7 +154,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
 
     @Override
     public void onServiceConnected(@NonNull ComponentName name, @NonNull IBinder service) {
-        mService = IOpenVpnServiceInternal.Stub.asInterface(service);
+        mService = IOpenVpnService.Stub.asInterface(service);
         mServiceBound = true;
         LOGGER.debug("onServiceConnected");
     }

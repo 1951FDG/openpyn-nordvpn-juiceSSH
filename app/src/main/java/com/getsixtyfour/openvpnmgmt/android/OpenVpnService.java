@@ -55,7 +55,7 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnService.class);
 
-    private final IBinder mBinder = new IOpenVpnServiceInternal.Stub() {
+    private final IBinder mBinder = new IOpenVpnService.Stub() {
         @Override
         public void disconnectVpn() {
             Thread thread = new Thread(() -> {

@@ -1,11 +1,9 @@
-package io.github.sdsstudios.nvidiagpumonitor
+package io.github.sdsstudios.nvidiagpumonitor.loaders
 
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import androidx.annotation.RequiresPermission
 import androidx.loader.content.CursorLoader
-import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import mu.KotlinLogging
 
 class ConnectionLoader(
@@ -19,7 +17,6 @@ class ConnectionLoader(
 
     private val logger = KotlinLogging.logger {}
 
-    @RequiresPermission(PERMISSION_READ)
     override fun loadInBackground(): Cursor? {
         var cursor: Cursor? = null
         try {

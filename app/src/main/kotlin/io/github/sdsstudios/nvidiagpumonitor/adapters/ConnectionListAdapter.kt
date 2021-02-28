@@ -1,4 +1,4 @@
-package io.github.sdsstudios.nvidiagpumonitor
+package io.github.sdsstudios.nvidiagpumonitor.adapters
 
 import android.content.Context
 import android.database.Cursor

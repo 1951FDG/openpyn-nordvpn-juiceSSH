@@ -1,5 +1,5 @@
 package com.getsixtyfour.openvpnmgmt.android;
 
-interface IOpenVpnServiceInternal {
+interface IOpenVpnService {
     void disconnectVpn();
 }

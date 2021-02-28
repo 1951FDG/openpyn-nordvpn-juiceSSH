@@ -40,8 +40,8 @@ import io.github.getsixtyfour.ktextension.startUpdate
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog.NoticeDialogListener
 import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
 import io.github.getsixtyfour.openpyn.utils.Toaster
-import io.github.sdsstudios.nvidiagpumonitor.ConnectionListAdapter
-import io.github.sdsstudios.nvidiagpumonitor.ConnectionListLoader
+import io.github.sdsstudios.nvidiagpumonitor.adapters.ConnectionListAdapter
+import io.github.sdsstudios.nvidiagpumonitor.loaders.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnLoaderChangedListener
