@@ -32,7 +32,7 @@ import kotlin.time.seconds
 
 @MainThread
 class ConnectionManager(
-    ctx: Context,
+    context: Context,
     lifecycleOwner: LifecycleOwner?,
     private var mSessionStartedListener: OnSessionStartedListener?,
     private var mSessionFinishedListener: OnSessionFinishedListener?,
@@ -44,7 +44,7 @@ class ConnectionManager(
 
     private val mControllers: List<BaseController> by lazy { listOf(mOpenpynController) }
     private val mClient = PluginClient()
-    private val mCtx = ctx.applicationContext
+    private val mCtx = context.applicationContext
     private val mOpenpynController = OpenpynController(mCtx, sessionExecuteListener, commandExecuteListener, onOutputLineListener)
     private var mSessionId = 0
     private var mSessionKey = ""
@@ -121,8 +121,8 @@ class ConnectionManager(
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     @Suppress("MagicNumber")
+    @OptIn(ExperimentalTime::class)
     fun disconnect() {
         if (isConnectingOrDisconnecting()) return
 

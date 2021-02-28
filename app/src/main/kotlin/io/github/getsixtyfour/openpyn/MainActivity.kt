@@ -350,7 +350,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), OnClickListener,
         LoaderManager.getInstance(this).initLoader(0, null, ConnectionListLoader(this, this)).forceLoad()
 
         mConnectionManager = ConnectionManager(
-            ctx = this,
+            context = this,
             lifecycleOwner = this,
             mSessionStartedListener = this,
             mSessionFinishedListener = this,

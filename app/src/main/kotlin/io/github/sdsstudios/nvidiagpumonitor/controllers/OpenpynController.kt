@@ -11,11 +11,11 @@ import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import mu.KotlinLogging
 
 class OpenpynController(
-    ctx: Context,
+    context: Context,
     private var mSessionExecuteListener: OnSessionExecuteListener?,
     private var mCommandExecuteListener: OnCommandExecuteListener?,
     private var mOnOutputLineListener: OnOutputLineListener?
-) : BaseController(ctx) {
+) : BaseController(context) {
 
     private val logger = KotlinLogging.logger {}
 

@@ -170,9 +170,8 @@ class SettingsActivity : PreferenceActivityCompat() {
                     // Set the summary to reflect the new value
                     preference.summary = if (index >= 0) preference.entries[index] else null
                 } else {
-                    val ctx = preference.context
                     when {
-                        stringValue.isEmpty() -> preference.summary = ctx.getString(R.string.not_set)
+                        stringValue.isEmpty() -> preference.summary = preference.context.getString(R.string.not_set)
                         // For all other preferences, set the summary to the value's simple string representation
                         else -> preference.summary = stringValue
                     }

@@ -13,9 +13,9 @@ import io.github.getsixtyfour.openpyn.R
 import java.util.UUID
 
 @MainThread
-class ConnectionListAdapter(ctx: Context) : CursorAdapter(ctx, null, 0) {
+class ConnectionListAdapter(context: Context) : CursorAdapter(context, null, 0) {
 
-    private val mInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private val mInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun getItem(position: Int): Cursor? {
         return super.getItem(position) as Cursor?
