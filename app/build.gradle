@@ -1,32 +1,20 @@
-//apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'kotlin-kapt'
-
-apply plugin: 'androidx.navigation.safeargs.kotlin'
-
-apply plugin: 'com.google.android.gms.oss-licenses-plugin'
-
-apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
-
-apply plugin: 'com.getkeepsafe.dexcount'
-
-apply plugin: 'com.github.ben-manes.versions'
-
-apply plugin: 'smartdengg.clickdebounce'
-
-apply plugin: 'com.google.firebase.crashlytics'
-
-apply plugin: 'com.github.konifar.gradle.unused-resources-remover'
-
-apply plugin: 'com.gladed.androidgitversion'
-
-apply plugin: 'io.gitlab.arturbosch.detekt'
-
-//apply plugin: 'com.google.gms.google-services'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.android.gms.oss-licenses-plugin'
+    id 'com.google.android.gms.strict-version-matcher-plugin'
+    id 'com.getkeepsafe.dexcount'
+    id 'com.github.ben-manes.versions'
+    id 'smartdengg.clickdebounce'
+    id 'com.google.firebase.crashlytics'
+    id 'com.github.konifar.gradle.unused-resources-remover'
+    id 'com.gladed.androidgitversion'
+    id 'io.gitlab.arturbosch.detekt'
+    //id 'com.google.gms.google-services'
+}
 
 android {
     compileSdkVersion 30
@@ -235,6 +223,10 @@ dependencies {
 
     // Crashlytics
     implementation 'com.google.firebase:firebase-crashlytics:17.3.1'
+
+    // Error Prone
+    //debugAnnotationProcessor 'com.uber.nullaway:nullaway:0.8.0'
+    //debugCompileOnly 'com.jakewharton.nopen:nopen-annotations:1.0.1'
 
     // Google Play Services
     implementation 'com.google.android.gms:play-services-maps:17.0.0'

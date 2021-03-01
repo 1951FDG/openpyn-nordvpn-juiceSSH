@@ -52,7 +52,33 @@ buildscript {
     }
 }
 
+plugins {
+    id 'idea'
+}
+
+idea.module {
+    excludeDirs += file('app/.cxx')
+    excludeDirs += file('app/.externalNativeBuild')
+    excludeDirs += file('app/src/main/java/com/almworks')
+    excludeDirs += file('app/src/main/java/io/requery')
+    excludeDirs += file('app/src/main/java/org/javolution')
+    excludeDirs += file('app/src/main/java/org/sqlite')
+    excludeDirs += file('app/src/main/jni')
+    excludeDirs += file('app/src/main/obj')
+
+    excludeDirs += file('config/detekt')
+    excludeDirs += file('config/checkstyle')
+    excludeDirs += file('config/lib')
+
+    excludeDirs += file('fastlane')
+
+    excludeDirs += file('node_modules')
+}
+
 allprojects {
+    apply plugin: 'com.gorylenko.gradle-git-properties'
+    apply plugin: 'net.ltgt.errorprone'
+
     repositories {
         google()
         jcenter()
@@ -62,28 +88,13 @@ allprojects {
         }
     }
 
-    apply plugin: 'idea'
-
-    idea.module {
-        excludeDirs += file('app/.cxx')
-        excludeDirs += file('app/.externalNativeBuild')
-        excludeDirs += file('app/src/main/java/com/almworks')
-        excludeDirs += file('app/src/main/java/io/requery')
-        excludeDirs += file('app/src/main/java/org/javolution')
-        excludeDirs += file('app/src/main/java/org/sqlite')
-        excludeDirs += file('app/src/main/jni')
-        excludeDirs += file('app/src/main/obj')
-
-        excludeDirs += file('config/detekt')
-        excludeDirs += file('config/checkstyle')
-        excludeDirs += file('config/lib')
-
-        excludeDirs += file('fastlane')
-
-        excludeDirs += file('node_modules')
+    dependencies {
+        //noinspection GradleDynamicVersion
+        errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
+        errorprone 'com.google.errorprone:error_prone_core:2.5.1'
+        errorprone 'com.jakewharton.nopen:nopen-checker:1.0.1'
+        errorprone 'com.uber.nullaway:nullaway:0.8.0'
     }
-
-    apply plugin: 'com.gorylenko.gradle-git-properties'
 
     gitProperties {
         extProperty = 'gitProps'
@@ -100,8 +111,6 @@ allprojects {
         }
     }
 
-    apply plugin: 'net.ltgt.errorprone'
-
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile).configureEach {
             //options.compilerArgs << '-Xlint:all'
@@ -116,7 +125,7 @@ allprojects {
                 disable('EmptyCatch')
                 disable('Java7ApiChecker')
                 disable('MissingSummary')
-                //warn('Nopen')
+                warn('Nopen')
                 //warn('NullAway')
                 disable('StringSplitter')
                 disable('UnnecessaryDefaultInEnumSwitch')
@@ -129,28 +138,6 @@ allprojects {
         tasks.withType(UploadMappingFileTask).configureEach {
             dependsOn(appCopyGoogleIdValuesTask)
         }
-    }
-}
-
-subprojects {
-    if (it.name == 'app') {
-        apply {
-            plugin 'com.android.application'
-        }
-    } else {
-        apply {
-            plugin 'com.android.library'
-        }
-    }
-
-    dependencies {
-        // Error Prone
-        debugAnnotationProcessor 'com.uber.nullaway:nullaway:0.8.0'
-        debugCompileOnly 'com.jakewharton.nopen:nopen-annotations:1.0.1'
-        errorprone 'com.jakewharton.nopen:nopen-checker:1.0.1'
-        errorprone 'com.google.errorprone:error_prone_core:2.5.1'
-        //noinspection GradleDynamicVersion
-        errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
     }
 }
 
