@@ -125,7 +125,7 @@ allprojects {
                 disable('EmptyCatch')
                 disable('Java7ApiChecker')
                 disable('MissingSummary')
-                warn('Nopen')
+                //warn('Nopen')
                 //warn('NullAway')
                 disable('StringSplitter')
                 disable('UnnecessaryDefaultInEnumSwitch')
