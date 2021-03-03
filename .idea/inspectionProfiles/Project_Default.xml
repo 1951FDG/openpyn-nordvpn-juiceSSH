@@ -284,7 +284,7 @@
     <inspection_tool class="ConstantAssertExpression" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConstantConditions" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
-      <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
+      <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="true" />
     </inspection_tool>
     <inspection_tool class="ConstantDeclaredInAbstractClass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConstantDeclaredInInterface" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -318,6 +318,7 @@
     <inspection_tool class="CrapMetric" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CustomClassloader" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CustomSecurityManager" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CyclicPackageDependency" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="DateToString" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="DeadCode" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="DeclareCollectionAsInterface" enabled="true" level="WARNING" enabled_by_default="true">
@@ -448,12 +449,12 @@
       </extension>
       <extension name="InstanceVariableNamingConvention" enabled="true">
         <option name="m_regex" value="m[A-Z][A-Za-z\d]*" />
-        <option name="m_minLength" value="5" />
+        <option name="m_minLength" value="3" />
         <option name="m_maxLength" value="32" />
       </extension>
       <extension name="StaticVariableNamingConvention" enabled="true">
         <option name="m_regex" value="s[A-Z][A-Za-z\d]*" />
-        <option name="m_minLength" value="5" />
+        <option name="m_minLength" value="3" />
         <option name="m_maxLength" value="32" />
       </extension>
     </inspection_tool>
@@ -505,7 +506,6 @@
     <inspection_tool class="GroovyAssignmentToMethodParameter" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="GroovyBreak" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="GroovyBusyWait" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="GroovyConditional" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="GroovyConditionalCanBeConditionalCall" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="GroovyConditionalCanBeElvis" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="GroovyConstantNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
