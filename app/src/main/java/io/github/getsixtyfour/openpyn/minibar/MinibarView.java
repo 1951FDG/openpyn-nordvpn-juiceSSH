@@ -25,14 +25,14 @@ public class MinibarView extends MaterialTextView {
 
     private static final long SHOW_DURATION = 500L;
 
-    private ViewPropertyAnimator mAnimator = null;
-
     private long mDelayMillis = 1000L;
 
+    @Nullable
     private Interpolator mDismissInterpolator = new DecelerateInterpolator();
 
     private float mHeight = 0.0F;
 
+    @Nullable
     private Interpolator mShowInterpolator = new AccelerateInterpolator();
 
     private boolean mShowing = false;
@@ -118,46 +118,52 @@ public class MinibarView extends MaterialTextView {
     }
 
     private void show() {
-        mAnimator = animate();
+        ViewPropertyAnimator animator = animate();
         setAlpha(1.0F);
         mShowing = true;
-        mAnimator.setDuration(SHOW_DURATION).translationY(0.0F).setListener(new AnimatorListenerAdapter() {
+        animator.setDuration(SHOW_DURATION);
+        animator.translationY(0.0F);
+        animator.setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                Handler handler = new Handler();
-                handler.postDelayed(() -> dismiss(), mDelayMillis);
+                Handler handler = getHandler();
+                if (handler != null) {
+                    handler.postDelayed(() -> dismiss(), mDelayMillis);
+                }
                 setSelected(true);
             }
         });
         if (mShowInterpolator != null) {
-            mAnimator.setInterpolator(mShowInterpolator);
+            animator.setInterpolator(mShowInterpolator);
         }
-        mAnimator.start();
+        animator.start();
     }
 
     private void dismiss() {
-        mAnimator = animate();
-        mAnimator.setDuration(DISMISS_DURATION).translationY(-mHeight).alpha(0.0F).setListener(new AnimatorListenerAdapter() {
+        ViewPropertyAnimator animator = animate();
+        animator.alpha(0.0F);
+        animator.setDuration(DISMISS_DURATION);
+        animator.translationY(-mHeight);
+        animator.setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                setShowing(false);
                 setSelected(false);
+                setShowing(false);
             }
         });
         if (mDismissInterpolator != null) {
-            mAnimator.setInterpolator(mDismissInterpolator);
+            animator.setInterpolator(mDismissInterpolator);
         }
-        mAnimator.start();
+        animator.start();
     }
 
     private void fastDismiss() {
         if (mShowing) {
-            if (mAnimator != null) {
-                mAnimator.cancel();
-            }
-            mShowing = false;
-            setTranslationY(-mHeight);
+            ViewPropertyAnimator animator = animate();
+            animator.cancel();
             setAlpha(0.0F);
+            setTranslationY(-mHeight);
+            mShowing = false;
         }
     }
 }
