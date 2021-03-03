@@ -22,16 +22,10 @@ final class Constants {
     static final String MANAGEMENT_CMD_PREFIX = "MANAGEMENT: CMD";
 
     @NonNls
-    static final String MANAGEMENT_VERSION_PREFIX = "Management Version:";
-
-    @NonNls
     static final String NEED_PREFIX = "Need";
 
     @NonNls
     static final String NOTE_PREFIX = "NOTE:";
-
-    @NonNls
-    static final String OPEN_VPN_VERSION_PREFIX = "OpenVPN Version:";
 
     @NonNls
     static final String SUCCESS_PREFIX = "SUCCESS:";

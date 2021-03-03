@@ -1,12 +1,14 @@
-package com.getsixtyfour.openvpnmgmt.net;
+package com.getsixtyfour.openvpnmgmt.utils;
 
 import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 import com.getsixtyfour.openvpnmgmt.implementation.OpenVpnStatus;
+import com.getsixtyfour.openvpnmgmt.net.Commands;
 
 import java.io.IOException;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +19,12 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UtilityClass")
 public final class ManagementUtils {
 
+    @NonNls
+    private static final String MANAGEMENT_VERSION_PREFIX = "Management Version:";
+
+    @NonNls
+    private static final String OPEN_VPN_VERSION_PREFIX = "OpenVPN Version:";
+
     private ManagementUtils() {
     }
 
@@ -26,8 +34,8 @@ public final class ManagementUtils {
             String output = connection.executeCommand(Commands.VERSION_COMMAND);
             String[] lines = output.split(System.lineSeparator());
             String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
-            if (!line.isEmpty() && line.startsWith(Constants.MANAGEMENT_VERSION_PREFIX)) {
-                result = line.substring(Constants.MANAGEMENT_VERSION_PREFIX.length() + 1);
+            if (!line.isEmpty() && line.startsWith(MANAGEMENT_VERSION_PREFIX)) {
+                result = line.substring(MANAGEMENT_VERSION_PREFIX.length() + 1);
             }
         } catch (IOException ignored) {
         }
@@ -52,8 +60,8 @@ public final class ManagementUtils {
             String output = connection.executeCommand(Commands.VERSION_COMMAND);
             String[] lines = output.split(System.lineSeparator());
             String line = (lines.length >= 2) ? lines[lines.length - 2] : "";
-            if (!line.isEmpty() && line.startsWith(Constants.OPEN_VPN_VERSION_PREFIX)) {
-                result = line.substring(Constants.OPEN_VPN_VERSION_PREFIX.length() + 1);
+            if (!line.isEmpty() && line.startsWith(OPEN_VPN_VERSION_PREFIX)) {
+                result = line.substring(OPEN_VPN_VERSION_PREFIX.length() + 1);
             }
         } catch (IOException ignored) {
         }
