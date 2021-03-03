@@ -1,10 +1,10 @@
 package com.getsixtyfour.openvpnmgmt.api;
 
+import com.getsixtyfour.openvpnmgmt.core.UsernamePasswordHandler;
 import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
-import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 
 import java.io.IOException;
 

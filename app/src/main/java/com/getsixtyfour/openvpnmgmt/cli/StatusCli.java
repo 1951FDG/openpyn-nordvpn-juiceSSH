@@ -2,7 +2,7 @@ package com.getsixtyfour.openvpnmgmt.cli;
 
 import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.api.Status;
-import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
+import com.getsixtyfour.openvpnmgmt.core.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.ConnectionUtils;
 
 import org.apache.commons.cli.CommandLine;

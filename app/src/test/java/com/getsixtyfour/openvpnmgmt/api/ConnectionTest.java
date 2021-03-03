@@ -1,7 +1,7 @@
 package com.getsixtyfour.openvpnmgmt.api;
 
-import com.getsixtyfour.openvpnmgmt.net.Commands;
-import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
+import com.getsixtyfour.openvpnmgmt.core.Commands;
+import com.getsixtyfour.openvpnmgmt.core.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.ConnectionUtils;
 
 import java.io.IOException;

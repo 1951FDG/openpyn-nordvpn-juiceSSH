@@ -2,9 +2,9 @@ package com.getsixtyfour.openvpnmgmt.utils;
 
 import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.api.Status;
+import com.getsixtyfour.openvpnmgmt.core.Commands;
 import com.getsixtyfour.openvpnmgmt.exceptions.OpenVpnParseException;
 import com.getsixtyfour.openvpnmgmt.implementation.OpenVpnStatus;
-import com.getsixtyfour.openvpnmgmt.net.Commands;
 
 import java.io.IOException;
 

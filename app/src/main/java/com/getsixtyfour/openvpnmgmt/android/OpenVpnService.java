@@ -24,14 +24,14 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.getsixtyfour.openvpnmgmt.api.Connection;
+import com.getsixtyfour.openvpnmgmt.core.Commands;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
+import com.getsixtyfour.openvpnmgmt.core.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
 import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
 import com.getsixtyfour.openvpnmgmt.model.OpenVpnNetworkState;
-import com.getsixtyfour.openvpnmgmt.net.Commands;
-import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
 import java.io.IOException;

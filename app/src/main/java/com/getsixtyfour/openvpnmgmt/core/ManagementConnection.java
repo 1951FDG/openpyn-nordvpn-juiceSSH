@@ -1,10 +1,6 @@
-package com.getsixtyfour.openvpnmgmt.net;
+package com.getsixtyfour.openvpnmgmt.core;
 
 import com.getsixtyfour.openvpnmgmt.api.Connection;
-import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
-import com.getsixtyfour.openvpnmgmt.core.LogLevel;
-import com.getsixtyfour.openvpnmgmt.core.TrafficHistory;
-import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
 import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;

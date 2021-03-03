@@ -1,6 +1,8 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
+import com.getsixtyfour.openvpnmgmt.core.ManagementConnection;
+import com.getsixtyfour.openvpnmgmt.core.UsernamePasswordHandler;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;

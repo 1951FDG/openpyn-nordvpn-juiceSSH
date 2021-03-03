@@ -2,7 +2,7 @@ package io.github.getsixtyfour.openpyn.utils
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler
+import com.getsixtyfour.openvpnmgmt.core.UsernamePasswordHandler
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.security.SecurityCypher
 
