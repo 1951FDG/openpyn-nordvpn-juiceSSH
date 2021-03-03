@@ -2,7 +2,7 @@ package com.getsixtyfour.openvpnmgmt.api;
 
 import com.getsixtyfour.openvpnmgmt.net.Commands;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
-import com.getsixtyfour.openvpnmgmt.utils.ManagementUtils;
+import com.getsixtyfour.openvpnmgmt.utils.ConnectionUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -88,7 +88,7 @@ public class ConnectionTest {
     public void testGetManagementVersion() {
         LOGGER.debug("getManagementVersion");
         sConnection.connect(sHost, sPort, sPassword);
-        String result = ManagementUtils.getManagementVersion(sConnection);
+        String result = ConnectionUtils.getManagementVersion(sConnection);
         Assert.assertNotEquals("", result);
         LOGGER.debug(result);
     }
@@ -100,7 +100,7 @@ public class ConnectionTest {
     public void testGetVpnStatus() {
         LOGGER.debug("getVpnStatus");
         sConnection.connect(sHost, sPort, sPassword);
-        Status result = ManagementUtils.getVpnStatus(sConnection);
+        Status result = ConnectionUtils.getVpnStatus(sConnection);
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.getUpdateTime());
         List<Client> clientList = result.getClients();
@@ -118,7 +118,7 @@ public class ConnectionTest {
     public void testGetVpnVersion() {
         LOGGER.debug("getVpnVersion");
         sConnection.connect(sHost, sPort, sPassword);
-        String result = ManagementUtils.getVpnVersion(sConnection);
+        String result = ConnectionUtils.getVpnVersion(sConnection);
         Assert.assertNotEquals("", result);
         LOGGER.debug(result);
     }

@@ -3,7 +3,7 @@ package com.getsixtyfour.openvpnmgmt.cli;
 import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.net.ManagementConnection;
-import com.getsixtyfour.openvpnmgmt.utils.ManagementUtils;
+import com.getsixtyfour.openvpnmgmt.utils.ConnectionUtils;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -64,7 +64,7 @@ public final class StatusCli {
         }
         Connection connection = ManagementConnection.getInstance();
         connection.connect(host, port);
-        Status status = ManagementUtils.getVpnStatus(connection);
+        Status status = ConnectionUtils.getVpnStatus(connection);
         connection.disconnect();
         System.out.println("OpenVPN status: " + status); //NON-NLS
     }

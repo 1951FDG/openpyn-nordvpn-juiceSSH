@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  */
 
 @SuppressWarnings("UtilityClass")
-public final class ManagementUtils {
+public final class ConnectionUtils {
 
     @NonNls
     private static final String MANAGEMENT_VERSION_PREFIX = "Management Version:";
@@ -25,7 +25,7 @@ public final class ManagementUtils {
     @NonNls
     private static final String OPEN_VPN_VERSION_PREFIX = "OpenVPN Version:";
 
-    private ManagementUtils() {
+    private ConnectionUtils() {
     }
 
     public static @NotNull String getManagementVersion(@NotNull Connection connection) {
