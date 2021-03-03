@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author 1951FDG
  */
 
-@SuppressWarnings({ "Singleton", "OverlyCoupledClass", "OverlyComplexClass", "ClassWithTooManyDependencies" })
+@SuppressWarnings({ "Singleton", "OverlyComplexClass", "ClassWithTooManyDependencies" })
 public final class ManagementConnection extends AbstractConnection implements Connection {
 
     public static final Integer BYTE_COUNT_INTERVAL = 2;
@@ -293,7 +293,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void onConnected() {
         LOGGER.info("Connected");
-        LOGGER.info(ManagementUtils.getVpnVersion(this));
         ConnectionListener listener = mConnectionListener;
         if (listener != null) {
             listener.onConnected(Thread.currentThread());

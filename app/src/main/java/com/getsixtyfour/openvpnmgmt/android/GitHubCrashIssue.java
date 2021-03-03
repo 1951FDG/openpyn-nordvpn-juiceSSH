@@ -370,7 +370,7 @@ public class GitHubCrashIssue {
         return result.toString();
     }
 
-    @SuppressWarnings({ "OverlyComplexMethod", "OverlyLongMethod", "IfStatementWithTooManyBranches" })
+    @SuppressWarnings({ "OverlyComplexMethod", "OverlyLongMethod", "IfStatementWithTooManyBranches", "ObjectAllocationInLoop" })
     @NonNull
     private String stack(@NonNull StackTraceElement[] trace) {
         @NonNls StringBuilder result = new StringBuilder(INITIAL_SIZE);
@@ -395,7 +395,7 @@ public class GitHubCrashIssue {
                     break;
                 }
             }
-            if (TextUtils.isEmpty(group)) {
+            if ((group == null) || group.isEmpty()) {
                 group = className;
                 elementList = new ArrayList<>(length);
                 elementList.add(traceElement);
@@ -500,9 +500,9 @@ public class GitHubCrashIssue {
         @NonNull
         private String mVersion = "";
 
-        private boolean mDirty;
+        private boolean mDirty = false;
 
-        private boolean mDisabled;
+        private boolean mDisabled = false;
 
         @NonNull
         public GitHubCrashIssue build() {

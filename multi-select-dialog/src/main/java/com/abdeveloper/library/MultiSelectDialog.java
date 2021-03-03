@@ -333,6 +333,7 @@ public class MultiSelectDialog extends AppCompatDialogFragment
         return names;
     }
 
+    @SuppressWarnings("MagicNumber")
     private String getSelectedDataString(Collection<MultiSelectable> list) {
         StringBuilder data = new StringBuilder(256);
         for (MultiSelectable model : list) {

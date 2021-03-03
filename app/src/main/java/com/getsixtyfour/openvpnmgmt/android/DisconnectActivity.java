@@ -41,7 +41,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
     @Nullable
     private IOpenVpnService mService = null;
 
-    private boolean mServiceBound;
+    private boolean mServiceBound = false;
 
     private static void onDismiss(DialogInterface dialog) {
         if (dialog instanceof AlertDialog) {

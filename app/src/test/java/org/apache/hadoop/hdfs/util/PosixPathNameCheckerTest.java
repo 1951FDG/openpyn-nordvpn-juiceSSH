@@ -20,7 +20,7 @@ package org.apache.hadoop.hdfs.util;
 import org.junit.*;
 
 @SuppressWarnings("HardCodedStringLiteral")
-public class TestPosixPathNameChecker {
+public class PosixPathNameCheckerTest {
 
     private static final PosixPathNameChecker CHECKER = new PosixPathNameChecker();
 

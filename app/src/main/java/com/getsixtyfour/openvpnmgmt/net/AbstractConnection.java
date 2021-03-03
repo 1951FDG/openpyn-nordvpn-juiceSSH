@@ -30,7 +30,7 @@ abstract class AbstractConnection implements Closeable {
 
     private @Nullable String mHost = null;
 
-    private boolean mKeepAlive;
+    private boolean mKeepAlive = false;
 
     private @Nullable Integer mPort = null;
 

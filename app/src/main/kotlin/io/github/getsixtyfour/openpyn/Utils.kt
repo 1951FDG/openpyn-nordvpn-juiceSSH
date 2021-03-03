@@ -214,6 +214,7 @@ fun initNetworkInfo(application: Application) {
     NetworkInfo.getInstance(application)
 }
 
+@Suppress("MagicNumber")
 fun initClickDebounce() {
     DebouncedPredictor.FROZEN_WINDOW_MILLIS = 500L
 }

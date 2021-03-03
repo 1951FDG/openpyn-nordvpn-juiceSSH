@@ -290,9 +290,8 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
                 }
             }
             // Show both the navigation bar and the status bar
-            screen.requireActivity().let {
-                showSystemUI(it.window, views.rootView)
-                /*it.window.navigationBarColor = ContextCompat.getColor(it, R.color.navigationBarColor)*/
+            screen.requireActivity().run {
+                showSystemUI(window, views.rootView)
             }
 
             views.showAllButtons()

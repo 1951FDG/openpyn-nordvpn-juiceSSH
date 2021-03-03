@@ -217,6 +217,7 @@ public final class MapBoxOfflineTileProvider extends AbstractTileProvider implem
         }
     }
 
+    @SuppressWarnings("MagicCharacter")
     @NonNull
     @Override
     public String toString() {

@@ -38,7 +38,7 @@ public class ManagementConnectionTest {
         invokeStaticMethod(targetClass, methodName, argClasses, argObjects);
     }
 
-    @SuppressWarnings("TryWithIdenticalCatches")
+    @SuppressWarnings({ "TryWithIdenticalCatches", "StaticVariableUsedBeforeInitialization" })
     private static void invokeStaticMethod(@NotNull Class<?> targetClass, @NotNull String methodName, Class[] argClasses,
                                            Object[] argObjects) throws InvocationTargetException {
         try {

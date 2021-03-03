@@ -1,7 +1,6 @@
 package com.getsixtyfour.openvpnmgmt.android;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.getsixtyfour.openvpnmgmt.net.UsernamePasswordHandler;
 

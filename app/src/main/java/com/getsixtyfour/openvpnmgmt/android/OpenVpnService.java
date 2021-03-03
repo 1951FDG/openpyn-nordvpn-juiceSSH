@@ -80,12 +80,12 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
     /**
      * the connection start time in UTC milliseconds (could be some time in the past)
      */
-    private long mStartTime;
+    private long mStartTime = 0L;
 
     @Nullable
     private Thread mThread = null;
 
-    private int mStartId;
+    private int mStartId = 0;
 
     private static final boolean DEBUG = false;
 

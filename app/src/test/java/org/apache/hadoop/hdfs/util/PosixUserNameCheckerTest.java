@@ -20,7 +20,7 @@ package org.apache.hadoop.hdfs.util;
 import org.junit.*;
 
 @SuppressWarnings("HardCodedStringLiteral")
-public class TestPosixUserNameChecker {
+public class PosixUserNameCheckerTest {
 
     private static final PosixUserNameChecker CHECKER = new PosixUserNameChecker();
 

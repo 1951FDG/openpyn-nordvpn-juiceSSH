@@ -1,21 +1,15 @@
 package com.abdeveloper.library;
 
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
-import android.text.Spannable.Factory;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Checkable;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.widget.CompoundButtonCompat;
-import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import java.util.List;
@@ -24,7 +18,7 @@ class MultiSelectViewHolder extends ViewHolder implements View.OnClickListener {
 
     private static final StyleSpan BOLD_STYLE_SPAN = new StyleSpan(Typeface.BOLD);
 
-    private static final Factory SPANNABLE_FACTORY = new MultiSelectFactory();
+    private static final Spannable.Factory SPANNABLE_FACTORY = new MultiSelectFactory();
 
     private final ImageView mImageView;
 
@@ -35,7 +29,6 @@ class MultiSelectViewHolder extends ViewHolder implements View.OnClickListener {
     MultiSelectViewHolder(@NonNull View view, SelectionCallbackListener listener) {
         super(view);
         mListener = listener;
-        View checkboxView = view.findViewById(R.id.checkbox);
         mImageView = view.findViewById(R.id.image);
         mTitleView = view.findViewById(R.id.text);
         mImageView.setClipToOutline(true);

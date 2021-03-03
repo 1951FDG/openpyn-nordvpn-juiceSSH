@@ -148,7 +148,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
                 }
 
                 @Suppress("unused")
-                fun parseNumericAddress(address: String): InetAddress? {
+                fun parseNumericAddress(address: String): InetAddress {
                     return parseNumericAddressNoThrow(address) ?: throw IllegalArgumentException("Not a numeric address: $address")
                 }
 
