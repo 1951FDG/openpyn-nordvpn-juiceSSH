@@ -2,21 +2,10 @@ package io.github.getsixtyfour.openpyn.utils
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import com.getsixtyfour.openvpnmgmt.core.UsernamePasswordHandler
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.security.SecurityCypher
 
-class VpnAuthenticationHandler(context: Context) : UsernamePasswordHandler {
-
-    private val mContext: Context = context.applicationContext
-
-    override fun getUser(): String? {
-        return getUserName(mContext)
-    }
-
-    override fun getPassword(): String? {
-        return getUserPass(mContext)
-    }
+class VpnAuthenticationHandler {
 
     companion object {
 

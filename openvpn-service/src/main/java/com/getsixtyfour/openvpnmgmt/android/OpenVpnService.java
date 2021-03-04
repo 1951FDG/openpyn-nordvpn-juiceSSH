@@ -23,6 +23,7 @@ import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.getsixtyfour.openvpnmgmt.R;
 import com.getsixtyfour.openvpnmgmt.api.Connection;
 import com.getsixtyfour.openvpnmgmt.core.Commands;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
@@ -42,8 +43,6 @@ import org.jetbrains.annotations.NonNls;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.github.getsixtyfour.openpyn.R;
 
 /**
  * @author 1951FDG

@@ -18,12 +18,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.getsixtyfour.openvpnmgmt.R;
+
 import org.jetbrains.annotations.NonNls;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.github.getsixtyfour.openpyn.R;
 
 /**
  * @author 1951FDG

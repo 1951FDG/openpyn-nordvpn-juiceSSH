@@ -48,7 +48,6 @@ public final class Utils {
             return null;
         }
 
-       ;
         return GitHubCrashIssueHelper.getGitHubCrashIssue(context).createIntent(e);
     }
 
