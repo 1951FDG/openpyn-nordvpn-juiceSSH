@@ -196,6 +196,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
 
     // Modules
+    implementation project(':github-crash-issue')
     implementation project(':multi-select-dialog')
     implementation project(':vpn-country-flags')
 

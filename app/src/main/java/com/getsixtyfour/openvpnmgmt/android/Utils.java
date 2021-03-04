@@ -14,11 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
-import java.io.IOException;
-import java.util.Collections;
+import com.getsixtyfour.android.GitHubCrashIssueHelper;
 
-import io.github.getsixtyfour.openpyn.BuildConfig;
-import io.github.getsixtyfour.openpyn.R;
+import java.io.IOException;
 
 /**
  * @author 1951FDG
@@ -50,16 +48,8 @@ public final class Utils {
             return null;
         }
 
-        GitHubCrashIssue.Builder builder = new GitHubCrashIssue.Builder();
-        builder.setAssignees(Collections.singletonList(context.getString(R.string.github_repo_owner)));
-        builder.setDirty(Boolean.parseBoolean(context.getString(R.string.git_dirty)));
-        builder.setDisabled(BuildConfig.DEBUG);
-        builder.setId(context.getString(R.string.git_commit_id));
-        builder.setLabels(Collections.singletonList(context.getString(R.string.crash_label)));
-        builder.setUrl(context.getString(R.string.github_repo_url));
-        builder.setVersion(context.getString(R.string.app_version));
-        GitHubCrashIssue gitHubIssue = builder.build();
-        return gitHubIssue.createIntent(e);
+       ;
+        return GitHubCrashIssueHelper.getGitHubCrashIssue(context).createIntent(e);
     }
 
     @Nullable

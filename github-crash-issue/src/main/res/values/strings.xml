@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_version" translatable="false" />
+    <string name="git_commit_id" translatable="false" />
+    <string name="git_dirty" translatable="false">true</string>
+    <string name="github_issue_assignee" translatable="false" />
+    <string name="github_issue_label" translatable="false" />
+    <string name="github_repo_url" translatable="false" />
+</resources>

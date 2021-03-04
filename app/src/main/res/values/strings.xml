@@ -3,7 +3,9 @@
     <string name="app_name" translatable="false">Openpyn</string>
 
     <string name="empty" translatable="false" />
-    <string name="crash_label" translatable="false">crash</string>
+
+    <string name="github_issue_assignee" translatable="false">1951FDG</string>
+    <string name="github_issue_label" translatable="false">crash</string>
     <string name="email_address" translatable="false">support@1951fdg.com</string>
 
     <string name="search_hint">Search…</string>

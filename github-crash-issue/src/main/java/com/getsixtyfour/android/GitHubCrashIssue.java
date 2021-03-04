@@ -1,4 +1,4 @@
-package com.getsixtyfour.openvpnmgmt.android;
+package com.getsixtyfour.android;
 
 import android.content.Intent;
 import android.net.Uri;
