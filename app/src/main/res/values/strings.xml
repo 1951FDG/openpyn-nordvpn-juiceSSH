@@ -2,11 +2,11 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" translatable="false">Openpyn</string>
 
+    <string name="email_address" translatable="false">support@1951fdg.com</string>
     <string name="empty" translatable="false" />
 
     <string name="github_issue_assignee" translatable="false">1951FDG</string>
     <string name="github_issue_label" translatable="false">crash</string>
-    <string name="email_address" translatable="false">support@1951fdg.com</string>
 
     <string name="search_hint">Search…</string>
     <string name="share_message">Share</string>
@@ -17,14 +17,14 @@
     <!-- Overlay -->
 
     <!-- Menu -->
-    <string name="menu_refresh">Refresh</string>
-    <string name="menu_logfile">Timber Logfile</string>
     <string name="menu_generate">Generate XML</string>
+    <string name="menu_logfile">Timber Logfile</string>
+    <string name="menu_refresh">Refresh</string>
     <!-- Menu -->
 
     <!-- Warning -->
-    <string name="warning_restart_app">Please restart app for changes to take effect.</string>
     <string name="warning_install_openpyn">Please install openpyn on SSH server.</string>
+    <string name="warning_restart_app">Please restart app for changes to take effect.</string>
     <!-- Warning -->
 
     <!-- Error -->
@@ -36,8 +36,8 @@
 
     <string name="title_error">Error</string>
     <string name="title_licenses">Licenses</string>
-    <string name="title_warning">Warning</string>
     <string name="title_ssh">SSH server</string>
+    <string name="title_warning">Warning</string>
 
     <string name="title_marker"><xliff:g example="" id="emoji">%1$s</xliff:g><xliff:g example="Netherlands" id="country">%2$s</xliff:g></string>
 
