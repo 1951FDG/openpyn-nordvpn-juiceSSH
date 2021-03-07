@@ -128,11 +128,11 @@ pip3 install --upgrade .
 
 To compile and run the project you'll need:
 
-- Android Studio 4.0.2 or higher
+- Android Studio 4.1.2 or higher
   - Android SDK Platform `30`
   - Android SDK Build-Tools `30.0.3`
   - CMake `v3.10.2`
-  - NDK `21.0.6113669`
+  - NDK `21.4.7075529`
 
 
 - Maps SDK for Android
