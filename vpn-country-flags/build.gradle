@@ -21,8 +21,4 @@ android {
         buildConfig false
         resValues false
     }
-
-    lintOptions {
-        lintConfig file('lint.xml')
-    }
 }
