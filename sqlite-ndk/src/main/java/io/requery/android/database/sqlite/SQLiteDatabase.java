@@ -83,8 +83,12 @@ import java.util.WeakHashMap;
 @SuppressLint("ShiftFlags") // suppressed for readability with native code
 public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLiteDatabase {
 
+    /**
+     * Name of the compiled native library.
+     */
+    public static final String LIBRARY_NAME = "sqlite3x";
     static {
-        System.loadLibrary("sqlite3x");
+        System.loadLibrary(LIBRARY_NAME);
     }
 
     private static final String TAG = "SQLiteDatabase";
@@ -1380,7 +1384,11 @@ public final class SQLiteDatabase extends SQLiteClosable implements SupportSQLit
             public Cursor newCursor(SQLiteDatabase db, SQLiteCursorDriver masterQuery,
                                     String editTable, SQLiteQuery query) {
                 supportQuery.bindTo(query);
-                return new SQLiteCursor(masterQuery, editTable, query);
+                if (mCursorFactory == null) {
+                    return new SQLiteCursor(masterQuery, editTable, query);
+                } else {
+                    return mCursorFactory.newCursor(db, masterQuery, editTable, query);
+                }
             }
         }, supportQuery.getSql(), new String[0], null, signal);
     }
