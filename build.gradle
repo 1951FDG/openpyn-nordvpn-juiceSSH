@@ -57,15 +57,6 @@ plugins {
 }
 
 idea.module {
-    excludeDirs += file('app/.cxx')
-    excludeDirs += file('app/.externalNativeBuild')
-    excludeDirs += file('app/src/main/java/com/almworks')
-    excludeDirs += file('app/src/main/java/io/requery')
-    excludeDirs += file('app/src/main/java/org/javolution')
-    excludeDirs += file('app/src/main/java/org/sqlite')
-    excludeDirs += file('app/src/main/jni')
-    excludeDirs += file('app/src/main/obj')
-
     excludeDirs += file('config/detekt')
     excludeDirs += file('config/checkstyle')
     excludeDirs += file('config/lib')

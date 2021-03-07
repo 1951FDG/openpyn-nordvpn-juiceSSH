@@ -26,11 +26,6 @@ android {
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        externalNativeBuild {
-            cmake {
-                cppFlags ''
-            }
-        }
         resConfigs 'en'
     }
 
@@ -65,13 +60,6 @@ android {
         includeInBundle false
     }
 
-    externalNativeBuild {
-        cmake {
-            path 'src/main/cpp/CMakeLists.txt'
-            version '3.10.2'
-        }
-    }
-
     sourceSets {
         debug.java.srcDirs += 'src/debug/kotlin'
         main.java.srcDirs += 'src/main/kotlin'
@@ -97,7 +85,7 @@ android {
         // baseline file('lint-baseline.xml')
         checkAllWarnings true
         disable 'GoogleAppIndexingWarning', 'VectorPath'
-        lintConfig file('lint.xml')
+        // lintConfig file('lint.xml')
         xmlReport false
     }
 
@@ -198,6 +186,7 @@ dependencies {
     // Modules
     implementation project(':multi-select-dialog')
     implementation project(':openvpn-service')
+    implementation project(':sqlite-ndk')
     implementation project(':vpn-country-flags')
 
     // 1951FDG
@@ -211,7 +200,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation 'androidx.preference:preference:1.1.1'
-    implementation 'androidx.sqlite:sqlite:2.1.0'
 
     // Architecture
     implementation('com.naver.android.svc:svc:1.0.1') {
