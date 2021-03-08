@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "preset-lint-recommended",
+    "preset-lint-consistent",
+    "preset-lint-markdown-style-guide",
+    ["lint-list-item-indent", "space"],
+    ["lint-maximum-line-length", false]
+  ],
+  "settings": {
+    "commonmark": true
+  }
+}
