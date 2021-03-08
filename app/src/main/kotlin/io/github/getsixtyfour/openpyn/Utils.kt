@@ -147,29 +147,29 @@ fun <T : Activity> showOpenpynAlertDialog(activity: T) {
 }
 
 @SuppressLint("DefaultLocale")
-fun initAboutConfig(application: Application) {
+fun initAboutConfig(context: Context) {
     val config = AboutConfig.getInstance()
     // General info
-    config.appName = application.getString(R.string.app_name)
+    config.appName = context.getString(R.string.app_name)
     config.appIcon = R.mipmap.ic_launcher
-    config.version = application.getString(R.string.app_version)
+    config.version = context.getString(R.string.app_version)
     config.buildType = AboutConfig.BuildType.GOOGLE
-    config.packageName = application.getString(R.string.app_id)
+    config.packageName = context.getString(R.string.app_id)
     // Email
-    config.emailAddress = application.getString(R.string.email_address)
-    config.emailSubject = application.getString(R.string.empty)
-    config.emailBody = application.getString(R.string.empty)
-    config.emailBodyPrompt = application.getString(R.string.empty)
+    config.emailAddress = context.getString(R.string.email_address)
+    config.emailSubject = context.getString(R.string.empty)
+    config.emailBody = context.getString(R.string.empty)
+    config.emailBodyPrompt = context.getString(R.string.empty)
     // Share
-    config.shareMessage = application.getString(R.string.empty)
-    config.sharingTitle = application.getString(R.string.share_message)
+    config.shareMessage = context.getString(R.string.empty)
+    config.sharingTitle = context.getString(R.string.share_message)
 }
 
-fun initPreferences(application: Application) {
-    PreferenceManager.setDefaultValues(application, R.xml.pref_settings, false)
-    PreferenceManager.setDefaultValues(application, R.xml.pref_api, true)
-    PreferenceManager.setDefaultValues(application, R.xml.pref_openvpnmgmt, true)
-    PreferenceManager.setDefaultValues(application, R.xml.pref_connect, true)
+fun initPreferences(context: Context) {
+    PreferenceManager.setDefaultValues(context, R.xml.pref_settings, false)
+    PreferenceManager.setDefaultValues(context, R.xml.pref_api, true)
+    PreferenceManager.setDefaultValues(context, R.xml.pref_openvpnmgmt, true)
+    PreferenceManager.setDefaultValues(context, R.xml.pref_connect, true)
 }
 
 fun <T : Activity> startVpnService(activity: T) {
@@ -197,11 +197,11 @@ fun <T : Activity> startVpnService(activity: T) {
     }
 }
 
-fun initCrashlytics(application: Application) {
+fun initCrashlytics(context: Context) {
     if (BuildConfig.DEBUG) {
         return
     }
-    val preferences = PreferenceManager.getDefaultSharedPreferences(application)
+    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
     val telemetry = preferences.getBoolean("pref_telemetry", true)
 
     if (telemetry) {
@@ -210,8 +210,8 @@ fun initCrashlytics(application: Application) {
     }
 }
 
-fun initNetworkInfo(application: Application) {
-    NetworkInfo.getInstance(application)
+fun initNetworkInfo(context: Context) {
+    NetworkInfo.getInstance(context)
 }
 
 @Suppress("MagicNumber")

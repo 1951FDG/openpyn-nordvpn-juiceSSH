@@ -21,10 +21,8 @@
     <uses-feature android:name="tools.fastlane.screengrab.cleanstatusbar" />
 
     <application
-        android:name=".DebugMainApplication"
         android:requestLegacyExternalStorage="true"
         tools:ignore="LockedOrientationActivity"
-        tools:replace="android:name"
         tools:targetApi="q">
         <activity
             android:name="info.hannes.logcat.LogfileActivity"
@@ -38,5 +36,17 @@
             android:authorities="${applicationId}.firebaseinitprovider"
             android:exported="false"
             tools:node="remove" />
+        <provider
+            android:name=".provider.BlockCanaryInitProvider"
+            android:authorities="${applicationId}.blockcanaryinitprovider"
+            android:exported="false" />
+        <provider
+            android:name=".provider.DebugAppInitProvider"
+            android:authorities="${applicationId}.debugappinitprovider"
+            android:exported="false" />
+        <provider
+            android:name=".provider.StethoInitProvider"
+            android:authorities="${applicationId}.stethoinitprovider"
+            android:exported="false" />
     </application>
 </manifest>

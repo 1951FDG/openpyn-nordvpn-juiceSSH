@@ -1,6 +1,5 @@
 package io.github.getsixtyfour.openpyn.utils
 
-import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -84,7 +83,7 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
     }
 
     @RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)
-    constructor(application: Application) : this(application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+    constructor(context: Context) : this(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
 
     private fun postToMainThread(runnable: Runnable) {
         if (mMainHandler == null) {
@@ -180,9 +179,9 @@ class NetworkInfo internal constructor(private val connectivityManager: Connecti
 
         // Get a singleton
         @MainThread
-        fun getInstance(application: Application? = null): NetworkInfo {
+        fun getInstance(context: Context? = null): NetworkInfo {
             if (ns == null) {
-                ns = NetworkInfo(requireNotNull(application))
+                ns = NetworkInfo(requireNotNull(context))
             }
             return ns as NetworkInfo
         }

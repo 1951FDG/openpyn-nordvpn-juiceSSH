@@ -1,7 +1,6 @@
 package io.github.getsixtyfour.openpyn
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.os.StrictMode
@@ -48,14 +47,14 @@ fun initStrictMode() {
     StrictMode.setVmPolicy(VmPolicy.Builder().detectAll().penaltyLog().build())
 }
 
-fun initTimber(application: Application) {
+fun initTimber(context: Context) {
     Timber.plant(DebugTree())
-    application.externalCacheDir?.let {
-        Timber.plant(DebugFileLoggingTree(it, application))
+    context.externalCacheDir?.let {
+        Timber.plant(DebugFileLoggingTree(it, context))
     }
 }
 
-fun initBlockCanary(application: Application) {
+fun initBlockCanary(context: Context) {
     if (!AppConfig.UI_BLOCK_DETECTION) {
         return
     }
@@ -64,15 +63,15 @@ fun initBlockCanary(application: Application) {
         return
     }
 
-    BlockCanary.install(application, AppBlockCanaryContext()).start()
+    BlockCanary.install(context, AppBlockCanaryContext()).start()
 }
 
-fun initStetho(application: Application) {
+fun initStetho(context: Context) {
     if (!AppConfig.STETHO) {
         return
     }
 
-    Stetho.initializeWithDefaults(application)
+    Stetho.initializeWithDefaults(context)
     Timber.plant(StethoTree())
 }
 

@@ -7,7 +7,6 @@
     <uses-permission android:name="com.sonelli.juicessh.api.v1.permission.OPEN_SESSIONS" />
 
     <application
-        android:name=".MainApplication"
         android:allowBackup="true"
         android:extractNativeLibs="true"
         android:fullBackupContent="@xml/backup_descriptor"
@@ -65,6 +64,10 @@
             android:exported="false"
             android:stateNotNeeded="true"
             android:theme="@style/EasyPermissions.Transparent" />
+        <provider
+            android:name=".provider.AppInitProvider"
+            android:authorities="${applicationId}.appinitprovider"
+            android:exported="false" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
