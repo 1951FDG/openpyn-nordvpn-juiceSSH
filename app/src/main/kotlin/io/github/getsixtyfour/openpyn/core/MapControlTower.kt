@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.widget.Spinner
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
 import com.abdeveloper.library.MultiSelectable
@@ -53,10 +54,8 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
@@ -69,6 +68,7 @@ import mu.KotlinLogging
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashSet
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
@@ -76,8 +76,7 @@ import kotlin.time.seconds
 @RequireViews(MapViews::class)
 @RequireScreen(MapFragment::class)
 class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoadedCallback, OnCameraIdleListener, OnMapClickListener,
-    OnMarkerClickListener, OnInfoWindowClickListener, SubmitCallbackListener, MapViewsAction, AnimatorListener,
-    CoroutineScope by MainScope() {
+    OnMarkerClickListener, OnInfoWindowClickListener, SubmitCallbackListener, MapViewsAction, AnimatorListener {
 
     private val logger = KotlinLogging.logger {}
 
@@ -101,9 +100,11 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     private lateinit var mFlags: HashSet<CharSequence>
 
     @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
-    private val mSendChannel = actor<Context>(coroutineContext, Channel.RENDEZVOUS) {
-        channel.map(IO) { runCatching { withTimeout(TIME_MILLIS) { createGeoJson(it) } }.getOrNull() }
-            .consumeEach { it?.let { animateCamera(it) } }
+    private val mSendChannel by lazy {
+        screen.lifecycleScope.actor<Context>(EmptyCoroutineContext, Channel.RENDEZVOUS) {
+            channel.map(IO) { runCatching { withTimeout(TIME_MILLIS) { createGeoJson(it) } }.getOrNull() }
+                .consumeEach { it?.let { animateCamera(it) } }
+        }
     }
 
     override fun onStarted() {
@@ -133,8 +134,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     override fun onDestroy() {
         super.onDestroy()
 
-        cancel()
-
         mCameraUpdateAnimator?.onDestroy()
 
         mGoogleMap?.let { map.onDestroy() }
@@ -147,7 +146,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mGoogleMap = googleMap.also { loadData() }
+        mGoogleMap = googleMap.also { screen.lifecycleScope.loadData() }
     }
 
     override fun onMapLoaded() {
@@ -257,7 +256,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     override fun updateMasterMarkerWithDelay(timeMillis: Long) {
-        launch {
+        screen.lifecycleScope.launch {
             delay(timeMillis)
             if (!NetworkInfo.getInstance().isOnline()) return@launch
             mSendChannel.offer(applicationContext)

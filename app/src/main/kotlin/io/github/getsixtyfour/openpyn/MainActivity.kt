@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import androidx.loader.app.LoaderManager
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
@@ -60,16 +61,13 @@ import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.overlay_juicessh.layout_overlay
 import kotlinx.android.synthetic.main.overlay_juicessh.material_text_button
 import kotlinx.android.synthetic.main.overlay_juicessh.material_text_view
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import mu.KotlinLogging
 import pub.devrel.easypermissions.AppSettingsDialog
 import java.util.Locale
 import java.util.UUID
 
 class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickListener, NoticeDialogListener, OnLoaderChangedListener,
-    OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener, SubmitCallbackListener,
-    CoroutineScope by MainScope() {
+    OnCommandExecuteListener, OnSessionExecuteListener, OnSessionStartedListener, OnSessionFinishedListener, SubmitCallbackListener {
 
     private val logger = KotlinLogging.logger {}
 
@@ -207,7 +205,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickList
                 true
             }
             getString(R.string.menu_generate) -> {
-                onGenerateItemSelected(this)
+                lifecycleScope.onGenerateItemSelected(this)
                 true
             }
             getString(R.string.menu_logfile) -> {
