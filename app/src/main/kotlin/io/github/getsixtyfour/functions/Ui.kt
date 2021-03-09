@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn
+package io.github.getsixtyfour.functions
 
 import android.content.Context
 import android.util.DisplayMetrics
@@ -7,8 +7,10 @@ import android.view.View
 import android.view.Window
 import androidx.annotation.Dimension
 import androidx.annotation.Px
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 
 /**
  * Convert a dimension value in density independent pixels to pixels.
@@ -67,4 +69,15 @@ fun hideSystemUI(window: Window, view: View) {
 
 fun showSystemUI(window: Window, view: View) {
     WindowCompat.getInsetsController(window, view)?.show(WindowInsetsCompat.Type.systemBars())
+}
+
+fun <T : AppCompatActivity> setProgressToolBar(
+    activity: T, toolbar: ProgressToolbar, showHomeAsUp: Boolean = false, showTitle: Boolean = false
+) {
+    toolbar.hideProgress()
+    toolbar.isIndeterminate = true
+
+    activity.setSupportActionBar(toolbar)
+    activity.supportActionBar?.setDisplayHomeAsUpEnabled(showHomeAsUp)
+    activity.supportActionBar?.setDisplayShowTitleEnabled(showTitle)
 }

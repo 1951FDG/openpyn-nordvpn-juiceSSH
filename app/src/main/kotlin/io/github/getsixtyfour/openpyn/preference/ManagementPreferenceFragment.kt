@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.settings
+package io.github.getsixtyfour.openpyn.preference
 
 import android.os.Bundle
 import android.system.Os
@@ -18,9 +18,10 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.transition.platform.MaterialFadeThrough
+import io.github.getsixtyfour.functions.dpToPx
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.dpToPx
+import io.github.getsixtyfour.openpyn.text.AbstractTextWatcher
 import org.apache.hadoop.hdfs.util.PosixPathNameChecker
 import java.net.InetAddress
 
@@ -202,7 +203,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
                     PosixPathNameChecker().isValidPath(path) && path[path.length - 1] != PosixPathNameChecker.SEPARATOR_CHAR
             }
 
-        @Suppress("MagicNumber")
+        @Suppress("MagicNumber", "unused")
         internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
             get() = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

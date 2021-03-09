@@ -238,10 +238,10 @@ dependencies {
     }
 
     // JSON
-    implementation('com.jayrave:moshi-pristine-models:1.0.0') {
+    implementation 'com.squareup.moshi:moshi:1.11.0'
+    debugImplementation('com.jayrave:moshi-pristine-models:1.0.0') {
         transitive = false
     }
-    implementation 'com.squareup.moshi:moshi:1.11.0'
 
     // Kotlin
     implementation('org.jetbrains.kotlin:kotlin-stdlib') {
@@ -256,8 +256,8 @@ dependencies {
     }
 
     // LeakCanary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
     implementation 'com.squareup.leakcanary:plumber-android:2.6'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 
     // Logger
     implementation 'com.jakewharton.timber:timber:4.7.1'

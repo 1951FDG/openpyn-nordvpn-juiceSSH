@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.settings
+package io.github.getsixtyfour.openpyn.preference
 
 import android.app.Activity
 import android.os.Bundle
@@ -22,11 +22,11 @@ import com.eggheadgames.aboutbox.AboutConfig
 import com.eggheadgames.aboutbox.share.EmailUtil
 import com.eggheadgames.aboutbox.share.ShareUtil
 import com.google.android.material.transition.platform.MaterialFadeThrough
+import io.github.getsixtyfour.functions.dpToPx
+import io.github.getsixtyfour.functions.onLicensesItemSelected
+import io.github.getsixtyfour.ktextension.getVersionTitleType
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.dpToPx
-import io.github.getsixtyfour.openpyn.getVersionTitleType
-import io.github.getsixtyfour.openpyn.onLicensesItemSelected
 
 /**
  * This fragment shows About settings preferences only.
@@ -109,7 +109,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         // TODO: go to google play or github depending on version
         category.addPreference(Preference(activity).apply {
             icon = ContextCompat.getDrawable(activity, R.drawable.ic_info_outline_black_24dp)
-            title = activity.getString(getVersionTitleType(activity))
+            title = activity.getString(activity.getVersionTitleType())
             summary = activity.getString(R.string.app_version)
             onPreferenceClickListener = OnPreferenceClickListener {
                 AboutBoxUtils.openHTMLPage(
@@ -186,7 +186,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     companion object {
 
-        @Suppress("MagicNumber")
+        @Suppress("MagicNumber", "unused")
         internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
             get() = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

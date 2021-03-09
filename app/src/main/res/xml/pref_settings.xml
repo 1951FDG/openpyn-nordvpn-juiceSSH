@@ -52,13 +52,13 @@
         app:useSimpleSummaryProvider="true" />
     <Preference
         android:title="@string/title_openvpnmgmt"
-        app:fragment="io.github.getsixtyfour.openpyn.settings.ManagementPreferenceFragment" />
+        app:fragment="io.github.getsixtyfour.openpyn.preference.ManagementPreferenceFragment" />
     <Preference
         android:title="@string/title_apis"
-        app:fragment="io.github.getsixtyfour.openpyn.settings.ApiPreferenceFragment" />
+        app:fragment="io.github.getsixtyfour.openpyn.preference.ApiPreferenceFragment" />
     <Preference
         android:title="@string/title_about"
-        app:fragment="io.github.getsixtyfour.openpyn.settings.AboutPreferenceFragment" />
+        app:fragment="io.github.getsixtyfour.openpyn.preference.AboutPreferenceFragment" />
     <SwitchPreference
         android:defaultValue="true"
         android:key="pref_telemetry"

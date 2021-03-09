@@ -63,3 +63,12 @@ fun Activity.handleUpdate(appUpdateManager: AppUpdateManager, requestCode: Int) 
         }
     }
 }
+
+fun Activity.getVersionTitleType(): Int = when {
+    isPlayStorePackage() -> R.string.egab_play_store_version
+    else -> R.string.egab_version
+}
+
+fun Activity.isPlayStorePackage(): Boolean = this.verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)
+
+fun Activity.isPlayStoreCertificate(): Boolean = this.verifySigningCertificate(listOf(this.getString(R.string.app_signature)))

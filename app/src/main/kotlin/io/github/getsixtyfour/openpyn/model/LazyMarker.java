@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.map.model;
+package io.github.getsixtyfour.openpyn.model;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
@@ -328,7 +328,8 @@ public final class LazyMarker {
         }
     }
 
-    private void createMarker(GoogleMap googleMap, MarkerOptions options, @Nullable Object tag, @Nullable OnMarkerCreateListener markerCreateListener) {
+    private void createMarker(GoogleMap googleMap, MarkerOptions options, @Nullable Object tag,
+                              @Nullable OnMarkerCreateListener markerCreateListener) {
         mMarker = googleMap.addMarker(options);
         if (tag != null) {
             mMarker.setTag(tag);

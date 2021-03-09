@@ -4,11 +4,11 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
-import io.github.getsixtyfour.openpyn.initAboutConfig
-import io.github.getsixtyfour.openpyn.initClickDebounce
-import io.github.getsixtyfour.openpyn.initCrashlytics
-import io.github.getsixtyfour.openpyn.initNetworkInfo
-import io.github.getsixtyfour.openpyn.initPreferences
+import io.github.getsixtyfour.functions.initAboutConfig
+import io.github.getsixtyfour.functions.initClickDebounce
+import io.github.getsixtyfour.functions.initCrashlytics
+import io.github.getsixtyfour.functions.initNetworkInfo
+import io.github.getsixtyfour.functions.initPreferences
 
 class AppInitProvider : ContentProvider() {
 

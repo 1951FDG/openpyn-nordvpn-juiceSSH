@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.map
+package io.github.getsixtyfour.openpyn.core
 
 import com.naver.android.svc.core.controltower.ControlTower
 

@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.settings
+package io.github.getsixtyfour.openpyn.preference
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,9 +12,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.platform.MaterialFadeThrough
+import io.github.getsixtyfour.functions.dpToPx
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.dpToPx
 
 /**
  * This fragment shows API settings preferences only.
@@ -80,7 +80,7 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
 
     companion object {
 
-        @Suppress("MagicNumber")
+        @Suppress("MagicNumber", "unused")
         internal val ActionBar.onScrollListener: RecyclerView.OnScrollListener
             get() = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

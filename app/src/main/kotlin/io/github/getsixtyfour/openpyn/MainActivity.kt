@@ -31,19 +31,28 @@ import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSION
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionExecuteListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
+import io.github.getsixtyfour.functions.getCurrentNavigationFragment
+import io.github.getsixtyfour.functions.onGenerateItemSelected
+import io.github.getsixtyfour.functions.onLoggingItemSelected
+import io.github.getsixtyfour.functions.onSettingsItemSelected
+import io.github.getsixtyfour.functions.showJuiceAlertDialog
+import io.github.getsixtyfour.functions.showOpenpynAlertDialog
 import io.github.getsixtyfour.ktextension.apkSignatures
 import io.github.getsixtyfour.ktextension.handleUpdate
 import io.github.getsixtyfour.ktextension.isJuiceSSHInstalled
+import io.github.getsixtyfour.ktextension.isPlayStoreCertificate
+import io.github.getsixtyfour.ktextension.isPlayStorePackage
 import io.github.getsixtyfour.ktextension.juiceSSHInstall
 import io.github.getsixtyfour.ktextension.startUpdate
+import io.github.getsixtyfour.openpyn.core.MapFragmentDirections
 import io.github.getsixtyfour.openpyn.dialog.PreferenceDialog.NoticeDialogListener
-import io.github.getsixtyfour.openpyn.map.MapFragmentDirections
+import io.github.getsixtyfour.openpyn.utils.ManagementService
 import io.github.getsixtyfour.openpyn.utils.Toaster
-import io.github.sdsstudios.nvidiagpumonitor.adapters.ConnectionListAdapter
-import io.github.sdsstudios.nvidiagpumonitor.loaders.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.ConnectionManager
+import io.github.sdsstudios.nvidiagpumonitor.adapters.ConnectionListAdapter
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnLoaderChangedListener
+import io.github.sdsstudios.nvidiagpumonitor.loaders.ConnectionListLoader
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
 import kotlinx.android.synthetic.main.activity_main.container
 import kotlinx.android.synthetic.main.activity_main.spinner
@@ -66,8 +75,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickList
 
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
 
-    private val mGooglePlayStorePackage: Boolean by lazy { isPlayStorePackage(this) }
-    private val mGooglePlayStoreCertificate: Boolean by lazy { isPlayStoreCertificate(this) }
+    private val mGooglePlayStorePackage: Boolean by lazy { isPlayStorePackage() }
+    private val mGooglePlayStoreCertificate: Boolean by lazy { isPlayStoreCertificate() }
 
     private val mConnectionAdapter: ConnectionListAdapter by lazy { ConnectionListAdapter(this) }
     private var mConnectionManager: ConnectionManager? = null
@@ -109,7 +118,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickList
 
         /*setProgressToolBar(this, toolbar)*/
 
-        startVpnService(this)
+        ManagementService.start(this)
 
         // TODO: remove after beta release test, add delay?
         logger.error(Exception()) { "$apkSignatures" }

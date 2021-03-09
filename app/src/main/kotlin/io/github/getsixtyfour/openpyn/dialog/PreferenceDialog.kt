@@ -1,6 +1,5 @@
 package io.github.getsixtyfour.openpyn.dialog
 
-import android.R.string
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
@@ -32,8 +31,8 @@ class PreferenceDialog : AppCompatDialogFragment(), DialogInterface.OnClickListe
         return AlertDialog.Builder(requireActivity()).apply {
             setTitle(mArgs.message)
             setView(R.layout.abc_preference_dialog_material)
-            setPositiveButton(string.ok, this@PreferenceDialog)
-            setNegativeButton(string.cancel, null)
+            setPositiveButton(android.R.string.ok, this@PreferenceDialog)
+            setNegativeButton(android.R.string.cancel, null)
         }.create()
     }
 

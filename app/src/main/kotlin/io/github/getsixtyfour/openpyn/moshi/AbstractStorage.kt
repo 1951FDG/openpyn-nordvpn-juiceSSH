@@ -1,10 +1,10 @@
-package io.github.getsixtyfour.openpyn.map.util
+package io.github.getsixtyfour.openpyn.moshi
 
 import android.content.Context
 import androidx.preference.PreferenceManager
 import com.squareup.moshi.JsonAdapter
 
-abstract class MyStorage<T>(val key: String) {
+abstract class AbstractStorage<T>(val key: String) {
 
     abstract val jsonAdapter: JsonAdapter<List<T>>
 

@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.dialog
+package io.github.getsixtyfour.openpyn.preference
 
 import android.content.Context
 import android.util.AttributeSet

@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.map.util
+package io.github.getsixtyfour.openpyn.maps
 
 import android.annotation.SuppressLint
 import android.app.Activity

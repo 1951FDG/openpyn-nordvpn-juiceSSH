@@ -5,7 +5,7 @@
     app:startDestination="@id/mapFragment">
     <fragment
         android:id="@+id/mapFragment"
-        android:name="io.github.getsixtyfour.openpyn.map.MapFragment"
+        android:name="io.github.getsixtyfour.openpyn.core.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map">
         <action

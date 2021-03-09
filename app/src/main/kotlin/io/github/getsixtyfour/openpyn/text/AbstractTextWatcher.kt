@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.settings
+package io.github.getsixtyfour.openpyn.text
 
 import android.content.Context
 import android.text.Editable

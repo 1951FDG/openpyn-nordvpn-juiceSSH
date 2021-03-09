@@ -339,7 +339,12 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
         @NonNls String port = state.getRemotePort();
 
         if (mSendStateBroadcast) {
-            Utils.doSendBroadcast(this, name, message);
+            Intent intent = new Intent();
+            intent.setAction(Constants.ACTION_VPN_STATE_CHANGED);
+            intent.putExtra(Constants.EXTRA_STATE, name);
+            intent.putExtra(Constants.EXTRA_MESSAGE, message);
+            //noinspection UnnecessaryFullyQualifiedName
+            ((Context) this).sendBroadcast(intent, android.Manifest.permission.ACCESS_NETWORK_STATE);
         }
 
         boolean isConnected = VpnStatus.CONNECTED.equals(name);

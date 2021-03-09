@@ -1,27 +1,19 @@
-package io.github.getsixtyfour.openpyn.map
+package io.github.getsixtyfour.functions
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Resources.NotFoundException
 import android.text.SpannableString
 import androidx.annotation.ArrayRes
-import androidx.annotation.RawRes
 import androidx.preference.PreferenceManager
 import com.abdeveloper.library.MultiSelectModelExtra
 import com.abdeveloper.library.MultiSelectable
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import io.github.getsixtyfour.openpyn.R
-import io.github.getsixtyfour.openpyn.map.util.CameraUpdateAnimator.Animation
+import io.github.getsixtyfour.openpyn.maps.CameraUpdateAnimator.Animation
 import io.github.getsixtyfour.openpyn.maps.MapBoxOfflineTileProvider
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import mu.KotlinLogging
-import org.json.JSONArray
-import org.json.JSONException
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.IOException
 import java.util.HashSet
 import kotlin.math.pow
 
@@ -110,49 +102,6 @@ internal fun getCurrentFlags(countries: List<MultiSelectable>, selectedIds: Arra
         }
     }
     return currentFlags
-}
-
-internal fun copyToExternalFilesDir(context: Context, list: List<Pair<Int, String>>) {
-    list.forEach { (id, ext) ->
-        try {
-            val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
-            if (!file.exists()) {
-                copyRawResourceToFile(context, id, file)
-            }
-        } catch (e: NotFoundException) {
-            logger.error(e) { "" }
-        } catch (e: FileNotFoundException) {
-            logger.error(e) { "" }
-        } catch (e: IOException) {
-            logger.error(e) { "" }
-        }
-    }
-}
-
-internal fun copyRawResourceToFile(context: Context, @RawRes id: Int, file: File) {
-    context.resources.openRawResource(id).use { input ->
-        file.outputStream().buffered().use { input.copyTo(it) }
-    }
-}
-
-internal fun createJsonArray(context: Context, @RawRes id: Int, ext: String): JSONArray {
-    try {
-        val file = File(context.getExternalFilesDir(null), context.resources.getResourceEntryName(id) + ext)
-        if (!file.exists()) {
-            copyRawResourceToFile(context, id, file)
-        }
-        val json = file.bufferedReader().use(BufferedReader::readText)
-        return JSONArray(json)
-    } catch (e: NotFoundException) {
-        logger.error(e) { "" }
-    } catch (e: FileNotFoundException) {
-        logger.error(e) { "" }
-    } catch (e: IOException) {
-        logger.error(e) { "" }
-    } catch (e: JSONException) {
-        logger.error(e) { "" }
-    }
-    return JSONArray()
 }
 
 @Suppress("MagicNumber")

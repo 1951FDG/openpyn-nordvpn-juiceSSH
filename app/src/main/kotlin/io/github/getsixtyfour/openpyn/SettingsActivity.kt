@@ -17,10 +17,11 @@ import androidx.core.view.updateMargins
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.google.android.material.transition.platform.MaterialFadeThrough
-import io.github.getsixtyfour.openpyn.settings.AboutPreferenceFragment
-import io.github.getsixtyfour.openpyn.settings.ApiPreferenceFragment
-import io.github.getsixtyfour.openpyn.settings.GeneralPreferenceFragment
-import io.github.getsixtyfour.openpyn.settings.ManagementPreferenceFragment
+import io.github.getsixtyfour.functions.setProgressToolBar
+import io.github.getsixtyfour.openpyn.preference.AboutPreferenceFragment
+import io.github.getsixtyfour.openpyn.preference.ApiPreferenceFragment
+import io.github.getsixtyfour.openpyn.preference.GeneralPreferenceFragment
+import io.github.getsixtyfour.openpyn.preference.ManagementPreferenceFragment
 import kotlinx.android.synthetic.main.mm2d_pac_content.toolbar
 import net.mm2d.preference.Header
 import net.mm2d.preference.PreferenceActivityCompat

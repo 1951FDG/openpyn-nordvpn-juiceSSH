@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.utils
+package io.github.getsixtyfour.openpyn
 
 import android.content.Context
 import android.text.SpannableString
@@ -39,21 +39,24 @@ class MultiSelectMapper : Mapper<MultiSelectModelExtra>() {
     override fun create(value: Value<MultiSelectModelExtra>): MultiSelectModelExtra {
         return MultiSelectModelExtra(value of id, value of name, 0, value of tag, value of unicode)
     }
-}
 
-internal fun countryListFromJson(context: Context, @RawRes id: Int): List<MultiSelectable> {
-    val json = context.resources.openRawResource(id).bufferedReader().use(BufferedReader::readText)
-    val factory = PristineModelsJsonAdapterFactory.Builder().apply { add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
-    val moshi = Moshi.Builder().add(factory.build()).add(object {
-        @ToJson
-        @Suppress("unused")
-        fun toJson(value: CharSequence): String = "$value"
+    companion object {
 
-        @FromJson
-        @Suppress("unused")
-        fun fromJson(value: String): CharSequence = SpannableString(value)
-    }).build()
-    val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
-    val adapter: JsonAdapter<List<MultiSelectModelExtra>> = moshi.adapter(listType)
-    return adapter.nonNull().fromJson(json).orEmpty()
+        fun countryListFromJson(context: Context, @RawRes id: Int): List<MultiSelectable> {
+            val json = context.resources.openRawResource(id).bufferedReader().use(BufferedReader::readText)
+            val factory = PristineModelsJsonAdapterFactory.Builder().apply { add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
+            val moshi = Moshi.Builder().add(factory.build()).add(object {
+                @ToJson
+                @Suppress("unused")
+                fun toJson(value: CharSequence): String = "$value"
+
+                @FromJson
+                @Suppress("unused")
+                fun fromJson(value: String): CharSequence = SpannableString(value)
+            }).build()
+            val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)
+            val adapter: JsonAdapter<List<MultiSelectModelExtra>> = moshi.adapter(listType)
+            return adapter.nonNull().fromJson(json).orEmpty()
+        }
+    }
 }

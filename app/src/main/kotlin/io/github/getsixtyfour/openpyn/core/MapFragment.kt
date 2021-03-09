@@ -1,4 +1,4 @@
-package io.github.getsixtyfour.openpyn.map
+package io.github.getsixtyfour.openpyn.core
 
 import android.os.Bundle
 import android.view.View
