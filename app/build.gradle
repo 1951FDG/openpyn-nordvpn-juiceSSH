@@ -184,10 +184,20 @@ dependencies {
     debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:slave-SNAPSHOT'
 
     // Android
-    implementation 'androidx.core:core-ktx:1.5.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation 'androidx.activity:activity:1.2.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
+    implementation 'androidx.core:core-ktx:1.5.0-beta02'
+    implementation 'androidx.cursoradapter:cursoradapter:1.0.0'
+    implementation 'androidx.customview:customview:1.1.0'
+    implementation 'androidx.fragment:fragment:1.3.0'
+    implementation 'androidx.interpolator:interpolator:1.0.0'
+    implementation 'androidx.loader:loader:1.1.0'
     implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-beta02'
 
     // Architecture
     implementation('com.naver.android.svc:svc:1.0.1') {
