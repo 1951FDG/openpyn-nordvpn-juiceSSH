@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.ActionBar
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
@@ -98,10 +97,7 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
         val fragment = fragmentManager.fragmentFactory.instantiate(activity.classLoader, pref.fragment)
         fragment.arguments = args
         fragment.setTargetFragment(caller, 0)
-        fragmentManager.commit {
-            replace((requireView().parent as View).id, fragment)
-            addToBackStack(null)
-        }
+        fragmentManager.beginTransaction().replace((requireView().parent as View).id, fragment).addToBackStack(null).commit()
 
         return true
     }
