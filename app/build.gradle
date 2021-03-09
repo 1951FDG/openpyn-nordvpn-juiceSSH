@@ -90,20 +90,6 @@ android {
         xmlReport false
     }
 
-    packagingOptions {
-        exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
-        exclude 'META-INF/kotlinx-coroutines-io.kotlin_module'
-        exclude 'META-INF/kotlinx-io.kotlin_module'
-        exclude 'lib/arm64-v8a/libsqliteX.so'
-        exclude 'lib/armeabi-v7a/libsqliteX.so'
-        exclude 'lib/x86/libsqliteX.so'
-        exclude 'lib/x86_64/libsqliteX.so'
-        exclude 'lib/arm64-v8a/libsqlite4java-android.so'
-        exclude 'lib/armeabi-v7a/libsqlite4java-android.so'
-        exclude 'lib/x86/libsqlite4java-android.so'
-        exclude 'lib/x86_64/libsqlite4java-android.so'
-    }
-
     testOptions {
         animationsDisabled true
     }
