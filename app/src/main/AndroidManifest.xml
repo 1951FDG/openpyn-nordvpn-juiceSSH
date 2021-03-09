@@ -63,7 +63,7 @@
             android:name="pub.devrel.easypermissions.AppSettingsDialogHolderActivity"
             android:exported="false"
             android:stateNotNeeded="true"
-            android:theme="@style/EasyPermissions.Transparent" />
+            android:theme="@style/Theme.AppSettingsDialogHost" />
         <provider
             android:name=".provider.AppInitProvider"
             android:authorities="${applicationId}.appinitprovider"

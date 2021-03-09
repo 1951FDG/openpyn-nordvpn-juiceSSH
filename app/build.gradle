@@ -268,9 +268,6 @@ dependencies {
         exclude group: 'com.jakewharton.timber'
     }
 
-    // Permission
-    implementation 'pub.devrel:easypermissions:3.0.0'
-
     // Preference
     implementation('net.mm2d:preference:0.2.5') {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
