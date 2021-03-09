@@ -49,7 +49,6 @@ import io.github.getsixtyfour.openpyn.moshi.LazyMarkerStorage
 import io.github.getsixtyfour.openpyn.utils.NetworkInfo
 import io.github.getsixtyfour.openpyn.utils.PrintArray
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
-import kotlinx.android.synthetic.main.fragment_map.view.map
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -82,22 +81,22 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
 
     private val applicationContext: Context
         get() = screen.requireContext().applicationContext
-    private val map by lazy { views.rootView.map }
-    private val mHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
-        // TODO: add dialog
-        screen.toolBar?.hideProgress(true)
-        logger.error(e) { "" }
-    }
-    private var mGoogleMap: GoogleMap? = null
-    private var mCameraUpdateAnimator: CameraUpdateAnimator? = null
-    private val mMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
 
     // set by async
     private lateinit var mCountries: List<MultiSelectable>
-    private lateinit var mJsonArray: JSONArray
-    private lateinit var mTileProvider: MapBoxOfflineTileProvider
-    private lateinit var mMarkers: HashMap<LatLng, LazyMarker>
     private lateinit var mFlags: HashSet<CharSequence>
+    private lateinit var mJsonArray: JSONArray
+    private lateinit var mMarkers: HashMap<LatLng, LazyMarker>
+    private lateinit var mTileProvider: MapBoxOfflineTileProvider
+
+    // TODO: add dialog
+    private val mExceptionHandler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler { _, e ->
+            screen.toolBar?.hideProgress(true)
+            logger.error(e) { "" }
+        }
+    }
+    private val mMarkerStorage by lazy { LazyMarkerStorage(FAVORITE_KEY) }
 
     @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
     private val mSendChannel by lazy {
@@ -107,36 +106,39 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         }
     }
 
+    private var mGoogleMap: GoogleMap? = null
+    private var mGoogleMapAnimator: CameraUpdateAnimator? = null
+
     override fun onStarted() {
         super.onStarted()
 
-        mGoogleMap?.let { map.onStart() }
+        mGoogleMap?.let { views.map.onStart() }
     }
 
     override fun onResumed() {
         super.onResumed()
 
-        mGoogleMap?.let { map.onResume() }
+        mGoogleMap?.let { views.map.onResume() }
     }
 
     override fun onPause() {
         super.onPause()
 
-        mGoogleMap?.let { map.onPause() }
+        mGoogleMap?.let { views.map.onPause() }
     }
 
     override fun onStop() {
         super.onStop()
 
-        mGoogleMap?.let { map.onStop() }
+        mGoogleMap?.let { views.map.onStop() }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        mCameraUpdateAnimator?.onDestroy()
+        mGoogleMapAnimator?.onDestroy()
 
-        mGoogleMap?.let { map.onDestroy() }
+        mGoogleMap?.let { views.map.onDestroy() }
 
         mSendChannel.close()
 
@@ -151,7 +153,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
 
     override fun onMapLoaded() {
         // Load all map tiles
-        mCameraUpdateAnimator?.execute()
+        mGoogleMapAnimator?.execute()
     }
 
     override fun onCameraIdle() {
@@ -220,7 +222,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     override fun showCountryFilterDialog() {
-        mCameraUpdateAnimator?.let {
+        mGoogleMapAnimator?.let {
             if (!it.isAnimating) {
                 PrintArray.show("pref_country_values", screen.requireActivity())
             }
@@ -374,7 +376,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         }
     }
 
-    private fun CoroutineScope.loadData() = launch(mHandler) {
+    private fun CoroutineScope.loadData() = launch(mExceptionHandler) {
         screen.toolBar?.showProgress(true)
 
         val animations: ArrayList<Animation> = withContext(IO) {
@@ -443,17 +445,16 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             uiSettings.isScrollGesturesEnabled = true
             uiSettings.isZoomGesturesEnabled = false
         }?.also {
-            mCameraUpdateAnimator = CameraUpdateAnimator(it, this, animations)
-            mCameraUpdateAnimator?.animatorListener = this
+            mGoogleMapAnimator = CameraUpdateAnimator(it, this, animations)
+            mGoogleMapAnimator?.animatorListener = this
         }
 
         views.showMap()
-        map.onResume()
     }
 
     private fun animateCamera(json: JSONObject, closest: Boolean = false, execute: Boolean = true) {
         // Check if not already animating
-        mCameraUpdateAnimator?.let {
+        mGoogleMapAnimator?.let {
             if (!it.isAnimating) {
                 val latLng = getCurrentPosition(mFlags, json, mJsonArray)
                 val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {

@@ -39,7 +39,7 @@ class MapViews : ActionViews<MapViewsAction>(), View.OnClickListener, OnApplyWin
     private val fab4 by lazy { rootView.fab4 }
     private val fab5 by lazy { rootView.settingsfab }
 
-    private val map by lazy { rootView.map }
+    internal val map by lazy { rootView.map }
     private val minibarView by lazy { rootView.minibar }
     private val overlay by lazy { LayoutInflater.from(rootView.context).inflate(R.layout.overlay_progress, rootView, false) as ViewGroup }
 
@@ -200,6 +200,7 @@ class MapViews : ActionViews<MapViewsAction>(), View.OnClickListener, OnApplyWin
             */
         }
         map.visibility = View.VISIBLE
+        map.onResume()
     }
 
     @Suppress("MagicNumber")

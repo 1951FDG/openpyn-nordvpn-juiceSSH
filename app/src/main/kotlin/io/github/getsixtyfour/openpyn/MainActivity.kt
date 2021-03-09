@@ -73,13 +73,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickList
 
     private val mAppUpdateManager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(applicationContext) }
 
-    private val mGooglePlayStorePackage: Boolean by lazy { isPlayStorePackage() }
     private val mGooglePlayStoreCertificate: Boolean by lazy { isPlayStoreCertificate() }
+    private val mGooglePlayStorePackage: Boolean by lazy { isPlayStorePackage() }
 
     private val mConnectionAdapter: ConnectionListAdapter by lazy { ConnectionListAdapter(this) }
-    private var mConnectionManager: ConnectionManager? = null
     private val mConnectionId: UUID?
         get() = mConnectionAdapter.getConnectionId(spinner.selectedItemPosition)
+    private var mConnectionManager: ConnectionManager? = null
 
     private var mAppSettingsDialogShown: Boolean = false
 
