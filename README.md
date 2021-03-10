@@ -21,11 +21,6 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04.png" width="18%">
 </p>
 
-## Todo
-
-- [x] add Telnet functionality for connecting to OpenVPN management interface
-- [ ] apply clean(er) app architecture
-
 ## Table of Contents
 
 <details>
@@ -34,11 +29,11 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 - [Introduction](#introduction)
 - [Features](#features)
 - [How it works](#how-it-works)
+- [Prerequisites](#prerequisites)
 - [Usage](#usage)
 - [Requirements](#requirements)
-- [References](#references)
 - [Feedback](#feedback)
-- [Credits](#credits)
+- [References](#references)
 - [Built with](#built-with)
 - [Attributions](#attributions)
 - [Acknowledgments](#acknowledgments)
@@ -47,39 +42,34 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 
 ## Introduction
 
-The idea all started when I wanted to connect to OpenVPN servers hosted by NordVPN on a [Asus RT-AC86U](https://www.asus.com/Networking/RT-AC86U/). By default this is possible, but the default firmware including third party firmware [Asuswrt-merlin](https://asuswrt.lostrealm.ca) only allow for a maximum of 5 OpenVPN Clients to be saved.
+The idea started when I wanted to connect to OpenVPN servers hosted by NordVPN on a [Asus RT-AC86U](https://www.asus.com/Networking/RT-AC86U/). By default this is possible, but the default firmware including third party firmware [Asuswrt-merlin](https://asuswrt.lostrealm.ca) only allow for a maximum of 5 OpenVPN Clients to be saved.
 
-I then stumbled on [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), quickly learned Python, and made a pull request, enabling support for Asuswrt-merlin. Openpyn is a python3 script which can be run on [Entware-ng-3x on Asuswrt-merlin](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md). The main feature of Openpyn, is that it automatically connects to the least busy, lowest latency OpenVPN server. NVRAM write support for Asuswrt-merlin in Openpyn is then able to save the least busy, lowest latency OpenVPN server to the NVRAM of a Entware-ng-3x enabled ASUS router.
+I then stumbled on [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), quickly learned Python, and made a pull request, enabling support for Asuswrt-merlin. Openpyn is a Python script which can be run on [Entware-ng-3x on Asuswrt-merlin](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md). The main feature of Openpyn, is that it automatically connects to the least busy, lowest latency OpenVPN server. NVRAM write support for Asuswrt-merlin in Openpyn is then able to save the least busy, lowest latency OpenVPN server to the NVRAM of a Entware-ng-3x enabled ASUS router.
 
 Now, I had achieved more or less what I desired, but this left me with one last struggle, having to resort to open a SSH connection to the ASUS router and supplying Openpyn with the desired arguments (e.g., country, server load threshold and server type). Having the ability to do that on a phone instead of a computer would make this a lot easier, and that led me to discovering [JuiceSSH](https://juicessh.com).
 
-[JuiceSSH](https://juicessh.com) supports the use of plugins, which allowed me to create this fantastic app. This app runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to send a Openpyn command to the remote device.
+JuiceSSH supports the use of plugins, which allowed me to create this fantastic app. This app runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to run Openpyn on the remote device.
 
 > **Note**:
 > This project is my very first Android project, and as such, it may not follow all the best coding practices yet, regardless of this, I'm committed to make this app a source of inspiration for other developers working on similar based Android apps, especially Google Maps based Android apps.
 
 ## Features
 
-- Supports most arguments available in Openpyn with easy to use preferences
+- Telnet functionality for connecting to OpenVPN management interface
 
+- Supports most arguments available in Openpyn
 
 - Allows to use location based filtering in Openpyn
 
-
 - Map view displays markers for every country supported by NordVPN
-
 
 - Allows to hide countries in the map view
 
-
 - Allows to star a country in the map view
-
 
 - API keys stored in shared preferences are encrypted
 
-
 - On app start, it will use a smart location, to determine the closest country
-
 
 - Uses Geolocation APIs to determine the current location based on the current public IP address
   - <http://ip-api.com>, <https://ipdata.co>, <https://ipinfo.io>, <https://ipstack.com>
@@ -119,7 +109,7 @@ pip3 install --upgrade .
 - When prompted, enable/allow the permissions required by this app
 - Change any app settings as required
 - Select a Country by selecting a marker on the map
-- Click the colored floating action button (FAB), to send a Openpyn command to the remote device
+- Click the connect floating action button (FAB), to run Openpyn on the remote device
 
 > **Note**:
 > You can use this flow with multiple remote devices, as long as that remote device has a SSH server running on it and is configured in Connections in JuiceSSH and is selected in the app toolbar of this app before the colored floating action button (FAB) is clicked!
@@ -134,7 +124,6 @@ To compile and run the project you'll need:
   - CMake `v3.10.2`
   - NDK `21.4.7075529`
 
-
 - Maps SDK for Android
   - [Get an API key](https://developers.google.com/maps/documentation/android-sdk/signup)
 
@@ -147,75 +136,50 @@ Feel free to send us feedback by submitting an [issue](https://github.com/1951FD
 
 ## References
 
-- [MyStorage.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/map/util/MyStorage.kt) inspired by blog post, [Save and retrieve ArrayList of Object in SharedPreference: Android](https://readyandroid.wordpress.com/save-and-retrieve-arraylist-of-object-in-sharedpreference-android/) from Ready Android.
+- [SecuredEditTextPreference.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecuredEditTextPreference.java)
+  - [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/)
 
-
-- [PrintArray.kt](app/src/main/kotlin/io/github/getsixtyfour/openpyn/utils/PrintArray.kt) inspired by Github repo, [PrintArray](https://github.com/Tobibur/PrintArray) by Tobibur Rahman.
-
-
-- [SecurityCypher.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityCypher.java) inspired by blog post, [Making secured version of EditTextPreference](https://blog.nikitaog.me/2014/11/09/making-secured-edittextpreference/) by Nikita Ogorodnikov.
+- [SecurityCypher.java](app/src/main/java/io/github/getsixtyfour/openpyn/security/SecurityCypher.java)
   - [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
   - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
   - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
-
-## Credits
-
-This app uses (modified) code from open source projects.
-
-- [About Box](https://github.com/eggheadgames/android-about-box)
-
-
-- [Android Maps Extensions](https://github.com/mg6maciej/android-maps-extensions)
-  - Modified [LazyMarker.java](app/src/main/java/com/androidmapsextensions/lazy/LazyMarker.java)
-
-
-- [Google Maps Android API utility library](https://github.com/googlemaps/android-maps-utils)
-  - [Point.java](app/src/main/java/com/google/maps/android/geometry/Point.java)
-  - [SphericalMercatorProjection.java](app/src/main/java/com/google/maps/android/projection/SphericalMercatorProjection.java)
-
-
-- [Map Utils](https://github.com/antoniocarlon/MapUtils)
-  - Modified [CameraUpdateAnimator.java](app/src/main/java/com/antoniocarlon/map/CameraUpdateAnimator.java)
-
-
-- [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk)
-  - Modified [sqlite3ndk.h](app/src/main/cpp/sqlite3ndk.h)
-  - Modified [sqlite3ndk.cpp](app/src/main/cpp/sqlite3ndk.cpp)
 
 ## Built with
 
 <details>
 <summary>Libraries</summary>
 
+- [AboutBox](https://github.com/eggheadgames/android-about-box)
 - [Barista](https://github.com/SchibstedSpain/Barista)
 - [BlockCanary](https://github.com/1951FDG/AndroidPerformanceMonitor)
 - [EasyPermissions](https://github.com/googlesamples/easypermissions)
-- [JuiceSSH Plugin Library](https://github.com/1951FDG/juicessh-pluginlibrary)
+- [JuiceSSH Plugin](https://github.com/1951FDG/juicessh-pluginlibrary)
 - [Kotlin](https://github.com/JetBrains/kotlin)
-- [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+- [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+- [Kotlin Logging](https://github.com/MicroUtils/kotlin-logging)
 - [Ktor](https://github.com/ktorio/ktor)
 - [LeakCanary](https://github.com/square/leakcanary)
-- [Minibar](https://github.com/mayuroks/minibar)
 - [Moshi](https://github.com/square/moshi)
-- [Moshi: Pristine Models](https://github.com/jayrave/moshi-pristine-models)
-- [MultiSelectDialog](https://github.com/1951FDG/Android-Multi-Select-Dialog)
 - [PreferenceActivityCompat](https://github.com/ohmae/preference-activity-compat)
 - [ProgressToolbar](https://github.com/1951FDG/ProgressToolbar)
 - [SLF4J](https://github.com/qos-ch/slf4j)
 - [SQLite](https://github.com/requery/sqlite-android)
 - [SVC](https://github.com/BansookNam/svc)
-- [Toasty](https://github.com/GrenderG/Toasty)
 
 </details>
 
 <details>
 <summary>Plugins</summary>
 
+- [Android Git Version](https://github.com/gladed/gradle-android-git-version)
+- [Click Debounce](https://github.com/SmartDengg/click-debounce)
 - [Detekt](https://github.com/arturbosch/detekt)
-- [Gradle Android Git Version](https://github.com/gladed/gradle-android-git-version)
-- [Gradle Git Properties](https://github.com/n0mer/gradle-git-properties)
-- [Gradle Unused Resources Remover](https://github.com/konifar/gradle-unused-resources-remover-plugin)
-- [Gradle Versions](https://github.com/ben-manes/gradle-versions-plugin)
+- [Dexcount](https://github.com/KeepSafe/dexcount-gradle-plugin)
+- [Error Prone](https://github.com/tbroyer/gradle-errorprone-plugin)
+- [Git Properties](https://github.com/n0mer/gradle-git-properties)
+- [Google Play Services](https://github.com/google/play-services-plugins)
+- [Unused Resources Remover](https://github.com/konifar/gradle-unused-resources-remover-plugin)
+- [Versions](https://github.com/ben-manes/gradle-versions-plugin)
 
 </details>
 
@@ -229,7 +193,7 @@ This app uses (modified) code from open source projects.
 - [Fastlane](https://fastlane.tools)
 - [JSON Schema Tool](https://jsonschema.net)
 - [Material Design Icons](https://materialdesignicons.com)
-- [Meld](https://meldmerge.org/)
+- [Meld](https://meldmerge.org)
 - [QuickDemo](https://github.com/PSPDFKit-labs/QuickDemo)
 - [Regex101](https://regex101.com)
 - [Shape Shifter](https://beta.shapeshifter.design)
@@ -241,7 +205,9 @@ This app uses (modified) code from open source projects.
 <details>
 <summary>Scripts</summary>
 
+- [Mapnik to MBTiles](https://github.com/1951FDG/mapnik2mbtiles)
 - [Mobile Export Script for Illustrator](https://github.com/1951FDG/mobile-export-scripts-illustrator)
+- [Vector Drawable Resource Directory to Color Resource File](https://github.com/1951FDG/vectordrawableresdir2colorresfile)
 
 </details>
 
