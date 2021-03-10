@@ -60,7 +60,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialTextView"
         app:lineHeight="24sp"
-        tools:text="@tools:sample/lorem/random" />
+        tools:text="@tools:sample/lorem/random"
+        tools:ignore="SelectableText" />
 
     <Button
         android:id="@+id/material_text_button"

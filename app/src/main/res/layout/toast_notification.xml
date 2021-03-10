@@ -20,6 +20,7 @@
         android:textAlignment="viewStart"
         android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="?attr/colorOnSurface"
-        tools:text="@tools:sample/lorem/random" />
+        tools:text="@tools:sample/lorem/random"
+        tools:ignore="SelectableText" />
 
 </LinearLayout>
