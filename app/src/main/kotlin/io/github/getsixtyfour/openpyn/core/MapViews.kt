@@ -62,8 +62,6 @@ class MapViews : ActionViews<MapViewsAction>(), View.OnClickListener, OnApplyWin
         fab5.setOnClickListener(this)
 
         initMiniBar()
-
-        showOverlayLayout()
     }
 
     override fun onDestroy() {

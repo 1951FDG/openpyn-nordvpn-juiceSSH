@@ -3,12 +3,13 @@ package io.github.getsixtyfour.openpyn.core
 import android.os.Bundle
 import android.view.View
 import com.abdeveloper.library.MultiSelectDialog.SubmitCallbackListener
-import com.google.android.gms.maps.MapView
 import com.naver.android.svc.annotation.RequireControlTower
 import com.naver.android.svc.annotation.RequireViews
 import com.naver.android.svc.annotation.SvcFragment
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
+import io.github.getsixtyfour.functions.showSystemUI
+import io.github.getsixtyfour.ktextension.isPlayServiceAvailable
 import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
@@ -31,9 +32,19 @@ class MapFragment : AbstractMapFragment(), OnCommandExecuteListener, OnSessionSt
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        views.findViewById<MapView>(R.id.map)?.run {
-            onCreate(savedInstanceState)
-            getMapAsync(controlTower)
+        if (requireActivity().isPlayServiceAvailable()) {
+            views.map.run {
+                onCreate(savedInstanceState)
+                getMapAsync(controlTower)
+            }
+
+            views.showOverlayLayout()
+        } else {
+            requireActivity().run {
+                showSystemUI(window, views.rootView)
+            }
+
+            views.showAllButtons()
         }
     }
 

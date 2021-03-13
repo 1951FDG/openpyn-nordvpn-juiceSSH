@@ -63,10 +63,22 @@ fun dpToPxSize(@Dimension(unit = Dimension.DP) dp: Float, context: Context): Int
     }
 }
 
+/**
+ * Hide both the navigation bar and the status bar
+ *
+ * @param window
+ * @param view
+ */
 fun hideSystemUI(window: Window, view: View) {
     WindowCompat.getInsetsController(window, view)?.hide(WindowInsetsCompat.Type.systemBars())
 }
 
+/**
+ * Show both the navigation bar and the status bar
+ *
+ * @param window
+ * @param view
+ */
 fun showSystemUI(window: Window, view: View) {
     WindowCompat.getInsetsController(window, view)?.show(WindowInsetsCompat.Type.systemBars())
 }

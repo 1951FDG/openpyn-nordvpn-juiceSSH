@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager.NameNotFoundException
 import android.net.Uri
 import androidx.core.content.ContextCompat
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
@@ -72,3 +74,9 @@ fun Activity.getVersionTitleType(): Int = when {
 fun Activity.isPlayStorePackage(): Boolean = this.verifyInstallerId(GooglePlayServicesUtil.GOOGLE_PLAY_STORE_PACKAGE)
 
 fun Activity.isPlayStoreCertificate(): Boolean = this.verifySigningCertificate(listOf(this.getString(R.string.app_signature)))
+
+fun Activity.isPlayServiceAvailable(): Boolean = when (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this)) {
+    ConnectionResult.SERVICE_MISSING -> false
+    ConnectionResult.SERVICE_INVALID -> false
+    else -> true
+}

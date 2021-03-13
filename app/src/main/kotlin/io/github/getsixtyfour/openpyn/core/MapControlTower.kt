@@ -86,8 +86,8 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     private lateinit var mCountries: List<MultiSelectable>
     private lateinit var mFlags: HashSet<CharSequence>
     private lateinit var mJsonArray: JSONArray
-    private lateinit var mMarkers: HashMap<LatLng, LazyMarker>
     private lateinit var mTileProvider: MapBoxOfflineTileProvider
+    private var mMarkers: HashMap<LatLng, LazyMarker>? = null
 
     // TODO: add dialog
     private val mExceptionHandler: CoroutineExceptionHandler by lazy {
@@ -101,7 +101,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
     private val mSendChannel by lazy {
         screen.lifecycleScope.actor<Context>(EmptyCoroutineContext, Channel.RENDEZVOUS) {
-            channel.map(IO) { runCatching { withTimeout(TIME_MILLIS) { createGeoJson(it) } }.getOrNull() }
+            channel.map(IO) { runCatching { withTimeout(GEO_IP_TIMEOUT_MILLIS) { createGeoJson(it) } }.getOrNull() }
                 .consumeEach { it?.let { animateCamera(it) } }
         }
     }
@@ -159,7 +159,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     override fun onCameraIdle() {
         val bounds = (mGoogleMap ?: return).projection.visibleRegion.latLngBounds
 
-        mMarkers.forEach { (key, value) ->
+        mMarkers?.forEach { (key, value) ->
             if (bounds.contains(key) && mFlags.contains(value.tag)) {
                 if (!value.isVisible) value.isVisible = true
             } else {
@@ -175,7 +175,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     override fun onMapClick(point: LatLng) {
-        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        mMarkers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             it.setLevel(it.level, onLevelChangeCallback)
 
             views.hideFavoriteButton()
@@ -188,11 +188,11 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             return false
         }
 
-        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        mMarkers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             it.setLevel(it.level, onLevelChangeCallback)
         }
 
-        mMarkers[marker.position]?.let {
+        mMarkers?.get(marker.position)?.let {
             onLevelChangeCallback.onLevelChange(it, 10)
 
             views.toggleFavoriteButton(it.level == 1)
@@ -234,7 +234,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     override fun toggleFavoriteMarker() {
-        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        mMarkers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             when (it.level) {
                 0 -> {
                     it.setLevel(1, null)
@@ -274,7 +274,6 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     @Suppress("MagicNumber")
-    @OptIn(ExperimentalTime::class)
     override fun onAnimationFinish(animation: Animation) {
         if (animation.isClosest) {
             views.fakeLayoutButtons()
@@ -285,7 +284,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             /*views.hideOverlayLayout()*/
             views.crossFadeOverlayLayout()
 
-            mMarkers[animation.target]?.let {
+            mMarkers?.get(animation.target)?.let {
                 if (mFlags.contains(it.tag)) {
                     onLevelChangeCallback.onLevelChange(it, 10)
 
@@ -295,7 +294,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
                     views.toggleFavoriteButton(it.level == 1)
                 }
             }
-            // Show both the navigation bar and the status bar
+
             screen.requireActivity().run {
                 showSystemUI(window, views.rootView)
             }
@@ -303,25 +302,25 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
             views.showAllButtons()
         } else {
             (animation.tag as? JSONObject)?.let {
-                views.showMiniBar(createUserMessage(screen.requireActivity(), it), 10.seconds.toLongMilliseconds())
+                views.showMiniBar(createUserMessage(screen.requireActivity(), it), SHOW_MINIBAR_DURATION_MILLIS)
                 /*showThreats(screen.requireActivity(), it)*/
             }
         }
     }
 
     override fun onAnimationCancel(animation: Animation) {
-        mMarkers[animation.target]?.let { logger.info { "Animation to $it canceled" } }
+        mMarkers?.get(animation.target)?.let { logger.info { "Animation to $it canceled" } }
     }
 
     fun positionAndFlagForSelectedMarker(): Pair<Coordinate?, String> {
         var pair: Pair<Coordinate?, String> = Pair(null, "")
 
-        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.let {
+        mMarkers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.let {
             val latLng = it.key
             val tag = it.value.tag
 
             pair = when {
-                mMarkers.count { entry -> entry.value.tag == tag } == 1 -> Pair(null, tag.toString())
+                mMarkers?.count { entry -> entry.value.tag == tag } == 1 -> Pair(null, tag.toString())
                 else -> Pair(Coordinate(latLng.latitude, latLng.longitude), tag.toString())
             }
         }
@@ -330,11 +329,11 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     fun onConnect() {
-        updateMasterMarkerWithDelay(DELAY_MILLIS)
+        updateMasterMarkerWithDelay(UPDATE_MARKER_DELAY_MILLIS)
     }
 
     fun onDisconnect() {
-        updateMasterMarkerWithDelay(DELAY_MILLIS)
+        updateMasterMarkerWithDelay(UPDATE_MARKER_DELAY_MILLIS)
     }
 
     fun onSessionCancelled() {
@@ -345,7 +344,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         views.toggleConnectButton(true)
 
         views.hideAllExceptConnectAndFavoriteButton()
-        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        mMarkers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             if (it.isInfoWindowShown) it.hideInfoWindow()
             views.hideFavoriteButton()
         }
@@ -362,7 +361,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         views.toggleConnectButton(false)
 
         views.showAllExceptConnectAndFavoriteButton()
-        mMarkers.entries.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
+        mMarkers?.entries?.firstOrNull { it.value.zIndex == 1.0f }?.value?.let {
             if (!it.isInfoWindowShown) it.showInfoWindow()
             views.showFavoriteButton()
         }
@@ -389,7 +388,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
                     null
                 }
                 else -> {
-                    async { runCatching { withTimeout(TIME_MILLIS) { createGeoJson(applicationContext) } }.getOrNull() }
+                    async { runCatching { withTimeout(GEO_IP_TIMEOUT_MILLIS) { createGeoJson(applicationContext) } }.getOrNull() }
                 }
             }
 
@@ -430,6 +429,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
         val options = TileOverlayOptions().tileProvider(mTileProvider).fadeIn(false)
         val maxZoomPreference = mTileProvider.maxZoom
         val minZoomPreference = mTileProvider.minZoom
+
         mGoogleMap?.apply {
             addTileOverlay(options)
             setInfoWindowAdapter(adapter)
@@ -453,29 +453,35 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     }
 
     private fun animateCamera(json: JSONObject, closest: Boolean = false, execute: Boolean = true) {
-        // Check if not already animating
-        mGoogleMapAnimator?.let {
-            if (!it.isAnimating) {
-                val latLng = getCurrentPosition(mFlags, json, mJsonArray)
-                val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
-                    isCallback = true
-                    isAnimate = true
-                    isClosest = closest
-                    tag = json
-                    target = latLng
+        mGoogleMapAnimator.let {
+            if (it != null) {
+                // Check if not already animating
+                if (!it.isAnimating) {
+                    val latLng = getCurrentPosition(mFlags, json, mJsonArray)
+                    val animation = Animation(CameraUpdateFactory.newLatLng(latLng)).apply {
+                        isCallback = true
+                        isAnimate = true
+                        isClosest = closest
+                        tag = json
+                        target = latLng
+                    }
+                    it.add(animation)
+                    // Execute the animation
+                    if (execute) it.execute()
                 }
-                it.add(animation)
-                // Execute the animation
-                if (execute) it.execute()
+            } else {
+                views.showMiniBar(createUserMessage(screen.requireActivity(), json), SHOW_MINIBAR_DURATION_MILLIS)
             }
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     companion object {
 
-        private const val TIME_MILLIS: Long = 600
-        private const val DELAY_MILLIS: Long = 10000
         private const val FAVORITE_KEY = "pref_favorites"
+        private const val GEO_IP_TIMEOUT_MILLIS: Long = 600L
+        private val SHOW_MINIBAR_DURATION_MILLIS: Long = 10.seconds.toLongMilliseconds()
+        private val UPDATE_MARKER_DELAY_MILLIS: Long = 10.seconds.toLongMilliseconds()
         val onLevelChangeCallback: OnLevelChangeCallback = object : OnLevelChangeCallback {
             val mDescriptor0: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_0) }
             val mDescriptor1: BitmapDescriptor by lazy { BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker_1) }
