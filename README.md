@@ -11,15 +11,9 @@
 An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely through [JuiceSSH](https://juicessh.com).
 
 > **Note**:
-> The first public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) has been released.
+> The public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) is now available on Google Play.
 
-<p align="middle">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01.png" width="18%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_01_01.png" width="18%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_02.png" width="18%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_03.png" width="18%">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot_04.png" width="18%">
-</p>
+![Image of App](fastlane/metadata/android/header-image.png)
 
 ## Table of Contents
 
@@ -112,7 +106,7 @@ pip3 install --upgrade .
 - Click the connect floating action button (FAB), to run Openpyn on the remote device
 
 > **Note**:
-> You can use this flow with multiple remote devices, as long as that remote device has a SSH server running on it and is configured in Connections in JuiceSSH and is selected in the app toolbar of this app before the colored floating action button (FAB) is clicked!
+> You can use this flow with multiple remote devices, as long as that remote device has a SSH server running on it and is configured in Connections in JuiceSSH and the connection is selected in this app before the connect FAB is clicked!
 
 ## Requirements
 
@@ -191,6 +185,7 @@ Feel free to send us feedback by submitting an [issue](https://github.com/1951FD
 - [Atom](https://atom.io)
 - [DB Browser for SQLite](https://sqlitebrowser.org)
 - [Fastlane](https://fastlane.tools)
+- [Gimp](https://www.gimp.org/)
 - [JSON Schema Tool](https://jsonschema.net)
 - [Material Design Icons](https://materialdesignicons.com)
 - [Meld](https://meldmerge.org)

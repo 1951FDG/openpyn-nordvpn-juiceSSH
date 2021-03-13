@@ -1,0 +1,52 @@
+{
+  "default": {
+    "title": {
+      "color": "#000000",
+      "font": "./fonts/Roboto/Roboto-Light.ttf",
+      "font_size": 120
+    },
+    "background": "./backgrounds/white.png",
+    "padding": 100,
+    "title_min_height": 360,
+    "use_platform": "ANDROID",
+    "force_device_type": "Google Pixel 4 XL"
+  },
+  "data": [
+    {
+      "filter": "screenshot_00",
+      "title": {
+        "text": "Connect to the\nclosest location"
+      }
+    },
+    {
+      "filter": "screenshot_01",
+      "title": {
+        "text": "Connect to a specific\nserver or country"
+      }
+    },
+    {
+      "filter": "screenshot_02",
+      "title": {
+        "text": "Filter out countries\nwithin map view"
+      }
+    },
+    {
+      "filter": "screenshot_03",
+      "title": {
+        "text": "Pass arguments\navailable in Openpyn"
+      }
+    },
+    {
+      "filter": "screenshot_04",
+      "title": {
+        "text": "Connect to OpenVPN\nmanagement server"
+      }
+    },
+    {
+      "filter": "screenshot_05",
+      "title": {
+        "text": "Determine closest\nlocation using GeoIP"
+      }
+    }
+  ]
+}
