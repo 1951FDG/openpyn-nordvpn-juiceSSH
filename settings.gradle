@@ -1,3 +1,4 @@
+include ':country-flags-all'
 include ':sqlite-ndk'
 include ':openvpn-service'
 include ':openvpn-management'
