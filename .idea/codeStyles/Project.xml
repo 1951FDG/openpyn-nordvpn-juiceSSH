@@ -61,12 +61,21 @@
     <JetCodeStyleSettings>
       <option name="PACKAGES_TO_USE_STAR_IMPORTS">
         <value>
-          <package name="com.nhaarman.mockito_kotlin" withSubpackages="false" static="false" />
-          <package name="io.mockk" withSubpackages="true" static="false" />
-          <package name="org.junit" withSubpackages="true" static="false" />
-          <package name="org.mockito" withSubpackages="true" static="false" />
-          <package name="org.hamcrest" withSubpackages="true" static="false" />
-          <package name="org.assertj.core.api.Assertions" withSubpackages="false" static="false" />
+          <package name="com.nhaarman.mockito_kotlin" alias="false" withSubpackages="false" />
+          <package name="io.mockk" alias="false" withSubpackages="true" />
+          <package name="org.junit" alias="false" withSubpackages="true" />
+          <package name="org.mockito" alias="false" withSubpackages="true" />
+          <package name="org.hamcrest" alias="false" withSubpackages="true" />
+          <package name="org.assertj.core.api.Assertions" alias="false" withSubpackages="false" />
+        </value>
+      </option>
+      <option name="PACKAGES_IMPORT_LAYOUT">
+        <value>
+          <package name="" alias="false" withSubpackages="true" />
+          <package name="java" alias="false" withSubpackages="true" />
+          <package name="javax" alias="false" withSubpackages="true" />
+          <package name="kotlin" alias="false" withSubpackages="true" />
+          <package name="" alias="true" withSubpackages="true" />
         </value>
       </option>
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT" value="2147483647" />
