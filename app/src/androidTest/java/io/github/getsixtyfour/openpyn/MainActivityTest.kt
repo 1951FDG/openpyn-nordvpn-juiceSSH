@@ -107,7 +107,7 @@ class MainActivityTest {
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
-        onView(allOf(withContentDescription("More options"), isDisplayed())).perform(click())
+        onView(allOf(withId(R.id.settingsfab), isDisplayed())).perform(click())
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
