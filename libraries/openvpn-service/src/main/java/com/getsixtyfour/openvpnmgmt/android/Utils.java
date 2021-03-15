@@ -6,13 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkCapabilities;
 import android.os.Build;
-import android.os.Bundle;
 
 import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 
 import com.getsixtyfour.android.GitHubCrashIssueHelper;
 
@@ -36,7 +34,6 @@ final class Utils {
         if ((e instanceof RuntimeException) && (e.getCause() instanceof IOException)) {
             return null;
         }
-
         return GitHubCrashIssueHelper.getGitHubCrashIssue(context).createIntent(e);
     }
 

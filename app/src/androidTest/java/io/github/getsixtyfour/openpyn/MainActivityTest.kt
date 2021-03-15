@@ -24,7 +24,6 @@ import com.schibsted.spain.barista.rule.cleardata.ClearPreferencesRule
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
 import org.hamcrest.*
-import org.hamcrest.Description
 import org.hamcrest.Matchers.*
 import org.junit.*
 import org.junit.runner.*

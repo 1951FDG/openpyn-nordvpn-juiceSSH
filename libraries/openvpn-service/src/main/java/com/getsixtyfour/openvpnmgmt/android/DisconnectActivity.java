@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -83,7 +82,6 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
         LOGGER.debug("onCreate");
     }
 
-    @MainThread
     @Override
     public void onStart() {
         super.onStart();
@@ -111,7 +109,6 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
         LOGGER.debug("onPause");
     }
 
-    @MainThread
     @Override
     public void onStop() {
         super.onStop();
