@@ -1,8 +1,16 @@
-include ':country-flags-all'
-include ':sqlite-ndk'
-include ':openvpn-service'
-include ':openvpn-management'
-include ':github-crash-issue'
-include ':country-flags-vpn'
-include ':multi-select-dialog'
 include ':app'
+include ':country-flags-all'
+include ':country-flags-vpn'
+include ':github-crash-issue'
+include ':multi-select-dialog'
+include ':openvpn-management'
+include ':openvpn-service'
+include ':sqlite-ndk'
+
+project (':country-flags-all').projectDir = new File("$rootDir/libraries/country-flags-all")
+project (':country-flags-vpn').projectDir = new File("$rootDir/libraries/country-flags-vpn")
+project (':github-crash-issue').projectDir = new File("$rootDir/libraries/github-crash-issue")
+project (':multi-select-dialog').projectDir = new File("$rootDir/libraries/multi-select-dialog")
+project (':openvpn-management').projectDir = new File("$rootDir/libraries/openvpn-management")
+project (':openvpn-service').projectDir = new File("$rootDir/libraries/openvpn-service")
+project (':sqlite-ndk').projectDir = new File("$rootDir/libraries/sqlite-ndk")
