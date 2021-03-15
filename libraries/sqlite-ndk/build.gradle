@@ -50,6 +50,6 @@ idea.module {
 }
 
 dependencies {
-    api 'androidx.core:core:1.3.2'
-    api 'androidx.sqlite:sqlite:2.1.0'
+    implementation "androidx.core:core:${androidXVersions.core}"
+    implementation "androidx.sqlite:sqlite:${androidXVersions.sqlite}"
 }

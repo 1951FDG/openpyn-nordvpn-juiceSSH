@@ -37,6 +37,6 @@ android {
 }
 
 dependencies {
-    api 'androidx.annotation:annotation:1.1.0'
-    api 'org.jetbrains:annotations:20.1.0'
+    implementation "androidx.core:core:${androidXVersions.core}"
+    implementation "org.jetbrains:annotations:$annotations_version"
 }

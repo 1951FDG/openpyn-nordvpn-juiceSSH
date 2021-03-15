@@ -9,9 +9,9 @@ java {
 
 dependencies {
     //noinspection GradleDependency
-    api 'commons-cli:commons-cli:1.4'
-    api 'org.jetbrains:annotations:20.1.0'
-    api 'org.slf4j:slf4j-api:1.7.30'
+    implementation 'commons-cli:commons-cli:1.4'
+    implementation "org.jetbrains:annotations:$annotations_version"
+    implementation 'org.slf4j:slf4j-api:1.7.30'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
