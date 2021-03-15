@@ -18,7 +18,10 @@ android {
     }
 
     buildFeatures {
+        aidl false
         buildConfig false
+        renderScript false
         resValues false
+        shaders false
     }
 }

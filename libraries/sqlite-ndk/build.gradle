@@ -22,8 +22,12 @@ android {
     }
 
     buildFeatures {
+        aidl false
+        androidResources false
         buildConfig false
+        renderScript false
         resValues false
+        shaders false
     }
 
     externalNativeBuild {

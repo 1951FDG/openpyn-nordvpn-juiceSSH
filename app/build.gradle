@@ -47,13 +47,11 @@ android {
     }
 
     buildFeatures {
-        buildConfig true
-        viewBinding true
+        aidl false
         dataBinding false
-        aidl true
-        renderScript true
-        resValues true
+        renderScript false
         shaders false
+        viewBinding true
     }
 
     dependenciesInfo {
