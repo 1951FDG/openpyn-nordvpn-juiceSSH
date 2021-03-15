@@ -28,15 +28,15 @@ open class Toaster(context: Context) : OnOutputLineListener {
     private val mInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun spam(message: CharSequence) {
-        makeToast(message, Toast.LENGTH_LONG, R.color.spamColor, R.color.design_dark_default_color_on_background).show()
+        makeToast(message, Toast.LENGTH_LONG, R.color.toast_spam_color, R.color.toast_dark_color_on_background).show()
     }
 
     override fun debug(message: CharSequence) {
-        makeToast(message, Toast.LENGTH_LONG, R.color.debugColor, R.color.design_dark_default_color_on_background).show()
+        makeToast(message, Toast.LENGTH_LONG, R.color.toast_debug_color, R.color.toast_dark_color_on_background).show()
     }
 
     override fun verbose(message: CharSequence) {
-        makeToast(message, Toast.LENGTH_LONG, R.color.verboseColor, R.color.design_dark_default_color_on_background).show()
+        makeToast(message, Toast.LENGTH_LONG, R.color.toast_verbose_color, R.color.toast_dark_color_on_background).show()
     }
 
     override fun info(message: CharSequence) {
@@ -48,19 +48,19 @@ open class Toaster(context: Context) : OnOutputLineListener {
     }
 
     override fun warning(message: CharSequence) {
-        makeToast(message, Toast.LENGTH_LONG, R.color.warningColor, R.color.design_default_color_on_background).show()
+        makeToast(message, Toast.LENGTH_LONG, R.color.toast_warning_color, R.color.toast_color_on_background).show()
     }
 
     override fun success(message: CharSequence) {
-        makeToast(message, Toast.LENGTH_LONG, R.color.successColor, R.color.design_dark_default_color_on_background).show()
+        makeToast(message, Toast.LENGTH_LONG, R.color.toast_success_color, R.color.toast_dark_color_on_background).show()
     }
 
     override fun error(message: CharSequence) {
-        makeToast(message, Toast.LENGTH_LONG, R.color.errorColor, R.color.design_dark_default_color_on_background).show()
+        makeToast(message, Toast.LENGTH_LONG, R.color.toast_error_color, R.color.toast_dark_color_on_background).show()
     }
 
     override fun critical(message: CharSequence) {
-        makeToast(message, Toast.LENGTH_LONG, R.color.criticalColor, R.color.design_dark_default_color_on_background).show()
+        makeToast(message, Toast.LENGTH_LONG, R.color.toast_critical_color, R.color.toast_dark_color_on_background).show()
     }
 
     @SuppressLint("InflateParams")

@@ -11,13 +11,16 @@
         <item>@color/pink_a100</item>
     </integer-array>
 
-    <color name="spamColor">@color/successColor</color>
-    <color name="debugColor">@color/successColor</color>
-    <color name="verboseColor">@color/quantum_googblue500</color>
-    <color name="warningColor">@color/quantum_googyellow500</color>
-    <color name="successColor">@color/quantum_googgreen500</color>
-    <color name="errorColor">@color/quantum_googred500</color>
-    <color name="criticalColor">@color/errorColor</color>
+    <color name="toast_dark_color_on_background">#FFFFFF</color>
+    <color name="toast_color_on_background">#000000</color>
+
+    <color name="toast_spam_color">@color/toast_success_color</color>
+    <color name="toast_debug_color">@color/toast_success_color</color>
+    <color name="toast_verbose_color">@color/quantum_googblue500</color>
+    <color name="toast_warning_color">@color/quantum_googyellow500</color>
+    <color name="toast_success_color">@color/quantum_googgreen500</color>
+    <color name="toast_error_color">@color/quantum_googred500</color>
+    <color name="toast_critical_color">@color/toast_error_color</color>
 
     <color name="quantum_googblue500">#ff4285f4</color>
     <color name="quantum_googgreen500">#ff0f9d58</color>

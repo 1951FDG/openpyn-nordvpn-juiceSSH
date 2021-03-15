@@ -31,7 +31,7 @@ abstract class AbstractTextWatcher(protected val textInputLayout: TextInputLayou
             }
             else -> {
                 textInputLayout.isErrorEnabled = true
-                val errorView: TextView = textInputLayout.findViewById(R.id.textinput_error)
+                val errorView: TextView = textInputLayout.findViewById(com.google.android.material.R.id.textinput_error)
                 errorView.maxLines = 1
                 errorView.ellipsize = TextUtils.TruncateAt.END
                 textInputLayout.error = errorText

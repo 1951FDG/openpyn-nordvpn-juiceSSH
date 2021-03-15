@@ -17,7 +17,7 @@ class MaterialInfoWindowAdapter(activity: Activity) : GoogleMap.InfoWindowAdapte
     @SuppressLint("InflateParams")
     private val view: ViewGroup? = activity.layoutInflater.inflate(R.layout.info_window, null) as? ViewGroup
     private val drawable = TooltipDrawable.createFromAttributes(activity, null, 0, R.style.Widget_App_Tooltip)
-    private val arrowSize = activity.resources.getDimensionPixelSize(R.dimen.mtrl_tooltip_arrowSize)
+    private val arrowSize = activity.resources.getDimensionPixelSize(com.google.android.material.R.dimen.mtrl_tooltip_arrowSize)
 
     init {
         view?.updatePadding(top = ((arrowSize * sqrt(2.0) - arrowSize).toInt()))
