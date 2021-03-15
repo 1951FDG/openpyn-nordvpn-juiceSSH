@@ -99,12 +99,12 @@ androidGitVersion {
 debounce {
     loggable = true
     exclusion = [
-            'androidx/preference/Preference$1': ['onClick(Landroid/view/View;)V'],
-            'com/abdeveloper/library/MultiSelectViewHolder': ['onClick(Landroid/view/View;)V'],
-            'com/google/android/gms/common/SignInButton': ['onClick(Landroid/view/View;)V'],
-            'com/google/android/gms/dynamic/zae': ['onClick(Landroid/view/View;)V'],
-            'io/github/getsixtyfour/openpyn/MainActivity': ['onClick(Landroid/view/View;)V'],
-            'io/github/getsixtyfour/openpyn/map/MapViews$OnFavoriteClickListener': ['onClick(Landroid/view/View;)V']
+            'androidx/preference/Preference$1'                                    : ['onClick(Landroid/view/View;)V'],
+            'com/abdeveloper/library/MultiSelectViewHolder'                       : ['onClick(Landroid/view/View;)V'],
+            'com/google/android/gms/common/SignInButton'                          : ['onClick(Landroid/view/View;)V'],
+            'com/google/android/gms/dynamic/zae'                                  : ['onClick(Landroid/view/View;)V'],
+            'io/github/getsixtyfour/openpyn/MainActivity'                         : ['onClick(Landroid/view/View;)V'],
+            'io/github/getsixtyfour/openpyn/core/MapViews$OnFavoriteClickListener': ['onClick(Landroid/view/View;)V'],
     ]
 }
 
