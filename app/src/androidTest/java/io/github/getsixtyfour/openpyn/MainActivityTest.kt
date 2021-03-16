@@ -5,9 +5,11 @@ import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.launchActivity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -120,7 +122,7 @@ class MainActivityTest {
 
         screenshotStrategy.takeScreenshot("screenshot_03", screenshotCallback)
 
-        onView(allOf(childAtPosition(withId(androidx.preference.R.id.recycler_view), 6), isDisplayed())).perform(click())
+        onView(allOf(withId(androidx.preference.R.id.recycler_view), isDisplayed())).perform(actionOnItemAtPosition<ViewHolder>(6, click()))
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
@@ -130,7 +132,7 @@ class MainActivityTest {
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
-        onView(allOf(childAtPosition(withId(androidx.preference.R.id.recycler_view), 7), isDisplayed())).perform(click())
+        onView(allOf(withId(androidx.preference.R.id.recycler_view), isDisplayed())).perform(actionOnItemAtPosition<ViewHolder>(7, click()))
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
@@ -140,7 +142,7 @@ class MainActivityTest {
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
-        onView(allOf(childAtPosition(withId(androidx.preference.R.id.recycler_view), 8), isDisplayed())).perform(click())
+        onView(allOf(withId(androidx.preference.R.id.recycler_view), isDisplayed())).perform(actionOnItemAtPosition<ViewHolder>(8, click()))
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
