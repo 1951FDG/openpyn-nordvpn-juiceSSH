@@ -8,7 +8,7 @@
 [![](https://img.shields.io/codacy/grade/0b6672c6a62a4efc92a51f029ae310e4.svg)](https://www.codacy.com/app/1951FDG/openpyn-nordvpn-juiceSSH?utm_source=github.com&utm_medium=referral&utm_content=1951FDG/openpyn-nordvpn-juiceSSH&utm_campaign=Badge_Grade)
 [![](https://img.shields.io/github/downloads/1951fdg/openpyn-nordvpn-juicessh/latest/total.svg)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/releases)
 
-An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely through [JuiceSSH](https://juicessh.com).
+An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely via SSH.
 
 > **Note**:
 > The public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn) is now available on Google Play.
@@ -36,20 +36,20 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 
 ## Introduction
 
-The idea started when I wanted to connect to OpenVPN servers hosted by NordVPN on a [Asus RT-AC86U](https://www.asus.com/Networking/RT-AC86U/). By default this is possible, but the default firmware including third party firmware [Asuswrt-merlin](https://asuswrt.lostrealm.ca) only allow for a maximum of 5 OpenVPN Clients to be saved.
+The idea started when I wanted to connect to the OpenVPN servers hosted by NordVPN on a [Asus RT-AC86U](https://www.asus.com/Networking/RT-AC86U/). By default this is possible, but the default firmware including third party firmware [Asuswrt-merlin](https://asuswrt.lostrealm.ca) only allow for a maximum of 5 OpenVPN clients to be saved.
 
-I then stumbled on [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), quickly learned Python, and made a pull request, enabling support for Asuswrt-merlin. Openpyn is a Python script which can be run on [Entware-ng-3x on Asuswrt-merlin](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md). The main feature of Openpyn, is that it automatically connects to the least busy, lowest latency OpenVPN server. NVRAM write support for Asuswrt-merlin in Openpyn is then able to save the least busy, lowest latency OpenVPN server to the NVRAM of a Entware-ng-3x enabled ASUS router.
+I then stumbled upon [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), quickly learned Python, and created a pull request, enabling NVRAM write support for Asuswrt-merlin. Openpyn is a Python script which can be run on [Entware-ng-3x](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md) on Asuswrt-merlin. With Openpyn it is possible to save the least busy OpenVPN server with the lowest latency to the NVRAM of a Entware-ng-3x enabled ASUS router.
 
-Now, I had achieved more or less what I desired, but this left me with one last struggle, having to resort to open a SSH connection to the ASUS router and supplying Openpyn with the desired arguments (e.g., country, server load threshold and server type). Having the ability to do that on a phone instead of a computer would make this a lot easier, and that led me to discovering [JuiceSSH](https://juicessh.com).
+Now, I had achieved more or less what I desired, but this left me with one last struggle, having to resort to open a SSH connection to the ASUS router and supplying Openpyn with the desired arguments (e.g., country, server load threshold and server type). It would be much easier to do that on a phone instead of a computer, which led me to discovering [JuiceSSH](https://juicessh.com).
 
-JuiceSSH supports the use of plugins, which allowed me to create this fantastic app. This app runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to run Openpyn on the remote device.
+JuiceSSH supports the use of plugins, which motivated me to create this fantastic plugin. JuiceSSH runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to run Openpyn on the remote device.
 
 > **Note**:
-> This project is my very first Android project, and as such, it may not follow all the best coding practices yet, regardless of this, I'm committed to make this app a source of inspiration for other developers working on similar based Android apps, especially Google Maps based Android apps.
+> This project is my very first Android project, and as such, it may not follow all the best coding practices yet, regardless of this, I'm committed to make this app a source of inspiration for other developers working on similar apps, especially JuiceSSH plugins.
 
 ## Features
 
-- Telnet functionality for connecting to OpenVPN management interface
+- Foreground service for connecting to OpenVPN management server
 
 - Supports most arguments available in Openpyn
 
@@ -65,7 +65,7 @@ JuiceSSH supports the use of plugins, which allowed me to create this fantastic 
 
 - On app start, it will use a smart location, to determine the closest country
 
-- Uses Geolocation APIs to determine the current location based on the current public IP address
+- Uses Geolocation APIs to determine the current location
   - <http://ip-api.com>, <https://ipdata.co>, <https://ipinfo.io>, <https://ipstack.com>
 
 > **Note**:
@@ -102,7 +102,7 @@ pip3 install --upgrade .
 - Install the public [beta](https://play.google.com/apps/testing/io.github.getsixtyfour.openpyn)
 - When prompted, enable/allow the permissions required by this app
 - Change any app settings as required
-- Select a Country by selecting a marker on the map
+- Select a country by selecting a marker on the map
 - Click the connect floating action button (FAB), to run Openpyn on the remote device
 
 > **Note**:
@@ -137,6 +137,9 @@ Feel free to send us feedback by submitting an [issue](https://github.com/1951FD
   - [Android Security: Beware of the default IV! – Dorian Cussen – SystemDotRun](https://doridori.github.io/Android-Security-Beware-of-the-default-IV/)
   - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
   - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
+
+> **Note**:
+> Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
 
 ## Built with
 
@@ -216,7 +219,4 @@ Feel free to send us feedback by submitting an [issue](https://github.com/1951FD
 
 - [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
 - [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
-- [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://juicessh.com).
-
-> **Note**:
-> Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
+- [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://github.com/Sonelli/juicessh-pluginlibrary).
