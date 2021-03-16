@@ -60,14 +60,7 @@
     </JavaCodeStyleSettings>
     <JetCodeStyleSettings>
       <option name="PACKAGES_TO_USE_STAR_IMPORTS">
-        <value>
-          <package name="com.nhaarman.mockito_kotlin" alias="false" withSubpackages="false" />
-          <package name="io.mockk" alias="false" withSubpackages="true" />
-          <package name="org.junit" alias="false" withSubpackages="true" />
-          <package name="org.mockito" alias="false" withSubpackages="true" />
-          <package name="org.hamcrest" alias="false" withSubpackages="true" />
-          <package name="org.assertj.core.api.Assertions" alias="false" withSubpackages="false" />
-        </value>
+        <value />
       </option>
       <option name="PACKAGES_IMPORT_LAYOUT">
         <value>

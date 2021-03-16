@@ -23,10 +23,14 @@ import com.schibsted.spain.barista.rule.cleardata.ClearFilesRule
 import com.schibsted.spain.barista.rule.cleardata.ClearPreferencesRule
 import com.sonelli.juicessh.pluginlibrary.PluginContract.Connections.PERMISSION_READ
 import com.sonelli.juicessh.pluginlibrary.PluginContract.PERMISSION_OPEN_SESSIONS
-import org.hamcrest.*
-import org.hamcrest.Matchers.*
-import org.junit.*
-import org.junit.runner.*
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
+import org.junit.BeforeClass
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
@@ -78,7 +82,7 @@ class MainActivityTest {
 
         launchActivity<MainActivity>()
 
-        BaristaSleepInteractions.sleep(5.seconds.toLongMilliseconds())
+        BaristaSleepInteractions.sleep(6.seconds.toLongMilliseconds())
 
         onView(allOf(withId(R.id.fab3), isDisplayed())).perform(click())
 
@@ -116,7 +120,7 @@ class MainActivityTest {
 
         screenshotStrategy.takeScreenshot("screenshot_03", screenshotCallback)
 
-        onView(allOf(childAtPosition(withId(R.id.recycler_view), 6), isDisplayed())).perform(click())
+        onView(allOf(childAtPosition(withId(androidx.preference.R.id.recycler_view), 6), isDisplayed())).perform(click())
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
@@ -126,7 +130,7 @@ class MainActivityTest {
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
-        onView(allOf(childAtPosition(withId(R.id.recycler_view), 7), isDisplayed())).perform(click())
+        onView(allOf(childAtPosition(withId(androidx.preference.R.id.recycler_view), 7), isDisplayed())).perform(click())
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
@@ -136,7 +140,7 @@ class MainActivityTest {
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 
-        onView(allOf(childAtPosition(withId(R.id.recycler_view), 8), isDisplayed())).perform(click())
+        onView(allOf(childAtPosition(withId(androidx.preference.R.id.recycler_view), 8), isDisplayed())).perform(click())
 
         BaristaSleepInteractions.sleep(1.seconds.toLongMilliseconds())
 

@@ -39,6 +39,6 @@ android {
 dependencies {
     implementation "androidx.appcompat:appcompat:${androidXVersions.appcompat}"
     implementation "androidx.recyclerview:recyclerview:${androidXVersions.recyclerview}"
-    implementation("com.google.android.material:material:$mdc_version") { transitive = false }
+    implementation "com.google.android.material:material:$mdc_version"
     //implementation 'me.zhanghai.android.fastscroll:library:1.1.5'
 }
