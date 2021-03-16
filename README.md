@@ -138,9 +138,6 @@ Feel free to send us feedback by submitting an [issue](https://github.com/1951FD
   - [Basic Android Encryption Do’s and Don’ts – Vincent Huang – Medium](https://medium.com/@tiensinodev/basic-android-encryption-dos-and-don-ts-7bc2cd3335ff)
   - [How to make the perfect Singleton? – Exploring Code – Medium](https://medium.com/exploring-code/how-to-make-the-perfect-singleton-de6b951dfdb0)
 
-> **Note**:
-> Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
-
 ## Built with
 
 <details>
@@ -220,3 +217,6 @@ Feel free to send us feedback by submitting an [issue](https://github.com/1951FD
 - [Krystian Bigaj](https://github.com/KrystianBigaj), author of [SQLite-NDK](https://github.com/KrystianBigaj/sqlite-ndk).
 - [sds100](https://github.com/sds100), author of [NvidiaGpuMonitor](https://github.com/sds100/NvidiaGpuMonitor).
 - [Sonelli](https://github.com/Sonelli), author of [JuiceSSH](https://github.com/Sonelli/juicessh-pluginlibrary).
+
+> **Note**:
+> Special thanks to Yesy, author of [Read SQLite Database from Android Asset Resource](https://www.codeproject.com/Articles/1235533/Read-SQLite-Database-from-Android-Asset-Resource)
