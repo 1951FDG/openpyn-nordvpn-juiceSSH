@@ -1,10 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD Suppressions 1.1//EN" "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
-  <suppress id="AlertDialogCheck"
-            files="src/main/java/com/getsixtyfour/openvpnmgmt/android/DisconnectActivity.java"/>
-  <!-- Third-party libraries, test infrastructure, build, and tooling can use
-       System#exit freely. Feel free to add other test directories here. -->
-  <suppress id="SystemExitCheck" files="src/(build|testing|third_party|tools|base/test)/"/>
+  <suppress id="AlertDialogCheck" files="src/main/java/com/getsixtyfour/openvpnmgmt/android/DisconnectActivity.java"/>
+  <suppress id="DoNotUseAndroidLogCheck" files="CrashReportingTree.kt"/>
+  <suppress id="DoNotUseAndroidLogCheck" files="pub/devrel/easypermissions/AppSettingsDialog.java"/>
+  <suppress id="FileTabCharacter" files="CMakeLists.txt"/>
+  <suppress id="FileTabCharacter" files="sqlite3ndk"/>
+  <suppress id="FileTabCharacter" files="timber/log/CrashReportingTree.kt"/>
+  <suppress id="TrailingWhiteSpace" files="com_crashlytics_build_id.xml"/>
+  <suppress id="TrailingWhiteSpace" files="third_party_licenses"/>
+
 </suppressions>

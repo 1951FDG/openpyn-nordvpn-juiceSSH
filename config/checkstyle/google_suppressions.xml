@@ -1,17 +1,20 @@
 <?xml version="1.0"?>
-
 <!DOCTYPE suppressions PUBLIC
     "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
     "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
-    <suppress checks="Indentation" files=".*\.java"/>
-    <suppress checks="MemberName" files=".*\.java"/>
-    <suppress checks="LineLength" files=".*\.java"/>
-    <suppress checks="MissingJavadocMethod" files=".*\.java"/>
-    <suppress checks="SummaryJavadoc" files=".*\.java"/>
+    <suppress checks="AbbreviationAsWordInName" files=".*\.java"/>
     <suppress checks="AvoidStarImport" files=".*\.java"/>
-    <suppress checks="ImportOrder" message="Extra separation in import group before"/>
+    <suppress checks="CustomImportOrder" files=".*\.java"/>
     <suppress checks="EmptyCatchBlock" files=".*\.java"/>
+    <suppress checks="Indentation" files=".*\.java"/>
+    <suppress checks="LineLength" files=".*\.java"/>
+    <suppress checks="MemberName" files=".*\.java"/>
+    <suppress checks="MissingJavadocMethod" files=".*\.java"/>
+    <suppress checks="MissingJavadocType" files=".*\.java"/>
+    <suppress checks="MissingSwitchDefault" files=".*\.java"/>
+    <suppress checks="OperatorWrap" files=".*\.java"/>
+    <suppress checks="SummaryJavadoc" files=".*\.java"/>
 
 </suppressions>
