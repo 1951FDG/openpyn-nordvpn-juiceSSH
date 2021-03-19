@@ -2,7 +2,6 @@ package io.github.getsixtyfour.openpyn.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,8 +9,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnOutputLineListener
 
@@ -69,12 +69,12 @@ open class Toaster(context: Context) : OnOutputLineListener {
         message: CharSequence, duration: Int = Toast.LENGTH_LONG, @ColorRes tintColorId: Int? = null, @ColorRes textColorId: Int? = null
     ): Toast {
         val view = (mInflater.inflate(R.layout.toast_notification, null) as ViewGroup).apply {
-            tintColorId?.let { ViewCompat.setBackgroundTintList(this, ColorStateList.valueOf(ContextCompat.getColor(mContext, it))) }
+            tintColorId?.let { DrawableCompat.wrap(background).setTintList(AppCompatResources.getColorStateList(context, it)) }
         }
 
         view.findViewById<TextView>(android.R.id.message).apply {
             setText(message)
-            textColorId?.let { setTextColor(ContextCompat.getColor(mContext, it)) }
+            textColorId?.let { setTextColor(ContextCompat.getColor(context, it)) }
         }
 
         return Toast(mContext).apply {
