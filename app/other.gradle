@@ -198,7 +198,7 @@ task appUnzip2(type: Copy) {
 task appGenerateCountryArrays {
     group = groupName
     inputs.file 'src/main/res/raw/emojis.json'
-    outputs.file "$project.rootDir/vpn-country-flags/src/main/res/values/arrays.xml"
+    outputs.file "$project.rootDir/libraries/country-flags-vpn/src/main/res/values/arrays.xml"
     doLast {
         def json = new JsonSlurper().parseText(inputs.files.files[0].text)
         def sw = new StringWriter()
@@ -246,7 +246,7 @@ task appGenerateCountryArrays {
 
         }
 
-        outputs.files.files[0].write(sw.toString())
+        outputs.files.files[0].write(sw.append(System.lineSeparator()).toString())
     }
 }
 
@@ -269,7 +269,7 @@ task appGenerateCountriesArray {
             }
         }
 
-        outputs.files.files[0].write(sw.toString())
+        outputs.files.files[0].write(sw.append(System.lineSeparator()).toString())
     }
 }
 

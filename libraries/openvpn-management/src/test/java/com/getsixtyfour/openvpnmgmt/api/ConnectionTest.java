@@ -40,10 +40,10 @@ public class ConnectionTest {
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        @NonNls ResourceBundle mBundle = ResourceBundle.getBundle("test"); //NON-NLS
-        sHost = mBundle.getString("management.server");
-        sPort = Integer.valueOf(mBundle.getString("management.port"));
-        sPassword = mBundle.getString("management.password").toCharArray();
+        @NonNls ResourceBundle bundle = ResourceBundle.getBundle("test"); //NON-NLS
+        sHost = bundle.getString("management.server");
+        sPort = Integer.valueOf(bundle.getString("management.port"));
+        sPassword = bundle.getString("management.password").toCharArray();
     }
 
     @Before

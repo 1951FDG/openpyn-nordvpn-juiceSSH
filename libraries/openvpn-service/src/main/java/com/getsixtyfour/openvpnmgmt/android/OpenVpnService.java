@@ -404,7 +404,6 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
         // Always show notification here to avoid problem with startForeground timeout
         if (!(e instanceof ThreadDeath)) {
             Class<? extends Throwable> aClass = e.getClass();
-            Intent intent = Utils.getGitHubIntent(this, e);
 
             String title = getString(R.string.vpn_msg_error, aClass.getSimpleName());
             @Nullable @NonNls String bigText = e.getMessage();
@@ -439,10 +438,12 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
             builder.setStyle(new NotificationCompat.BigTextStyle().bigText(bigText));
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
+            Intent intent = Utils.getGitHubIntent(this, e);
             if (intent != null) {
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
                 builder.addAction(R.drawable.ic_close_white, getString(R.string.vpn_action_issue), pendingIntent);
             }
+
             Notification notification = builder.build();
             startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
         }

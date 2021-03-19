@@ -54,6 +54,11 @@ public class GitHubCrashIssue {
     public static final String UTF_8 = "UTF-8";
 
     /**
+     * URL backtick, or grave accent
+     */
+    private static final String URL_BACKTICK = "%60";
+
+    /**
      * URL line feed
      */
     private static final String URL_LF = "%0A";
@@ -104,10 +109,10 @@ public class GitHubCrashIssue {
     public GitHubCrashIssue(@NonNull String url, @NonNull String id, @NonNull String assignees, @NonNull String labels,
                             @NonNull String version, boolean dirty, boolean enabled) {
         if (id.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("ID must not be empty");
         }
         if (url.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("URL must not be empty");
         }
         mGithubRepoUrl = url;
         mGithubIssuesUrl = url + "/issues/new";
@@ -180,8 +185,8 @@ public class GitHubCrashIssue {
             int length = stackTrace.length;
             for (int i = 0; (i < length) && (total < MAX_STACK_TRACE_SIZE); i++) {
                 String className = stackTrace[i].getClassName();
-                String methodName = plainMethodName(stackTrace[i].getMethodName());
                 if (!isLambda(className)) {
+                    String methodName = plainMethodName(stackTrace[i].getMethodName());
                     builder.append('|');
                     builder.append(className);
                     builder.append('/');
@@ -329,17 +334,17 @@ public class GitHubCrashIssue {
         result.append(URL_LF);
         result.append("**Version%3A**");
         result.append(URL_LF);
-        result.append("%60");
+        result.append(URL_BACKTICK);
         result.append("Android");
         result.append(" ");
         result.append(encode(firmwareVersion));
-        result.append("%60");
+        result.append(URL_BACKTICK);
         result.append(URL_LF);
-        result.append("%60");
+        result.append(URL_BACKTICK);
         result.append("App");
         result.append(" ");
         result.append(encode(mGithubVersionName));
-        result.append("%60");
+        result.append(URL_BACKTICK);
         result.append(URL_LF);
         result.append(mGithubCommitId);
         //
@@ -399,14 +404,14 @@ public class GitHubCrashIssue {
                 group = className;
                 elementList = new ArrayList<>(length);
                 elementList.add(traceElement);
-            } else if (!group.startsWith(className)) {
+            } else if (group.startsWith(className)) {
+                group = className;
+                elementList.add(traceElement);
+            } else {
                 strList.add(group);
                 steList.add(elementList);
                 group = className;
                 elementList = new ArrayList<>(length);
-                elementList.add(traceElement);
-            } else {
-                group = className;
                 elementList.add(traceElement);
             }
             total += 1;
@@ -414,8 +419,6 @@ public class GitHubCrashIssue {
         strList.add(group);
         steList.add(elementList);
         for (int i = 0; i < strList.size(); i++) {
-            List<StackTraceElement> list = steList.get(i);
-            String packageName = strList.get(i);
             result.append(StringUtils.HASH);
             result.append(StringUtils.HASH);
             result.append(StringUtils.HASH);
@@ -428,16 +431,16 @@ public class GitHubCrashIssue {
             result.append(i + 1);
             result.append(StringUtils.RIGHT_PARENTHESIS);
             result.append(StringUtils.SPACE);
-            result.append(packageName);
+            result.append(strList.get(i));
             result.append(StringUtils.BACKTICK);
             result.append(StringUtils.LF);
+            List<StackTraceElement> list = steList.get(i);
             for (int j = 0; j < list.size(); j++) {
                 StackTraceElement traceElement = list.get(j);
                 String className = traceElement.getClassName();
                 String methodName = traceElement.getMethodName();
                 //TODO: filename vs classname, java extension or not?
                 String fileName = traceElement.getFileName();
-                Matcher matcher = PATTERN.matcher(className);
                 boolean isLambda = isLambda(className);
                 boolean isFile = fileName != null;
                 boolean isPackage = false;
@@ -448,6 +451,7 @@ public class GitHubCrashIssue {
                     }
                 }
                 if (isPackage && isFile) {
+                    Matcher matcher = PATTERN.matcher(className);
                     result.append(mGithubRepoUrl);
                     result.append("/blob/");
                     result.append(mGithubCommitId);

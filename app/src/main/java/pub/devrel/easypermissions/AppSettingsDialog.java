@@ -23,8 +23,8 @@ import io.github.getsixtyfour.openpyn.R;
  * Dialog to prompt the user to go to the app's settings screen and enable permissions. If the user
  * clicks 'OK' on the dialog, they are sent to the settings screen. The result is returned to the
  * Activity via {@see Activity#onActivityResult(int, int, Intent)}.
- * <p>
- * Use the {@link Builder} to create and display a dialog.
+ *
+ * <p>Use the {@link Builder} to create and display a dialog.</p>
  */
 public class AppSettingsDialog implements Parcelable {
 
@@ -139,10 +139,10 @@ public class AppSettingsDialog implements Parcelable {
     AlertDialog showDialog(DialogInterface.OnClickListener positiveListener,
                            DialogInterface.OnClickListener negativeListener) {
         AlertDialog.Builder builder;
-        if (mThemeResId != -1) {
-            builder = new AlertDialog.Builder(mContext, mThemeResId);
-        } else {
+        if (mThemeResId == -1) {
             builder = new AlertDialog.Builder(mContext);
+        } else {
+            builder = new AlertDialog.Builder(mContext, mThemeResId);
         }
         return builder
                 .setCancelable(false)
@@ -307,7 +307,7 @@ public class AppSettingsDialog implements Parcelable {
 
         /**
          * Set whether the settings screen should be opened in a separate task. This is achieved by
-         * setting {@link android.content.Intent#FLAG_ACTIVITY_NEW_TASK#FLAG_ACTIVITY_NEW_TASK} on
+         * setting {@link android.content.Intent#FLAG_ACTIVITY_NEW_TASK} on
          * the Intent used to open the settings screen.
          */
         @NonNull

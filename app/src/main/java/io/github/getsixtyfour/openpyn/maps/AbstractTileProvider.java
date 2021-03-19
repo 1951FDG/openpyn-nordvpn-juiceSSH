@@ -103,7 +103,7 @@ abstract class AbstractTileProvider implements TileProvider {
     @NonNull
     public LatLngBounds getLatLngBounds() {
         // OpenLayers Bounds format (left, bottom, right, top)
-        String result = Objects.requireNonNull(getStringValue("bounds"));
+        String result = getBounds();
         String[] parts = result.split(",", -1);
         double w = Double.parseDouble(parts[0]);
         double s = Double.parseDouble(parts[1]);

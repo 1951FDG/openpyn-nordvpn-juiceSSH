@@ -44,7 +44,6 @@ public class PosixUserNameCheckerTest {
         check("-abc_", false);
         check("a$bc", false);
         check("9abc", false);
-        check("-abc", false);
         check("$abc", false);
         check("", false);
     }
