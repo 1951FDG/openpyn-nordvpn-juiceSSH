@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.preference.Preference
@@ -98,7 +99,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         root.addPreference(category)
 
         category.addPreference(Preference(activity).apply {
-            icon = ContextCompat.getDrawable(activity, R.drawable.ic_github_black_24dp)
+            icon = AppCompatResources.getDrawable(activity, R.drawable.ic_github_black_24dp)
             title = activity.getString(R.string.egab_author)
             summary = activity.getString(R.string.github_repo_name)
             onPreferenceClickListener = OnPreferenceClickListener {
@@ -108,7 +109,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         })
         // TODO: go to google play or github depending on version
         category.addPreference(Preference(activity).apply {
-            icon = ContextCompat.getDrawable(activity, R.drawable.ic_info_outline_black_24dp)
+            icon = AppCompatResources.getDrawable(activity, R.drawable.ic_info_outline_black_24dp)
             title = activity.getString(activity.getVersionTitleType())
             summary = activity.getString(R.string.app_version)
             onPreferenceClickListener = OnPreferenceClickListener {
@@ -120,7 +121,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         })
 
         category.addPreference(Preference(activity).apply {
-            icon = ContextCompat.getDrawable(activity, R.drawable.ic_history_black_24dp)
+            icon = AppCompatResources.getDrawable(activity, R.drawable.ic_history_black_24dp)
             title = activity.getString(R.string.egab_changelog)
             summary = null
             onPreferenceClickListener = OnPreferenceClickListener {
@@ -137,7 +138,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         root.addPreference(category)
 
         category.addPreference(Preference(activity).apply {
-            icon = ContextCompat.getDrawable(activity, R.drawable.ic_bug_report_black_24dp)
+            icon = AppCompatResources.getDrawable(activity, R.drawable.ic_bug_report_black_24dp)
             title = activity.getString(R.string.egab_submit_issue)
             summary = null
             onPreferenceClickListener = OnPreferenceClickListener {
@@ -147,7 +148,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         })
 
         category.addPreference(Preference(activity).apply {
-            icon = ContextCompat.getDrawable(activity, R.drawable.ic_person_black_24dp)
+            icon = AppCompatResources.getDrawable(activity, R.drawable.ic_person_black_24dp)
             title = activity.getString(R.string.egab_contact_support)
             summary = null
             onPreferenceClickListener = OnPreferenceClickListener {
@@ -164,7 +165,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         root.addPreference(category)
 
         category.addPreference(Preference(activity).apply {
-            icon = ContextCompat.getDrawable(activity, R.drawable.ic_star_face_black_24dp)
+            icon = AppCompatResources.getDrawable(activity, R.drawable.ic_star_face_black_24dp)
             title = activity.getString(R.string.egab_leave_review)
             summary = null
             onPreferenceClickListener = OnPreferenceClickListener {
@@ -174,7 +175,7 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         })
 
         category.addPreference(Preference(activity).apply {
-            icon = ContextCompat.getDrawable(activity, R.drawable.ic_share_black_24dp)
+            icon = AppCompatResources.getDrawable(activity, R.drawable.ic_share_black_24dp)
             title = activity.getString(R.string.egab_share)
             summary = null
             onPreferenceClickListener = OnPreferenceClickListener {
