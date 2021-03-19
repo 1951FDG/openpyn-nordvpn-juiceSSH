@@ -58,7 +58,7 @@ class OpenpynController(
         var silent = preferences.getBoolean("pref_silent", false)
         val nvram = preferences.getBoolean("pref_nvram", false)
         var openvpn = ""
-        val options = StringBuilder("openpyn")
+        val options = StringBuilder()
         val openvpnmgmt = preferences.getBoolean(mCtx.getString(R.string.pref_openvpnmgmt_key), false)
         val host = preferences.getString(
             mCtx.getString(R.string.pref_openvpnmgmt_host_key), mCtx.getString(R.string.pref_openvpnmgmt_host_default)
@@ -110,9 +110,8 @@ class OpenpynController(
         if (nvram) options.append(" --nvram " + preferences.getString("pref_nvram_client", "5"))
         if (openvpn.isNotEmpty()) options.append(" --openvpn-options '$openvpn'")
         if (location != null) options.append(" --location ${location.latitude} ${location.longitude}")
-        val openpyn = "$options"
         // The file /etc/profile is only loaded for a login shell, this is a non-interactive shell
-        command = "[ -f /etc/profile ] && . /etc/profile ; $openpyn"
+        command = "[ -f /etc/profile ] && . /etc/profile ; [ -f /opt/etc/profile ] && . /opt/etc/profile ; openpyn$options"
         /*command = "echo \$PATH ; echo \$-"*/
         logger.info(command)
 
@@ -120,7 +119,7 @@ class OpenpynController(
     }
 
     override fun disconnect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
-        command = "sudo openpyn --kill"
+        command = "openpyn --kill"
         logger.info(command)
 
         return super.disconnect(pluginClient, sessionId, sessionKey)
