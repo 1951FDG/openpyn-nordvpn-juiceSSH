@@ -249,7 +249,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 
     // Lint
-    debugImplementation 'com.vanniktech:lint-rules-android:0.13.0'
+    debugImplementation 'com.vanniktech:lint-rules-android:0.14.0'
 
     // Logger
     implementation 'com.jakewharton.timber:timber:4.7.1'
