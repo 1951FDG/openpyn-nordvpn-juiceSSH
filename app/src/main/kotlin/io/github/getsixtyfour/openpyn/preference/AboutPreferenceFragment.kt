@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceClickListener

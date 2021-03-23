@@ -42,8 +42,8 @@ public final class SecurityCypher {
     @Nullable
     private SecretKey mSecretKey = null;
 
-    @SuppressWarnings("HardCodedStringLiteral")
     @SuppressLint("HardwareIds")
+    @SuppressWarnings("HardCodedStringLiteral")
     private SecurityCypher(Context context) {
         String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
         try {
@@ -93,8 +93,8 @@ public final class SecurityCypher {
         return chars;
     }
 
-    @Nullable
     @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches", "MethodWithMultipleReturnPoints" })
+    @Nullable
     public char[] decrypt(@NonNull String stringToDecrypt) {
         if (stringToDecrypt.isEmpty()) {
             return EMPTY_CHAR_ARRAY;
@@ -123,8 +123,8 @@ public final class SecurityCypher {
         return (chars != null) ? new String(chars) : null;
     }
 
-    @Nullable
     @SuppressWarnings({ "WeakerAccess", "TryWithIdenticalCatches", "MethodWithMultipleReturnPoints" })
+    @Nullable
     public char[] encrypt(@NonNull String stringToEncrypt) {
         if (stringToEncrypt.isEmpty()) {
             return EMPTY_CHAR_ARRAY;

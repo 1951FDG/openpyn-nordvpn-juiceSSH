@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.textfield.TextInputLayout
-import io.github.getsixtyfour.openpyn.R
 
 abstract class AbstractTextWatcher(protected val textInputLayout: TextInputLayout) : TextWatcher {
 

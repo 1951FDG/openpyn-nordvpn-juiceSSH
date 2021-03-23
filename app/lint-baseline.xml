@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="5" by="lint 4.1.3" client="gradle" variant="debug" version="4.1.3">
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.layout.abc_preference_material` appears to be unused"
+        errorLine1="&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/layout/abc_preference_material.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.layout.abc_preference_widget_checkbox` appears to be unused"
+        errorLine1="&lt;CheckBox xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/layout/abc_preference_widget_checkbox.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.raw.emojis` appears to be unused">
+        <location
+            file="src/main/res/raw/emojis.json"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_copyleft_black_24dp` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; android:height=&quot;24dp&quot; android:viewportHeight=&quot;24.0&quot; android:viewportWidth=&quot;24.0&quot; android:width=&quot;24dp&quot; android:tint=&quot;@color/design_icon_tint&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_copyleft_black_24dp.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.layout.multi_select_widget_imageview` appears to be unused"
+        errorLine1="&lt;ImageView xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/layout/multi_select_widget_imageview.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.pref_server_helper_text` appears to be unused"
+        errorLine1="    &lt;string name=&quot;pref_server_helper_text&quot;>The VPN server name&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/preference.xml"
+            line="5"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.pref_openvpnmgmt_host_helper_text` appears to be unused"
+        errorLine1="    &lt;string name=&quot;pref_openvpnmgmt_host_helper_text&quot;>The host IP address&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/preference.xml"
+            line="343"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.pref_openvpnmgmt_port_helper_text` appears to be unused"
+        errorLine1="    &lt;string name=&quot;pref_openvpnmgmt_port_helper_text&quot;>The host port number&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/preference.xml"
+            line="344"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.pref_openvpnmgmt_path_helper_text` appears to be unused"
+        errorLine1="    &lt;string name=&quot;pref_openvpnmgmt_path_helper_text&quot;>The host password file&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/preference.xml"
+            line="345"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.github_issue_assignee` appears to be unused"
+        errorLine1="    &lt;string name=&quot;github_issue_assignee&quot; translatable=&quot;false&quot;>1951FDG&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="8"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.github_issue_label` appears to be unused"
+        errorLine1="    &lt;string name=&quot;github_issue_label&quot; translatable=&quot;false&quot;>crash&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="9"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.rationale_ask` appears to be unused"
+        errorLine1="    &lt;string name=&quot;rationale_ask&quot;>This app may not work correctly without the requested permissions.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="15"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.ThemeOverlay_Design_TextInputEditText` appears to be unused"
+        errorLine1="    &lt;style name=&quot;ThemeOverlay.Design.TextInputEditText&quot; parent=&quot;&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="19"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Widget_Design_TextInputEditText_Custom` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Widget.Design.TextInputEditText.Custom&quot; parent=&quot;Widget.Design.TextInputEditText&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="23"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.visibility_mark` appears to be unused"
+        errorLine1="&lt;selector"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/visibility_mark.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="SyntheticAccessor"
+        message="Access to `private` constructor of class `AppSettingsDialog` requires synthetic accessor"
+        errorLine1="            return new AppSettingsDialog(in);"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/pub/devrel/easypermissions/AppSettingsDialog.java"
+            line="39"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="SyntheticAccessor"
+        message="Access to `private` constructor of class `AppSettingsDialog` requires synthetic accessor"
+        errorLine1="            return new AppSettingsDialog("
+        errorLine2="                   ^">
+        <location
+            file="src/main/java/pub/devrel/easypermissions/AppSettingsDialog.java"
+            line="340"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.nav_host_fragment` appears to be unused"
+        errorLine1="        android:id=&quot;@+id/nav_host_fragment&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_main.xml"
+            line="40"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.map` appears to be unused"
+        errorLine1="        android:id=&quot;@+id/map&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_map.xml"
+            line="11"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.headers` appears to be unused"
+        errorLine1="        android:id=&quot;@+id/headers&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/mm2d_pac_content.xml"
+            line="13"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.list` appears to be unused"
+        errorLine1="            android:id=&quot;@+id/list&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/mm2d_pac_content.xml"
+            line="30"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.list_footer` appears to be unused"
+        errorLine1="            android:id=&quot;@+id/list_footer&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/mm2d_pac_content.xml"
+            line="43"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.preference_frame` appears to be unused"
+        errorLine1="        android:id=&quot;@+id/preference_frame&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/mm2d_pac_content.xml"
+            line="54"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.preference` appears to be unused"
+        errorLine1="            android:id=&quot;@+id/preference&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/mm2d_pac_content.xml"
+            line="75"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.checkbox` appears to be unused"
+        errorLine1="    android:id=&quot;@+id/checkbox&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/multi_select_widget_imageview.xml"
+            line="5"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.imageView` appears to be unused"
+        errorLine1="        android:id=&quot;@+id/imageView&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/overlay_juicessh.xml"
+            line="16"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.progress_overlay` appears to be unused"
+        errorLine1="    android:id=&quot;@+id/progress_overlay&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/overlay_progress.xml"
+            line="4"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="DuplicateStrings"
+        message="Duplicate string value `Share`, used in `egab_share` and `share_message`"
+        errorLine1="    &lt;string name=&quot;egab_share&quot;>Share&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/preference.xml"
+            line="287"
+            column="5"/>
+        <location
+            file="src/main/res/values/strings.xml"
+            line="12"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="DuplicateStrings"
+        message="Duplicate string value `%1$s%2$s`, used in `title_marker` and `title_marker`"
+        errorLine1="    &lt;string name=&quot;title_marker&quot;>&lt;xliff:g example=&quot;&quot; id=&quot;emoji&quot;>%1$s&lt;/xliff:g>&lt;xliff:g example=&quot;Netherlands&quot; id=&quot;country&quot;>%2$s&lt;/xliff:g>&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="51"
+            column="5"/>
+        <location
+            file="src/main/res/values-v23/strings.xml"
+            line="3"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ConvertToWebp"
+        message="One or more images in this project can be converted to the WebP format which typically results in smaller file sizes, even for lossless conversion (but launcher icons should use PNG)">
+        <location
+            file="src/main/res/drawable-xxxhdpi/ic_map_marker_10.png"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;com.google.android.material.floatingactionbutton.FloatingActionButton"
+        errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_map.xml"
+            line="50"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;com.google.android.material.floatingactionbutton.FloatingActionButton"
+        errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_map.xml"
+            line="70"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;com.google.android.material.floatingactionbutton.FloatingActionButton"
+        errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_map.xml"
+            line="90"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;com.google.android.material.floatingactionbutton.FloatingActionButton"
+        errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_map.xml"
+            line="129"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/overlay_juicessh.xml"
+            line="15"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Redundant attribute `layout_alignLeft`; already defining `layout_alignStart` with `targetSdkVersion` 30"
+        errorLine1="            android:layout_alignLeft=&quot;@android:id/title&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/abc_preference_material.xml"
+            line="43"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Redundant attribute `paddingLeft`; already defining `paddingStart` with `targetSdkVersion` 30"
+        errorLine1="        android:paddingLeft=&quot;16dp&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/abc_preference_material.xml"
+            line="60"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Redundant attribute `paddingRight`; already defining `paddingEnd` with `targetSdkVersion` 30"
+        errorLine1="        android:paddingRight=&quot;0dp&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/abc_preference_material.xml"
+            line="62"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Redundant attribute `paddingLeft`; already defining `paddingStart` with `targetSdkVersion` 30"
+        errorLine1="    android:paddingLeft=&quot;@dimen/abc_select_dialog_padding_start_material&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/abc_preference_widget_checkview.xml"
+            line="10"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Redundant attribute `paddingRight`; already defining `paddingEnd` with `targetSdkVersion` 30"
+        errorLine1="    android:paddingRight=&quot;?attr/dialogPreferredPadding&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/abc_preference_widget_checkview.xml"
+            line="12"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Redundant attribute `drawableLeft`; already defining `drawableStart` with `targetSdkVersion` 30"
+        errorLine1="    android:drawableLeft=&quot;?android:attr/listChoiceIndicatorMultiple&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/abc_preference_widget_checkview.xml"
+            line="14"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Redundant attribute `layout_marginLeft`; already defining `layout_marginStart` with `targetSdkVersion` 30"
+        errorLine1="        android:layout_marginLeft=&quot;@dimen/mm2d_pac_side_margin&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/mm2d_pac_content.xml"
+            line="17"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="RtlHardcoded"
+        message="Redundant attribute `layout_marginRight`; already defining `layout_marginEnd` with `targetSdkVersion` 30"
+        errorLine1="        android:layout_marginRight=&quot;@dimen/mm2d_pac_side_margin_negative&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/mm2d_pac_content.xml"
+            line="18"
+            column="9"/>
+    </issue>
+
+</issues>

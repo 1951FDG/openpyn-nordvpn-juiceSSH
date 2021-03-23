@@ -78,12 +78,12 @@ android {
     }
 
     lintOptions {
-        // check 'Registered', 'VectorPath', 'DuplicateStrings', 'UnknownNullness', 'UnusedResources', 'UnusedIds'
         abortOnError false
-        // baseline file('lint-baseline.xml')
+        baseline file('lint-baseline.xml')
+        //check 'ContentDescription', 'ConvertToWebp', 'DuplicateStrings', 'RtlHardcoded', 'SyntheticAccessor', 'UnusedIds', 'UnusedResources'
         checkAllWarnings true
-        disable 'GoogleAppIndexingWarning', 'VectorPath'
-        // lintConfig file('lint.xml')
+        disable 'GoogleAppIndexingWarning', 'VectorPath', 'InvalidSingleLineComment', 'RawDimen', 'ShouldUseStaticImport', 'XmlSpacing'
+        enable 'WrongThreadInterprocedural'
         xmlReport false
     }
 

@@ -37,8 +37,8 @@ abstract class AbstractTileProvider implements TileProvider {
         return new LatLngBounds(southwest, northeast);
     }
 
-    @NonNull
     @SuppressWarnings("MagicNumber")
+    @NonNull
     private static LatLng toLatLng(double x, double y) {
         double latitude = 90.0 - Math.toDegrees(Math.atan(Math.exp(-(0.5 - y) * 2.0 * Math.PI)) * 2.0);
         double longitude = (x - 0.5) * 360.0;
@@ -118,5 +118,5 @@ abstract class AbstractTileProvider implements TileProvider {
     protected abstract byte[] getBytes(int x, int y, int zoom);
 
     @Nullable
-    protected abstract String getStringValue(@NonNls @NonNull String key);
+    protected abstract String getStringValue(@NonNull @NonNls String key);
 }

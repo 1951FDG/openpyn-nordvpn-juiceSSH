@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="accent_material_indigo_200">#ff536dfe</color>
-
     <color name="favoriteColor">#fbc02d</color>
-    <color name="mapBackgroundColor">#ece9e1</color>
     <color name="titleTextColor">#ffbebebe</color>
 
     <integer-array name="cat_custom_progress_colors">

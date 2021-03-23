@@ -16,15 +16,15 @@ import java.util.Objects;
 @SuppressWarnings("FieldNotUsedInToString")
 public final class LazyMarker {
 
-    @Nullable
     @SuppressWarnings("TransientFieldInNonSerializableClass")
+    @Nullable
     private transient OnMarkerCreateListener mListener;
 
     @SuppressWarnings("TransientFieldInNonSerializableClass")
     private transient GoogleMap mMap;
 
-    @Nullable
     @SuppressWarnings("TransientFieldInNonSerializableClass")
+    @Nullable
     private transient Marker mMarker;
 
     @SuppressWarnings("TransientFieldInNonSerializableClass")
@@ -339,15 +339,15 @@ public final class LazyMarker {
         }
     }
 
-    @FunctionalInterface
     @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
+    @FunctionalInterface
     public interface OnMarkerCreateListener {
 
         void onMarkerCreate(@NonNull LazyMarker marker);
     }
 
-    @FunctionalInterface
     @SuppressWarnings({ "WeakerAccess", "PublicInnerClass" })
+    @FunctionalInterface
     public interface OnLevelChangeCallback {
 
         void onLevelChange(@NonNull LazyMarker marker, int level);

@@ -50,8 +50,9 @@ fun dpToPxOffset(@Dimension(unit = Dimension.DP) dp: Float, context: Context): I
  *
  * @see TypedValue.complexToDimensionPixelSize
  */
-@Px
+
 @Suppress("MagicNumber")
+@Px
 fun dpToPxSize(@Dimension(unit = Dimension.DP) dp: Float, context: Context): Int {
     val value = dpToPx(dp, context)
     val size = (if (value >= 0) value + 0.5f else value - 0.5f).toInt()

@@ -204,8 +204,6 @@ class MapViews : ActionViews<MapViewsAction>(), View.OnClickListener, OnApplyWin
     @Suppress("MagicNumber")
     fun showMiniBar(message: CharSequence, duration: Long = 1000L) {
         minibarView.apply {
-            /*setBackgroundColor(ContextCompat.getColor(context, R.color.accent_material_indigo_200))
-            setTextColor(ContextCompat.getColor(context, android.R.color.white))*/
             text = message
         }.show(duration)
     }

@@ -17,7 +17,6 @@
         android:alpha="@dimen/material_emphasis_high_type"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textAlignment="viewStart"
         android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="?attr/colorOnSurface"
         tools:text="@tools:sample/lorem/random"

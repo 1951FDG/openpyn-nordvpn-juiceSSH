@@ -46,12 +46,12 @@ class MultiSelectMapper : Mapper<MultiSelectModelExtra>() {
             val json = context.resources.openRawResource(id).bufferedReader().use(BufferedReader::readText)
             val factory = PristineModelsJsonAdapterFactory.Builder().apply { add(MultiSelectModelExtra::class.java, MultiSelectMapper()) }
             val moshi = Moshi.Builder().add(factory.build()).add(object {
-                @ToJson
                 @Suppress("unused")
+                @ToJson
                 fun toJson(value: CharSequence): String = "$value"
 
-                @FromJson
                 @Suppress("unused")
+                @FromJson
                 fun fromJson(value: String): CharSequence = SpannableString(value)
             }).build()
             val listType = Types.newParameterizedType(List::class.java, MultiSelectModelExtra::class.java)

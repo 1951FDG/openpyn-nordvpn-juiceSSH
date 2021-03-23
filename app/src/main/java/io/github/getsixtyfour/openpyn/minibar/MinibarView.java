@@ -25,7 +25,7 @@ public class MinibarView extends MaterialTextView {
 
     private static final long SHOW_DURATION = 500L;
 
-    private long mDelayMillis = 1000L;
+    public long mDelayMillis = 1000L;
 
     @Nullable
     private Interpolator mDismissInterpolator = new DecelerateInterpolator();
@@ -117,7 +117,7 @@ public class MinibarView extends MaterialTextView {
         show();
     }
 
-    private void show() {
+    public void show() {
         ViewPropertyAnimator animator = animate();
         setAlpha(1.0F);
         mShowing = true;
@@ -139,7 +139,7 @@ public class MinibarView extends MaterialTextView {
         animator.start();
     }
 
-    private void dismiss() {
+    public void dismiss() {
         ViewPropertyAnimator animator = animate();
         animator.alpha(0.0F);
         animator.setDuration(DISMISS_DURATION);
@@ -157,7 +157,7 @@ public class MinibarView extends MaterialTextView {
         animator.start();
     }
 
-    private void fastDismiss() {
+    public void fastDismiss() {
         if (mShowing) {
             ViewPropertyAnimator animator = animate();
             animator.cancel();
