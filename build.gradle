@@ -20,7 +20,7 @@ buildscript {
                 core             : '1.5.0-beta01',
                 navigation       : '2.3.4',
                 preference       : '1.1.1',
-                recyclerview     : '1.2.0-beta02',
+                recyclerview     : '1.2.0-rc01',
                 sqlite           : '2.1.0',
         ]
         annotations_version = '20.1.0'
