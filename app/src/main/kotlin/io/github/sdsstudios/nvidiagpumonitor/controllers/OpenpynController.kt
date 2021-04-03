@@ -28,7 +28,7 @@ class OpenpynController(
         mOnOutputLineListener = null
     }
 
-    @Suppress("ComplexMethod")
+    @Suppress("ComplexMethod", "HardCodedStringLiteral")
     override fun connect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         fun code(iso: String): String = when (iso) {
             "gb" -> "uk"
@@ -118,6 +118,7 @@ class OpenpynController(
         return super.connect(pluginClient, sessionId, sessionKey)
     }
 
+    @Suppress("HardCodedStringLiteral")
     override fun disconnect(pluginClient: PluginClient, sessionId: Int, sessionKey: String): Boolean {
         command = "openpyn --kill"
         logger.info(command)
@@ -125,11 +126,11 @@ class OpenpynController(
         return super.disconnect(pluginClient, sessionId, sessionKey)
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("ComplexMethod", "HardCodedStringLiteral", "MagicNumber", "SpellCheckingInspection")
     override fun onCompleted(exitCode: Int) {
         super.onCompleted(exitCode)
 
-        @Suppress("SpellCheckingInspection") val map by lazy {
+        val map by lazy {
             mapOf(
                 1 to "HUP",
                 2 to "INT",
@@ -147,7 +148,7 @@ class OpenpynController(
 
         when (exitCode) {
             // command terminated successfully (0)
-            -1, 0 -> {
+            0 -> {
                 logger.info { "Openpyn finished with exit code $exitCode" }
             }
             // command terminated unsuccessfully (1)
@@ -180,7 +181,7 @@ class OpenpynController(
         mSessionExecuteListener?.onCompleted(exitCode)
     }
 
-    @Suppress("ComplexMethod")
+    @Suppress("HardCodedStringLiteral", "MagicNumber")
     override fun onOutputLine(line: String) {
         logger.info(line)
 
@@ -201,7 +202,7 @@ class OpenpynController(
         val preferences = PreferenceManager.getDefaultSharedPreferences(mCtx)
         val level = checkNotNull(preferences.getString("pref_log_level", "25")).toInt()
 
-        @Suppress("MagicNumber") logging.forEach {
+        logging.forEach {
             val str = ":$it"
             val end = buffer.indexOf(str)
             if (end > -1) {
@@ -237,6 +238,7 @@ class OpenpynController(
         mSessionExecuteListener?.onError(reason, message)
     }
 
+    @Suppress("HardCodedStringLiteral")
     companion object {
 
         private const val SPAM = "SPAM"
