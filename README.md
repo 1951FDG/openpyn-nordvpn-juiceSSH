@@ -1,12 +1,9 @@
 # openpyn-nordvpn-juiceSSH, a JuiceSSH plugin
 
-[![](https://img.shields.io/github/license/1951fdg/openpyn-nordvpn-juicessh.svg)](LICENSE)
-[![](https://img.shields.io/github/languages/top/1951fdg/openpyn-nordvpn-juicessh.svg)](https://kotlinlang.org)
-[![](https://img.shields.io/github/languages/count/1951fdg/openpyn-nordvpn-juicessh.svg)](<>)
-[![](https://img.shields.io/github/last-commit/1951fdg/openpyn-nordvpn-juicessh.svg)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/commits/master)
-[![](https://snyk.io/test/github/1951FDG/openpyn-nordvpn-juiceSSH/badge.svg?targetFile=app%2Fbuild.gradle)](https://snyk.io/test/github/1951FDG/openpyn-nordvpn-juiceSSH?targetFile=app%2Fbuild.gradle)
-[![](https://img.shields.io/codacy/grade/0b6672c6a62a4efc92a51f029ae310e4.svg)](https://www.codacy.com/app/1951FDG/openpyn-nordvpn-juiceSSH?utm_source=github.com&utm_medium=referral&utm_content=1951FDG/openpyn-nordvpn-juiceSSH&utm_campaign=Badge_Grade)
-[![](https://img.shields.io/github/downloads/1951fdg/openpyn-nordvpn-juicessh/latest/total.svg)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/releases)
+[![](https://img.shields.io/codacy/grade/0b6672c6a62a4efc92a51f029ae310e4/slave?color=1f6feb)](https://app.codacy.com/gh/1951FDG/openpyn-nordvpn-juiceSSH/dashboard?branch=slave)
+[![](https://img.shields.io/github/commits-since/1951fdg/openpyn-nordvpn-juicessh/latest/slave?color=1f6feb)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/commits/slave)
+[![](https://img.shields.io/github/downloads/1951fdg/openpyn-nordvpn-juicessh/latest/total?color=1f6feb)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/releases)
+[![](https://img.shields.io/github/last-commit/1951fdg/openpyn-nordvpn-juicessh/slave?color=1f6feb)](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/commits/slave)
 
 An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://github.com/jotyGill/openpyn-nordvpn) remotely via SSH.
 
@@ -38,9 +35,9 @@ An Android app written in C/C++, Java, and Kotlin to run [Openpyn](https://githu
 
 The idea started when I wanted to connect to the OpenVPN servers hosted by NordVPN on a [Asus RT-AC86U](https://www.asus.com/Networking/RT-AC86U/). By default this is possible, but the default firmware including third party firmware [Asuswrt-merlin](https://asuswrt.lostrealm.ca) only allow for a maximum of 5 OpenVPN clients to be saved.
 
-I then stumbled upon [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), quickly learned Python, and created a pull request, enabling NVRAM write support for Asuswrt-merlin. Openpyn is a Python script which can be run on [Entware-ng-3x](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md) on Asuswrt-merlin. With Openpyn it is possible to save the least busy OpenVPN server with the lowest latency to the NVRAM of a Entware-ng-3x enabled ASUS router.
+I then stumbled upon [Openpyn](https://github.com/jotyGill/openpyn-nordvpn), I learned Python and implemented NVRAM support for Asuswrt-merlin. Openpyn is a Python script that can be run on Asuswrt-merlin with [Entware](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md). With Openpyn it is possible to connect to the least busy NordVPN server with the lowest latency.
 
-Now, I had achieved more or less what I desired, but this left me with one last struggle, having to resort to open a SSH connection to the ASUS router and supplying Openpyn with the desired arguments (e.g., country, server load threshold and server type). It would be much easier to do that on a phone instead of a computer, which led me to discovering [JuiceSSH](https://juicessh.com).
+Now, I had achieved more or less what I desired, but this left me with one last struggle, constantly having to start a SSH session from the command line to the Asus router. This is so much easier to do on a mobile device, which led me to discovering [JuiceSSH](https://juicessh.com).
 
 JuiceSSH supports the use of plugins, which motivated me to create this fantastic plugin. JuiceSSH runs on Android, it establishes a connection to a device that has a SSH server running on it, and it is then able to run Openpyn on the remote device.
 
@@ -92,7 +89,7 @@ Please use my `test` branch of [Openpyn](https://github.com/1951FDG/openpyn-nord
 ```sh
 git clone --branch test git@github.com:1951FDG/openpyn-nordvpn.git
 cd openpyn-nordvpn
-pip3 install --upgrade .
+python3 -m pip install --upgrade .
 ```
 
 ## Usage
