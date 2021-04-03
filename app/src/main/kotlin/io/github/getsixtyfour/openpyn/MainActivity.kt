@@ -300,6 +300,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickList
         toolbar.hideProgress(true)
 
         when (exitCode) {
+            // command terminated successfully (0)
+            0 -> {
+                ManagementService.start(this)
+            }
             // command not found (127)
             127 -> {
                 logger.debug("Tried to run a command but the command was not found on the server")
