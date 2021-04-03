@@ -106,7 +106,7 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
 
         internal val TextInputLayout.serverErrorTextWatcher: AbstractTextWatcher
             get() = object : AbstractTextWatcher(this) {
-                val array = context.resources.getTextArray(R.array.pref_country_values)
+                val array = context.resources.getStringArray(R.array.pref_country_values)
                 val regex = Regex("""^[a-z]{2}\d{1,4}$""")
                 val message = ctx.getString(R.string.pref_server_error)
                 override val submitButtonId: Int

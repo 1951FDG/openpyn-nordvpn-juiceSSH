@@ -405,8 +405,8 @@ fun jsonArray(context: Context, @RawRes id: Int, ext: String): JSONArray {
     }
 
     val jsonArray = createJsonArray(context, id, ext)
-    val set1 = context.resources.getTextArray(R.array.pref_country_values).toHashSet()
-    val set2 = hashSetOf<CharSequence>()
+    val set1 = context.resources.getStringArray(R.array.pref_country_values).toHashSet()
+    val set2 = hashSetOf<String>()
 
     for (res in jsonArray) {
         val flag = res.getString(FLAG)
