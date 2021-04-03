@@ -3,6 +3,7 @@ package io.github.getsixtyfour.functions
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import io.github.getsixtyfour.openpyn.R
@@ -44,7 +45,10 @@ fun <T : Activity> onLoggingItemSelected(activity: T) {
 }
 
 fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T): Job = launch {
-    if (!NetworkInfo.getInstance().isOnline()) return@launch
+    if (!NetworkInfo.getInstance().isOnline()) {
+        Toast.makeText(activity, activity.getString(R.string.info_no_connection), Toast.LENGTH_LONG).show()
+        return@launch
+    }
     val toolbar = (activity.findViewById(R.id.toolbar) as? ProgressToolbar)?.apply { showProgress(true) }
 
     withContext(Dispatchers.IO) {

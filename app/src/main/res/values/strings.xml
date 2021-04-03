@@ -31,6 +31,10 @@
     <string name="menu_refresh">Refresh</string>
     <!-- Menu -->
 
+    <!-- Info -->
+    <string name="info_no_connection">No connection</string>
+    <!-- Info -->
+
     <!-- Warning -->
     <string name="warning_install_openpyn">Please install openpyn on SSH server.</string>
     <string name="warning_restart_app">Please restart app for changes to take effect.</string>
