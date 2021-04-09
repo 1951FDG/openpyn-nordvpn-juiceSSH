@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,8 +72,8 @@ abstract class AbstractConnection implements Closeable {
     }
 
     protected void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
-        Logger logger = getLogger();
-        logger.info("Connecting to {}:{}", host, port); //NON-NLS
+        @NonNls Logger logger = getLogger();
+        logger.info("Connecting to {}:{}", host, port);
         mHost = host;
         mPort = port;
         mSocket = new Socket();
@@ -91,8 +92,8 @@ abstract class AbstractConnection implements Closeable {
     }
 
     protected void disconnect() throws IOException {
-        Logger logger = getLogger();
-        logger.info("Disconnecting"); //NON-NLS
+        @NonNls Logger logger = getLogger();
+        logger.info("Disconnecting");
         close();
     }
 

@@ -304,7 +304,7 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
     }
 
     private static void onRecordChanged(@NonNull OpenVpnLogRecord record) {
-        @NonNls Logger logger = LoggerFactory.getLogger("OpenVPN"); //NON-NLS
+        @NonNls Logger logger = LoggerFactory.getLogger("OpenVPN");
         switch (record.getLevel()) {
             case ERROR:
                 if (logger.isErrorEnabled()) {

@@ -40,7 +40,7 @@ public class ConnectionTest {
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        @NonNls ResourceBundle bundle = ResourceBundle.getBundle("test"); //NON-NLS
+        @NonNls ResourceBundle bundle = ResourceBundle.getBundle("test");
         sHost = bundle.getString("management.server");
         sPort = Integer.valueOf(bundle.getString("management.port"));
         sPassword = bundle.getString("management.password").toCharArray();

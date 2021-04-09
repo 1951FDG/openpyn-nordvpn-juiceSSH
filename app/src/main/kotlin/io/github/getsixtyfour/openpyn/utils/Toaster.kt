@@ -78,8 +78,8 @@ open class Toaster(context: Context) : OnOutputLineListener {
         }
 
         return Toast(mContext).apply {
-            setGravity(Gravity.CENTER_HORIZONTAL or Gravity.TOP, 0, yOffset)
             setDuration(duration)
+            setGravity(Gravity.CENTER_HORIZONTAL or Gravity.TOP, 0, yOffset)
             setView(view)
         }
     }
