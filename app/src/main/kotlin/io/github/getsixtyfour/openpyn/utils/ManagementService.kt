@@ -1,6 +1,7 @@
 package io.github.getsixtyfour.openpyn.utils
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,6 +15,16 @@ import io.github.getsixtyfour.openpyn.security.SecurityCypher
 class ManagementService private constructor() {
 
     companion object {
+
+        fun <T : Activity> toggle(activity: T) = when {
+            isRunning(activity) -> stop(activity)
+            else -> start(activity)
+        }
+
+        fun <T : Activity> isRunning(activity: T): Boolean {
+            return (activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).getRunningServices(Int.MAX_VALUE)
+                .any { OpenVpnService::class.java.name == it.service.className && it.foreground }
+        }
 
         fun <T : Activity> start(activity: T) {
             val preferences = PreferenceManager.getDefaultSharedPreferences(activity)

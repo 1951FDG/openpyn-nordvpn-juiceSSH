@@ -230,10 +230,10 @@
     <string name="pref_force_fw">Enforce firewall rules</string>
     <string name="pref_description_force_fw">Drop traffic when tunnel breaks, force disable DNS traffic going to any other interface</string>
 
-    <string name="pref_nvram">ASUSWRT-Merlin VPN client</string>
+    <string name="pref_nvram">Asuswrt-merlin VPN client</string>
     <string name="pref_description_nvram">Apply VPN configuration to a client instance</string>
 
-    <string name="pref_nvram_client">ASUSWRT-Merlin client instance</string>
+    <string name="pref_nvram_client">Asuswrt-merlin client instance</string>
 
     <string-array name="pref_nvram_client_entries" translatable="false">
         <item>1</item>

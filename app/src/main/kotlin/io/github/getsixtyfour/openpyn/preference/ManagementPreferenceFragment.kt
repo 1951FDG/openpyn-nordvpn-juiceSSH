@@ -7,6 +7,9 @@ import android.text.InputFilter
 import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.ActionBar
@@ -22,6 +25,7 @@ import io.github.getsixtyfour.functions.dpToPx
 import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.text.AbstractTextWatcher
+import io.github.getsixtyfour.openpyn.utils.ManagementService
 import org.apache.hadoop.hdfs.util.PosixPathNameChecker
 import java.net.InetAddress
 
@@ -34,7 +38,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setHasOptionsMenu(false)
+        setHasOptionsMenu(true)
 
         enterTransition = MaterialFadeThrough()
 
@@ -117,6 +121,20 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     override fun getCallbackFragment(): PreferenceFragmentCompat = this
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.title) {
+            getString(R.string.menu_toggle) -> {
+                ManagementService.toggle(requireActivity())
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_management, menu)
+    }
 
     companion object {
 
