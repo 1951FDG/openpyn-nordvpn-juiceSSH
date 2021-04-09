@@ -109,7 +109,7 @@ python3 -m pip install --upgrade .
 
 To compile and run the project you'll need:
 
-- Android Studio 4.1.2 or higher
+- Android Studio 4.1.3
   - Android SDK Platform `30`
   - Android SDK Build-Tools `30.0.3`
   - CMake `v3.10.2`
