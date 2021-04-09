@@ -119,12 +119,12 @@ internal fun countryList(context: Context, @ArrayRes id: Int): List<MultiSelecta
         // 3 <item>60</item>
         // 4 <item>@drawable/ic_united_states_40dp</item>
         // </array>
-        val id = array.getInt(3, 0)
+        val itemId = array.getInt(3, 0)
         val name = array.getString(0)!!
         val resId = array.getResourceId(4, 0)
         val tag = array.getString(2)!!
         val unicode = array.getString(1)!!
-        val multiSelectModelExtra = MultiSelectModelExtra(id, SpannableString(name), resId, tag, unicode)
+        val multiSelectModelExtra = MultiSelectModelExtra(itemId, SpannableString(name), resId, tag, unicode)
 
         list.add(multiSelectModelExtra)
         array.recycle()

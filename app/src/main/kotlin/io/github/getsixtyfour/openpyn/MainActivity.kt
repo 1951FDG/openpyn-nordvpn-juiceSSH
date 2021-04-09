@@ -348,6 +348,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickList
     override fun onCancel() {
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onPermissionsGranted(requestCode: Int, vararg perms: String) {
         if (requestCode != PERMISSION_REQUEST_CODE) return
 
@@ -372,6 +373,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickList
         if (mGooglePlayStorePackage && mGooglePlayStoreCertificate) startUpdate(mAppUpdateManager, UPDATE_REQUEST_CODE)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onPermissionsDenied(requestCode: Int, vararg perms: String) {
         if (perms.any { !ActivityCompat.shouldShowRequestPermissionRationale(this, it) }) {
             mAppSettingsDialogShown = true
