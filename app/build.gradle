@@ -264,9 +264,8 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'io.github.microutils:kotlin-logging:1.11.5'
     debugImplementation 'at.favre.lib:slf4j-timber:1.0.1'
-    debugImplementation('com.github.AppDevNext.Logcat:LogcatCore:2.1.1') {
-        exclude group: 'com.google.android.material'
-        exclude group: 'com.jakewharton.timber'
+    debugImplementation('com.github.AppDevNext.Logcat:LogcatCore:2.6.0') {
+        transitive = false
     }
 
     // Preference
