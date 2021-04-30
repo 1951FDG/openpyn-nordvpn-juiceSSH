@@ -44,7 +44,7 @@ buildscript {
 
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.38.0'
 
-        classpath 'com.github.SmartDengg.asm-clickdebounce:click-debounce-gradle-plugin:2.0.0'
+        classpath 'com.github.SmartDengg.asm-clickdebounce:click-debounce-gradle-plugin:2.1.0'
 
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
 
