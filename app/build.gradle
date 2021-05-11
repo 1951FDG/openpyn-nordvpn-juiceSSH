@@ -264,7 +264,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'io.github.microutils:kotlin-logging:1.11.5'
     debugImplementation 'at.favre.lib:slf4j-timber:1.0.1'
-    debugImplementation('com.github.AppDevNext.Logcat:LogcatCore:2.6.0') {
+    debugImplementation('com.github.AppDevNext.Logcat:LogcatCore:2.7.0') {
         transitive = false
     }
 
