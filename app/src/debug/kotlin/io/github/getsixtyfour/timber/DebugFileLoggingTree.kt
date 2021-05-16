@@ -1,24 +1,19 @@
 package io.github.getsixtyfour.timber
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import info.hannes.logcat.Event
 import info.hannes.timber.FileLoggingTree
 import java.io.File
 import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.UUID
 
-@Suppress("unused")
-@SuppressLint("LogNotTimber")
-class DebugFileLoggingTree(externalCacheDir: File, context: Context? = null, filename: String = UUID.randomUUID().toString()) :
-    FileLoggingTree(externalCacheDir, context, filename) {
+class DebugFileLoggingTree(externalCacheDir: File, context: Context?) : FileLoggingTree(externalCacheDir, context) {
 
     @Suppress("HardCodedStringLiteral", "MagicNumber")
-    @SuppressLint("LogNotTimber")
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         try {
             val logTimeStamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
@@ -38,8 +33,11 @@ class DebugFileLoggingTree(externalCacheDir: File, context: Context? = null, fil
             writer.flush()
             writer.close()
 
-            if (Looper.getMainLooper().thread == Thread.currentThread()) lastLogEntry.value = textLine
-            else Handler(Looper.getMainLooper()).post { lastLogEntry.value = textLine }
+            if (Looper.getMainLooper().thread == Thread.currentThread()) {
+                _lastLogEntry.value = Event(textLine)
+            } else {
+                Handler(Looper.getMainLooper()).post { _lastLogEntry.value = Event(textLine) }
+            }
         } catch (ignored: Exception) {
         }
     }
