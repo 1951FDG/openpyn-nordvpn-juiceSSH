@@ -10,6 +10,7 @@ import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionFinishedListener
 import com.sonelli.juicessh.pluginlibrary.listeners.OnSessionStartedListener
 import io.github.getsixtyfour.functions.showSystemUI
 import io.github.getsixtyfour.ktextension.isPlayServiceAvailable
+import io.github.getsixtyfour.openpyn.AppConfig
 import io.github.getsixtyfour.openpyn.R
 import io.github.sdsstudios.nvidiagpumonitor.listeners.OnCommandExecuteListener
 import io.github.sdsstudios.nvidiagpumonitor.model.Coordinate
@@ -32,7 +33,7 @@ class MapFragment : AbstractMapFragment(), OnCommandExecuteListener, OnSessionSt
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (requireActivity().isPlayServiceAvailable()) {
+        if (AppConfig.GOOGLE_PLAY_SERVICES && requireActivity().isPlayServiceAvailable()) {
             views.map.run {
                 onCreate(savedInstanceState)
                 getMapAsync(controlTower)

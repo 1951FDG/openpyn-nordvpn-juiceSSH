@@ -13,6 +13,8 @@ public final class AppConfig {
 
     public static final boolean UI_BLOCK_DETECTION = Boolean.FALSE;
 
+    public static final boolean GOOGLE_PLAY_SERVICES = Boolean.TRUE;
+
     private AppConfig() {
     }
 }
