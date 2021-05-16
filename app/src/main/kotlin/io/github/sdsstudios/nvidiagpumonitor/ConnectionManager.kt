@@ -26,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import mu.KotlinLogging
 import java.util.UUID
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
@@ -41,6 +42,8 @@ class ConnectionManager(
     onOutputLineListener: OnOutputLineListener?
 ) : LifecycleObserver, OnClientStartedListener, OnSessionStartedListener, OnSessionFinishedListener,
     CoroutineScope by CoroutineScope(Job() + Dispatchers.IO) {
+
+    private val logger = KotlinLogging.logger {}
 
     private val mControllers: List<BaseController> by lazy { listOf(mOpenpynController) }
     private val mClient = PluginClient()
@@ -61,6 +64,8 @@ class ConnectionManager(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
+        logger.debug("onDestroy")
+
         cancel()
 
         mSessionStartedListener = null
