@@ -24,10 +24,10 @@ fun printAPIValues(context: Context) {
     val ipstack = preferences.getString("pref_api_ipstack", "")!!
     val manufacturer = Build.MANUFACTURER
     val model = Build.MODEL
-    logger.error("ipdata = $ipdata")
-    logger.error("ipinfo = $ipinfo")
-    logger.error("ipstack = $ipstack")
-    logger.error("$manufacturer $model")
+    logger.debug("ipdata = $ipdata")
+    logger.debug("ipinfo = $ipinfo")
+    logger.debug("ipstack = $ipstack")
+    logger.debug("$manufacturer $model")
 }
 
 fun isRunningTest(): Boolean = try {

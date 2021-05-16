@@ -154,16 +154,17 @@ class OpenpynController(
             // command terminated unsuccessfully (1)
             // command not executable (126)
             // command not found (127)
+            // invalid exit code (128)
             1, 126, 127, 128 -> {
                 val message = "Openpyn finished with non-zero exit code $exitCode"
-                mOnOutputLineListener?.error(message)
-                logger.error(message)
+                mOnOutputLineListener?.warning(message)
+                logger.warn(message)
             }
             // command terminated with signal
             129, 130, 131, 132, 133, 134, 136, 137, 139, 142 -> {
                 val message = "Openpyn terminated with signal SIG${map[exitCode - 128]}"
-                mOnOutputLineListener?.error(message)
-                logger.error(message)
+                mOnOutputLineListener?.warning(message)
+                logger.warn(message)
             }
             // command terminated with signal SIGTERM (143 - 128 = 15)
             143 -> {
@@ -174,7 +175,7 @@ class OpenpynController(
             else -> {
                 val message = "Openpyn finished with non-zero exit code $exitCode"
                 mOnOutputLineListener?.error(message)
-                logger.error(Exception()) { message }
+                logger.error(message)
             }
         }
 
