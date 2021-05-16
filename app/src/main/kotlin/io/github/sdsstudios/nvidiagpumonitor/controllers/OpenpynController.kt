@@ -189,7 +189,7 @@ class OpenpynController(
             line.startsWith("Shutting down safely, please wait until process exits", true) -> {
                 mCommandExecuteListener?.onDisconnect()
             }
-            line.startsWith("Killing the running openvpn", true) -> {
+            line.startsWith("Killing the running openvpn process", true) -> {
                 mCommandExecuteListener?.onDisconnect()
             }
             line.startsWith("CONNECTING TO SERVER", true) -> {
