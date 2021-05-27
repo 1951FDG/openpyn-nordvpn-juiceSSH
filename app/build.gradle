@@ -176,7 +176,7 @@ dependencies {
 
     // 1951FDG
     implementation 'com.github.1951FDG:ProgressToolbar:1.0.9'
-    implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.17'
+    implementation 'com.github.1951FDG:juicessh-pluginlibrary:1.0.18'
     //noinspection GradleDependency
     debugImplementation 'com.github.1951FDG.AndroidPerformanceMonitor:blockcanary-android:slave-SNAPSHOT'
 
