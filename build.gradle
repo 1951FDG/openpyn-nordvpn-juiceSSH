@@ -165,6 +165,12 @@ allprojects {
                         if (candidate.version.contains('-alpha')) {
                             reject()
                         }
+                        if (candidate.version.contains('-beta')) {
+                            reject()
+                        }
+                        if (candidate.group.contains('org.jetbrains.kotlin')) {
+                            reject()
+                        }
                     }
                 }
             }
