@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TreeSet;
 
 @SuppressWarnings("ReturnOfThis")
@@ -66,9 +67,9 @@ public class MultiSelectDialog extends AppCompatDialogFragment
     @StringRes
     private int mPositiveText = android.R.string.ok;
 
-    private Collection<Integer> mPostSelectedIds = Collections.emptyList();
+    private Set<Integer> mPostSelectedIds = Collections.emptySet();
 
-    private Collection<Integer> mPreSelectedIds = Collections.emptyList();
+    private Set<Integer> mPreSelectedIds = Collections.emptySet();
 
     private String mTitle = "";
 
