@@ -263,6 +263,7 @@ dependencies {
     // Logger
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'io.github.microutils:kotlin-logging:1.12.5'
+    implementation "org.slf4j:slf4j-api:$slf4j_version"
     debugImplementation 'at.favre.lib:slf4j-timber:1.0.1'
     debugImplementation('com.github.AppDevNext.Logcat:LogcatCore:2.8.0') {
         transitive = false
@@ -278,7 +279,7 @@ dependencies {
     }
 
     // Test
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation "junit:junit:$junit_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation "androidx.test:core-ktx:${testRunnerVersion}"
     androidTestImplementation "androidx.test:runner:${testRunnerVersion}"

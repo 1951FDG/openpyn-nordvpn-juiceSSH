@@ -11,8 +11,8 @@ dependencies {
     //noinspection GradleDependency
     implementation 'commons-cli:commons-cli:1.4'
     implementation "org.jetbrains:annotations:$annotations_version"
-    implementation 'org.slf4j:slf4j-api:1.7.30'
+    implementation "org.slf4j:slf4j-api:$slf4j_version"
 
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation "junit:junit:$junit_version"
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
 }
