@@ -33,13 +33,11 @@ public final class OpenVpnRoute implements Route {
     OpenVpnRoute(String s) throws OpenVpnParseException {
         String[] strings = s.split(",");
         if (strings.length != 4) {
-            //noinspection ConstantConditions
             throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_ROUTE_STRING, s, 4));
         }
         try {
             String[] realConnection = strings[2].split(":");
             if (realConnection.length != 2) {
-                //noinspection ConstantConditions
                 throw new OpenVpnParseException(String.format((Locale) null, Constants.MALFORMED_REAL_CONNECTION_STRING, strings[2]));
             }
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT, Locale.ENGLISH);

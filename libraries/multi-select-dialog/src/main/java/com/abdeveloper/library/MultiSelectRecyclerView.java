@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MultiSelectRecyclerView extends RecyclerView {
 
-    @SuppressWarnings("ConstantConditions")
     private final AdapterDataObserver mAdapterDataObserver = new AdapterDataObserver() {
         @Override
         public void onChanged() {

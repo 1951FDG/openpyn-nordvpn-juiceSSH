@@ -29,7 +29,7 @@ public class StatusTest {
 
     private static @NotNull Status sInstance;
 
-    @SuppressWarnings({ "HardcodedLineSeparator", "StringBufferReplaceableByString", "MagicNumber" })
+    @SuppressWarnings({ "HardcodedLineSeparator", "StringBufferReplaceableByString" })
     @BeforeClass
     public static void oneTimeSetUp() throws OpenVpnParseException {
         sInstance = new OpenVpnStatus();
