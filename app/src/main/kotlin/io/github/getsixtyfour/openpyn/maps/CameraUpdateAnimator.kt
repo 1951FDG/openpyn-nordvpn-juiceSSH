@@ -18,18 +18,32 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
     private val mHandler = Handler(Looper.getMainLooper())
     private var mGoogleMap: GoogleMap?
     private var mOnCameraIdleListener: OnCameraIdleListener?
+    private var mIsRotateGesturesEnabled = false
+    private var mIsScrollGesturesEnabled = false
+    private var mIsTiltGesturesEnabled = false
+    private var mIsZoomControlsEnabled = false
+    private var mIsZoomGesturesEnabled = false
     var isAnimating: Boolean = false
         private set
     var animatorListener: AnimatorListener? = null
-    private var mIsRotateGestureEnabled = false
-    private var mIsScrollGestureEnabled = false
-    private var mIsTiltGestureEnabled = false
-    private var mIsZoomControlsEnabled = false
-    private var mIsZoomGestureEnabled = false
 
     constructor(googleMap: GoogleMap, onCameraIdleListener: OnCameraIdleListener) : this(
         googleMap, onCameraIdleListener, ArrayList<Animation>()
     )
+
+    init {
+        mGoogleMap = googleMap
+        mOnCameraIdleListener = onCameraIdleListener
+        mCameraUpdates = ArrayList(animations)
+    }
+
+    fun onDestroy() {
+        mHandler.removeCallbacksAndMessages(null)
+        mCancelableCallback.setAnimatorListener(null)
+        animatorListener = null
+        mOnCameraIdleListener = null
+        mGoogleMap = null
+    }
 
     override fun onCameraIdle() {
         executeNext()
@@ -55,75 +69,114 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
         }
     }
 
-    fun onDestroy() {
-        mHandler.removeCallbacksAndMessages(null)
-        mCancelableCallback.setAnimatorListener(null)
-        animatorListener = null
-        mOnCameraIdleListener = null
-        mGoogleMap = null
-    }
-
     private fun executeNext() {
         if (mCameraUpdates.isEmpty()) {
             onAnimationEnd()
-        } else {
-            val animation = mCameraUpdates.removeAt(0)
-            if (animation.isCallback) {
-                mCancelableCallback.setAnimation(animation)
-                mCancelableCallback.setAnimatorListener(animatorListener)
-                if (animation.delay == 0L) {
-                    startAnimation(mGoogleMap!!, animation, mCancelableCallback)
-                } else {
-                    mHandler.postDelayed({
-                        startAnimation(mGoogleMap!!, animation, mCancelableCallback)
-                    }, animation.delay)
+            return
+        }
+        val animation = mCameraUpdates.removeAt(0)
+        if (animation.isCallback) {
+            mCancelableCallback.setAnimation(animation)
+            mCancelableCallback.setAnimatorListener(animatorListener)
+
+            when (animation.delay) {
+                0L -> {
+                    startAnimation(mGoogleMap, animation, mCancelableCallback)
                 }
-            } else {
-                if (animation.delay == 0L) {
-                    startAnimation(mGoogleMap!!, animation, null)
-                } else {
-                    mHandler.postDelayed({ startAnimation(mGoogleMap!!, animation, null) }, animation.delay)
+                else -> {
+                    mHandler.postDelayed(
+                        { startAnimation(mGoogleMap, animation, mCancelableCallback) }, animation.delay
+                    )
+                }
+            }
+        } else {
+            when (animation.delay) {
+                0L -> {
+                    startAnimation(mGoogleMap, animation, null)
+                }
+                else -> {
+                    mHandler.postDelayed(
+                        { startAnimation(mGoogleMap, animation, null) }, animation.delay
+                    )
                 }
             }
         }
     }
 
     private fun onAnimationEnd() {
-        mOnCameraIdleListener!!.onCameraIdle()
-        if (animatorListener != null) {
-            animatorListener!!.onAnimationEnd()
-        }
-        mGoogleMap!!.setOnCameraIdleListener(mOnCameraIdleListener)
-        val settings = mGoogleMap!!.uiSettings
-        settings.isRotateGesturesEnabled = mIsRotateGestureEnabled
-        settings.isScrollGesturesEnabled = mIsScrollGestureEnabled
-        settings.isTiltGesturesEnabled = mIsTiltGestureEnabled
-        settings.isZoomControlsEnabled = mIsZoomControlsEnabled
-        settings.isZoomGesturesEnabled = mIsZoomGestureEnabled
+        mOnCameraIdleListener?.onCameraIdle()
+
         isAnimating = false
+
+        mGoogleMap?.uiSettings?.apply {
+            isRotateGesturesEnabled = mIsRotateGesturesEnabled
+            isScrollGesturesEnabled = mIsScrollGesturesEnabled
+            isTiltGesturesEnabled = mIsTiltGesturesEnabled
+            isZoomControlsEnabled = mIsZoomControlsEnabled
+            isZoomGesturesEnabled = mIsZoomGesturesEnabled
+        }
+
+        mGoogleMap?.setOnCameraIdleListener(mOnCameraIdleListener)
+
+        animatorListener?.onAnimationEnd()
     }
 
     private fun onAnimationStart() {
-        if (animatorListener != null) {
-            animatorListener!!.onAnimationStart()
-        }
-        val settings = mGoogleMap!!.uiSettings
-        settings.isRotateGesturesEnabled = false
-        settings.isScrollGesturesEnabled = false
-        settings.isTiltGesturesEnabled = false
-        settings.isZoomControlsEnabled = false
-        settings.isZoomGesturesEnabled = false
-        mGoogleMap!!.setOnCameraIdleListener(this)
         isAnimating = true
+
+        mGoogleMap?.uiSettings?.apply {
+            isRotateGesturesEnabled = false
+            isScrollGesturesEnabled = false
+            isTiltGesturesEnabled = false
+            isZoomControlsEnabled = false
+            isZoomGesturesEnabled = false
+        }
+
+        mGoogleMap?.setOnCameraIdleListener(this)
+
+        animatorListener?.onAnimationStart()
     }
 
     private fun setUiSettings() {
-        val settings = mGoogleMap!!.uiSettings
-        mIsRotateGestureEnabled = settings.isRotateGesturesEnabled
-        mIsScrollGestureEnabled = settings.isScrollGesturesEnabled
-        mIsTiltGestureEnabled = settings.isTiltGesturesEnabled
-        mIsZoomControlsEnabled = settings.isZoomControlsEnabled
-        mIsZoomGestureEnabled = settings.isZoomGesturesEnabled
+        mGoogleMap?.uiSettings?.let {
+            mIsRotateGesturesEnabled = it.isRotateGesturesEnabled
+            mIsScrollGesturesEnabled = it.isScrollGesturesEnabled
+            mIsTiltGesturesEnabled = it.isTiltGesturesEnabled
+            mIsZoomControlsEnabled = it.isZoomControlsEnabled
+            mIsZoomGesturesEnabled = it.isZoomGesturesEnabled
+        }
+    }
+
+    class Animation(val cameraUpdate: CameraUpdate) {
+
+        var isAnimate: Boolean = false
+        var isCallback: Boolean = false
+        var isClosest: Boolean = false
+        var delay: Long = 0
+        var tag: Any? = null
+        var target: LatLng? = null
+    }
+
+    private class CancelableCallback : GoogleMap.CancelableCallback {
+
+        private lateinit var mAnimation: Animation
+        private var mAnimatorListener: AnimatorListener? = null
+
+        override fun onCancel() {
+            mAnimatorListener?.onAnimationCancel(mAnimation)
+        }
+
+        override fun onFinish() {
+            mAnimatorListener?.onAnimationFinish(mAnimation)
+        }
+
+        fun setAnimation(animation: Animation) {
+            mAnimation = animation
+        }
+
+        fun setAnimatorListener(animatorListener: AnimatorListener?) {
+            mAnimatorListener = animatorListener
+        }
     }
 
     interface AnimatorListener {
@@ -157,61 +210,16 @@ class CameraUpdateAnimator @SuppressLint("LambdaLast") constructor(
         fun onAnimationCancel(animation: Animation)
     }
 
-    class Animation(val cameraUpdate: CameraUpdate) {
-
-        var isAnimate: Boolean = false
-        var isCallback: Boolean = false
-        var isClosest: Boolean = false
-        var delay: Long = 0
-        var tag: Any? = null
-        var target: LatLng? = null
-    }
-
-    private class CancelableCallback : GoogleMap.CancelableCallback {
-
-        private var mAnimation: Animation? = null
-        private var mAnimatorListener: AnimatorListener? = null
-        override fun onCancel() {
-            if (mAnimatorListener != null) {
-                mAnimatorListener!!.onAnimationCancel(mAnimation!!)
-            }
-        }
-
-        override fun onFinish() {
-            if (mAnimatorListener != null) {
-                mAnimatorListener!!.onAnimationFinish(mAnimation!!)
-            }
-        }
-
-        fun setAnimation(animation: Animation?) {
-            mAnimation = animation
-        }
-
-        fun setAnimatorListener(animatorListener: AnimatorListener?) {
-            mAnimatorListener = animatorListener
-        }
-    }
-
     companion object {
 
         internal fun startAnimation(
-            googleMap: GoogleMap, animation: Animation, cancelableCallback: GoogleMap.CancelableCallback?
+            googleMap: GoogleMap?, animation: Animation, cancelableCallback: GoogleMap.CancelableCallback?
         ) {
             if (animation.isAnimate) {
-                if (cancelableCallback != null) {
-                    googleMap.animateCamera(animation.cameraUpdate, cancelableCallback)
-                } else {
-                    googleMap.animateCamera(animation.cameraUpdate)
-                }
+                googleMap?.animateCamera(animation.cameraUpdate, cancelableCallback)
             } else {
-                googleMap.moveCamera(animation.cameraUpdate)
+                googleMap?.moveCamera(animation.cameraUpdate)
             }
         }
-    }
-
-    init {
-        mGoogleMap = googleMap
-        mOnCameraIdleListener = onCameraIdleListener
-        mCameraUpdates = ArrayList(animations)
     }
 }
