@@ -229,9 +229,6 @@ dependencies {
 
     // JSON
     implementation 'com.squareup.moshi:moshi:1.12.0'
-    debugImplementation('com.jayrave:moshi-pristine-models:1.0.0') {
-        transitive = false
-    }
 
     // Kotlin
     implementation('org.jetbrains.kotlin:kotlin-stdlib') {
