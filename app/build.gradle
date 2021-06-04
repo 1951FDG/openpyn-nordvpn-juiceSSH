@@ -270,7 +270,7 @@ dependencies {
     //debugImplementation(name:'LogcatCore-debug', ext:'aar')
 
     // Preference
-    implementation 'net.mm2d:preference:0.2.5'
+    implementation 'net.mm2d.preference:preference:0.2.7'
 
     // Stetho
     debugImplementation('com.facebook.stetho:stetho-timber:1.6.0') {
