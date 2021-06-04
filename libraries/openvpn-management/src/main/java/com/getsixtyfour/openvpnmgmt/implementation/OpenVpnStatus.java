@@ -160,9 +160,8 @@ public final class OpenVpnStatus extends OpenVpnCommand implements Status {
                         addRoute(lines[i++]);
                     }
                     break;
-                } else {
-                    throw new OpenVpnParseException(msg);
                 }
+                throw new OpenVpnParseException(msg);
             }
         }
         LOGGER.info("Successfully parsed{}{}", System.lineSeparator(), this);

@@ -16,9 +16,11 @@ class ManagementService private constructor() {
 
     companion object {
 
-        fun <T : Activity> toggle(activity: T) = when {
-            isRunning(activity) -> stop(activity)
-            else -> start(activity)
+        fun <T : Activity> toggle(activity: T) {
+            return when {
+                isRunning(activity) -> stop(activity)
+                else -> start(activity)
+            }
         }
 
         fun <T : Activity> isRunning(activity: T): Boolean {

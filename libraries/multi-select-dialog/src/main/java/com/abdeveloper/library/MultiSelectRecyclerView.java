@@ -13,17 +13,17 @@ public class MultiSelectRecyclerView extends RecyclerView {
     private final AdapterDataObserver mAdapterDataObserver = new AdapterDataObserver() {
         @Override
         public void onChanged() {
-            updateEmptyStatus(getAdapter().getItemCount() == 0);
+            updateEmptyStatus();
         }
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
-            updateEmptyStatus(getAdapter().getItemCount() == 0);
+            updateEmptyStatus();
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
-            updateEmptyStatus(getAdapter().getItemCount() == 0);
+            updateEmptyStatus();
         }
     };
 
@@ -63,19 +63,22 @@ public class MultiSelectRecyclerView extends RecyclerView {
         mEmptyView = view;
     }
 
-    public void updateEmptyStatus(boolean empty) {
-        if (empty) {
-            if (mEmptyView != null) {
-                mEmptyView.setVisibility(View.VISIBLE);
-                setVisibility(View.INVISIBLE);
+    public void updateEmptyStatus() {
+        Adapter adapter = getAdapter();
+        if (adapter != null) {
+            if (adapter.getItemCount() == 0) {
+                if (mEmptyView != null) {
+                    mEmptyView.setVisibility(View.VISIBLE);
+                    setVisibility(View.INVISIBLE);
+                } else {
+                    setVisibility(View.VISIBLE);
+                }
             } else {
+                if (mEmptyView != null) {
+                    mEmptyView.setVisibility(View.GONE);
+                }
                 setVisibility(View.VISIBLE);
             }
-        } else {
-            if (mEmptyView != null) {
-                mEmptyView.setVisibility(View.GONE);
-            }
-            setVisibility(View.VISIBLE);
         }
     }
 }

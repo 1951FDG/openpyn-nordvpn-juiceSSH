@@ -56,7 +56,7 @@ public final class SecurityCypher {
         }
     }
 
-    @SuppressWarnings({ "SynchronizeOnThis" })
+    @SuppressWarnings("SynchronizeOnThis")
     @NonNull
     public static SecurityCypher getInstance(@NonNull Context context) {
         if (sInstance == null) {

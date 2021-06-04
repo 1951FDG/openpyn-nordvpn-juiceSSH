@@ -59,7 +59,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
         mTrafficHistory = new TrafficHistory();
     }
 
-    @SuppressWarnings({ "SynchronizeOnThis" })
+    @SuppressWarnings("SynchronizeOnThis")
     public static @NotNull ManagementConnection getInstance() {
         if (sInstance == null) {
             synchronized (ManagementConnection.class) {
@@ -165,7 +165,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @Override
-    @SuppressWarnings({ "NestedAssignment" })
+    @SuppressWarnings("NestedAssignment")
     public @NotNull String executeCommand(@NotNull String command) throws IOException {
         if (!isConnected()) {
             throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
