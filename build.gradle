@@ -49,7 +49,7 @@ buildscript {
 
         classpath 'com.github.SmartDengg.asm-clickdebounce:click-debounce-gradle-plugin:2.1.0'
 
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.6.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.0'
 
         classpath 'gradle.plugin.com.github.konifar.gradle:plugin:0.3.3'
 
