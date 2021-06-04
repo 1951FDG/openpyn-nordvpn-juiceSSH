@@ -134,8 +134,7 @@ dexcount {
 
 configurations {
     implementation {
-        exclude group: 'org.jetbrains.kotlinx', module: 'atomicfu'
-        exclude group: 'org.json', module: 'json'
+        /*exclude group: 'org.jetbrains.kotlinx', module: 'atomicfu'*/
     }
 
     /*debugAndroidTestCompileClasspath {
