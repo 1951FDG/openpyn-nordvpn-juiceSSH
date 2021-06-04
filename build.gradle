@@ -7,7 +7,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'https://jitpack.io' }
     }
@@ -92,8 +91,12 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven { url 'https://jitpack.io' }
+        jcenter() {
+            content {
+                includeGroup('io.ktor')
+            }
+        }
         flatDir {
             dirs 'libs'
         }
