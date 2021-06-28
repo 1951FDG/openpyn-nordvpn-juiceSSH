@@ -21,34 +21,69 @@ import org.slf4j.Logger;
  * @author 1951FDG
  */
 
-abstract class AbstractConnection implements Closeable {
-
-    private static final int DEFAULT_CHAR_BUFFER_SIZE = 8192;
-
-    private @Nullable BufferedReader mBufferedReader = null;
-
-    private @Nullable BufferedWriter mBufferedWriter = null;
+public abstract class AbstractConnection implements Closeable {
 
     private @Nullable String mHost = null;
 
-    private boolean mKeepAlive = false;
+    private @Nullable BufferedReader mIn = null;
+
+    private @Nullable BufferedWriter mOut = null;
 
     private @Nullable Integer mPort = null;
 
     private @Nullable Socket mSocket = null;
 
+    private int mSocketConnectTimeout = 0;
+
+    private int mSocketReadTimeout = 0;
+
     @Override
     public void close() throws IOException {
-        if (mBufferedReader != null) {
-            mBufferedReader.close();
+        if (mIn != null) {
+            mIn.close();
         }
-        if (mBufferedWriter != null) {
-            mBufferedWriter.flush();
-            mBufferedWriter.close();
+        if (mOut != null) {
+            mOut.close();
         }
         if (mSocket != null) {
             mSocket.close();
         }
+    }
+
+    public void connect(@NotNull String host, @NotNull Integer port) throws IOException {
+        connect(host, port, null);
+    }
+
+    @SuppressWarnings("OverlyBroadThrowsClause")
+    public void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
+        @NonNls Logger logger = getLogger();
+        logger.info("Connecting to {}:{}", host, port);
+        mHost = host;
+        mPort = port;
+        mSocket = new Socket();
+        mSocket.setKeepAlive(false);
+        mSocket.setSoTimeout(mSocketReadTimeout);
+        mSocket.setTcpNoDelay(true);
+        mSocket.connect(new InetSocketAddress(host, port), mSocketConnectTimeout);
+        InputStreamReader reader = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
+        mIn = new BufferedReader(reader, 4096);
+        OutputStreamWriter writer = new OutputStreamWriter(mSocket.getOutputStream(), StandardCharsets.UTF_8);
+        mOut = new BufferedWriter(writer, 4096);
+        if ((password != null) && (password.length != 0)) {
+            mOut.write(password);
+            mOut.newLine();
+            mOut.flush();
+        }
+    }
+
+    public void disconnect() throws IOException {
+        @NonNls Logger logger = getLogger();
+        logger.info("Disconnecting");
+        close();
+    }
+
+    public boolean isConnected() {
+        return (mSocket != null) && mSocket.isConnected() && !mSocket.isClosed();
     }
 
     public @Nullable String getHost() {
@@ -59,55 +94,39 @@ abstract class AbstractConnection implements Closeable {
         return mPort;
     }
 
-    public boolean isKeepAlive() {
-        return mKeepAlive;
+    public int getSocketConnectTimeout() {
+        return mSocketConnectTimeout;
     }
 
-    public void setKeepAlive(boolean keepAlive) {
-        mKeepAlive = keepAlive;
-    }
-
-    protected void connect(@NotNull String host, @NotNull Integer port) throws IOException {
-        connect(host, port, null);
-    }
-
-    protected void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
-        @NonNls Logger logger = getLogger();
-        logger.info("Connecting to {}:{}", host, port);
-        mHost = host;
-        mPort = port;
-        mSocket = new Socket();
-        mSocket.connect(new InetSocketAddress(host, port), 1000);
-        mSocket.setKeepAlive(mKeepAlive);
-        mSocket.setTcpNoDelay(true);
-        InputStreamReader in = new InputStreamReader(mSocket.getInputStream(), StandardCharsets.UTF_8);
-        mBufferedReader = new BufferedReader(in, DEFAULT_CHAR_BUFFER_SIZE);
-        OutputStreamWriter out = new OutputStreamWriter(mSocket.getOutputStream(), StandardCharsets.UTF_8);
-        mBufferedWriter = new BufferedWriter(out, DEFAULT_CHAR_BUFFER_SIZE);
-        if ((password != null) && (password.length != 0)) {
-            mBufferedWriter.write(password);
-            mBufferedWriter.newLine();
-            mBufferedWriter.flush();
+    public void setSocketConnectTimeout(int timeout) {
+        if (timeout < 0) {
+            throw new IllegalArgumentException("timeout can not be negative");
         }
+        mSocketConnectTimeout = timeout;
     }
 
-    protected void disconnect() throws IOException {
-        @NonNls Logger logger = getLogger();
-        logger.info("Disconnecting");
-        close();
+    public int getSocketReadTimeout() {
+        return mSocketReadTimeout;
     }
 
-    protected @NotNull BufferedReader getBufferedReader() {
-        return Objects.requireNonNull(mBufferedReader);
-    }
-
-    protected @NotNull BufferedWriter getBufferedWriter() {
-        return Objects.requireNonNull(mBufferedWriter);
+    public void setSocketReadTimeout(int timeout) {
+        if (timeout < 0) {
+            throw new IllegalArgumentException("timeout can not be negative");
+        }
+        mSocketReadTimeout = timeout;
     }
 
     protected abstract @NotNull Logger getLogger();
 
-    protected boolean isConnected() {
-        return (mSocket != null) && mSocket.isConnected() && !mSocket.isClosed();
+    protected @NotNull Socket getSocket() {
+        return Objects.requireNonNull(mSocket);
+    }
+
+    protected @NotNull BufferedReader getSocketInputStream() {
+        return Objects.requireNonNull(mIn);
+    }
+
+    protected @NotNull BufferedWriter getSocketOutputStream() {
+        return Objects.requireNonNull(mOut);
     }
 }

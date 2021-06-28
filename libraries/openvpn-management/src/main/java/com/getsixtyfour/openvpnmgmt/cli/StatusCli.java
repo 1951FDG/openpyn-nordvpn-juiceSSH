@@ -5,6 +5,8 @@ import com.getsixtyfour.openvpnmgmt.api.Status;
 import com.getsixtyfour.openvpnmgmt.core.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.utils.ConnectionUtils;
 
+import java.io.IOException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -62,11 +64,15 @@ public final class StatusCli {
         } catch (ParseException e) {
             LOGGER.error("Cannot parse arguments", e);
         }
-        Connection connection = ManagementConnection.getInstance();
-        connection.connect(host, port);
-        Status status = ConnectionUtils.getVpnStatus(connection);
-        connection.disconnect();
-        System.out.println("OpenVPN status: " + status); //NON-NLS
+        try {
+            Connection connection = ManagementConnection.getInstance();
+            connection.connect(host, port);
+            Status status = ConnectionUtils.getVpnStatus(connection);
+            connection.disconnect();
+            System.out.println("OpenVPN status: " + status); //NON-NLS
+        } catch (IOException e) {
+            LOGGER.error("Cannot get OpenVPN status.", e);
+        }
     }
 
     private static void printInfo(Options o) {

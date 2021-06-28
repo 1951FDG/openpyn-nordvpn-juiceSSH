@@ -53,18 +53,17 @@ public class ConnectionTest {
 
     @After
     public void tearDown() {
-        sConnection.disconnect();
+        sConnection.stop();
     }
 
     /**
      * Test of connect method, of class Connection.
      */
     @Test
-    public void testConnect() {
+    public void testConnect() throws IOException {
         LOGGER.debug("connect");
         sConnection.connect(sHost, sPort, sPassword);
         Assert.assertTrue(sConnection.isConnected());
-        sConnection.run();
     }
 
     /**
@@ -74,7 +73,7 @@ public class ConnectionTest {
     public void testExecuteCommand() throws IOException {
         LOGGER.debug("executeCommand");
         sConnection.connect(sHost, sPort, sPassword);
-        String result = sConnection.executeCommand(Commands.HELP_COMMAND);
+        String result = sConnection.sendCommand(Commands.HELP_COMMAND, 0);
         Assert.assertNotEquals("", result);
         String[] lines = result.split(System.lineSeparator());
         Assert.assertTrue(lines.length > 1);
@@ -85,7 +84,7 @@ public class ConnectionTest {
      * Test of getManagementVersion method, of class Connection.
      */
     @Test
-    public void testGetManagementVersion() {
+    public void testGetManagementVersion() throws IOException {
         LOGGER.debug("getManagementVersion");
         sConnection.connect(sHost, sPort, sPassword);
         String result = ConnectionUtils.getManagementVersion(sConnection);
@@ -97,7 +96,7 @@ public class ConnectionTest {
      * Test of getVpnStatus method, of class Connection.
      */
     @Test
-    public void testGetVpnStatus() {
+    public void testGetVpnStatus() throws IOException {
         LOGGER.debug("getVpnStatus");
         sConnection.connect(sHost, sPort, sPassword);
         Status result = ConnectionUtils.getVpnStatus(sConnection);
@@ -115,7 +114,7 @@ public class ConnectionTest {
      * Test of getVpnVersion method, of class Connection.
      */
     @Test
-    public void testGetVpnVersion() {
+    public void testGetVpnVersion() throws IOException {
         LOGGER.debug("getVpnVersion");
         sConnection.connect(sHost, sPort, sPassword);
         String result = ConnectionUtils.getVpnVersion(sConnection);
@@ -127,9 +126,11 @@ public class ConnectionTest {
      * Test of isVpnActive method, of class Connection.
      */
     @Test
-    public void testIsVpnActive() {
+    public void testIsVpnActive() throws IOException {
         LOGGER.debug("isVpnActive");
-        Assert.assertFalse(sConnection.isVpnActive());
+        sConnection.connect(sHost, sPort, sPassword);
+        boolean result = ConnectionUtils.isVpnActive(sConnection);
+        Assert.assertFalse(result);
     }
 
     /**
@@ -137,9 +138,9 @@ public class ConnectionTest {
      */
     @Test
     public void testRun() {
+        // TODO: test this
         LOGGER.debug("run");
-        sConnection.connect(sHost, sPort, sPassword);
-        sConnection.run();
+        sConnection.start(sHost, sPort, sPassword);
         Assert.assertFalse(sConnection.isConnected());
     }
 
@@ -151,6 +152,6 @@ public class ConnectionTest {
         LOGGER.debug("stopVpn");
         sConnection.connect(sHost, sPort, sPassword);
         Assert.assertTrue(sConnection.isConnected());
-        sConnection.managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, Commands.ARG_SIGTERM));
+        sConnection.sendCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, Commands.ARG_SIGTERM));
     }
 }

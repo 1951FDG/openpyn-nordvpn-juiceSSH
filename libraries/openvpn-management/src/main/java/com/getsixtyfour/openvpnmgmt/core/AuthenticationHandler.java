@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 
-public interface UsernamePasswordHandler {
+public interface AuthenticationHandler {
 
     @Nullable CharSequence getUser();
 

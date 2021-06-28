@@ -1,7 +1,8 @@
 package com.getsixtyfour.openvpnmgmt.api;
 
-import com.getsixtyfour.openvpnmgmt.core.UsernamePasswordHandler;
-import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
+import com.getsixtyfour.openvpnmgmt.core.AuthenticationHandler;
+import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
+import com.getsixtyfour.openvpnmgmt.listeners.ConnectionStateListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
@@ -15,32 +16,31 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 // TODO: make android interface extension with worker thread annotation
-public interface Connection extends Runnable {
+public interface Connection {
 
-    //region ManagementConnection
-    @Nullable String getHost();
+    //region AbstractConnection (Background)
+    void connect(@NotNull String host, @NotNull Integer port) throws IOException;
 
-    @Nullable Integer getPort();
+    void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException;
 
+    void disconnect() throws IOException;
+    //endregion
+
+    //region AbstractConnection
     boolean isConnected();
-
-    boolean isKeepAlive();
-
-    void setKeepAlive(boolean keepAlive);
     //endregion
 
     //region ManagementConnection (Background)
-    void connect(@NotNull String host, @NotNull Integer port);
+    void sendCommand(@NotNull String command) throws IOException;
 
-    void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password);
+    @NotNull String sendCommand(@NotNull String command, int timeoutMillis) throws IOException;
 
-    //TODO: not background necessary?
-    void disconnect();
+    void start(@NotNull String host, @NotNull Integer port, @Nullable char[] password);
+
+    void stop();
     //endregion
 
-    //region OpenVpnConnection
-    boolean isVpnActive();
-
+    //region ManagementConnection
     boolean addOnByteCountChangedListener(@NotNull OnByteCountChangedListener listener);
 
     boolean removeOnByteCountChangedListener(@NotNull OnByteCountChangedListener listener);
@@ -58,16 +58,28 @@ public interface Connection extends Runnable {
     boolean removeOnStateChangedListener(@NotNull OnStateChangedListener listener);
 
     void clearOnStateChangedListeners();
-
-    void setConnectionListener(@Nullable ConnectionListener connectionListener);
-
-    void setUsernamePasswordHandler(@Nullable UsernamePasswordHandler handler);
     //endregion
 
-    //region OpenVpnConnection (Background)
-    @NotNull String executeCommand(@NotNull String command) throws IOException;
+    //region AbstractConnection (Getter and Setter)
+    @Nullable String getHost();
 
-    void managementCommand(@NotNull String command) throws IOException;
+    @Nullable Integer getPort();
+
+    int getSocketConnectTimeout();
+
+    void setSocketConnectTimeout(int timeout);
+
+    int getSocketReadTimeout();
+
+    void setSocketReadTimeout(int timeout);
+    //endregion
+
+    //region ManagementConnection (Getter and Setter)
+    void setAuthenticationHandler(@Nullable AuthenticationHandler handler);
+
+    void setConnectionStateListener(@Nullable ConnectionStateListener listener);
+
+    @NotNull ConnectionStatus getStatus();
     //endregion
     // TODO: mark all the methods to be called on background thread using @WorkerThread
 }

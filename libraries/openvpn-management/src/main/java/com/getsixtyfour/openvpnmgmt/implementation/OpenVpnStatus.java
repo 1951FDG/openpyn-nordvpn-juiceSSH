@@ -31,6 +31,9 @@ import org.slf4j.LoggerFactory;
 public final class OpenVpnStatus extends OpenVpnCommand implements Status {
 
     @NonNls
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnStatus.class);
+
+    @NonNls
     private static final Pattern CLIENTS_HEADER = Pattern.compile("^OpenVPN CLIENT LIST");
 
     @NonNls
@@ -38,9 +41,6 @@ public final class OpenVpnStatus extends OpenVpnCommand implements Status {
 
     @NonNls
     private static final Pattern GLOBAL_STATS = Pattern.compile("GLOBAL STATS");
-
-    @NonNls
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnStatus.class);
 
     @NonNls
     private static final Pattern ROUTES_COLUMNS = Pattern.compile("Virtual Address,Common Name,Real Address,Last Ref");

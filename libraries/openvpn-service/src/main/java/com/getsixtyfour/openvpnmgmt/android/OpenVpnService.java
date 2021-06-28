@@ -10,6 +10,7 @@ import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Process;
 import android.text.format.DateUtils;
 
@@ -29,6 +30,7 @@ import com.getsixtyfour.openvpnmgmt.core.Commands;
 import com.getsixtyfour.openvpnmgmt.core.ConnectionStatus;
 import com.getsixtyfour.openvpnmgmt.core.ManagementConnection;
 import com.getsixtyfour.openvpnmgmt.core.VpnStatus;
+import com.getsixtyfour.openvpnmgmt.listeners.ConnectionStateListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
 import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
@@ -37,6 +39,7 @@ import com.getsixtyfour.openvpnmgmt.utils.StringUtils;
 
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.net.SocketTimeoutException;
 import java.util.Locale;
 
 import org.jetbrains.annotations.NonNls;
@@ -49,10 +52,15 @@ import org.slf4j.LoggerFactory;
  */
 
 @SuppressWarnings({ "OverlyComplexClass", "ClassWithTooManyDependencies" })
-public final class OpenVpnService extends Service implements OnByteCountChangedListener, OnStateChangedListener, UncaughtExceptionHandler {
+public final class OpenVpnService extends Service implements ConnectionStateListener, OnByteCountChangedListener, OnStateChangedListener, UncaughtExceptionHandler {
 
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenVpnService.class);
+
+    private static final boolean DEBUG = false;
+
+    // How long the startForegroundService() grace period is to get around to calling startForeground() before we ANR
+    private static final int SERVICE_START_FOREGROUND_TIMEOUT = 10 * 1000;
 
     private final IBinder mBinder = new IOpenVpnService.Stub() {
         @Override
@@ -61,13 +69,19 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
                 Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE);
                 try {
                     Connection connection = ManagementConnection.getInstance();
-                    connection.managementCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, Commands.ARG_SIGTERM));
+                    connection.sendCommand(String.format(Locale.ROOT, Commands.SIGNAL_COMMAND, Commands.ARG_SIGTERM));
                 } catch (IOException ignored) {
                 }
             });
             thread.start();
         }
     };
+
+    @Nullable
+    private Handler mHandler = null;
+
+    @Nullable
+    private Thread mThread = null;
 
     private boolean mPostByteCountNotification = false;
 
@@ -76,17 +90,12 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
     // TODO: test
     private boolean mSendStateBroadcast = false;
 
+    private int mStartId = 0;
+
     /**
      * the connection start time in UTC milliseconds (could be some time in the past)
      */
     private long mStartTime = 0L;
-
-    @Nullable
-    private Thread mThread = null;
-
-    private int mStartId = 0;
-
-    private static final boolean DEBUG = false;
 
     @CheckResult
     @DrawableRes
@@ -187,18 +196,33 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
             createNotificationChannels(this);
         }
 
+        mHandler = new Handler(Looper.getMainLooper());
+
         Connection connection = ManagementConnection.getInstance();
-        connection.addOnByteCountChangedListener(this);
-        connection.addOnRecordChangedListener(OpenVpnService::onRecordChanged);
-        connection.addOnStateChangedListener(this);
+        connection.addOnByteCountChangedListener((in, out, diffIn, diffOut) -> {
+            mHandler.post(() -> onByteCountChanged(in, out, diffIn, diffOut));
+        });
+        connection.addOnRecordChangedListener(record -> {
+            mHandler.post(() -> onRecordChanged(record));
+        });
+        connection.addOnStateChangedListener(state -> {
+            mHandler.post(() -> onStateChanged(state));
+        });
+        connection.setConnectionStateListener(this);
     }
 
-    @SuppressWarnings("MethodWithMultipleReturnPoints")
+    @SuppressWarnings({ "MethodWithMultipleReturnPoints", "OverlyLongMethod" })
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         LOGGER.debug("onStartCommand");
         if (intent == null) {
             throw new IllegalArgumentException("intent can't be null");
+        }
+
+        // Perform the action after return from here, make a delay, otherwise the system might try to restart the
+        // service if the process dies before the system realize it's asking for START_NOT_STICKY.
+        if (mHandler != null) {
+            mHandler.postDelayed(() -> doAction(intent), Constants.WAIT_FOR_SETTLE_DOWN);
         }
 
         if (mStartId > 0) {
@@ -211,43 +235,44 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
         mPostStateNotification = intent.getBooleanExtra(Constants.EXTRA_POST_STATE_NOTIFICATION, false);
         mSendStateBroadcast = intent.getBooleanExtra(Constants.EXTRA_SEND_STATE_BROADCAST, false);
 
-        String host = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_HOST), Constants.DEFAULT_REMOTE_SERVER);
-        int port = intent.getIntExtra(Constants.EXTRA_PORT, Constants.DEFAULT_REMOTE_PORT);
+        String host = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_HOST), Constants.DEFAULT_SERVER_IP);
+        int port = intent.getIntExtra(Constants.EXTRA_PORT, Constants.DEFAULT_SERVER_PORT);
         char[] password = intent.getCharArrayExtra(Constants.EXTRA_PASSWORD);
 
         String userName = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_VPN_USERNAME), "");
         String userPass = StringUtils.defaultIfBlank(intent.getStringExtra(Constants.EXTRA_VPN_PASSWORD), "");
 
+        // Always show notification here to avoid problem with startForeground timeout
+        String title = getString(R.string.vpn_title_status, getString(getLocalizedState(VpnStatus.DISCONNECTED)));
+        String text = getString(R.string.vpn_title_message, host, port);
+        long when = mPostByteCountNotification ? 0L : mStartTime;
+        int icon = getIconByConnectionStatus(VpnStatus.getLevel(VpnStatus.DISCONNECTED, null));
+        Notification notification = createNotification(this, title, text, Constants.NEW_STATUS_CHANNEL_ID, when, icon);
+        startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
+
         // Start a background thread that handles incoming messages of the management interface
         mThread = new Thread(() -> {
+            LOGGER.info("OpenVPN Management started in background thread: \"{}\"", Constants.THREAD_NAME);
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             if (DEBUG) {
                 // When a socket is created, it inherits the tag of its creating thread
                 TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);
             }
             Connection connection = ManagementConnection.getInstance();
-            connection.setUsernamePasswordHandler(new OpenVpnHandler(userName, userPass));
-            connection.connect(host, port, password);
-            connection.run();
+            connection.setSocketConnectTimeout(ManagementConnection.SOCKET_CONNECT_TIMEOUT);
+            connection.setSocketReadTimeout(0);
+            connection.setAuthenticationHandler(new OpenVpnHandler(userName, userPass));
+            connection.start(host, port, password);
+            LOGGER.info("OpenVPN Management stopped in background thread: \"{}\"", Constants.THREAD_NAME);
         }, Constants.THREAD_NAME);
+
         // Report death-by-uncaught-exception
-        mThread.setUncaughtExceptionHandler(this); // Apps can replace the default handler, but not the pre handler
+        mThread.setUncaughtExceptionHandler((t, e) -> {
+            mHandler.post(() -> uncaughtException(t, e));
+        });
         mThread.start();
 
         return START_NOT_STICKY;
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(@Nullable Intent intent) {
-        LOGGER.debug("onBind");
-        return (intent != null) ? mBinder : null;
-    }
-
-    @Override
-    public boolean onUnbind(@Nullable Intent intent) {
-        LOGGER.debug("onUnbind");
-        return false;
     }
 
     @Override
@@ -270,17 +295,41 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
             }
         }
 
-        if (mThread != null) {
-            mThread.setUncaughtExceptionHandler(null);
-            mThread = null;
-        }
-
         Connection connection = ManagementConnection.getInstance();
         connection.clearOnByteCountChangedListeners();
         connection.clearOnRecordChangedListeners();
         connection.clearOnStateChangedListeners();
+        connection.setConnectionStateListener(null);
 
-        connection.disconnect();
+        if (mThread != null) {
+            mThread.setUncaughtExceptionHandler((t, e) -> {
+            });
+            mThread.interrupt();
+            mThread = null;
+        }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(@Nullable Intent intent) {
+        LOGGER.debug("onBind");
+        return (intent != null) ? mBinder : null;
+    }
+
+    @Override
+    public boolean onUnbind(@Nullable Intent intent) {
+        LOGGER.debug("onUnbind");
+        return false;
+    }
+
+    @Override
+    public void onConnect(@NonNull Thread t) {
+        LOGGER.info("Connected");
+    }
+
+    @Override
+    public void onDisconnect(@NonNull Thread t) {
+        LOGGER.info("Disconnected");
     }
 
     @Override
@@ -382,6 +431,9 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
         }
     }
 
+    /**
+     * Logs a message when a thread encounters an uncaught exception
+     */
     @SuppressWarnings({ "HardCodedStringLiteral", "HardcodedLineSeparator", "StringBufferWithoutInitialCapacity", "unused" })
     private static void logUncaught(@NonNull String threadName, @Nullable String processName, int pid, @NonNull Throwable e) {
         StringBuilder message = new StringBuilder();
@@ -398,17 +450,24 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
     @SuppressWarnings({ "OverlyLongMethod", "ImplicitNumericConversion" })
     @Override
     public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
-        // Logs a message when a thread encounters an uncaught exception
-        // logUncaught(t.getName(), getPackageName(), Process.myPid(), e); // Handled by the pre handler
+        // Apps can replace the default handler, but not the pre handler
+        // logUncaught(t.getName(), getPackageName(), Process.myPid(), e);
 
-        // Always show notification here to avoid problem with startForeground timeout
+        if ((e instanceof RuntimeException) && (e.getCause() instanceof IOException)) {
+            e = e.getCause();
+        }
+
         if (!(e instanceof ThreadDeath)) {
             Class<? extends Throwable> aClass = e.getClass();
-
             String title = getString(R.string.vpn_msg_error, aClass.getSimpleName());
             @Nullable @NonNls String bigText = e.getMessage();
             @Nullable @NonNls String text = Utils.getTopLevelCauseMessage(e);
             int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_UNKNOWN);
+
+            if ((e instanceof SocketTimeoutException) && "Read timed out".equals(bigText)) {
+                bigText += String.format(Locale.ROOT, " after %dms", ManagementConnection.SOCKET_READ_TIMEOUT);
+                text = bigText;
+            }
 
             if ((text != null) && (bigText != null)) {
                 if (text.length() < bigText.length()) {
@@ -444,14 +503,18 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
                 builder.addAction(R.drawable.ic_close_white, getString(R.string.vpn_action_issue), pendingIntent);
             }
 
+            intent = new Intent(this, OpenVpnService.class);
+            intent.setAction(Constants.ACTION_EXIT);
+            intent.putExtra(Constants.EXTRA_ACTION, Constants.TYPE_FINISH);
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.addAction(R.drawable.ic_close_white, getString(R.string.action_close), pendingIntent);
+
             Notification notification = builder.build();
             startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
         }
 
-        if (t.equals(getMainLooper().getThread())) {
+        if (e instanceof ThreadDeath) {
             stopSelf();
-        } else {
-            new Handler(getMainLooper()).post(this::stopSelf);
         }
     }
 
@@ -503,6 +566,26 @@ public final class OpenVpnService extends Service implements OnByteCountChangedL
             builder.setImportance(NotificationManagerCompat.IMPORTANCE_DEFAULT);
             builder.setName(name);
             notificationManager.createNotificationChannel(builder.build());
+        }
+    }
+
+    private void doAction(Intent intent) {
+        if (Constants.ACTION_EXIT.equals(intent.getAction())) {
+            int action = intent.getIntExtra(Constants.EXTRA_ACTION, Constants.TYPE_NONE);
+            switch (action) {
+                case Constants.TYPE_FINISH:
+                    stopSelf();
+                    break;
+                case Constants.TYPE_EXIT:
+                    System.exit(0);
+                    break; // Shouldn't be reachable
+                case Constants.TYPE_KILL:
+                    Process.sendSignal(Process.myPid(), Process.SIGNAL_KILL);
+                    break; // Shouldn't be reachable
+                case Constants.TYPE_NONE:
+                default:
+                    break;
+            }
         }
     }
 }

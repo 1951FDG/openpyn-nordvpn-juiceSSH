@@ -12,8 +12,11 @@
 
     <string name="byteSizeSuffix" translatable="false"><xliff:g example="123" id="number">%1$s</xliff:g> <xliff:g example="MB" id="unit">%2$s</xliff:g></string>
 
+    <string name="action_close">Close</string>
+
     <string name="vpn_service_name" translatable="false">​OpenVPN Management Client</string>
 
+    <string name="vpn_title_message" translatable="false">Connecting to %s ( port %d)</string>
     <string name="vpn_title_status" translatable="false">OpenVPN: %s</string>
     <string name="vpn_msg_byte_count" translatable="false"><xliff:g example="8.0 Mbit/s" id="d/l speed">↓%2$s</xliff:g> <xliff:g example="1.0 MB" id="downloaded">%1$s</xliff:g> - <xliff:g example="8.0 Mbit/s" id="u/l speed">↑%4$s</xliff:g> <xliff:g example="1.0 MB" id="uploaded">%3$s</xliff:g></string>
 

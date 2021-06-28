@@ -20,7 +20,6 @@
         <service
             android:name="com.getsixtyfour.openvpnmgmt.android.OpenVpnService"
             android:exported="false"
-            android:label="@string/vpn_service_name"
-            android:process=":remote" />
+            android:label="@string/vpn_service_name" />
     </application>
 </manifest>

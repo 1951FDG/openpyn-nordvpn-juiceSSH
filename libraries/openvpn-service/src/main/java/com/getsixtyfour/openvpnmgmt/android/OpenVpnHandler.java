@@ -2,9 +2,13 @@ package com.getsixtyfour.openvpnmgmt.android;
 
 import androidx.annotation.NonNull;
 
-import com.getsixtyfour.openvpnmgmt.core.UsernamePasswordHandler;
+import com.getsixtyfour.openvpnmgmt.core.AuthenticationHandler;
 
-final class OpenVpnHandler implements UsernamePasswordHandler {
+/**
+ * @author 1951FDG
+ */
+
+final class OpenVpnHandler implements AuthenticationHandler {
 
     private final CharSequence mUser;
 

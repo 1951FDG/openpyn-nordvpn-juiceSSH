@@ -10,43 +10,40 @@ import org.jetbrains.annotations.NonNls;
 final class Constants {
 
     @NonNls
-    static final String AUTH_TOKEN_PREFIX = "Auth-Token:";
+    static final String MSG_NOT_SUPPORTED_YET = "Not supported yet";
 
     @NonNls
-    static final String ENTER_PASSWORD_PREFIX = "ENTER PASSWORD:";
+    static final String MSG_SOCKET_IS_NOT_CONNECTED = "Socket is not connected";
 
     @NonNls
-    static final String ERROR_PREFIX = "ERROR:";
+    static final String PREFIX_AUTH_TOKEN = "Auth-Token:";
 
     @NonNls
-    static final String MANAGEMENT_CMD_PREFIX = "MANAGEMENT: CMD";
+    static final String PREFIX_ENTER_PASSWORD = "ENTER PASSWORD:";
 
     @NonNls
-    static final String NEED_PREFIX = "Need";
+    static final String PREFIX_ERROR = "ERROR:";
 
     @NonNls
-    static final String NOTE_PREFIX = "NOTE:";
+    static final String PREFIX_MANAGEMENT_CMD = "MANAGEMENT: CMD";
 
     @NonNls
-    static final String SUCCESS_PREFIX = "SUCCESS:";
+    static final String PREFIX_NEED = "Need";
 
     @NonNls
-    static final String VERIFICATION_FAILED_PREFIX = "Verification Failed";
+    static final String PREFIX_NOTE = "NOTE:";
 
     @NonNls
-    static final String WAITING_FOR_HOLD_RELEASE_PREFIX = "Waiting for hold release";
+    static final String PREFIX_SUCCESS = "SUCCESS:";
 
     @NonNls
-    static final String WARNING_PREFIX = "WARNING:";
+    static final String PREFIX_VERIFICATION_FAILED = "Verification Failed";
 
     @NonNls
-    static final String NOT_SUPPORTED_YET = "Not supported yet";
+    static final String PREFIX_WAITING_FOR_HOLD_RELEASE = "Waiting for hold release";
 
     @NonNls
-    static final String SOCKET_IS_NOT_CONNECTED = "Socket is not connected";
-
-    @NonNls
-    static final String STREAM_CLOSED = "Stream closed";
+    static final String PREFIX_WARNING = "WARNING:";
 
     private Constants() {
     }

@@ -1,7 +1,7 @@
 package com.getsixtyfour.openvpnmgmt.core;
 
 import com.getsixtyfour.openvpnmgmt.api.Connection;
-import com.getsixtyfour.openvpnmgmt.listeners.ConnectionListener;
+import com.getsixtyfour.openvpnmgmt.listeners.ConnectionStateListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnStateChangedListener;
@@ -30,13 +30,19 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({ "Singleton", "OverlyComplexClass", "ClassWithTooManyDependencies" })
 public final class ManagementConnection extends AbstractConnection implements Connection {
 
+    @NonNls
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
+
     public static final Integer BYTE_COUNT_INTERVAL = 2;
 
-    @NonNls
-    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
+    public static final int SOCKET_CONNECT_TIMEOUT = 1000;
 
-    @Nullable
-    private static volatile ManagementConnection sInstance = null;
+    /**
+     * Maximum time to wait on Socket.getInputStream().read() (in milliseconds)
+     */
+    public static final int SOCKET_READ_TIMEOUT = 2000;
+
+    private static volatile @Nullable ManagementConnection sInstance = null;
 
     private final CopyOnWriteArraySet<OnByteCountChangedListener> mByteCountChangedListeners;
 
@@ -46,11 +52,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private final TrafficHistory mTrafficHistory;
 
-    private @Nullable ConnectionListener mConnectionListener;
+    private @Nullable AuthenticationHandler mAuthenticationHandler;
 
-    private ConnectionStatus mLastLevel = ConnectionStatus.LEVEL_NOT_CONNECTED;
+    private @Nullable ConnectionStateListener mConnectionStateListener;
 
-    private @Nullable UsernamePasswordHandler mUsernamePasswordHandler;
+    private ConnectionStatus mStatus = ConnectionStatus.LEVEL_NOT_CONNECTED;
 
     private ManagementConnection() {
         mByteCountChangedListeners = new CopyOnWriteArraySet<>();
@@ -69,6 +75,114 @@ public final class ManagementConnection extends AbstractConnection implements Co
             }
         }
         return sInstance;
+    }
+
+    @Override
+    public void connect(@NotNull String host, @NotNull Integer port) throws IOException {
+        connect(host, port, null);
+    }
+
+    @Override
+    public void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
+        if (isConnected()) {
+            return;
+        }
+        super.connect(host, port, password);
+        onConnect();
+    }
+
+    @Override
+    public void disconnect() throws IOException {
+        if (!isConnected()) {
+            return;
+        }
+        super.disconnect();
+        onDisconnect();
+    }
+
+    @Override
+    public void sendCommand(@NotNull String command) throws IOException {
+        if (!isConnected()) {
+            throw new IOException(Constants.MSG_SOCKET_IS_NOT_CONNECTED);
+        }
+        BufferedWriter out = getSocketOutputStream();
+        out.write(command);
+        out.newLine();
+        out.flush();
+    }
+
+    @Override
+    public @NotNull String sendCommand(@NotNull String command, int timeoutMillis) throws IOException {
+        if (!isConnected()) {
+            throw new IOException(Constants.MSG_SOCKET_IS_NOT_CONNECTED);
+        }
+        sendCommand(command);
+        getSocket().setSoTimeout(timeoutMillis);
+        StringBuilder sb = new StringBuilder(256);
+        BufferedReader in = getSocketInputStream();
+        while (!Thread.currentThread().isInterrupted()) {
+            @NonNls String line = in.readLine();
+            // End of stream
+            if (line == null) {
+                break;
+            }
+            // For commands which print multiple lines of output, the last line will be "END"
+            if ("END".equals(line)) {
+                break;
+            }
+            if (!line.isEmpty()) {
+                // LOGGER.info("Read from socket line: {}", line);
+                sb.append(line);
+                sb.append(System.lineSeparator());
+            }
+        }
+        getSocket().setSoTimeout(getSocketReadTimeout());
+        return sb.toString();
+    }
+
+    @Override
+    public void start(@NotNull String host, @NotNull Integer port, @Nullable char[] password) {
+        try {
+            connect(host, port, password);
+            // Ensures state listeners are notified of current state if OpenVPN is already connected
+            String output = sendCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""), SOCKET_READ_TIMEOUT);
+            String[] lines = output.split(System.lineSeparator());
+            String argument = (lines.length >= 1) ? lines[lines.length - 1] : "";
+            if (!argument.isEmpty() && !argument.contains(VpnStatus.AUTH_FAILURE)) {
+                processState(argument);
+            }
+            sendCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
+            sendCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Commands.ARG_ON));
+            sendCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, Commands.ARG_ON));
+            sendCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, Commands.ARG_RELEASE));
+            BufferedReader in = getSocketInputStream();
+            while (!Thread.currentThread().isInterrupted()) {
+                @NonNls String line = in.readLine();
+                // End of stream
+                if (line == null) {
+                    break;
+                }
+                if (!line.isEmpty()) {
+                    // LOGGER.info("Read from socket line: {}", line);
+                    parseInput(line);
+                }
+            }
+            throw new ThreadDeath();
+        } catch (IOException e) {
+            // UncheckedIOException requires Android N
+            //noinspection ProhibitedExceptionThrown
+            throw new RuntimeException(e);
+        } finally {
+            stop();
+        }
+    }
+
+    @Override
+    public void stop() {
+        try {
+            disconnect();
+        } catch (IOException ignored) {
+        }
     }
 
     @Override
@@ -117,143 +231,23 @@ public final class ManagementConnection extends AbstractConnection implements Co
     }
 
     @Override
-    public void connect(@NotNull String host, @NotNull Integer port) {
-        connect(host, port, null);
+    public void setAuthenticationHandler(@Nullable AuthenticationHandler handler) {
+        mAuthenticationHandler = handler;
     }
 
     @Override
-    public void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) {
-        if (isConnected()) {
-            return;
-        }
-        try {
-            super.connect(host, port, password);
-        } catch (IOException e) {
-            onConnectError(e);
-            return;
-        }
-        try {
-            // Ensures state listeners are notified of current state if OpenVPN is already connected
-            String output = executeCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""));
-            String[] lines = output.split(System.lineSeparator());
-            String line = (lines.length >= 1) ? lines[lines.length - 1] : "";
-            if (!line.isEmpty() && !line.contains(VpnStatus.AUTH_FAILURE)) {
-                processState(line);
-            }
-        } catch (IOException e) {
-            onConnectError(e);
-            return;
-        }
-        onConnected();
+    public void setConnectionStateListener(@Nullable ConnectionStateListener listener) {
+        mConnectionStateListener = listener;
     }
 
     @Override
-    public void disconnect() {
-        if (!isConnected()) {
-            return;
-        }
-        try {
-            super.disconnect();
-        } catch (IOException ignored) {
-        }
-        onDisconnected();
-    }
-
-    @Override
-    public boolean isConnected() {
-        return super.isConnected();
-    }
-
-    @Override
-    @SuppressWarnings("NestedAssignment")
-    public @NotNull String executeCommand(@NotNull String command) throws IOException {
-        if (!isConnected()) {
-            throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
-        }
-        StringBuilder sb = new StringBuilder(256);
-        BufferedWriter out = getBufferedWriter();
-        out.write(command);
-        out.newLine();
-        out.flush();
-        BufferedReader in = getBufferedReader();
-        @NonNls String line;
-        while ((line = in.readLine()) != null) {
-            if (!line.isEmpty()) {
-                if ("END".equals(line)) {
-                    break;
-                }
-                // LOGGER.info("Read from socket line: {}", line);
-                sb.append(line);
-                sb.append(System.lineSeparator());
-            }
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public void managementCommand(@NotNull String command) throws IOException {
-        if (!isConnected()) {
-            throw new IOException(Constants.SOCKET_IS_NOT_CONNECTED);
-        }
-        BufferedWriter out = getBufferedWriter();
-        out.write(command);
-        out.newLine();
-        out.flush();
+    public @NotNull ConnectionStatus getStatus() {
+        return mStatus;
     }
 
     @Override
     protected @NotNull Logger getLogger() {
         return LOGGER;
-    }
-
-    @Override
-    public boolean isVpnActive() {
-        return (mLastLevel != ConnectionStatus.LEVEL_NOT_CONNECTED) && (mLastLevel != ConnectionStatus.LEVEL_AUTH_FAILED);
-    }
-
-    @SuppressWarnings({ "NestedAssignment", "ThrowSpecificExceptions" })
-    @Override
-    public void run() {
-        if (!isConnected()) {
-            // UncheckedIOException requires Android N
-            //noinspection ProhibitedExceptionThrown
-            throw new RuntimeException(new IOException(Constants.SOCKET_IS_NOT_CONNECTED));
-        }
-        Thread t = Thread.currentThread();
-        LOGGER.info("OpenVPN Management started in background thread: \"{}\"", t.getName());
-        try {
-            managementCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
-            managementCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Commands.ARG_ON));
-            managementCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, Commands.ARG_ON));
-            managementCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, Commands.ARG_RELEASE));
-            BufferedReader in = getBufferedReader();
-            @NonNls String line;
-            while ((line = in.readLine()) != null) {
-                if (!line.isEmpty()) {
-                    // LOGGER.info("Read from socket line: {}", line);
-                    parseInput(line);
-                }
-            }
-        } catch (IOException e) {
-            if (!Constants.STREAM_CLOSED.equals(e.getMessage())) {
-                LOGGER.error("", e);
-            }
-        }
-        LOGGER.info("OpenVPN Management stopped in background thread: \"{}\"", t.getName());
-        Thread.UncaughtExceptionHandler eh = t.getUncaughtExceptionHandler();
-        if ((eh != null) && !(eh instanceof ThreadGroup)) {
-            eh.uncaughtException(t, new ThreadDeath());
-        }
-    }
-
-    @Override
-    public void setConnectionListener(@Nullable ConnectionListener connectionListener) {
-        mConnectionListener = connectionListener;
-    }
-
-    @Override
-    public void setUsernamePasswordHandler(@Nullable UsernamePasswordHandler handler) {
-        mUsernamePasswordHandler = handler;
     }
 
     private void dispatchOnByteCountChanged(@NotNull TrafficHistory.TrafficDataPoint tdp) {
@@ -275,34 +269,21 @@ public final class ManagementConnection extends AbstractConnection implements Co
         }
     }
 
-    private void onConnectError(@NotNull Throwable e) {
-        if ((e instanceof IllegalArgumentException) || (e instanceof IOException)) {
-            LOGGER.error("", e);
-        } else {
-            LOGGER.error("Unknown exception thrown:", e);
-        }
-        ConnectionListener listener = mConnectionListener;
+    private void onConnect() {
+        ConnectionStateListener listener = mConnectionStateListener;
         if (listener != null) {
-            listener.onConnectError(Thread.currentThread(), e);
+            listener.onConnect(Thread.currentThread());
         }
     }
 
-    private void onConnected() {
-        LOGGER.info("Connected");
-        ConnectionListener listener = mConnectionListener;
+    private void onDisconnect() {
+        ConnectionStateListener listener = mConnectionStateListener;
         if (listener != null) {
-            listener.onConnected(Thread.currentThread());
+            listener.onDisconnect(Thread.currentThread());
         }
     }
 
-    private void onDisconnected() {
-        LOGGER.info("Disconnected");
-        ConnectionListener listener = mConnectionListener;
-        if (listener != null) {
-            listener.onDisconnected(Thread.currentThread());
-        }
-    }
-
+    // TODO: add line info to exception messages
     @SuppressWarnings({ "IfStatementWithTooManyBranches", "ProhibitedExceptionCaught" })
     private void parseInput(@NotNull String line) throws IOException {
         if (line.startsWith(">") && line.contains(":")) {
@@ -310,19 +291,18 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 process(line);
             } catch (UnsupportedOperationException e) {
                 LOGGER.error("Got unsupported line: {}", line);
-                throw new IOException(e);
+                throw e;
             } catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException | NumberFormatException e) {
                 LOGGER.error("Could not parse line: {}", line);
                 throw e;
             }
-        } else if (line.startsWith(Constants.SUCCESS_PREFIX)) {
-            LOGGER.info(line.substring(Constants.SUCCESS_PREFIX.length() + 1));
-        } else if (line.startsWith(Constants.ERROR_PREFIX)) {
+        } else if (line.startsWith(Constants.PREFIX_SUCCESS)) {
+            LOGGER.info(line.substring(Constants.PREFIX_SUCCESS.length() + 1));
+        } else if (line.startsWith(Constants.PREFIX_ERROR)) {
             // TODO:
-            LOGGER.error(line.substring(Constants.ERROR_PREFIX.length() + 1));
-            // throw new IOException(STREAM_CLOSED);
-        } else if (line.startsWith(Constants.ENTER_PASSWORD_PREFIX)) {
-            parseInput(line.substring(Constants.ENTER_PASSWORD_PREFIX.length()));
+            LOGGER.error(line.substring(Constants.PREFIX_ERROR.length() + 1));
+        } else if (line.startsWith(Constants.PREFIX_ENTER_PASSWORD)) {
+            parseInput(line.substring(Constants.PREFIX_ENTER_PASSWORD.length()));
         } else {
             LOGGER.error("Got unrecognized line: {}", line);
         }
@@ -369,7 +349,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             case "PK_SIGN":
             case "PROXY":
             case "RSA_SIGN":
-                throw new UnsupportedOperationException(Constants.NOT_SUPPORTED_YET);
+                throw new UnsupportedOperationException(Constants.MSG_NOT_SUPPORTED_YET);
             default:
                 LOGGER.error("Got unrecognized command: {}", cmd); //NON-NLS
                 break;
@@ -384,11 +364,11 @@ public final class ManagementConnection extends AbstractConnection implements Co
         dispatchOnByteCountChanged(tdp);
     }
 
-    private void processHold(@NotNull String argument) throws IOException {
+    private void processHold(@NotNull String argument) {
         // Close connection if AUTH has failed
-        if ((mLastLevel == ConnectionStatus.LEVEL_AUTH_FAILED) && argument.startsWith(Constants.WAITING_FOR_HOLD_RELEASE_PREFIX)) {
+        if ((mStatus == ConnectionStatus.LEVEL_AUTH_FAILED) && argument.startsWith(Constants.PREFIX_WAITING_FOR_HOLD_RELEASE)) {
             LOGGER.error("Verification Error");
-            throw new IOException(Constants.STREAM_CLOSED);
+            throw new IllegalStateException("AUTH has failed");
         }
     }
 
@@ -426,13 +406,13 @@ public final class ManagementConnection extends AbstractConnection implements Co
                 logLevel = LogLevel.UNKNOWN;
                 break;
         }
-        if (message.startsWith(Constants.MANAGEMENT_CMD_PREFIX)) {
+        if (message.startsWith(Constants.PREFIX_MANAGEMENT_CMD)) {
             logLevel = LogLevel.VERBOSE;
-        } else if (message.startsWith(Constants.WARNING_PREFIX)) {
+        } else if (message.startsWith(Constants.PREFIX_WARNING)) {
             logLevel = LogLevel.WARNING;
-            message = message.substring(Constants.WARNING_PREFIX.length() + 1);
-        } else if (message.startsWith(Constants.NOTE_PREFIX)) {
-            message = message.substring(Constants.NOTE_PREFIX.length() + 1);
+            message = message.substring(Constants.PREFIX_WARNING.length() + 1);
+        } else if (message.startsWith(Constants.PREFIX_NOTE)) {
+            message = message.substring(Constants.PREFIX_NOTE.length() + 1);
         }
         OpenVpnLogRecord record = new OpenVpnLogRecord(time, logLevel, message);
         dispatchOnRecordChanged(record);
@@ -440,13 +420,13 @@ public final class ManagementConnection extends AbstractConnection implements Co
 
     private void processPassword(@NotNull String argument) throws IOException {
         // Ignore Auth token message, already managed by OpenVPN itself
-        if (argument.startsWith(Constants.AUTH_TOKEN_PREFIX)) {
+        if (argument.startsWith(Constants.PREFIX_AUTH_TOKEN)) {
             return;
         }
-        if (argument.startsWith(Constants.VERIFICATION_FAILED_PREFIX)) {
+        if (argument.startsWith(Constants.PREFIX_VERIFICATION_FAILED)) {
             return;
         }
-        if (argument.startsWith(Constants.NEED_PREFIX)) {
+        if (argument.startsWith(Constants.PREFIX_NEED)) {
             String s = "'";
             int p1 = argument.indexOf(s);
             int p2 = argument.indexOf(s, p1 + 1);
@@ -454,7 +434,7 @@ public final class ManagementConnection extends AbstractConnection implements Co
             LOGGER.info("OpenVPN requires Authentication type {}", type);
             CharSequence strUsername = null;
             CharSequence strPassword = null;
-            UsernamePasswordHandler handler = mUsernamePasswordHandler;
+            AuthenticationHandler handler = mAuthenticationHandler;
             if (handler != null) {
                 strUsername = handler.getUser();
                 strPassword = handler.getPassword();
@@ -463,12 +443,12 @@ public final class ManagementConnection extends AbstractConnection implements Co
             CharSequence username = StringUtils.defaultIfBlank(StringUtils.escapeString(strUsername), ellipsis);
             CharSequence password = StringUtils.defaultIfBlank(StringUtils.escapeString(strPassword), ellipsis);
             if ("Auth".equals(type)) {
-                managementCommand(String.format(Locale.ROOT, Commands.USERNAME_COMMAND, type, username));
-                managementCommand(String.format(Locale.ROOT, Commands.PASSWORD_COMMAND, type, password));
+                sendCommand(String.format(Locale.ROOT, Commands.USERNAME_COMMAND, type, username));
+                sendCommand(String.format(Locale.ROOT, Commands.PASSWORD_COMMAND, type, password));
             } else if ("Private Key".equals(type)) {
-                managementCommand(String.format(Locale.ROOT, Commands.PASSWORD_COMMAND, type, password));
+                sendCommand(String.format(Locale.ROOT, Commands.PASSWORD_COMMAND, type, password));
             } else {
-                throw new UnsupportedOperationException(Constants.NOT_SUPPORTED_YET);
+                throw new UnsupportedOperationException(Constants.MSG_NOT_SUPPORTED_YET);
             }
         }
     }
@@ -479,12 +459,12 @@ public final class ManagementConnection extends AbstractConnection implements Co
         String name = state.getName();
         String message = state.getDescription();
         // Workaround for OpenVPN doing AUTH and WAIT while being connected, simply ignore these state
-        if ((mLastLevel == ConnectionStatus.LEVEL_CONNECTED) && (VpnStatus.WAIT.equals(name) || VpnStatus.AUTH.equals(name))) {
-            LOGGER.info("Ignoring OpenVPN Status in CONNECTED state ({}->{}): {}", name, mLastLevel, message);
+        if ((mStatus == ConnectionStatus.LEVEL_CONNECTED) && (VpnStatus.WAIT.equals(name) || VpnStatus.AUTH.equals(name))) {
+            LOGGER.info("Ignoring OpenVPN Status in CONNECTED state ({}->{}): {}", name, mStatus, message);
         } else {
             dispatchOnStateChanged(state);
-            mLastLevel = VpnStatus.getLevel(name, message);
-            LOGGER.info("New OpenVPN Status ({}->{}): {}", name, mLastLevel, message);
+            mStatus = VpnStatus.getLevel(name, message);
+            LOGGER.info("New OpenVPN Status ({}->{}): {}", name, mStatus, message);
         }
     }
 }

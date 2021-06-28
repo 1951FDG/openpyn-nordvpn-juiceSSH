@@ -1,8 +1,8 @@
 package com.getsixtyfour.openvpnmgmt.net;
 
+import com.getsixtyfour.openvpnmgmt.core.AuthenticationHandler;
 import com.getsixtyfour.openvpnmgmt.core.LogLevel;
 import com.getsixtyfour.openvpnmgmt.core.ManagementConnection;
-import com.getsixtyfour.openvpnmgmt.core.UsernamePasswordHandler;
 import com.getsixtyfour.openvpnmgmt.listeners.OnByteCountChangedListener;
 import com.getsixtyfour.openvpnmgmt.listeners.OnRecordChangedListener;
 import com.getsixtyfour.openvpnmgmt.model.OpenVpnLogRecord;
@@ -142,7 +142,7 @@ public class ManagementConnectionTest {
         line = ">PASSWORD:Verification Failed: 'Private Key'";
         invokeParseInput(line);
         line = ">PASSWORD:Need 'Auth' username/password";
-        sConnection.setUsernamePasswordHandler(new UsernamePasswordHandler() {
+        sConnection.setAuthenticationHandler(new AuthenticationHandler() {
             @Nullable
             @Override
             public String getUser() {

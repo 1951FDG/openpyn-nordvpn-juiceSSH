@@ -46,7 +46,6 @@ public final class OpenVpnClient implements Client {
             InetSocketAddress realIpSocket = new InetSocketAddress(realAddress, port);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT, Locale.ENGLISH);
             LocalDateTime date = LocalDateTime.parse(strings[4], formatter);
-
             mCommonName = strings[0];
             mIpAddress = realIpSocket;
             mReceivedBytes = Long.parseLong(strings[2]);

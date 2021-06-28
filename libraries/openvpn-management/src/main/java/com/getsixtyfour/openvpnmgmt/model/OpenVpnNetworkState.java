@@ -4,6 +4,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * @author 1951FDG
+ */
+
 public final class OpenVpnNetworkState {
 
     /**

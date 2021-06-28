@@ -65,10 +65,17 @@
             android:exported="false"
             android:stateNotNeeded="true"
             android:theme="@style/Theme.AppSettingsDialogHost" />
+        <!-- Private provider -->
         <provider
             android:name=".provider.AppInitProvider"
             android:authorities="${applicationId}.appinitprovider"
             android:exported="false" />
+        <!-- Private service -->
+        <service
+            android:name="com.getsixtyfour.openvpnmgmt.android.OpenVpnService"
+            android:exported="false"
+            android:label="@string/vpn_service_name"
+            android:process=":remote" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

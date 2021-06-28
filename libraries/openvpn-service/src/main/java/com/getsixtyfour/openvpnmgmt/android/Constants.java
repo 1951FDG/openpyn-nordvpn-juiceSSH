@@ -24,19 +24,35 @@ public final class Constants {
 
     public static final int THREAD_STATS_TAG = 0x42;
 
-    static final int DEFAULT_REMOTE_PORT = 23;
+    public static final int TYPE_NONE = 0;
+
+    public static final int TYPE_FINISH = 1;
+
+    public static final int TYPE_EXIT = 2;
+
+    public static final int TYPE_KILL = 3;
 
     @NonNls
-    static final String DEFAULT_REMOTE_SERVER = "192.168.1.1";
+    static final String DEFAULT_SERVER_IP = "192.168.1.1";
+
+    static final int DEFAULT_SERVER_PORT = 23;
+
+    static final long WAIT_FOR_SETTLE_DOWN = 2000L;
 
     @NonNls
     private static final String INTENT_PACKAGE_PREFIX = "com.getsixtyfour.openvpnmgmt.android";
+
+    @NonNls
+    public static final String EXTRA_ACTION = INTENT_PACKAGE_PREFIX + ".extra.ACTION";
 
     @NonNls
     public static final String EXTRA_MESSAGE = INTENT_PACKAGE_PREFIX + ".extra.MESSAGE";
 
     @NonNls
     public static final String EXTRA_STATE = INTENT_PACKAGE_PREFIX + ".extra.STATE";
+
+    @NonNls
+    public static final String ACTION_EXIT = INTENT_PACKAGE_PREFIX + ".action.EXIT";
 
     @NonNls
     public static final String ACTION_VPN_STATE_CHANGED = INTENT_PACKAGE_PREFIX + ".action.VPN_STATE_CHANGED";

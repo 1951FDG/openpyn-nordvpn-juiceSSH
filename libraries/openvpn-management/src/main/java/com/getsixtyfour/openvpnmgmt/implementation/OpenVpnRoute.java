@@ -42,7 +42,6 @@ public final class OpenVpnRoute implements Route {
             }
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMAT, Locale.ENGLISH);
             LocalDateTime date = LocalDateTime.parse(strings[3], formatter);
-
             InetAddress realAddress = InetAddress.getByName(realConnection[0]);
             int port = Integer.parseInt(realConnection[1]);
             mCommonName = strings[1];

@@ -2,6 +2,11 @@ package com.getsixtyfour.openvpnmgmt.implementation;
 
 import org.jetbrains.annotations.NonNls;
 
+/**
+ * @author Maksym Shkolnyi aka maskimko
+ * @author 1951FDG
+ */
+
 @SuppressWarnings("UtilityClass")
 final class Constants {
 
