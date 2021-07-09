@@ -22,4 +22,5 @@
             android:exported="false"
             android:label="@string/vpn_service_name" />
     </application>
+
 </manifest>
