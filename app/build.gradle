@@ -285,12 +285,9 @@ dependencies {
     androidTestImplementation "androidx.test:rules:${testRunnerVersion}"
 
     androidTestImplementation 'com.schibsted.spain:barista:3.9.0'
-    // screengrab:2.0.0 is broken
-    androidTestImplementation('tools.fastlane:screengrab:1.2.0') {
-        exclude group: 'androidx.test'
-        exclude group: 'androidx.test.espresso'
-        exclude group: 'com.android.support.test.uiautomator'
-    }
+
+    androidTestImplementation 'com.jraska:falcon:2.2.0'
+    androidTestImplementation 'tools.fastlane:screengrab:2.1.0'
 }
 
 apply from: 'other.gradle'

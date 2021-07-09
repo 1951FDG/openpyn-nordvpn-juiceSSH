@@ -29,11 +29,15 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.UiAutomatorScreenshotStrategy
+import tools.fastlane.screengrab.cleanstatusbar.CleanStatusBar
+import tools.fastlane.screengrab.cleanstatusbar.MobileDataType
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
@@ -60,7 +64,7 @@ class MainActivityTest {
         @BeforeClass
         @JvmStatic
         fun oneTimeSetUp() {
-            /*CleanStatusBar.enableWithDefaults()*/
+            CleanStatusBar().setClock("1000").setMobileNetworkDataType(MobileDataType.LTE).enable()
 
             ActivityLifecycleMonitorRegistry.getInstance().addLifecycleCallback { activity: Activity, stage: Stage ->
                 if (stage == Stage.PRE_ON_CREATE) {
@@ -74,13 +78,21 @@ class MainActivityTest {
                 }
             }
         }
+
+        @AfterClass
+        @JvmStatic
+        fun oneTimeTearDown() {
+            CleanStatusBar.disable()
+        }
     }
 
     @OptIn(ExperimentalTime::class)
     @Test
     fun testTakeScreenshot() {
         val screenshotStrategy = UiAutomatorScreenshotStrategy()
-        val screenshotCallback = FileWritingScreenshotCustomCallback(getInstrumentation().targetContext.applicationContext)
+        val screenshotCallback = FileWritingScreenshotCustomCallback(
+            getInstrumentation().targetContext.applicationContext, Screengrab.getLocale()
+        )
 
         launchActivity<MainActivity>()
 

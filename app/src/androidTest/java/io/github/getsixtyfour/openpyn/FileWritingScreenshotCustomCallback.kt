@@ -4,7 +4,7 @@ import android.content.Context
 import tools.fastlane.screengrab.FileWritingScreenshotCallback
 import java.io.File
 
-class FileWritingScreenshotCustomCallback(appContext: Context?) : FileWritingScreenshotCallback(appContext) {
+class FileWritingScreenshotCustomCallback(appContext: Context, locale: String) : FileWritingScreenshotCallback(appContext, locale) {
 
     override fun getScreenshotFile(screenshotDirectory: File, screenshotName: String): File {
         val screenshotFileName = "$screenshotName.png"
