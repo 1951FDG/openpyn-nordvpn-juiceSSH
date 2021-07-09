@@ -96,6 +96,7 @@ allprojects {
         jcenter() {
             content {
                 includeGroup('io.ktor')
+                includeGroup('com.schibsted.spain')
             }
         }
         flatDir {
