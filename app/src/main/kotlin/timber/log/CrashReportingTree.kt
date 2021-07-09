@@ -120,7 +120,7 @@ open class CrashReportingTree : Tree() {
 
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         try {
-            // TODO: Add more custom keys
+            // TODO: add more custom keys
             val crashlytics = FirebaseCrashlytics.getInstance()
             crashlytics.setCustomKey(PRIORITY_KEY, "Error")
             tag?.let { crashlytics.setCustomKey(TAG_KEY, it) }

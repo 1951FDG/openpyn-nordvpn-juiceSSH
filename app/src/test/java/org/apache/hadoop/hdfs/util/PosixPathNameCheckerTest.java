@@ -33,7 +33,7 @@ public class PosixPathNameCheckerTest {
     }
 
     private static void doTestIsValidPosixPath() {
-        // TODO: Test // on Windows
+        // TODO: test "//" on Windows
         Assert.assertTrue(CHECKER.isValidPath("/abs/ddd.dd"));
         // assertFalse(CHECKER.isValidPath("//abs/ddd.dd"));
         Assert.assertFalse(CHECKER.isValidPath("/abs:/ddd.dd"));
