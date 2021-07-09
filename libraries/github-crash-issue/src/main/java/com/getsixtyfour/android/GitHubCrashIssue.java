@@ -16,7 +16,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -50,8 +52,8 @@ public class GitHubCrashIssue {
     @NonNls
     private static final String LAMBDA_METHOD_PREFIX = "lambda$";
 
-    @SuppressWarnings("WeakerAccess")
-    public static final String UTF_8 = "UTF-8";
+    @NonNls
+    private static final String UTF_8 = "UTF-8";
 
     /**
      * URL backtick, or grave accent
@@ -91,6 +93,14 @@ public class GitHubCrashIssue {
 
     private final boolean mGithubEnabled;
 
+    private List<String> mPackagesToLink = new ArrayList<>();
+
+    private List<String> mPackagesToStack = new ArrayList<>();
+
+    private @NonNls String mRepositoryRoot = "app/src/main/java";
+
+    private Map<String, String> mRepositoryRootsByName = new HashMap<>();
+
     static {
         // Java Packages
         PACKAGE_LIST.add("java.beans");
@@ -106,8 +116,8 @@ public class GitHubCrashIssue {
         PACKAGE_LIST.add("java.util");
     }
 
-    public GitHubCrashIssue(@NonNull String url, @NonNull String id, @NonNull String assignees, @NonNull String labels,
-                            @NonNull String version, boolean dirty, boolean enabled) {
+    GitHubCrashIssue(@NonNull String url, @NonNull String id, @NonNull String assignees, @NonNull String labels, @NonNull String version,
+                     boolean dirty, boolean enabled) {
         if (id.isEmpty()) {
             throw new IllegalArgumentException("ID must not be empty");
         }
@@ -247,6 +257,11 @@ public class GitHubCrashIssue {
         return methodName.substring(LAMBDA_METHOD_PREFIX.length(), endMethodIdx);
     }
 
+    @Nullable
+    public Intent createIntent(@NonNull Throwable throwable) {
+        return (mGithubEnabled && !mGithubDirty) ? new Intent(Intent.ACTION_VIEW, parse(throwable)) : null;
+    }
+
     @NonNull
     public String createNewGithubIssue(@NonNull Throwable throwable) {
         if (mGithubDirty) {
@@ -281,36 +296,32 @@ public class GitHubCrashIssue {
     }
 
     @NonNull
-    public List<String> getPackagesToLink() {
-        @NonNls List<String> list = new ArrayList<>();
-        list.add("com.getsixtyfour.openvpnmgmt");
-        return list;
-    }
-
-    @NonNull
-    public List<String> getPackagesToStack() {
-        @NonNls List<String> list = new ArrayList<>();
-        list.add("com.getsixtyfour.openvpnmgmt.android");
-        list.add("com.getsixtyfour.openvpnmgmt.api");
-        list.add("com.getsixtyfour.openvpnmgmt.cli");
-        list.add("com.getsixtyfour.openvpnmgmt.core");
-        list.add("com.getsixtyfour.openvpnmgmt.exceptions");
-        list.add("com.getsixtyfour.openvpnmgmt.implementation");
-        list.add("com.getsixtyfour.openvpnmgmt.listeners");
-        list.add("com.getsixtyfour.openvpnmgmt.model");
-        list.add("com.getsixtyfour.openvpnmgmt.net");
-        list.add("com.getsixtyfour.openvpnmgmt.utils");
-        return list;
-    }
-
-    @NonNull
     public Uri parse(@NonNull Throwable throwable) {
         return Uri.parse(createNewGithubIssue(throwable));
     }
 
-    @Nullable
-    public Intent createIntent(@NonNull Throwable throwable) {
-        return (mGithubEnabled && !mGithubDirty) ? new Intent(Intent.ACTION_VIEW, parse(throwable)) : null;
+    public void setPackagesToLink(@NonNull List<String> list) {
+        mPackagesToLink = Collections.unmodifiableList(list);
+    }
+
+    public void setPackagesToStack(@NonNull List<String> list) {
+        mPackagesToStack = Collections.unmodifiableList(list);
+    }
+
+    public void setRepositoryRoot(@NonNull @NonNls String repositoryRoot) {
+        mRepositoryRoot = repositoryRoot;
+    }
+
+    /**
+     * @param map is a {@link Map} collection that contains the fully-qualified name for a class as {@link String}
+     * key and the repository root as {@link String} value.
+     * <br>
+     * <br>
+     * Note: The fully-qualified name for a class is the package name followed by the class name, separated by a
+     * period ( . )
+     */
+    public void setRepositoryRootsByName(@NonNull Map<String, String> map) {
+        mRepositoryRootsByName = Collections.unmodifiableMap(map);
     }
 
     @SuppressWarnings("OverlyLongMethod")
@@ -388,7 +399,7 @@ public class GitHubCrashIssue {
         for (int i = 0; (i < length) && (total < MAX_STACK_TRACE_SIZE); i++) {
             StackTraceElement traceElement = trace[i];
             String className = getLambdaName(traceElement.getClassName());
-            for (String prefix : getPackagesToStack()) {
+            for (String prefix : mPackagesToStack) {
                 if (className.startsWith(prefix)) {
                     className = prefix;
                     break;
@@ -444,19 +455,20 @@ public class GitHubCrashIssue {
                 boolean isLambda = isLambda(className);
                 boolean isFile = fileName != null;
                 boolean isPackage = false;
-                for (String prefix : getPackagesToLink()) {
+                for (String prefix : mPackagesToLink) {
                     if (className.startsWith(prefix)) {
                         isPackage = true;
                         break;
                     }
                 }
                 if (isPackage && isFile) {
+                    String repositoryRoot = mRepositoryRootsByName.get(className);
                     Matcher matcher = PATTERN.matcher(className);
                     result.append(mGithubRepoUrl);
                     result.append("/blob/");
                     result.append(mGithubCommitId);
                     result.append(StringUtils.PATH_SEPARATOR);
-                    result.append("app/src/main/java");
+                    result.append((repositoryRoot != null) ? repositoryRoot : mRepositoryRoot);
                     result.append(StringUtils.PATH_SEPARATOR);
                     result.append(matcher.replaceAll(StringUtils.PATH_SEPARATOR));
                     result.append(StringUtils.DOT);

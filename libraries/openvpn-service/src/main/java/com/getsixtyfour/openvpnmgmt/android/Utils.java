@@ -3,7 +3,6 @@ package com.getsixtyfour.openvpnmgmt.android;
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
 import android.content.Context;
-import android.content.Intent;
 import android.net.NetworkCapabilities;
 import android.os.Build;
 
@@ -11,10 +10,6 @@ import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-
-import com.getsixtyfour.android.GitHubCrashIssueHelper;
-
-import java.io.IOException;
 
 /**
  * @author 1951FDG
@@ -24,17 +19,6 @@ import java.io.IOException;
 final class Utils {
 
     private Utils() {
-    }
-
-    @Nullable
-    static Intent getGitHubIntent(@NonNull Context context, @NonNull Throwable e) {
-        if (e instanceof IOException) {
-            return null;
-        }
-        if ((e instanceof RuntimeException) && (e.getCause() instanceof IOException)) {
-            return null;
-        }
-        return GitHubCrashIssueHelper.getGitHubCrashIssue(context).createIntent(e);
     }
 
     @Nullable

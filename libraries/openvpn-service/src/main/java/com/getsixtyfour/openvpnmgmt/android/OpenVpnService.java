@@ -497,7 +497,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
             builder.setStyle(new NotificationCompat.BigTextStyle().bigText(bigText));
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
-            Intent intent = Utils.getGitHubIntent(this, e);
+            Intent intent = IntentUtils.getGitHubIntent(this, e);
             if (intent != null) {
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
                 builder.addAction(R.drawable.ic_close_white, getString(R.string.vpn_action_issue), pendingIntent);

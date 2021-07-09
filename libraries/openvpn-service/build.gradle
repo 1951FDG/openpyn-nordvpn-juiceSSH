@@ -39,7 +39,7 @@ android {
 
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
-    implementation project(':github-crash-issue')
+    debugImplementation project(':github-crash-issue')
     implementation project(':openvpn-management')
     implementation "androidx.appcompat:appcompat:${androidXVersions.appcompat}"
     implementation "com.google.android.material:material:$mdc_version"
