@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.SocketTimeoutException;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import org.jetbrains.annotations.NonNls;
 
@@ -59,8 +60,18 @@ public final class OpenVpnService extends Service implements ConnectionStateList
 
     private static final boolean DEBUG = false;
 
-    // How long the startForegroundService() grace period is to get around to calling startForeground() before we ANR
-    private static final int SERVICE_START_FOREGROUND_TIMEOUT = 10 * 1000;
+    private static final Integer BYTE_COUNT_INTERVAL = 2;
+
+    private static final int SOCKET_CONNECT_TIMEOUT = 1 * 1000;
+
+    private static final int SOCKET_READ_TIMEOUT = 2 * 1000;
+
+    /**
+     * How long the startForegroundService() grace period is to get around to calling startForeground() before we ANR
+     */
+    private static final long SERVICE_START_FOREGROUND_TIMEOUT = TimeUnit.MILLISECONDS.convert(10L, TimeUnit.SECONDS);
+
+    private static final long WAIT_FOR_SETTLE_DOWN = TimeUnit.MILLISECONDS.convert(2L, TimeUnit.SECONDS);
 
     private final IBinder mBinder = new IOpenVpnService.Stub() {
         @Override
@@ -222,7 +233,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
         // Perform the action after return from here, make a delay, otherwise the system might try to restart the
         // service if the process dies before the system realize it's asking for START_NOT_STICKY.
         if (mHandler != null) {
-            mHandler.postDelayed(() -> doAction(intent), Constants.WAIT_FOR_SETTLE_DOWN);
+            mHandler.postDelayed(() -> doAction(intent), WAIT_FOR_SETTLE_DOWN);
         }
 
         if (mStartId > 0) {
@@ -252,19 +263,36 @@ public final class OpenVpnService extends Service implements ConnectionStateList
 
         // Start a background thread that handles incoming messages of the management interface
         mThread = new Thread(() -> {
-            LOGGER.info("OpenVPN Management started in background thread: \"{}\"", Constants.THREAD_NAME);
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             if (DEBUG) {
                 // When a socket is created, it inherits the tag of its creating thread
-                TrafficStats.setThreadStatsTag(Constants.THREAD_STATS_TAG);
+                TrafficStats.setThreadStatsTag(Constants.TRAFFIC_STATS_TAG);
             }
-            Connection connection = ManagementConnection.getInstance();
-            connection.setSocketConnectTimeout(ManagementConnection.SOCKET_CONNECT_TIMEOUT);
-            connection.setSocketReadTimeout(0);
+            ManagementConnection connection = ManagementConnection.getInstance();
             connection.setAuthenticationHandler(new OpenVpnHandler(userName, userPass));
-            connection.start(host, port, password);
-            LOGGER.info("OpenVPN Management stopped in background thread: \"{}\"", Constants.THREAD_NAME);
-        }, Constants.THREAD_NAME);
+            connection.setSocketConnectTimeout(SOCKET_CONNECT_TIMEOUT);
+            connection.setSocketReadTimeout(0);
+
+            try {
+                LOGGER.info("OpenVPN Management started in background thread: \"{}\"", Thread.currentThread().getName());
+                connection.connect(host, port, password);
+                // Ensures we are notified of current state if OpenVPN is already connected (also checks if port is already in use)
+                connection.parseState(SOCKET_READ_TIMEOUT);
+                connection.sendCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
+                connection.sendCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Commands.ARG_ON));
+                connection.sendCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, Commands.ARG_ON));
+                connection.sendCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, Commands.ARG_RELEASE));
+                connection.parseStream();
+                throw new ThreadDeath();
+            } catch (IOException e) {
+                // UncheckedIOException requires Android N
+                //noinspection ProhibitedExceptionThrown
+                throw new RuntimeException(e);
+            } finally {
+                LOGGER.info("OpenVPN Management stopped in background thread: \"{}\"", Thread.currentThread().getName());
+                connection.disconnect();
+            }
+        }, getString(R.string.vpn_service_thread));
 
         // Report death-by-uncaught-exception
         mThread.setUncaughtExceptionHandler((t, e) -> {
@@ -286,7 +314,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
                     long start = now - (DateUtils.WEEK_IN_MILLIS << 2);
                     long end = now + (DateUtils.DAY_IN_MILLIS << 1);
                     int uid = Process.myUid();
-                    long usage = Utils.getTotalUsage(this, start, end, uid, Constants.THREAD_STATS_TAG);
+                    long usage = Utils.getTotalUsage(this, start, end, uid, Constants.TRAFFIC_STATS_TAG);
                     // long usage = Utils.getTotalUsage(this, start, end, uid, android.app.usage.NetworkStats.Bucket.TAG_NONE);
                     LOGGER.info("Usage: {}", humanReadableByteCount(this, usage, false));
                 } catch (SecurityException e) {
@@ -338,7 +366,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
             return;
         }
 
-        long byteCountInterval = ManagementConnection.BYTE_COUNT_INTERVAL.longValue();
+        long byteCountInterval = BYTE_COUNT_INTERVAL.longValue();
         String strIn = humanReadableByteCount(this, in, false);
         String strDiffIn = humanReadableByteCount(this, diffIn / byteCountInterval, true);
         String strOut = humanReadableByteCount(this, out, false);
@@ -404,6 +432,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
             mStartTime = state.getMillis();
         }
 
+        // Exit with notification (false)
         if (isExiting) {
             mPostStateNotification = !"exit-with-notification".equals(message);
         }
@@ -465,7 +494,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
             int icon = getIconByConnectionStatus(ConnectionStatus.LEVEL_UNKNOWN);
 
             if ((e instanceof SocketTimeoutException) && "Read timed out".equals(bigText)) {
-                bigText += String.format(Locale.ROOT, " after %dms", ManagementConnection.SOCKET_READ_TIMEOUT);
+                bigText += String.format(Locale.ROOT, " after %dms", SOCKET_READ_TIMEOUT);
                 text = bigText;
             }
 
@@ -500,14 +529,20 @@ public final class OpenVpnService extends Service implements ConnectionStateList
             Intent intent = IntentUtils.getGitHubIntent(this, e);
             if (intent != null) {
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-                builder.addAction(R.drawable.ic_close_white, getString(R.string.vpn_action_issue), pendingIntent);
+                builder.addAction(R.drawable.ic_close_white, getString(R.string.report_button_text), pendingIntent);
             }
 
-            intent = new Intent(this, OpenVpnService.class);
-            intent.setAction(Constants.ACTION_EXIT);
-            intent.putExtra(Constants.EXTRA_ACTION, Constants.TYPE_FINISH);
-            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.addAction(R.drawable.ic_close_white, getString(R.string.action_close), pendingIntent);
+            intent = IntentUtils.getStopSelfIntent(this, e);
+            if (intent != null) {
+                PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                builder.addAction(R.drawable.ic_close_white, getString(R.string.close_button_text), pendingIntent);
+            }
+
+            if (intent == null) {
+                if (mHandler != null) {
+                    mHandler.postDelayed(() -> stopSelf(), WAIT_FOR_SETTLE_DOWN);
+                }
+            }
 
             Notification notification = builder.build();
             startForeground(Constants.NEW_STATUS_NOTIFICATION_ID, notification);
@@ -538,7 +573,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
             Intent intent = new Intent(context, DisconnectActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             // The notification action icons are still required and continue to be used on older versions of Android
-            builder.addAction(R.drawable.ic_close_white, context.getString(R.string.vpn_action_close), pendingIntent);
+            builder.addAction(R.drawable.ic_close_white, context.getString(R.string.vpn_disconnect_button), pendingIntent);
             builder.setUsesChronometer(true);
         }
         return builder.build();

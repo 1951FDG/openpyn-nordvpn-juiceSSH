@@ -53,7 +53,7 @@ public class ConnectionTest {
 
     @After
     public void tearDown() {
-        sConnection.stop();
+        sConnection.disconnect();
     }
 
     /**
@@ -131,17 +131,6 @@ public class ConnectionTest {
         sConnection.connect(sHost, sPort, sPassword);
         boolean result = ConnectionUtils.isVpnActive(sConnection);
         Assert.assertFalse(result);
-    }
-
-    /**
-     * Test of run method, of class Connection.
-     */
-    @Test
-    public void testRun() {
-        // TODO: test this
-        LOGGER.debug("run");
-        sConnection.start(sHost, sPort, sPassword);
-        Assert.assertFalse(sConnection.isConnected());
     }
 
     /**

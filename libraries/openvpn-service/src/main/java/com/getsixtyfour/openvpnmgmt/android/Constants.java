@@ -19,10 +19,7 @@ public final class Constants {
 
     static final int NEW_STATUS_NOTIFICATION_ID = NEW_STATUS_CHANNEL_ID.hashCode();
 
-    @NonNls
-    public static final String THREAD_NAME = "OpenVPNManagementThread";
-
-    public static final int THREAD_STATS_TAG = 0x42;
+    public static final int TRAFFIC_STATS_TAG = 0x42;
 
     public static final int TYPE_NONE = 0;
 
@@ -36,8 +33,6 @@ public final class Constants {
     static final String DEFAULT_SERVER_IP = "192.168.1.1";
 
     static final int DEFAULT_SERVER_PORT = 23;
-
-    static final long WAIT_FOR_SETTLE_DOWN = 2000L;
 
     @NonNls
     private static final String INTENT_PACKAGE_PREFIX = "com.getsixtyfour.openvpnmgmt.android";

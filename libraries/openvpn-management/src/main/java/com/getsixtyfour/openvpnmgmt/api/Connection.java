@@ -23,7 +23,7 @@ public interface Connection {
 
     void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException;
 
-    void disconnect() throws IOException;
+    void disconnect();
     //endregion
 
     //region AbstractConnection
@@ -34,10 +34,6 @@ public interface Connection {
     void sendCommand(@NotNull String command) throws IOException;
 
     @NotNull String sendCommand(@NotNull String command, int timeoutMillis) throws IOException;
-
-    void start(@NotNull String host, @NotNull Integer port, @Nullable char[] password);
-
-    void stop();
     //endregion
 
     //region ManagementConnection

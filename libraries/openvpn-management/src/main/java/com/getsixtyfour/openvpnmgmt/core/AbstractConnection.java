@@ -2,7 +2,6 @@ package com.getsixtyfour.openvpnmgmt.core;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -11,17 +10,14 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import org.slf4j.Logger;
 
 /**
  * @author 1951FDG
  */
 
-public abstract class AbstractConnection implements Closeable {
+public abstract class AbstractConnection {
 
     private @Nullable String mHost = null;
 
@@ -37,27 +33,12 @@ public abstract class AbstractConnection implements Closeable {
 
     private int mSocketReadTimeout = 0;
 
-    @Override
-    public void close() throws IOException {
-        if (mIn != null) {
-            mIn.close();
-        }
-        if (mOut != null) {
-            mOut.close();
-        }
-        if (mSocket != null) {
-            mSocket.close();
-        }
-    }
-
     public void connect(@NotNull String host, @NotNull Integer port) throws IOException {
         connect(host, port, null);
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
     public void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException {
-        @NonNls Logger logger = getLogger();
-        logger.info("Connecting to {}:{}", host, port);
         mHost = host;
         mPort = port;
         mSocket = new Socket();
@@ -76,10 +57,25 @@ public abstract class AbstractConnection implements Closeable {
         }
     }
 
-    public void disconnect() throws IOException {
-        @NonNls Logger logger = getLogger();
-        logger.info("Disconnecting");
-        close();
+    public void disconnect() {
+        try {
+            if (mIn != null) {
+                mIn.close();
+            }
+        } catch (IOException ignored) {
+        }
+        try {
+            if (mOut != null) {
+                mOut.close();
+            }
+        } catch (IOException ignored) {
+        }
+        try {
+            if (mSocket != null) {
+                mSocket.close();
+            }
+        } catch (IOException ignored) {
+        }
     }
 
     public boolean isConnected() {
@@ -115,8 +111,6 @@ public abstract class AbstractConnection implements Closeable {
         }
         mSocketReadTimeout = timeout;
     }
-
-    protected abstract @NotNull Logger getLogger();
 
     protected @NotNull Socket getSocket() {
         return Objects.requireNonNull(mSocket);

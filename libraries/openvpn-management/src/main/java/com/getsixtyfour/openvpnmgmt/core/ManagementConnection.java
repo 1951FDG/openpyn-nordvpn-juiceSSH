@@ -33,15 +33,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);
 
-    public static final Integer BYTE_COUNT_INTERVAL = 2;
-
-    public static final int SOCKET_CONNECT_TIMEOUT = 1000;
-
-    /**
-     * Maximum time to wait on Socket.getInputStream().read() (in milliseconds)
-     */
-    public static final int SOCKET_READ_TIMEOUT = 2000;
-
     private static volatile @Nullable ManagementConnection sInstance = null;
 
     private final CopyOnWriteArraySet<OnByteCountChangedListener> mByteCountChangedListeners;
@@ -87,15 +78,17 @@ public final class ManagementConnection extends AbstractConnection implements Co
         if (isConnected()) {
             return;
         }
+        LOGGER.info("Connecting to {}:{}", host, port);
         super.connect(host, port, password);
         onConnect();
     }
 
     @Override
-    public void disconnect() throws IOException {
+    public void disconnect() {
         if (!isConnected()) {
             return;
         }
+        LOGGER.info("Disconnecting");
         super.disconnect();
         onDisconnect();
     }
@@ -111,6 +104,12 @@ public final class ManagementConnection extends AbstractConnection implements Co
         out.flush();
     }
 
+    /**
+     * @param command
+     * @param timeoutMillis Maximum time to wait on Socket.getInputStream().read() (in milliseconds)
+     * @return
+     * @throws IOException
+     */
     @Override
     public @NotNull String sendCommand(@NotNull String command, int timeoutMillis) throws IOException {
         if (!isConnected()) {
@@ -140,48 +139,27 @@ public final class ManagementConnection extends AbstractConnection implements Co
         return sb.toString();
     }
 
-    @Override
-    public void start(@NotNull String host, @NotNull Integer port, @Nullable char[] password) {
-        try {
-            connect(host, port, password);
-            // Ensures state listeners are notified of current state if OpenVPN is already connected
-            String output = sendCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""), SOCKET_READ_TIMEOUT);
-            String[] lines = output.split(System.lineSeparator());
-            String argument = (lines.length >= 1) ? lines[lines.length - 1] : "";
-            if (!argument.isEmpty() && !argument.contains(VpnStatus.AUTH_FAILURE)) {
-                processState(argument);
-            }
-            sendCommand(String.format(Locale.ROOT, Commands.BYTECOUNT_COMMAND, BYTE_COUNT_INTERVAL));
-            sendCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, Commands.ARG_ON));
-            sendCommand(String.format(Locale.ROOT, Commands.LOG_COMMAND, Commands.ARG_ON));
-            sendCommand(String.format(Locale.ROOT, Commands.HOLD_COMMAND, Commands.ARG_RELEASE));
-            BufferedReader in = getSocketInputStream();
-            while (!Thread.currentThread().isInterrupted()) {
-                @NonNls String line = in.readLine();
-                // End of stream
-                if (line == null) {
-                    break;
-                }
-                if (!line.isEmpty()) {
-                    // LOGGER.info("Read from socket line: {}", line);
-                    parseInput(line);
-                }
-            }
-            throw new ThreadDeath();
-        } catch (IOException e) {
-            // UncheckedIOException requires Android N
-            //noinspection ProhibitedExceptionThrown
-            throw new RuntimeException(e);
-        } finally {
-            stop();
+    public void parseState(int timeoutMillis) throws IOException {
+        String output = sendCommand(String.format(Locale.ROOT, Commands.STATE_COMMAND, ""), timeoutMillis);
+        String[] lines = output.split(System.lineSeparator());
+        String argument = (lines.length >= 1) ? lines[lines.length - 1] : "";
+        if (!argument.isEmpty() && !argument.contains(VpnStatus.AUTH_FAILURE)) {
+            processState(argument);
         }
     }
 
-    @Override
-    public void stop() {
-        try {
-            disconnect();
-        } catch (IOException ignored) {
+    public void parseStream() throws IOException {
+        BufferedReader in = getSocketInputStream();
+        while (!Thread.currentThread().isInterrupted()) {
+            @NonNls String line = in.readLine();
+            // End of stream
+            if (line == null) {
+                break;
+            }
+            if (!line.isEmpty()) {
+                // LOGGER.info("Read from socket line: {}", line);
+                parseInput(line);
+            }
         }
     }
 
@@ -243,11 +221,6 @@ public final class ManagementConnection extends AbstractConnection implements Co
     @Override
     public @NotNull ConnectionStatus getStatus() {
         return mStatus;
-    }
-
-    @Override
-    protected @NotNull Logger getLogger() {
-        return LOGGER;
     }
 
     private void dispatchOnByteCountChanged(@NotNull TrafficHistory.TrafficDataPoint tdp) {

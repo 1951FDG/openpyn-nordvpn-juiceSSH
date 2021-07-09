@@ -12,9 +12,11 @@
 
     <string name="byteSizeSuffix" translatable="false"><xliff:g example="123" id="number">%1$s</xliff:g> <xliff:g example="MB" id="unit">%2$s</xliff:g></string>
 
-    <string name="action_close">Close</string>
+    <string name="close_button_text">Close</string>
+    <string name="report_button_text">Report</string>
 
     <string name="vpn_service_name" translatable="false">​OpenVPN Management Client</string>
+    <string name="vpn_service_thread" translatable="false">​OpenVPNManagementThread</string>
 
     <string name="vpn_title_message" translatable="false">Connecting to %s ( port %d)</string>
     <string name="vpn_title_status" translatable="false">OpenVPN: %s</string>
@@ -22,11 +24,9 @@
 
     <string name="vpn_msg_error">Fatal exception: %s</string>
 
-    <string name="vpn_title_disconnect">Disconnect VPN</string>
-    <string name="vpn_msg_disconnect">Are you sure you want to disconnect?</string>
-
-    <string name="vpn_action_close">Disconnect</string>
-    <string name="vpn_action_issue">New issue</string>
+    <string name="vpn_disconnect_button">Disconnect</string>
+    <string name="vpn_disconnect_msg">Are you sure you want to disconnect?</string>
+    <string name="vpn_disconnect_title">Disconnect VPN</string>
 
     <string name="vpn_channel_name_background">Bandwidth usage</string>
     <string name="vpn_channel_description_background">Real-time notification of OpenVPN bandwidth usage</string>

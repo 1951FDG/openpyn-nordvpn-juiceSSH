@@ -69,8 +69,8 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
             themeResId = AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this, themeResId);
-        builder.setTitle(R.string.vpn_title_disconnect);
-        builder.setMessage(R.string.vpn_msg_disconnect);
+        builder.setTitle(R.string.vpn_disconnect_title);
+        builder.setMessage(R.string.vpn_disconnect_msg);
         //noinspection UnnecessaryFullyQualifiedName
         builder.setNegativeButton(android.R.string.cancel, null);
         //noinspection UnnecessaryFullyQualifiedName
