@@ -7,10 +7,8 @@ import android.view.View
 import android.view.Window
 import androidx.annotation.Dimension
 import androidx.annotation.Px
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import tk.wasdennnoch.progresstoolbar.ProgressToolbar
 
 /**
  * Convert a dimension value in density independent pixels to pixels.
@@ -50,7 +48,6 @@ fun dpToPxOffset(@Dimension(unit = Dimension.DP) dp: Float, context: Context): I
  *
  * @see TypedValue.complexToDimensionPixelSize
  */
-
 @Suppress("MagicNumber")
 @Px
 fun dpToPxSize(@Dimension(unit = Dimension.DP) dp: Float, context: Context): Int {
