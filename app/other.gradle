@@ -201,8 +201,8 @@ task appGenerateCountryArrays {
     outputs.file "$project.rootDir/libraries/country-flags-vpn/src/main/res/values/arrays.xml"
     doLast {
         def json = new JsonSlurper().parseText(inputs.files.files[0].text)
-        def sw = new StringWriter()
-        def xml = new MarkupBuilder(sw)
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(new IndentPrinter(writer, "    ", true))
 
         xml.setDoubleQuotes(true)
         xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
@@ -246,7 +246,7 @@ task appGenerateCountryArrays {
 
         }
 
-        outputs.files.files[0].write(sw.append(System.lineSeparator()).toString())
+        outputs.files.files[0].write(writer.append(System.lineSeparator()).toString())
     }
 }
 
@@ -256,8 +256,8 @@ task appGenerateCountriesArray {
     outputs.file 'src/main/res/values/arrays.xml'
     doLast {
         def json = new JsonSlurper().parseText(inputs.files.files[0].text)
-        def sw = new StringWriter()
-        def xml = new MarkupBuilder(sw)
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(new IndentPrinter(writer, "    ", true))
 
         xml.setDoubleQuotes(true)
         xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
@@ -269,7 +269,7 @@ task appGenerateCountriesArray {
             }
         }
 
-        outputs.files.files[0].write(sw.append(System.lineSeparator()).toString())
+        outputs.files.files[0].write(writer.append(System.lineSeparator()).toString())
     }
 }
 
