@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NonNls;
 
 /**
- * @see <a href="https://docs.github.com/en/github/managing-your-work-on-github/about-automation-for-issues-and-pull-requests-with-query-parameters">Issues - GitHub Docs</a>
+ * @see <a href="https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue">Issues - GitHub Docs</a>
  * <br>
  * @see <a href="https://github.com/BugSplat-Git/Test/issues">Issues - BugSplat-Git/Test</a>
  * <br>
