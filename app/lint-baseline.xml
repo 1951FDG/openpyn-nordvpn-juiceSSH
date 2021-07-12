@@ -135,7 +135,7 @@
         errorLine1="    &lt;style name=&quot;ThemeOverlay.Design.TextInputEditText&quot; parent=&quot;&quot;>"
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/values/styles.xml"
+            file="src/main/res/values/themes.xml"
             line="19"
             column="12"/>
     </issue>
@@ -146,7 +146,7 @@
         errorLine1="    &lt;style name=&quot;Widget.Design.TextInputEditText.Custom&quot; parent=&quot;Widget.Design.TextInputEditText&quot;>"
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src/main/res/values/styles.xml"
+            file="src/main/res/values/themes.xml"
             line="23"
             column="12"/>
     </issue>
@@ -186,17 +186,6 @@
 
     <issue
         id="UnusedIds"
-        message="The resource `R.id.nav_host_fragment` appears to be unused"
-        errorLine1="        android:id=&quot;@+id/nav_host_fragment&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_main.xml"
-            line="40"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
         message="The resource `R.id.map` appears to be unused"
         errorLine1="        android:id=&quot;@+id/map&quot;"
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~">
@@ -204,61 +193,6 @@
             file="src/main/res/layout/fragment_map.xml"
             line="11"
             column="9"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
-        message="The resource `R.id.headers` appears to be unused"
-        errorLine1="        android:id=&quot;@+id/headers&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/mm2d_pac_content.xml"
-            line="13"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
-        message="The resource `R.id.list` appears to be unused"
-        errorLine1="            android:id=&quot;@+id/list&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/mm2d_pac_content.xml"
-            line="30"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
-        message="The resource `R.id.list_footer` appears to be unused"
-        errorLine1="            android:id=&quot;@+id/list_footer&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/mm2d_pac_content.xml"
-            line="43"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
-        message="The resource `R.id.preference_frame` appears to be unused"
-        errorLine1="        android:id=&quot;@+id/preference_frame&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/mm2d_pac_content.xml"
-            line="54"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
-        message="The resource `R.id.preference` appears to be unused"
-        errorLine1="            android:id=&quot;@+id/preference&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/mm2d_pac_content.xml"
-            line="75"
-            column="13"/>
     </issue>
 
     <issue
@@ -316,7 +250,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="51"
+            line="56"
             column="5"/>
         <location
             file="src/main/res/values-v23/strings.xml"
@@ -349,7 +283,7 @@
         errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_map.xml"
-            line="70"
+            line="71"
             column="6"/>
     </issue>
 
@@ -360,7 +294,7 @@
         errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_map.xml"
-            line="90"
+            line="92"
             column="6"/>
     </issue>
 
@@ -371,7 +305,7 @@
         errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_map.xml"
-            line="129"
+            line="133"
             column="6"/>
     </issue>
 
@@ -450,28 +384,6 @@
             file="src/main/res/layout/abc_preference_widget_checkview.xml"
             line="14"
             column="5"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Redundant attribute `layout_marginLeft`; already defining `layout_marginStart` with `targetSdkVersion` 30"
-        errorLine1="        android:layout_marginLeft=&quot;@dimen/mm2d_pac_side_margin&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/mm2d_pac_content.xml"
-            line="17"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Redundant attribute `layout_marginRight`; already defining `layout_marginEnd` with `targetSdkVersion` 30"
-        errorLine1="        android:layout_marginRight=&quot;@dimen/mm2d_pac_side_margin_negative&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/mm2d_pac_content.xml"
-            line="18"
-            column="9"/>
     </issue>
 
 </issues>
