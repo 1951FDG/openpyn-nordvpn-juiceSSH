@@ -7,16 +7,15 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-@SuppressWarnings("TransientFieldInNonSerializableClass")
 public class MultiSelectModel implements MultiSelectable, Iconable, Range {
 
     private final int mId;
 
-    private final transient int mResId;
+    private final int mResId;
 
-    private transient int mEnd;
+    private int mEnd;
 
-    private transient int mStart;
+    private int mStart;
 
     private CharSequence mName;
 
@@ -28,12 +27,6 @@ public class MultiSelectModel implements MultiSelectable, Iconable, Range {
         mId = id;
         mResId = resId;
         mName = name;
-    }
-
-    @SuppressWarnings("unused")
-    private MultiSelectModel() {
-        mId = 0;
-        mResId = 0;
     }
 
     @SuppressWarnings("FinalMethod")
