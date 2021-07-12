@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
@@ -13,12 +12,8 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.platform.MaterialFadeThrough
 import io.github.getsixtyfour.functions.dpToPx
-import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
 
-/**
- * This fragment shows API settings preferences only.
- */
 class ApiPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +22,7 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
         setHasOptionsMenu(false)
 
         enterTransition = MaterialFadeThrough()
+        returnTransition = MaterialFadeThrough()
 
         findPreference<ListPreference>("pref_geo_client")?.apply {
             summaryProvider = Preference.SummaryProvider<ListPreference> {
@@ -53,15 +49,8 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
-    }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_api, rootKey)
-        setTitle(requireActivity())
     }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {

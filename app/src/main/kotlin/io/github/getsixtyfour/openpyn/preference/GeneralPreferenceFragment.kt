@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.ActionBar
@@ -14,7 +13,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.transition.platform.MaterialFadeThrough
@@ -25,10 +23,7 @@ import io.github.getsixtyfour.functions.onRefreshItemSelected
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.text.AbstractTextWatcher
 
-/**
- * This fragment shows General settings preferences only.
- */
-class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartFragmentCallback {
+class GeneralPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +31,7 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
         setHasOptionsMenu(true)
 
         exitTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
 
         findPreference<EditTextPreference>("pref_server")?.apply {
             setOnBindEditTextListener {
@@ -88,18 +84,6 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat(), OnPreferenceStartF
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_settings, menu)
-    }
-
-    override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
-        val activity = requireActivity()
-        val fragmentManager = activity.supportFragmentManager
-        val args = pref.extras
-        val fragment = fragmentManager.fragmentFactory.instantiate(activity.classLoader, pref.fragment)
-        fragment.arguments = args
-        fragment.setTargetFragment(caller, 0)
-        fragmentManager.beginTransaction().replace((requireView().parent as View).id, fragment).addToBackStack(null).commit()
-
-        return true
     }
 
     companion object {

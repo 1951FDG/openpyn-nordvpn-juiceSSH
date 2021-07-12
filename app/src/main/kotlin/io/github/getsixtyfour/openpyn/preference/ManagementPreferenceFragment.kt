@@ -13,7 +13,6 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
@@ -22,16 +21,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.transition.platform.MaterialFadeThrough
 import io.github.getsixtyfour.functions.dpToPx
-import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
 import io.github.getsixtyfour.openpyn.text.AbstractTextWatcher
 import io.github.getsixtyfour.openpyn.utils.ManagementService
 import org.apache.hadoop.hdfs.util.PosixPathNameChecker
 import java.net.InetAddress
 
-/**
- * This fragment shows Management settings preferences only.
- */
 class ManagementPreferenceFragment : PreferenceFragmentCompat() {
 
     @Suppress("MagicNumber")
@@ -41,6 +36,7 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
         setHasOptionsMenu(true)
 
         enterTransition = MaterialFadeThrough()
+        returnTransition = MaterialFadeThrough()
 
         findPreference<EditTextPreference>(getString(R.string.pref_openvpnmgmt_host_key))?.apply {
             setOnBindEditTextListener {
@@ -96,16 +92,9 @@ class ManagementPreferenceFragment : PreferenceFragmentCompat() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
-    }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         // Load the preferences from an XML resource
         setPreferencesFromResource(R.xml.pref_openvpnmgmt, rootKey)
-        setTitle(requireActivity())
     }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {

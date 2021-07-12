@@ -8,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.preference.Preference
@@ -25,12 +24,8 @@ import com.google.android.material.transition.platform.MaterialFadeThrough
 import io.github.getsixtyfour.functions.dpToPx
 import io.github.getsixtyfour.functions.onLicensesItemSelected
 import io.github.getsixtyfour.ktextension.getVersionTitleType
-import io.github.getsixtyfour.ktextension.setTitle
 import io.github.getsixtyfour.openpyn.R
 
-/**
- * This fragment shows About settings preferences only.
- */
 class AboutPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,19 +34,12 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         setHasOptionsMenu(true)
 
         enterTransition = MaterialFadeThrough()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.title_settings)
+        returnTransition = MaterialFadeThrough()
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val activity = requireActivity()
         val root = preferenceManager.createPreferenceScreen(activity)
-
-        root.setTitle(R.string.title_about)
 
         addAboutPreferences(activity, root)
 
@@ -60,7 +48,6 @@ class AboutPreferenceFragment : PreferenceFragmentCompat() {
         addOtherPreferences(activity, root)
 
         preferenceScreen = root
-        setTitle(activity)
     }
 
     override fun onCreateRecyclerView(inflater: LayoutInflater, parent: ViewGroup, savedInstanceState: Bundle?): RecyclerView {

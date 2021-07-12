@@ -84,13 +84,3 @@ fun showSystemUI(window: Window, view: View) {
     WindowCompat.getInsetsController(window, view)?.show(WindowInsetsCompat.Type.systemBars())
 }
 
-fun <T : AppCompatActivity> setProgressToolBar(
-    activity: T, toolbar: ProgressToolbar, showHomeAsUp: Boolean = false, showTitle: Boolean = false
-) {
-    toolbar.hideProgress()
-    toolbar.isIndeterminate = true
-
-    activity.setSupportActionBar(toolbar)
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(showHomeAsUp)
-    activity.supportActionBar?.setDisplayShowTitleEnabled(showTitle)
-}

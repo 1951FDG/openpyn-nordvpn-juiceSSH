@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<preference-headers xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!-- These settings headers are only used on tablets. -->
-    <header
-        app:fragment="io.github.getsixtyfour.openpyn.SettingsActivity$SettingsPreferenceFragment"
-        app:id="@+id/containers"
-        app:title="@string/title_settings" />
-</preference-headers>

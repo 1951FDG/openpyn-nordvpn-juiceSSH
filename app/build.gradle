@@ -188,6 +188,7 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:${androidXVersions.coordinatorlayout}"
     implementation "androidx.core:core-ktx:${androidXVersions.core}"
     implementation "androidx.navigation:navigation-fragment-ktx:${androidXVersions.navigation}"
+    implementation "androidx.navigation:navigation-ui-ktx:${androidXVersions.navigation}"
     implementation "androidx.preference:preference:${androidXVersions.preference}"
     implementation "androidx.recyclerview:recyclerview:${androidXVersions.recyclerview}"
     implementation "androidx.sqlite:sqlite:${androidXVersions.sqlite}"
@@ -268,9 +269,6 @@ dependencies {
         transitive = false
     }
     //debugImplementation(name:'LogcatCore-debug', ext:'aar')
-
-    // Preference
-    implementation 'net.mm2d.preference:preference:0.2.7'
 
     // Stetho
     debugImplementation('com.facebook.stetho:stetho-timber:1.6.0') {

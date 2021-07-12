@@ -106,6 +106,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), View.OnClickList
         super.onCreate(savedInstanceState)
 
         window.exitTransition = MaterialFadeThrough()
+        window.reenterTransition = MaterialFadeThrough()
 
         // Hide both the navigation bar and the status bar
         /*hideSystemUI(window, window.decorView)

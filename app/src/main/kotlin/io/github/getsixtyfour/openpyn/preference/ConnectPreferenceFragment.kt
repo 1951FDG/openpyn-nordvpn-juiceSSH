@@ -8,9 +8,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.github.getsixtyfour.openpyn.R
 
-/**
- * This fragment shows Connect settings preferences only.
- */
 @Suppress("unused")
 class ConnectPreferenceFragment : PreferenceFragmentCompat() {
 

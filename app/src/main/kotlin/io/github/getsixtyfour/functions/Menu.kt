@@ -65,5 +65,6 @@ fun <T : Activity> CoroutineScope.onRefreshItemSelected(activity: T): Job = laun
 }
 
 fun <T : Activity> onSettingsItemSelected(activity: T) {
-    SettingsActivity.startSettingsFragment(activity)
+    val intent = Intent(activity, SettingsActivity::class.java)
+    ContextCompat.startActivity(activity, intent, null)
 }

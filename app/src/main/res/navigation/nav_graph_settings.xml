@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_2"
+    app:startDestination="@id/generalPreferenceFragment">
+
+    <fragment
+        android:id="@+id/generalPreferenceFragment"
+        android:name="io.github.getsixtyfour.openpyn.preference.GeneralPreferenceFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/activity_settings">
+        <action
+            android:id="@+id/action_generalPreferenceFragment_to_managementPreferenceFragment"
+            app:destination="@id/managementPreferenceFragment" />
+        <action
+            android:id="@+id/action_generalPreferenceFragment_to_apiPreferenceFragment"
+            app:destination="@id/apiPreferenceFragment" />
+        <action
+            android:id="@+id/action_generalPreferenceFragment_to_aboutPreferenceFragment"
+            app:destination="@id/aboutPreferenceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutPreferenceFragment"
+        android:name="io.github.getsixtyfour.openpyn.preference.AboutPreferenceFragment"
+        android:label="@string/title_about" />
+    <fragment
+        android:id="@+id/apiPreferenceFragment"
+        android:name="io.github.getsixtyfour.openpyn.preference.ApiPreferenceFragment"
+        android:label="@string/title_apis" />
+    <fragment
+        android:id="@+id/managementPreferenceFragment"
+        android:name="io.github.getsixtyfour.openpyn.preference.ManagementPreferenceFragment"
+        android:label="@string/title_openvpnmgmt" />
+</navigation>
