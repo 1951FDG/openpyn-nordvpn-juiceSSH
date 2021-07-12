@@ -22,7 +22,7 @@ buildscript {
                 recyclerview     : '1.2.1',
                 sqlite           : '2.1.0',
         ]
-        annotations_version = '21.0.1'
+        annotations_version = '20.1.0'
         espressoVersion = '3.4.0'
         junit_version = '4.13.2'
         kotlin_gradle_version = '1.4.32'
@@ -43,14 +43,14 @@ buildscript {
 
         classpath 'com.google.android.gms:strict-version-matcher-plugin:1.2.2'
 
+        // firebase-crashlytics-gradle:2.7.0,2.7.1 is broken
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.6.1'
+
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:2.0.0'
 
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.39.0'
 
         classpath 'com.github.SmartDengg.asm-clickdebounce:click-debounce-gradle-plugin:2.1.0'
-
-        // firebase-crashlytics-gradle:2.7.0,2.7.1 is broken
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.6.1'
 
         classpath 'gradle.plugin.com.github.konifar.gradle:plugin:0.3.3'
 
@@ -96,8 +96,9 @@ allprojects {
         maven { url 'https://jitpack.io' }
         jcenter() {
             content {
-                includeGroup('io.ktor')
                 includeGroup('com.schibsted.spain')
+                includeGroup('io.ktor')
+                includeModule('org.jetbrains.kotlinx', 'kotlinx-html-jvm')
             }
         }
         flatDir {

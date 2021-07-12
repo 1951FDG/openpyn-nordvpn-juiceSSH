@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 // TODO: make android interface extension with worker thread annotation
 public interface Connection {
 
-    //region AbstractConnection (Background)
+    //region DeviceConnection (Background)
     void connect(@NotNull String host, @NotNull Integer port) throws IOException;
 
     void connect(@NotNull String host, @NotNull Integer port, @Nullable char[] password) throws IOException;
@@ -26,7 +26,7 @@ public interface Connection {
     void disconnect();
     //endregion
 
-    //region AbstractConnection
+    //region DeviceConnection
     boolean isConnected();
     //endregion
 
@@ -56,7 +56,7 @@ public interface Connection {
     void clearOnStateChangedListeners();
     //endregion
 
-    //region AbstractConnection (Getter and Setter)
+    //region DeviceConnection (Getter and Setter)
     @Nullable String getHost();
 
     @Nullable Integer getPort();

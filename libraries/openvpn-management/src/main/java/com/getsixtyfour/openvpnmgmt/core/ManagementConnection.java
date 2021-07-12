@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 
 @SuppressWarnings({ "Singleton", "OverlyComplexClass", "ClassWithTooManyDependencies" })
-public final class ManagementConnection extends AbstractConnection implements Connection {
+public final class ManagementConnection extends DeviceConnection implements Connection {
 
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);

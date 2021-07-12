@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  * @author 1951FDG
  */
 
-public abstract class AbstractConnection {
+public class DeviceConnection {
 
     private @Nullable String mHost = null;
 
