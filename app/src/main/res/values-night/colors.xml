@@ -11,5 +11,4 @@
     <color name="themeColorPrimaryDark">@color/gm_ref_palette_blue500</color>
     <color name="themeColorSurface">@color/gm_ref_palette_grey900</color>
     <color name="themeWindowBackground">@color/gm_ref_palette_black</color>
-
 </resources>

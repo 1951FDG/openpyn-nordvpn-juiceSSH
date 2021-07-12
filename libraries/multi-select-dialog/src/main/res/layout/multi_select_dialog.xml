@@ -21,5 +21,4 @@
             android:layout_height="match_parent"
             android:layout="@layout/multi_select_empty_view" />
     </FrameLayout>
-
 </LinearLayout>

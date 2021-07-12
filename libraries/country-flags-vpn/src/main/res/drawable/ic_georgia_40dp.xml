@@ -3,25 +3,25 @@
     android:height="40dp"
     android:viewportWidth="512"
     android:viewportHeight="512">
-  <path
-      android:pathData="M0,0h512v512h-512z"
-      android:fillColor="@color/Grey_100"/>
-  <path
-      android:pathData="M129.85,92.75l0,-37.1l-37.1,0l0,37.1l-37.1,0l0,37.1l37.1,0l0,37.11l37.1,0l0,-37.11l37.11,0l0,-37.1z"
-      android:fillColor="@color/Red_A700"/>
-  <path
-      android:pathData="M419.25,92.75l0,-37.1l-37.1,0l0,37.1l-37.11,0l0,37.1l37.11,0l0,37.11l37.1,0l0,-37.11l37.1,0l0,-37.1z"
-      android:fillColor="@color/Red_A700"/>
-  <path
-      android:pathData="M129.85,382.15l0,-37.11l-37.1,0l0,37.11l-37.1,0l0,37.1l37.1,0l0,37.1l37.1,0l0,-37.1l37.11,0l0,-37.1z"
-      android:fillColor="@color/Red_A700"/>
-  <path
-      android:pathData="M419.25,382.15l0,-37.11l-37.1,0l0,37.11l-37.11,0l0,37.1l37.11,0l0,37.1l37.1,0l0,-37.1l37.1,0l0,-37.1z"
-      android:fillColor="@color/Red_A700"/>
-  <path
-      android:pathData="M224,0h64v512h-64z"
-      android:fillColor="@color/Red_A700"/>
-  <path
-      android:pathData="M0,224h512v64h-512z"
-      android:fillColor="@color/Red_A700"/>
+    <path
+        android:pathData="M0,0h512v512h-512z"
+        android:fillColor="@color/Grey_100" />
+    <path
+        android:pathData="M129.85,92.75l0,-37.1l-37.1,0l0,37.1l-37.1,0l0,37.1l37.1,0l0,37.11l37.1,0l0,-37.11l37.11,0l0,-37.1z"
+        android:fillColor="@color/Red_A700" />
+    <path
+        android:pathData="M419.25,92.75l0,-37.1l-37.1,0l0,37.1l-37.11,0l0,37.1l37.11,0l0,37.11l37.1,0l0,-37.11l37.1,0l0,-37.1z"
+        android:fillColor="@color/Red_A700" />
+    <path
+        android:pathData="M129.85,382.15l0,-37.11l-37.1,0l0,37.11l-37.1,0l0,37.1l37.1,0l0,37.1l37.1,0l0,-37.1l37.11,0l0,-37.1z"
+        android:fillColor="@color/Red_A700" />
+    <path
+        android:pathData="M419.25,382.15l0,-37.11l-37.1,0l0,37.11l-37.11,0l0,37.1l37.11,0l0,37.1l37.1,0l0,-37.1l37.1,0l0,-37.1z"
+        android:fillColor="@color/Red_A700" />
+    <path
+        android:pathData="M224,0h64v512h-64z"
+        android:fillColor="@color/Red_A700" />
+    <path
+        android:pathData="M0,224h512v64h-512z"
+        android:fillColor="@color/Red_A700" />
 </vector>

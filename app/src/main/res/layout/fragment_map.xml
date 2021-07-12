@@ -169,5 +169,4 @@
         app:tint="?android:attr/colorBackground"
         app:useCompatPadding="false"
         tools:visibility="visible" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity"
         tools:targetApi="n">
-        <!-- Public activity launched by launcher -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -29,40 +28,34 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- Private activity -->
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
-            android:theme="@style/AppTheme.Settings">
-        </activity>
-        <!-- Private activity -->
+            android:theme="@style/AppTheme.Settings" />
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             android:theme="@style/AppTheme.Licenses" />
-        <!-- Private activity -->
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             android:theme="@style/AppTheme.Licenses" />
-        <!-- Private activity -->
         <activity
             android:name="pub.devrel.easypermissions.AppSettingsDialogHolderActivity"
             android:exported="false"
             android:stateNotNeeded="true"
             android:theme="@style/Theme.AppSettingsDialogHost" />
-        <!-- Private provider -->
+
         <provider
             android:name=".provider.AppInitProvider"
             android:authorities="${applicationId}.appinitprovider"
@@ -91,5 +84,4 @@
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
     </application>
-
 </manifest>

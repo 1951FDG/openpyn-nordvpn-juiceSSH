@@ -16,7 +16,6 @@
 
         <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
         <item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>
-
     </style>
 
     <style name="Base.Theme.AppTheme" parent="Base.V27.Theme.AppTheme" />
@@ -32,14 +31,11 @@
 
         <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
         <item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>
-
     </style>
 
     <style name="Base.Theme.AppTheme.Settings" parent="Base.V27.Theme.AppTheme.Settings" />
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textColor">@color/titleTextColor</item>
-
     </style>
-
 </resources>

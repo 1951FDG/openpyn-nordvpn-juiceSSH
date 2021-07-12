@@ -3,7 +3,6 @@
     package="io.github.getsixtyfour.openpyn">
 
     <application>
-        <!-- Private service -->
         <service
             android:name="com.getsixtyfour.openvpnmgmt.android.OpenVpnService"
             android:exported="false"

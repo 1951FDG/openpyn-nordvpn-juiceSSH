@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:drawable="@drawable/btn_checkbox_checked_material" />
+    <item android:drawable="@drawable/btn_checkbox_checked_material" android:state_checked="true" />
     <item android:drawable="@drawable/btn_checkbox_unchecked_material" />
 </selector>

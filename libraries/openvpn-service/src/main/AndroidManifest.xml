@@ -3,7 +3,6 @@
     package="com.getsixtyfour.openvpnmgmt">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <application>
         <!-- Private activity -->
         <activity
@@ -22,5 +21,4 @@
             android:exported="false"
             android:label="@string/vpn_service_name" />
     </application>
-
 </manifest>

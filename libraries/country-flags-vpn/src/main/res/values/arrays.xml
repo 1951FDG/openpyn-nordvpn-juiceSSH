@@ -1,416 +1,416 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <array name="al">
-    <item>Albania</item>
-    <item>🇦🇱</item>
-    <item>al</item>
-    <item>0</item>
-    <item>@drawable/ic_albania_40dp</item>
-  </array>
-  <array name="ar">
-    <item>Argentina</item>
-    <item>🇦🇷</item>
-    <item>ar</item>
-    <item>1</item>
-    <item>@drawable/ic_argentina_40dp</item>
-  </array>
-  <array name="au">
-    <item>Australia</item>
-    <item>🇦🇺</item>
-    <item>au</item>
-    <item>2</item>
-    <item>@drawable/ic_australia_40dp</item>
-  </array>
-  <array name="at">
-    <item>Austria</item>
-    <item>🇦🇹</item>
-    <item>at</item>
-    <item>3</item>
-    <item>@drawable/ic_austria_40dp</item>
-  </array>
-  <array name="be">
-    <item>Belgium</item>
-    <item>🇧🇪</item>
-    <item>be</item>
-    <item>5</item>
-    <item>@drawable/ic_belgium_40dp</item>
-  </array>
-  <array name="ba">
-    <item>Bosnia and Herzegovina</item>
-    <item>🇧🇦</item>
-    <item>ba</item>
-    <item>6</item>
-    <item>@drawable/ic_bosnia_and_herzegovina_40dp</item>
-  </array>
-  <array name="br">
-    <item>Brazil</item>
-    <item>🇧🇷</item>
-    <item>br</item>
-    <item>7</item>
-    <item>@drawable/ic_brazil_40dp</item>
-  </array>
-  <array name="bg">
-    <item>Bulgaria</item>
-    <item>🇧🇬</item>
-    <item>bg</item>
-    <item>8</item>
-    <item>@drawable/ic_bulgaria_40dp</item>
-  </array>
-  <array name="ca">
-    <item>Canada</item>
-    <item>🇨🇦</item>
-    <item>ca</item>
-    <item>9</item>
-    <item>@drawable/ic_canada_40dp</item>
-  </array>
-  <array name="cl">
-    <item>Chile</item>
-    <item>🇨🇱</item>
-    <item>cl</item>
-    <item>10</item>
-    <item>@drawable/ic_chile_40dp</item>
-  </array>
-  <array name="cr">
-    <item>Costa Rica</item>
-    <item>🇨🇷</item>
-    <item>cr</item>
-    <item>11</item>
-    <item>@drawable/ic_costa_rica_40dp</item>
-  </array>
-  <array name="hr">
-    <item>Croatia</item>
-    <item>🇭🇷</item>
-    <item>hr</item>
-    <item>12</item>
-    <item>@drawable/ic_croatia_40dp</item>
-  </array>
-  <array name="cy">
-    <item>Cyprus</item>
-    <item>🇨🇾</item>
-    <item>cy</item>
-    <item>13</item>
-    <item>@drawable/ic_cyprus_40dp</item>
-  </array>
-  <array name="cz">
-    <item>Czech Republic</item>
-    <item>🇨🇿</item>
-    <item>cz</item>
-    <item>14</item>
-    <item>@drawable/ic_czech_republic_40dp</item>
-  </array>
-  <array name="dk">
-    <item>Denmark</item>
-    <item>🇩🇰</item>
-    <item>dk</item>
-    <item>15</item>
-    <item>@drawable/ic_denmark_40dp</item>
-  </array>
-  <array name="ee">
-    <item>Estonia</item>
-    <item>🇪🇪</item>
-    <item>ee</item>
-    <item>17</item>
-    <item>@drawable/ic_estonia_40dp</item>
-  </array>
-  <array name="fi">
-    <item>Finland</item>
-    <item>🇫🇮</item>
-    <item>fi</item>
-    <item>18</item>
-    <item>@drawable/ic_finland_40dp</item>
-  </array>
-  <array name="fr">
-    <item>France</item>
-    <item>🇫🇷</item>
-    <item>fr</item>
-    <item>19</item>
-    <item>@drawable/ic_france_40dp</item>
-  </array>
-  <array name="ge">
-    <item>Georgia</item>
-    <item>🇬🇪</item>
-    <item>ge</item>
-    <item>20</item>
-    <item>@drawable/ic_georgia_40dp</item>
-  </array>
-  <array name="de">
-    <item>Germany</item>
-    <item>🇩🇪</item>
-    <item>de</item>
-    <item>21</item>
-    <item>@drawable/ic_germany_40dp</item>
-  </array>
-  <array name="gr">
-    <item>Greece</item>
-    <item>🇬🇷</item>
-    <item>gr</item>
-    <item>22</item>
-    <item>@drawable/ic_greece_40dp</item>
-  </array>
-  <array name="hk">
-    <item>Hong Kong</item>
-    <item>🇭🇰</item>
-    <item>hk</item>
-    <item>23</item>
-    <item>@drawable/ic_hong_kong_40dp</item>
-  </array>
-  <array name="hu">
-    <item>Hungary</item>
-    <item>🇭🇺</item>
-    <item>hu</item>
-    <item>24</item>
-    <item>@drawable/ic_hungary_40dp</item>
-  </array>
-  <array name="is">
-    <item>Iceland</item>
-    <item>🇮🇸</item>
-    <item>is</item>
-    <item>25</item>
-    <item>@drawable/ic_iceland_40dp</item>
-  </array>
-  <array name="in">
-    <item>India</item>
-    <item>🇮🇳</item>
-    <item>in</item>
-    <item>26</item>
-    <item>@drawable/ic_india_40dp</item>
-  </array>
-  <array name="id">
-    <item>Indonesia</item>
-    <item>🇮🇩</item>
-    <item>id</item>
-    <item>27</item>
-    <item>@drawable/ic_indonesia_40dp</item>
-  </array>
-  <array name="ie">
-    <item>Ireland</item>
-    <item>🇮🇪</item>
-    <item>ie</item>
-    <item>28</item>
-    <item>@drawable/ic_ireland_40dp</item>
-  </array>
-  <array name="il">
-    <item>Israel</item>
-    <item>🇮🇱</item>
-    <item>il</item>
-    <item>29</item>
-    <item>@drawable/ic_israel_40dp</item>
-  </array>
-  <array name="it">
-    <item>Italy</item>
-    <item>🇮🇹</item>
-    <item>it</item>
-    <item>30</item>
-    <item>@drawable/ic_italy_40dp</item>
-  </array>
-  <array name="jp">
-    <item>Japan</item>
-    <item>🇯🇵</item>
-    <item>jp</item>
-    <item>31</item>
-    <item>@drawable/ic_japan_40dp</item>
-  </array>
-  <array name="lv">
-    <item>Latvia</item>
-    <item>🇱🇻</item>
-    <item>lv</item>
-    <item>32</item>
-    <item>@drawable/ic_latvia_40dp</item>
-  </array>
-  <array name="lu">
-    <item>Luxembourg</item>
-    <item>🇱🇺</item>
-    <item>lu</item>
-    <item>33</item>
-    <item>@drawable/ic_luxembourg_40dp</item>
-  </array>
-  <array name="my">
-    <item>Malaysia</item>
-    <item>🇲🇾</item>
-    <item>my</item>
-    <item>35</item>
-    <item>@drawable/ic_malaysia_40dp</item>
-  </array>
-  <array name="mx">
-    <item>Mexico</item>
-    <item>🇲🇽</item>
-    <item>mx</item>
-    <item>36</item>
-    <item>@drawable/ic_mexico_40dp</item>
-  </array>
-  <array name="md">
-    <item>Moldova</item>
-    <item>🇲🇩</item>
-    <item>md</item>
-    <item>37</item>
-    <item>@drawable/ic_moldova_40dp</item>
-  </array>
-  <array name="nl">
-    <item>Netherlands</item>
-    <item>🇳🇱</item>
-    <item>nl</item>
-    <item>38</item>
-    <item>@drawable/ic_netherlands_40dp</item>
-  </array>
-  <array name="nz">
-    <item>New Zealand</item>
-    <item>🇳🇿</item>
-    <item>nz</item>
-    <item>39</item>
-    <item>@drawable/ic_new_zealand_40dp</item>
-  </array>
-  <array name="mk">
-    <item>North Macedonia</item>
-    <item>🇲🇰</item>
-    <item>mk</item>
-    <item>34</item>
-    <item>@drawable/ic_north_macedonia_40dp</item>
-  </array>
-  <array name="no">
-    <item>Norway</item>
-    <item>🇳🇴</item>
-    <item>no</item>
-    <item>40</item>
-    <item>@drawable/ic_norway_40dp</item>
-  </array>
-  <array name="pl">
-    <item>Poland</item>
-    <item>🇵🇱</item>
-    <item>pl</item>
-    <item>41</item>
-    <item>@drawable/ic_poland_40dp</item>
-  </array>
-  <array name="pt">
-    <item>Portugal</item>
-    <item>🇵🇹</item>
-    <item>pt</item>
-    <item>42</item>
-    <item>@drawable/ic_portugal_40dp</item>
-  </array>
-  <array name="ro">
-    <item>Romania</item>
-    <item>🇷🇴</item>
-    <item>ro</item>
-    <item>43</item>
-    <item>@drawable/ic_romania_40dp</item>
-  </array>
-  <array name="rs">
-    <item>Serbia</item>
-    <item>🇷🇸</item>
-    <item>rs</item>
-    <item>45</item>
-    <item>@drawable/ic_serbia_40dp</item>
-  </array>
-  <array name="sg">
-    <item>Singapore</item>
-    <item>🇸🇬</item>
-    <item>sg</item>
-    <item>46</item>
-    <item>@drawable/ic_singapore_40dp</item>
-  </array>
-  <array name="sk">
-    <item>Slovakia</item>
-    <item>🇸🇰</item>
-    <item>sk</item>
-    <item>47</item>
-    <item>@drawable/ic_slovakia_40dp</item>
-  </array>
-  <array name="si">
-    <item>Slovenia</item>
-    <item>🇸🇮</item>
-    <item>si</item>
-    <item>48</item>
-    <item>@drawable/ic_slovenia_40dp</item>
-  </array>
-  <array name="za">
-    <item>South Africa</item>
-    <item>🇿🇦</item>
-    <item>za</item>
-    <item>49</item>
-    <item>@drawable/ic_south_africa_40dp</item>
-  </array>
-  <array name="kr">
-    <item>South Korea</item>
-    <item>🇰🇷</item>
-    <item>kr</item>
-    <item>50</item>
-    <item>@drawable/ic_south_korea_40dp</item>
-  </array>
-  <array name="es">
-    <item>Spain</item>
-    <item>🇪🇸</item>
-    <item>es</item>
-    <item>51</item>
-    <item>@drawable/ic_spain_40dp</item>
-  </array>
-  <array name="se">
-    <item>Sweden</item>
-    <item>🇸🇪</item>
-    <item>se</item>
-    <item>52</item>
-    <item>@drawable/ic_sweden_40dp</item>
-  </array>
-  <array name="ch">
-    <item>Switzerland</item>
-    <item>🇨🇭</item>
-    <item>ch</item>
-    <item>53</item>
-    <item>@drawable/ic_switzerland_40dp</item>
-  </array>
-  <array name="tw">
-    <item>Taiwan</item>
-    <item>🇹🇼</item>
-    <item>tw</item>
-    <item>54</item>
-    <item>@drawable/ic_taiwan_40dp</item>
-  </array>
-  <array name="th">
-    <item>Thailand</item>
-    <item>🇹🇭</item>
-    <item>th</item>
-    <item>55</item>
-    <item>@drawable/ic_thailand_40dp</item>
-  </array>
-  <array name="tr">
-    <item>Turkey</item>
-    <item>🇹🇷</item>
-    <item>tr</item>
-    <item>56</item>
-    <item>@drawable/ic_turkey_40dp</item>
-  </array>
-  <array name="ua">
-    <item>Ukraine</item>
-    <item>🇺🇦</item>
-    <item>ua</item>
-    <item>57</item>
-    <item>@drawable/ic_ukraine_40dp</item>
-  </array>
-  <array name="ae">
-    <item>United Arab Emirates</item>
-    <item>🇦🇪</item>
-    <item>ae</item>
-    <item>58</item>
-    <item>@drawable/ic_united_arab_emirates_40dp</item>
-  </array>
-  <array name="gb">
-    <item>United Kingdom</item>
-    <item>🇬🇧</item>
-    <item>gb</item>
-    <item>59</item>
-    <item>@drawable/ic_united_kingdom_40dp</item>
-  </array>
-  <array name="us">
-    <item>United States</item>
-    <item>🇺🇸</item>
-    <item>us</item>
-    <item>60</item>
-    <item>@drawable/ic_united_states_40dp</item>
-  </array>
-  <array name="vn">
-    <item>Vietnam</item>
-    <item>🇻🇳</item>
-    <item>vn</item>
-    <item>61</item>
-    <item>@drawable/ic_vietnam_40dp</item>
-  </array>
+    <array name="al">
+        <item>Albania</item>
+        <item>🇦🇱</item>
+        <item>al</item>
+        <item>0</item>
+        <item>@drawable/ic_albania_40dp</item>
+    </array>
+    <array name="ar">
+        <item>Argentina</item>
+        <item>🇦🇷</item>
+        <item>ar</item>
+        <item>1</item>
+        <item>@drawable/ic_argentina_40dp</item>
+    </array>
+    <array name="au">
+        <item>Australia</item>
+        <item>🇦🇺</item>
+        <item>au</item>
+        <item>2</item>
+        <item>@drawable/ic_australia_40dp</item>
+    </array>
+    <array name="at">
+        <item>Austria</item>
+        <item>🇦🇹</item>
+        <item>at</item>
+        <item>3</item>
+        <item>@drawable/ic_austria_40dp</item>
+    </array>
+    <array name="be">
+        <item>Belgium</item>
+        <item>🇧🇪</item>
+        <item>be</item>
+        <item>5</item>
+        <item>@drawable/ic_belgium_40dp</item>
+    </array>
+    <array name="ba">
+        <item>Bosnia and Herzegovina</item>
+        <item>🇧🇦</item>
+        <item>ba</item>
+        <item>6</item>
+        <item>@drawable/ic_bosnia_and_herzegovina_40dp</item>
+    </array>
+    <array name="br">
+        <item>Brazil</item>
+        <item>🇧🇷</item>
+        <item>br</item>
+        <item>7</item>
+        <item>@drawable/ic_brazil_40dp</item>
+    </array>
+    <array name="bg">
+        <item>Bulgaria</item>
+        <item>🇧🇬</item>
+        <item>bg</item>
+        <item>8</item>
+        <item>@drawable/ic_bulgaria_40dp</item>
+    </array>
+    <array name="ca">
+        <item>Canada</item>
+        <item>🇨🇦</item>
+        <item>ca</item>
+        <item>9</item>
+        <item>@drawable/ic_canada_40dp</item>
+    </array>
+    <array name="cl">
+        <item>Chile</item>
+        <item>🇨🇱</item>
+        <item>cl</item>
+        <item>10</item>
+        <item>@drawable/ic_chile_40dp</item>
+    </array>
+    <array name="cr">
+        <item>Costa Rica</item>
+        <item>🇨🇷</item>
+        <item>cr</item>
+        <item>11</item>
+        <item>@drawable/ic_costa_rica_40dp</item>
+    </array>
+    <array name="hr">
+        <item>Croatia</item>
+        <item>🇭🇷</item>
+        <item>hr</item>
+        <item>12</item>
+        <item>@drawable/ic_croatia_40dp</item>
+    </array>
+    <array name="cy">
+        <item>Cyprus</item>
+        <item>🇨🇾</item>
+        <item>cy</item>
+        <item>13</item>
+        <item>@drawable/ic_cyprus_40dp</item>
+    </array>
+    <array name="cz">
+        <item>Czech Republic</item>
+        <item>🇨🇿</item>
+        <item>cz</item>
+        <item>14</item>
+        <item>@drawable/ic_czech_republic_40dp</item>
+    </array>
+    <array name="dk">
+        <item>Denmark</item>
+        <item>🇩🇰</item>
+        <item>dk</item>
+        <item>15</item>
+        <item>@drawable/ic_denmark_40dp</item>
+    </array>
+    <array name="ee">
+        <item>Estonia</item>
+        <item>🇪🇪</item>
+        <item>ee</item>
+        <item>17</item>
+        <item>@drawable/ic_estonia_40dp</item>
+    </array>
+    <array name="fi">
+        <item>Finland</item>
+        <item>🇫🇮</item>
+        <item>fi</item>
+        <item>18</item>
+        <item>@drawable/ic_finland_40dp</item>
+    </array>
+    <array name="fr">
+        <item>France</item>
+        <item>🇫🇷</item>
+        <item>fr</item>
+        <item>19</item>
+        <item>@drawable/ic_france_40dp</item>
+    </array>
+    <array name="ge">
+        <item>Georgia</item>
+        <item>🇬🇪</item>
+        <item>ge</item>
+        <item>20</item>
+        <item>@drawable/ic_georgia_40dp</item>
+    </array>
+    <array name="de">
+        <item>Germany</item>
+        <item>🇩🇪</item>
+        <item>de</item>
+        <item>21</item>
+        <item>@drawable/ic_germany_40dp</item>
+    </array>
+    <array name="gr">
+        <item>Greece</item>
+        <item>🇬🇷</item>
+        <item>gr</item>
+        <item>22</item>
+        <item>@drawable/ic_greece_40dp</item>
+    </array>
+    <array name="hk">
+        <item>Hong Kong</item>
+        <item>🇭🇰</item>
+        <item>hk</item>
+        <item>23</item>
+        <item>@drawable/ic_hong_kong_40dp</item>
+    </array>
+    <array name="hu">
+        <item>Hungary</item>
+        <item>🇭🇺</item>
+        <item>hu</item>
+        <item>24</item>
+        <item>@drawable/ic_hungary_40dp</item>
+    </array>
+    <array name="is">
+        <item>Iceland</item>
+        <item>🇮🇸</item>
+        <item>is</item>
+        <item>25</item>
+        <item>@drawable/ic_iceland_40dp</item>
+    </array>
+    <array name="in">
+        <item>India</item>
+        <item>🇮🇳</item>
+        <item>in</item>
+        <item>26</item>
+        <item>@drawable/ic_india_40dp</item>
+    </array>
+    <array name="id">
+        <item>Indonesia</item>
+        <item>🇮🇩</item>
+        <item>id</item>
+        <item>27</item>
+        <item>@drawable/ic_indonesia_40dp</item>
+    </array>
+    <array name="ie">
+        <item>Ireland</item>
+        <item>🇮🇪</item>
+        <item>ie</item>
+        <item>28</item>
+        <item>@drawable/ic_ireland_40dp</item>
+    </array>
+    <array name="il">
+        <item>Israel</item>
+        <item>🇮🇱</item>
+        <item>il</item>
+        <item>29</item>
+        <item>@drawable/ic_israel_40dp</item>
+    </array>
+    <array name="it">
+        <item>Italy</item>
+        <item>🇮🇹</item>
+        <item>it</item>
+        <item>30</item>
+        <item>@drawable/ic_italy_40dp</item>
+    </array>
+    <array name="jp">
+        <item>Japan</item>
+        <item>🇯🇵</item>
+        <item>jp</item>
+        <item>31</item>
+        <item>@drawable/ic_japan_40dp</item>
+    </array>
+    <array name="lv">
+        <item>Latvia</item>
+        <item>🇱🇻</item>
+        <item>lv</item>
+        <item>32</item>
+        <item>@drawable/ic_latvia_40dp</item>
+    </array>
+    <array name="lu">
+        <item>Luxembourg</item>
+        <item>🇱🇺</item>
+        <item>lu</item>
+        <item>33</item>
+        <item>@drawable/ic_luxembourg_40dp</item>
+    </array>
+    <array name="my">
+        <item>Malaysia</item>
+        <item>🇲🇾</item>
+        <item>my</item>
+        <item>35</item>
+        <item>@drawable/ic_malaysia_40dp</item>
+    </array>
+    <array name="mx">
+        <item>Mexico</item>
+        <item>🇲🇽</item>
+        <item>mx</item>
+        <item>36</item>
+        <item>@drawable/ic_mexico_40dp</item>
+    </array>
+    <array name="md">
+        <item>Moldova</item>
+        <item>🇲🇩</item>
+        <item>md</item>
+        <item>37</item>
+        <item>@drawable/ic_moldova_40dp</item>
+    </array>
+    <array name="nl">
+        <item>Netherlands</item>
+        <item>🇳🇱</item>
+        <item>nl</item>
+        <item>38</item>
+        <item>@drawable/ic_netherlands_40dp</item>
+    </array>
+    <array name="nz">
+        <item>New Zealand</item>
+        <item>🇳🇿</item>
+        <item>nz</item>
+        <item>39</item>
+        <item>@drawable/ic_new_zealand_40dp</item>
+    </array>
+    <array name="mk">
+        <item>North Macedonia</item>
+        <item>🇲🇰</item>
+        <item>mk</item>
+        <item>34</item>
+        <item>@drawable/ic_north_macedonia_40dp</item>
+    </array>
+    <array name="no">
+        <item>Norway</item>
+        <item>🇳🇴</item>
+        <item>no</item>
+        <item>40</item>
+        <item>@drawable/ic_norway_40dp</item>
+    </array>
+    <array name="pl">
+        <item>Poland</item>
+        <item>🇵🇱</item>
+        <item>pl</item>
+        <item>41</item>
+        <item>@drawable/ic_poland_40dp</item>
+    </array>
+    <array name="pt">
+        <item>Portugal</item>
+        <item>🇵🇹</item>
+        <item>pt</item>
+        <item>42</item>
+        <item>@drawable/ic_portugal_40dp</item>
+    </array>
+    <array name="ro">
+        <item>Romania</item>
+        <item>🇷🇴</item>
+        <item>ro</item>
+        <item>43</item>
+        <item>@drawable/ic_romania_40dp</item>
+    </array>
+    <array name="rs">
+        <item>Serbia</item>
+        <item>🇷🇸</item>
+        <item>rs</item>
+        <item>45</item>
+        <item>@drawable/ic_serbia_40dp</item>
+    </array>
+    <array name="sg">
+        <item>Singapore</item>
+        <item>🇸🇬</item>
+        <item>sg</item>
+        <item>46</item>
+        <item>@drawable/ic_singapore_40dp</item>
+    </array>
+    <array name="sk">
+        <item>Slovakia</item>
+        <item>🇸🇰</item>
+        <item>sk</item>
+        <item>47</item>
+        <item>@drawable/ic_slovakia_40dp</item>
+    </array>
+    <array name="si">
+        <item>Slovenia</item>
+        <item>🇸🇮</item>
+        <item>si</item>
+        <item>48</item>
+        <item>@drawable/ic_slovenia_40dp</item>
+    </array>
+    <array name="za">
+        <item>South Africa</item>
+        <item>🇿🇦</item>
+        <item>za</item>
+        <item>49</item>
+        <item>@drawable/ic_south_africa_40dp</item>
+    </array>
+    <array name="kr">
+        <item>South Korea</item>
+        <item>🇰🇷</item>
+        <item>kr</item>
+        <item>50</item>
+        <item>@drawable/ic_south_korea_40dp</item>
+    </array>
+    <array name="es">
+        <item>Spain</item>
+        <item>🇪🇸</item>
+        <item>es</item>
+        <item>51</item>
+        <item>@drawable/ic_spain_40dp</item>
+    </array>
+    <array name="se">
+        <item>Sweden</item>
+        <item>🇸🇪</item>
+        <item>se</item>
+        <item>52</item>
+        <item>@drawable/ic_sweden_40dp</item>
+    </array>
+    <array name="ch">
+        <item>Switzerland</item>
+        <item>🇨🇭</item>
+        <item>ch</item>
+        <item>53</item>
+        <item>@drawable/ic_switzerland_40dp</item>
+    </array>
+    <array name="tw">
+        <item>Taiwan</item>
+        <item>🇹🇼</item>
+        <item>tw</item>
+        <item>54</item>
+        <item>@drawable/ic_taiwan_40dp</item>
+    </array>
+    <array name="th">
+        <item>Thailand</item>
+        <item>🇹🇭</item>
+        <item>th</item>
+        <item>55</item>
+        <item>@drawable/ic_thailand_40dp</item>
+    </array>
+    <array name="tr">
+        <item>Turkey</item>
+        <item>🇹🇷</item>
+        <item>tr</item>
+        <item>56</item>
+        <item>@drawable/ic_turkey_40dp</item>
+    </array>
+    <array name="ua">
+        <item>Ukraine</item>
+        <item>🇺🇦</item>
+        <item>ua</item>
+        <item>57</item>
+        <item>@drawable/ic_ukraine_40dp</item>
+    </array>
+    <array name="ae">
+        <item>United Arab Emirates</item>
+        <item>🇦🇪</item>
+        <item>ae</item>
+        <item>58</item>
+        <item>@drawable/ic_united_arab_emirates_40dp</item>
+    </array>
+    <array name="gb">
+        <item>United Kingdom</item>
+        <item>🇬🇧</item>
+        <item>gb</item>
+        <item>59</item>
+        <item>@drawable/ic_united_kingdom_40dp</item>
+    </array>
+    <array name="us">
+        <item>United States</item>
+        <item>🇺🇸</item>
+        <item>us</item>
+        <item>60</item>
+        <item>@drawable/ic_united_states_40dp</item>
+    </array>
+    <array name="vn">
+        <item>Vietnam</item>
+        <item>🇻🇳</item>
+        <item>vn</item>
+        <item>61</item>
+        <item>@drawable/ic_vietnam_40dp</item>
+    </array>
 </resources>

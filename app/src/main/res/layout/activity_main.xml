@@ -31,9 +31,7 @@
                 android:prompt="@string/title_ssh"
                 android:spinnerMode="dialog"
                 tools:listitem="@layout/spinner_item" />
-
         </tk.wasdennnoch.progresstoolbar.ProgressToolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
@@ -43,5 +41,4 @@
         android:layout_height="match_parent"
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph_main" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

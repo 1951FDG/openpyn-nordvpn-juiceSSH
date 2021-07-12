@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme.Logcat" parent="AppTheme.Settings">
         <item name="actionBarStyle">@style/Widget.MaterialComponents.Light.ActionBar.Solid.Custom</item>
         <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
@@ -13,6 +14,5 @@
         <item name="colorInfoLine">?android:attr/textColorPrimary</item>
         <item name="colorVerboseLine">#0000ff</item>
         <item name="colorWarningLine">#ffff00</item>
-
     </style>
 </resources>

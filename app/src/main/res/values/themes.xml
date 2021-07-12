@@ -26,7 +26,6 @@
 
     <style name="Base.V21.Theme.AppTheme" parent="Theme.MyApplicationTheme">
         <item name="preferenceTheme">@style/ThemeOverlay.App.Preference</item>
-
     </style>
 
     <style name="Widget.MaterialComponents.CheckedTextView" parent="Base.Widget.MaterialComponents.CheckedTextView">
@@ -39,7 +38,6 @@
     <style name="AppTheme" parent="Base.Theme.AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
     </style>
 
     <style name="ThemeOverlay.Settings.Preference" parent="@style/PreferenceThemeOverlay">
@@ -73,7 +71,6 @@
 
     <style name="Base.V21.Theme.AppTheme.Settings" parent="Theme.MyApplicationTheme">
         <item name="preferenceTheme">@style/ThemeOverlay.Settings.Preference</item>
-
     </style>
 
     <style name="AppTheme.Licenses" parent="AppTheme.Settings">
@@ -82,23 +79,19 @@
 
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
-
     </style>
 
     <style name="Widget.MaterialComponents.Light.ActionBar.Solid.Custom" parent="Widget.MaterialComponents.Light.ActionBar.Solid">
         <item name="background">@null</item>
         <item name="backgroundStacked">@null</item>
         <item name="backgroundSplit">@null</item>
-
     </style>
 
     <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="colorControlNormal">?android:attr/textColorSecondary</item>
-
     </style>
 
     <style name="Base.Theme.AppTheme.Settings" parent="Base.V21.Theme.AppTheme.Settings" />
-
     <!--https://issuetracker.google.com/issues/68454482-->
     <!--https://android.googlesource.com/platform/frameworks/base/+/android-8.0.0_r1/services/core/java/com/android/server/am/ActivityRecord.java-->
     <!--android-8.0: Only fullscreen opaque activities can request orientation-->
@@ -106,7 +99,6 @@
     <style name="AppTheme.Settings" parent="Base.Theme.AppTheme.Settings">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
     </style>
 
     <style name="AppTheme.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
@@ -154,5 +146,4 @@
         <!--<item name="mpb_showProgressBackground">false</item>-->
         <!--<item name="mpb_useIntrinsicPadding">false</item>-->
     <!--</style>-->
-
 </resources>
