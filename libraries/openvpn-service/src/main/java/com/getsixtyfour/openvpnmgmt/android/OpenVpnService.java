@@ -529,7 +529,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
             Intent intent = IntentUtils.getGitHubIntent(this, e);
             if (intent != null) {
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-                builder.addAction(R.drawable.ic_close_white, getString(R.string.report_button_text), pendingIntent);
+                builder.addAction(R.drawable.ic_bug_report, getString(R.string.report_button_text), pendingIntent);
             }
 
             intent = IntentUtils.getStopSelfIntent(this, e);
@@ -572,7 +572,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
         if ((when > 0L) || Constants.BG_CHANNEL_ID.equals(channel)) {
             Intent intent = new Intent(context, DisconnectActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            // The notification action icons are still required and continue to be used on older versions of Android
+            // Notification icons are still required and continue to be used on older versions of Android
             builder.addAction(R.drawable.ic_close_white, context.getString(R.string.vpn_disconnect_button), pendingIntent);
             builder.setUsesChronometer(true);
         }
