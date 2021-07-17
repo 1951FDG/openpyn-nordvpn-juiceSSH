@@ -101,8 +101,11 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
     private val mSendChannel by lazy {
         screen.lifecycleScope.actor<Context>(EmptyCoroutineContext, Channel.RENDEZVOUS) {
-            channel.map(IO) { runCatching { withTimeout(GEO_IP_TIMEOUT_MILLIS) { createGeoJson(it) } }.getOrNull() }
-                .consumeEach { it?.let { animateCamera(it) } }
+            channel.map(IO) {
+                val timeMillis =
+                    PreferenceManager.getDefaultSharedPreferences(it).getString("pref_geo_timeout", "$GEO_IP_TIMEOUT_MILLIS")!!.toLong()
+                runCatching { withTimeout(timeMillis) { createGeoJson(it) } }.getOrNull()
+            }.consumeEach { it?.let { animateCamera(it) } }
         }
     }
 
@@ -387,6 +390,9 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
                 !NetworkInfo.getInstance().isOnline() -> {
                     null
                 }
+                !PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_geo", true) -> {
+                    null
+                }
                 else -> {
                     async { runCatching { withTimeout(GEO_IP_TIMEOUT_MILLIS) { createGeoJson(applicationContext) } }.getOrNull() }
                 }
@@ -479,7 +485,7 @@ class MapControlTower : AbstractMapControlTower(), OnMapReadyCallback, OnMapLoad
     companion object {
 
         private const val FAVORITE_KEY = "pref_favorites"
-        private const val GEO_IP_TIMEOUT_MILLIS: Long = 600L
+        private const val GEO_IP_TIMEOUT_MILLIS: Long = 1000L
         private val SHOW_MINIBAR_DURATION_MILLIS: Long = 10.seconds.toLongMilliseconds()
         private val UPDATE_MARKER_DELAY_MILLIS: Long = 10.seconds.toLongMilliseconds()
         val onLevelChangeCallback: OnLevelChangeCallback = object : OnLevelChangeCallback {

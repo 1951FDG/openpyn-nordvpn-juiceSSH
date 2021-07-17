@@ -252,33 +252,56 @@
     </string-array>
 
     <string name="pref_silent">Silent</string>
-    <string name="pref_description_silent">Do not try to send notifications. Use if \“libnotify\” or \“gi\” are not available</string>
+    <string name="pref_description_silent">Do not try to send desktop notifications. Use if \“libnotify\” or \“gi\” are not available</string>
 
-    <string name="pref_category_geolocation">Geolocation API</string>
-    <string name="pref_geo">GeoIP</string>
-    <string name="pref_description_geolocation">Specify service to use to determine current location based on public IP address</string>
+    <string name="pref_category_geolocation">Geolocation preferences</string>
+    <string name="pref_geo">Geolocation</string>
+    <string name="pref_description_geolocation">Identify an approximate location on startup</string>
 
-    <string name="pref_geo_client">GeoIP service</string>
+    <string name="pref_geo_client">Service</string>
 
-    <string-array name="pref_geo_client_entries">
-        <item>IPApi</item>
-        <item>IPData</item>
-        <item>IPInfo</item>
-        <item>IPStack</item>
+    <string-array name="pref_geo_client_entries" translatable="false">
+        <item>ip-api.com</item>
+        <item>ipdata.co</item>
+        <item>ipinfo.io</item>
+        <item>ipregistry.co</item>
+        <item>ipstack.com</item>
     </string-array>
 
     <string-array name="pref_geo_client_values" translatable="false">
         <item>ipapi</item>
         <item>ipdata</item>
         <item>ipinfo</item>
+        <item>ipregistry</item>
         <item>ipstack</item>
+    </string-array>
+
+    <string name="pref_geo_timeout">Timeout</string>
+
+    <string-array name="pref_geo_timeout_entries" translatable="false">
+        <item>1.0 seconds</item>
+        <item>1.2 seconds</item>
+        <item>1.4 seconds</item>
+        <item>1.6 seconds</item>
+        <item>1.8 seconds</item>
+        <item>2.0 seconds</item>
+    </string-array>
+
+    <string-array name="pref_geo_timeout_values" translatable="false">
+        <item>1000</item>
+        <item>1200</item>
+        <item>1400</item>
+        <item>1600</item>
+        <item>1800</item>
+        <item>2000</item>
     </string-array>
 
     <string name="pref_category_api_keys">API keys</string>
 
-    <string name="pref_api_ipdata" translatable="false">IPData</string>
-    <string name="pref_api_ipinfo" translatable="false">IPInfo</string>
-    <string name="pref_api_ipstack" translatable="false">IPStack</string>
+    <string name="pref_api_ipdata" translatable="false">ipdata.co</string>
+    <string name="pref_api_ipinfo" translatable="false">ipinfo.io</string>
+    <string name="pref_api_ipregistry" translatable="false">ipregistry.co</string>
+    <string name="pref_api_ipstack" translatable="false">ipstack.com</string>
 
     <string name="egab_leave_review">Leave review</string>
     <string name="egab_contact_support">Contact us</string>

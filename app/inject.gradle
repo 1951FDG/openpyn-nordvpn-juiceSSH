@@ -15,10 +15,17 @@ def keyIpinfoProvider = tasks.register('keyIpinfoProvider') {
     }
 }
 
+def keyIpRegistryProvider = tasks.register('keyIpregistryProvider') {
+    dependsOn appGenerateApiBuildConstants
+    doLast {
+        ext.variable = project.ext.apiProps['keyIpregistry'] ?: ''
+    }
+}
+
 def keyIpstackProvider = tasks.register('keyIpstackProvider') {
     dependsOn appGenerateApiBuildConstants
     doLast {
-        ext.variable = project.ext.apiProps['keyIpdata'] ?: ''
+        ext.variable = project.ext.apiProps['keyIpstack'] ?: ''
     }
 }
 
@@ -83,6 +90,7 @@ android {
         it.onProperties {
             addResValue 'api_key_ipdata', 'string', keyIpdataProvider.map { task -> task.variable }, null
             addResValue 'api_key_ipinfo', 'string', keyIpinfoProvider.map { task -> task.variable }, null
+            addResValue 'api_key_ipregistry', 'string', keyIpRegistryProvider.map { task -> task.variable }, null
             addResValue 'api_key_ipstack', 'string', keyIpstackProvider.map { task -> task.variable }, null
         }
     }
@@ -91,6 +99,7 @@ android {
         it.onProperties {
             addResValue 'api_key_ipdata', 'string', '', null
             addResValue 'api_key_ipinfo', 'string', '', null
+            addResValue 'api_key_ipregistry', 'string', '', null
             addResValue 'api_key_ipstack', 'string', '', null
 
             Properties keystoreProperties = loadProperties('keystore.properties')

@@ -60,10 +60,8 @@ JuiceSSH supports the use of plugins, which motivated me to create this fantasti
 
 - API keys stored in shared preferences are encrypted
 
-- On app start, it will use a smart location, to determine the closest country
-
-- Uses Geolocation APIs to determine the current location
-  - <http://ip-api.com>, <https://ipdata.co>, <https://ipinfo.io>, <https://ipstack.com>
+- Uses IP Geolocation APIs to identify an approximate location
+  - <http://ip-api.com>, <https://ipdata.co>, <https://ipinfo.io>, <https://ipregistry.co>, <https://ipstack.com>
 
 > **Note**:
 > *Am I missing some essential feature?* Submit an [issue](https://github.com/1951FDG/openpyn-nordvpn-juiceSSH/issues/new) and let's make this app better together!
@@ -76,7 +74,7 @@ On app startup, the map is loaded asynchronously, an MBTile file (SQLite databas
 
 After the map is done loading, "lazy" markers are generated for all the available countries (markers are not placed on the map), all tiles (512x512 WebP images) are pre-loaded for the zoom scale specified by the MBTile file.
 
-The current location is detected based on the public IP address of the client. The map then animates to the marker closest to this location.
+An approximate location is identified based on the public IP address of the network. The map then animates to the marker closest to this location.
 
 After animation completes, the "lazy" markers whose location are within the visible bounds of the map are made visible (markers are placed on the map once they are made visible for the first time).
 

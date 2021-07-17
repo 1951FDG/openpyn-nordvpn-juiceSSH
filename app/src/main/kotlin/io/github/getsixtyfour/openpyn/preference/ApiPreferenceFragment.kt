@@ -27,9 +27,10 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
         findPreference<ListPreference>("pref_geo_client")?.apply {
             summaryProvider = Preference.SummaryProvider<ListPreference> {
                 when (val entry = it.entry) {
-                    "IPData" -> "\uD83D\uDEE1 $entry (key required)"
-                    "IPInfo" -> "\uD83D\uDEE1 $entry (key optional)"
-                    "IPStack" -> "$entry (key required)"
+                    "ipdata.co" -> "\uD83D\uDEE1 $entry (key required)"
+                    "ipinfo.io" -> "\uD83D\uDEE1 $entry (key optional)"
+                    "ipregistry.co" -> "\uD83D\uDEE1 $entry (key required)"
+                    "ipstack.com" -> "$entry (key required)"
                     null, "" -> it.context.getString(R.string.not_set)
                     else -> entry
                 }
@@ -41,6 +42,10 @@ class ApiPreferenceFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<EditTextPreference>("pref_api_ipinfo")?.apply {
+            setSummaryProvider(::provideSummary)
+        }
+
+        findPreference<EditTextPreference>("pref_api_ipregistry")?.apply {
             setSummaryProvider(::provideSummary)
         }
 

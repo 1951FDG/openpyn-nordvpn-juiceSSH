@@ -158,6 +158,14 @@ fun createJson2(type: String, content: JSONObject): JSONObject? {
             lon = java.lang.Double.valueOf(content.optString("loc").split(",")[1])
             ip = content.optString("ip")
         }
+        "ipregistry" -> {
+            flag = content.optJSONObject("location")!!.optJSONObject("country")!!.optString("code")
+            country = content.optJSONObject("location")!!.optJSONObject("country")!!.optString("name")
+            city = content.optJSONObject("location")!!.optString("city")
+            lat = content.optJSONObject("location")!!.optDouble("latitude", 0.0)
+            lon = content.optJSONObject("location")!!.optDouble("longitude", 0.0)
+            ip = content.optString("ip")
+        }
         "ipstack" -> {
             flag = content.optString("country_code")
             country = content.optString("country_name")
@@ -422,47 +430,47 @@ fun jsonArray(context: Context, @RawRes id: Int, ext: String): JSONArray {
 @WorkerThread
 suspend fun createGeoJson(context: Context): JSONObject? {
     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-    val geo = preferences.getBoolean("pref_geo", true)
     val api = preferences.getString("pref_geo_client", "ipapi")!!
     val ipdata = preferences.getString("pref_api_ipdata", "")!!
     val ipinfo = preferences.getString("pref_api_ipinfo", "")!!
+    val ipregistry = preferences.getString("pref_api_ipregistry", "")!!
     val ipstack = preferences.getString("pref_api_ipstack", "")!!
     val fields = "fields=country_name,country_code,city,latitude,longitude,ip"
     var server = "http://ip-api.com/json/?fields=8403" // http://ip-api.com/json/?fields=country,countryCode,city,lat,lon,query
     val token: String
 
-    if (geo) {
-        when (api) {
-            "ipdata" -> {
-                token = SecurityCypher.getInstance(context).decryptString(ipdata).toString()
-                server = "https://api.ipdata.co?api-key=$token&$fields"
-                /*server = "https://api.ipdata.co?api-key=$token&$fields,threat"*/
-            }
-            "ipinfo" -> {
-                token = SecurityCypher.getInstance(context).decryptString(ipinfo).toString()
-                server = when {
-                    token.isNotEmpty() -> "https://ipinfo.io/geo?token=$token"
-                    else -> "https://ipinfo.io/geo"
-                }
-            }
-            "ipstack" -> {
-                token = SecurityCypher.getInstance(context).decryptString(ipstack).toString()
-                server = "http://api.ipstack.com/check?access_key=$token&$fields"
+    when (api) {
+        "ipdata" -> {
+            token = SecurityCypher.getInstance(context).decryptString(ipdata).toString()
+            server = "https://api.ipdata.co?api-key=$token&$fields"
+            /*server = "https://api.ipdata.co?api-key=$token&$fields,threat"*/
+        }
+        "ipinfo" -> {
+            token = SecurityCypher.getInstance(context).decryptString(ipinfo).toString()
+            server = when {
+                token.isNotEmpty() -> "https://ipinfo.io/geo?token=$token"
+                else -> "https://ipinfo.io/geo"
             }
         }
-        HttpClient(Android) {
-            install(DefaultRequest) {
-                headers.append("Accept", "application/json")
-            }
-        }.use { client: HttpClient ->
-            val response = client.get<HttpResponse>(server)
-            val json = response.readText()
-            val jsonObject = JSONObject(json).also { logger.info { "$api: $it" } }
-            return@createGeoJson createJson2(api, jsonObject)
+        "ipregistry" -> {
+            token = SecurityCypher.getInstance(context).decryptString(ipregistry).toString()
+            server = "https://api.ipregistry.co/?key=$token&fields=ip,location"
+        }
+        "ipstack" -> {
+            token = SecurityCypher.getInstance(context).decryptString(ipstack).toString()
+            server = "http://api.ipstack.com/check?access_key=$token&$fields"
         }
     }
-
-    return null
+    HttpClient(Android) {
+        install(DefaultRequest) {
+            headers.append("Accept", "application/json")
+        }
+    }.use { client: HttpClient ->
+        val response = client.get<HttpResponse>(server)
+        val json = response.readText()
+        val jsonObject = JSONObject(json).also { logger.info { "$api: $it" } }
+        return@createGeoJson createJson2(api, jsonObject)
+    }
 }
 
 fun getCurrentPosition(flags: HashSet<CharSequence>, jsonObj: JSONObject?, jsonArr: JSONArray? = null): LatLng {

@@ -21,11 +21,13 @@ fun printAPIValues(context: Context) {
     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
     val ipdata = preferences.getString("pref_api_ipdata", "")!!
     val ipinfo = preferences.getString("pref_api_ipinfo", "")!!
+    val ipregistry = preferences.getString("pref_api_ipregistry", "")!!
     val ipstack = preferences.getString("pref_api_ipstack", "")!!
     val manufacturer = Build.MANUFACTURER
     val model = Build.MODEL
     logger.debug("ipdata = $ipdata")
     logger.debug("ipinfo = $ipinfo")
+    logger.debug("ipregistry = $ipregistry")
     logger.debug("ipstack = $ipstack")
     logger.debug("$manufacturer $model")
 }
