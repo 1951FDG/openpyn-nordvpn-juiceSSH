@@ -36,10 +36,11 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
     @Nullable
     private AlertDialog mDialog = null;
 
+    /**
+     * The service once bound
+     */
     @Nullable
     private IOpenVpnService mService = null;
-
-    private boolean mServiceBound = false;
 
     private static void onDismiss(DialogInterface dialog) {
         if (dialog instanceof AlertDialog) {
@@ -78,6 +79,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
         builder.setOnDismissListener(DisconnectActivity::onDismiss);
         mDialog = builder.create();
         mDialog.setOwnerActivity(this);
+
         LOGGER.debug("onCreate");
     }
 
@@ -85,12 +87,12 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
     public void onStart() {
         super.onStart();
 
-        // Bind to the service
         Intent intent = new Intent(this, OpenVpnService.class);
         bindService(intent, this, Context.BIND_AUTO_CREATE);
         if (mDialog != null) {
             mDialog.show();
         }
+
         LOGGER.debug("onStart");
     }
 
@@ -112,14 +114,15 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
     public void onStop() {
         super.onStop();
 
-        // Unbind from the service
-        if (mServiceBound) {
+        if (mService != null) {
             unbindService(this);
-            mServiceBound = false;
+            mService = null;
         }
+
         if (mDialog != null) {
             mDialog.hide();
         }
+
         LOGGER.debug("onStop");
     }
 
@@ -132,6 +135,7 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
             mDialog.dismiss();
             mDialog = null;
         }
+
         LOGGER.debug("onDestroy");
     }
 
@@ -151,14 +155,14 @@ public final class DisconnectActivity extends AppCompatActivity implements Dialo
     @Override
     public void onServiceConnected(@NonNull ComponentName name, @NonNull IBinder service) {
         mService = IOpenVpnService.Stub.asInterface(service);
-        mServiceBound = true;
+
         LOGGER.debug("onServiceConnected");
     }
 
     @Override
     public void onServiceDisconnected(@NonNull ComponentName name) {
         mService = null;
-        mServiceBound = false;
+
         LOGGER.debug("onServiceDisconnected");
     }
 }

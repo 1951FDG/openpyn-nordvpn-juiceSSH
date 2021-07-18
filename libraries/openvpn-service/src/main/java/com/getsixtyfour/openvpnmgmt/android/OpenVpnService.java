@@ -66,6 +66,8 @@ public final class OpenVpnService extends Service implements ConnectionStateList
 
     private static final int SOCKET_READ_TIMEOUT = 2 * 1000;
 
+    private static final int THREAD_PRIORITY = Process.THREAD_PRIORITY_BACKGROUND;
+
     /**
      * How long the startForegroundService() grace period is to get around to calling startForeground() before we ANR
      */
@@ -73,7 +75,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
 
     private static final long WAIT_FOR_SETTLE_DOWN = TimeUnit.MILLISECONDS.convert(2L, TimeUnit.SECONDS);
 
-    private final IBinder mBinder = new IOpenVpnService.Stub() {
+    private static final IOpenVpnService.Stub mBinder = new IOpenVpnService.Stub() {
         @Override
         public void disconnectVpn() {
             Thread thread = new Thread(() -> {
@@ -263,7 +265,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
 
         // Start a background thread that handles incoming messages of the management interface
         mThread = new Thread(() -> {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+            Process.setThreadPriority(THREAD_PRIORITY);
             if (DEBUG) {
                 // When a socket is created, it inherits the tag of its creating thread
                 TrafficStats.setThreadStatsTag(Constants.TRAFFIC_STATS_TAG);
@@ -341,7 +343,7 @@ public final class OpenVpnService extends Service implements ConnectionStateList
     @Override
     public IBinder onBind(@Nullable Intent intent) {
         LOGGER.debug("onBind");
-        return (intent != null) ? mBinder : null;
+        return mBinder.asBinder();
     }
 
     @Override
