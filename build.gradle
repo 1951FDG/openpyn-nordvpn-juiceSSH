@@ -46,7 +46,7 @@ buildscript {
         // firebase-crashlytics-gradle:2.7.0,2.7.1 is broken
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.6.1'
 
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:2.0.0'
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:3.0.0'
 
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.39.0'
 
