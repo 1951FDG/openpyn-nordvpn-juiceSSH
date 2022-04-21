@@ -254,7 +254,7 @@ dependencies {
     }
 
     // LeakCanary
-    implementation 'com.squareup.leakcanary:plumber-android:2.7'
+    implementation 'com.squareup.leakcanary:plumber-android:2.9.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     // Lint
