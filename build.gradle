@@ -14,7 +14,7 @@ buildscript {
     ext {
         androidXVersions = [
                 appcompat        : '1.3.0',
-                constraintlayout : '2.1.0-beta02',
+                constraintlayout : '2.2.0-alpha02',
                 coordinatorlayout: '1.1.0',
                 core             : '1.5.0',
                 navigation       : '2.3.5',
