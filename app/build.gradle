@@ -277,7 +277,7 @@ dependencies {
 
     // Test
     testImplementation "junit:junit:$junit_version"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation "androidx.test:core-ktx:${testRunnerVersion}"
 
     // AndroidJUnitRunner and JUnit Rules
