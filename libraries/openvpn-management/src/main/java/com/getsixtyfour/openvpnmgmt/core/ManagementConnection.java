@@ -29,6 +29,14 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({ "Singleton", "OverlyComplexClass", "ClassWithTooManyDependencies" })
 public final class ManagementConnection extends DeviceConnection implements Connection {
+    // ANR 10 seconds
+    // public static final int SOCKET_READ_TIMEOUT = 5000;
+    // private static final int TCP_CONNECT_TIMEOUT_MS = 2500;
+    // private static final int TCP_TIMEOUT_MS = 2000; sotimeout
+    // public static final int CONNECTION_TIMEOUT_MILLIS = 1000; setSoTimeout zygote
+    //public static final long CONNECTION_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(5);
+    // private static final int TIMEOUT_MILLIS = 500;
+    // public static final long LOGCAT_READ_TIMEOUT_MILLIS = 50;
 
     @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagementConnection.class);

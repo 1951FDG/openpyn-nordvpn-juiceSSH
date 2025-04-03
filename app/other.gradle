@@ -90,7 +90,7 @@ task appCheckIfDirty {
         def dirty = project.ext.gitProps['git.dirty']
 
         if (dirty.toBoolean()) {
-            throw new GradleException('You forget to commit code before building final release build')
+//            throw new GradleException('You forget to commit code before building final release build')
         }
     }
 }

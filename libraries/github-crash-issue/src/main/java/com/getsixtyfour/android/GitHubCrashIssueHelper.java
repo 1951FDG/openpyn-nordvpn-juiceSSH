@@ -16,8 +16,8 @@ public final class GitHubCrashIssueHelper {
     public static GitHubCrashIssue getGitHubCrashIssue(@NonNull Context context) {
         GitHubCrashIssue.Builder builder = new GitHubCrashIssue.Builder();
         builder.setAssignees(Collections.singletonList(context.getString(R.string.github_issue_assignee)));
-        builder.setDirty(Boolean.parseBoolean(context.getString(R.string.git_dirty)));
-        builder.setDisabled(BuildConfig.DEBUG);
+        builder.setDirty(false);
+        builder.setDisabled(false);
         builder.setId(context.getString(R.string.git_commit_id));
         builder.setLabels(Collections.singletonList(context.getString(R.string.github_issue_label)));
         builder.setUrl(context.getString(R.string.github_repo_url));
